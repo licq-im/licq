@@ -101,9 +101,9 @@ SystemMenu::SystemMenu(QWidget* parent)
     a->setCheckable(true); \
     a->setData(static_cast<unsigned int>(data)); \
     myFollowMeMenu->addAction(a);
-  ADD_PFM(tr("Don't Show"), CICQDaemon::IcqPluginInactive);
-  ADD_PFM(tr("Available"), CICQDaemon::IcqPluginActive);
-  ADD_PFM(tr("Busy"), CICQDaemon::IcqPluginBusy);
+  ADD_PFM(tr("Don't Show"), Licq::IcqPluginInactive);
+  ADD_PFM(tr("Available"), Licq::IcqPluginActive);
+  ADD_PFM(tr("Busy"), Licq::IcqPluginBusy);
 #undef ADD_PFM
 
   // Sub menu Status

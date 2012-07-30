@@ -17,11 +17,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
-ICQ.H
-header file containing all the main procedures to interface with the ICQ server at mirabilis
-*/
-
 #ifndef LICQ_ICQ_H
 #define LICQ_ICQ_H
 
@@ -35,33 +30,15 @@ namespace Licq
 typedef std::list<std::string> StringList;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
 class Color;
-class Proxy;
 class UserId;
 }
 
-// To keep old code working
-typedef Licq::UserCategoryMap UserCategoryMap;
-
-/* Forward declarations for friend functions */
-void *Ping_tep(void *p);
-void *UpdateUsers_tep(void *p);
-
-
-
-//=====CICQDaemon===============================================================
 
 class CICQDaemon : private boost::noncopyable
 {
 public:
   static const int MaxMessageSize = 6800; // Maybe a little bigger?
   static const int MaxOfflineMessageSize = 450;
-
-  enum IcqPluginStatus
-  {
-    IcqPluginInactive = 0,
-    IcqPluginActive = 1,
-    IcqPluginBusy = 2,
-  };
 
   // ICQ functions still public as they don't have any general proto functions
   //   to call them yet and needs to be callable from plugins for now
@@ -82,7 +59,6 @@ public:
   virtual void icqChatRequestAccept(const Licq::UserId& userId, unsigned short nPort,
       const std::string& clients, unsigned short nSequence,
       const unsigned long nMsgID[], bool bDirect) = 0;
-  virtual void icqChatRequestCancel(const Licq::UserId& userId, unsigned short nSequence) = 0;
 
   // Plugins
   virtual unsigned long icqRequestInfoPluginList(const Licq::UserId& userId,
@@ -119,7 +95,6 @@ public:
       unsigned short countryCode, const std::string& coName, const std::string& coDept,
       const std::string& coPos, const std::string& keyword, bool onlineOnly) = 0;
   virtual unsigned long icqSearchByUin(unsigned long) = 0;
-  virtual void icqRequestAuth(const Licq::UserId& userId, const std::string& message) = 0;
   virtual void icqAlertUser(const Licq::UserId& userId) = 0;
   virtual void icqUpdatePhoneBookTimestamp() = 0;
   virtual void icqUpdatePictureTimestamp() = 0;
@@ -127,24 +102,8 @@ public:
   virtual void icqUpdateContactList() = 0;
   virtual void icqCheckInvisible(const Licq::UserId& userId) = 0;
 
-  enum RandomChatGroups
-  {
-    RandomChatGroupNone         = 0,
-    RandomChatGroupGeneral      = 1,
-    RandomChatGroupRomance      = 2,
-    RandomChatGroupGames        = 3,
-    RandomChatGroupStudents     = 4,
-    RandomChatGroup20Some       = 6,
-    RandomChatGroup30Some       = 7,
-    RandomChatGroup40Some       = 8,
-    RandomChatGroup50Plus       = 9,
-    RandomChatGroupSeekF        = 10,
-    RandomChatGroupSeekM        = 11,
-  };
   virtual unsigned long setRandomChatGroup(unsigned chatGroup) = 0;
   virtual unsigned long randomChatSearch(unsigned chatGroup) = 0;
-
-  virtual void CheckExport() = 0;
 
   virtual void UpdateAllUsers() = 0;
   virtual void updateAllUsersInGroup(int groupId) = 0;
@@ -153,34 +112,11 @@ public:
   virtual unsigned long icqSendSms(const Licq::UserId& userId,
       const std::string& number, const std::string& message) = 0;
 
-  // Proxy options
-  void InitProxy();
-  Licq::Proxy* GetProxy() {  return m_xProxy;  }
-
-  // ICQ options
-  bool UseServerSideBuddyIcons() const          { return m_bUseBART; }
-  virtual void SetUseServerSideBuddyIcons(bool b) = 0;
-
-  static std::string getXmlTag(const std::string& xmlSource, const std::string& tagName);
-
 protected:
   virtual ~CICQDaemon() { /* Empty */ }
-
-  // Proxy
-  Licq::Proxy* m_xProxy;
-
-  // Misc
-  bool m_bUseBART; // server side buddy icons
-
-  // Declare all our thread functions as friends
-  friend void *Ping_tep(void *p);
-  friend void *UpdateUsers_tep(void *p);
 };
 
 // Global pointer
 extern CICQDaemon *gLicqDaemon;
-
-// Helper functions for the daemon
-unsigned short VersionToUse(unsigned short);
 
 #endif

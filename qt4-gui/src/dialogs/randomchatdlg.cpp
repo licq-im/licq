@@ -29,6 +29,7 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
 #include <licq/icq/icq.h>
+#include <licq/icq/user.h>
 #include <licq/protocolmanager.h>
 
 #include "core/gui-defines.h"
@@ -54,18 +55,18 @@ void RandomChatDlg::fillGroupsList(QListWidget* list, bool addNone, unsigned def
 
   if (addNone)
   {
-    ADD_RCG(CICQDaemon::RandomChatGroupNone,    tr("(none)"))
+    ADD_RCG(Licq::IcqRandomChatGroupNone,       tr("(none)"))
   }
-  ADD_RCG(CICQDaemon::RandomChatGroupGeneral,   tr("General"));
-  ADD_RCG(CICQDaemon::RandomChatGroupRomance,   tr("Romance"));
-  ADD_RCG(CICQDaemon::RandomChatGroupGames,     tr("Games"));
-  ADD_RCG(CICQDaemon::RandomChatGroupStudents,  tr("Students"));
-  ADD_RCG(CICQDaemon::RandomChatGroup20Some,    tr("20 Something"));
-  ADD_RCG(CICQDaemon::RandomChatGroup30Some,    tr("30 Something"));
-  ADD_RCG(CICQDaemon::RandomChatGroup40Some,    tr("40 Something"));
-  ADD_RCG(CICQDaemon::RandomChatGroup50Plus,    tr("50 Plus"));
-  ADD_RCG(CICQDaemon::RandomChatGroupSeekF,     tr("Seeking Women"));
-  ADD_RCG(CICQDaemon::RandomChatGroupSeekM,     tr("Seeking Men"));
+  ADD_RCG(Licq::IcqRandomChatGroupGeneral,      tr("General"));
+  ADD_RCG(Licq::IcqRandomChatGroupRomance,      tr("Romance"));
+  ADD_RCG(Licq::IcqRandomChatGroupGames,        tr("Games"));
+  ADD_RCG(Licq::IcqRandomChatGroupStudents,     tr("Students"));
+  ADD_RCG(Licq::IcqRandomChatGroup20Some,       tr("20 Something"));
+  ADD_RCG(Licq::IcqRandomChatGroup30Some,       tr("30 Something"));
+  ADD_RCG(Licq::IcqRandomChatGroup40Some,       tr("40 Something"));
+  ADD_RCG(Licq::IcqRandomChatGroup50Plus,       tr("50 Plus"));
+  ADD_RCG(Licq::IcqRandomChatGroupSeekF,        tr("Seeking Women"));
+  ADD_RCG(Licq::IcqRandomChatGroupSeekM,        tr("Seeking Men"));
 
 #undef ADD_RCG
 }

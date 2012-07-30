@@ -57,6 +57,9 @@
 using namespace std;
 using namespace LicqIcq;
 using Licq::Daemon;
+using Licq::IcqPluginActive;
+using Licq::IcqPluginBusy;
+using Licq::IcqPluginInactive;
 using Licq::Log;
 using Licq::OnEventData;
 using Licq::gDaemon;
@@ -217,7 +220,7 @@ bool IcqProtocol::directMode() const
   return (!gDaemon.behindFirewall() || (gDaemon.behindFirewall() && gDaemon.tcpEnabled()));
 }
 
-void CICQDaemon::InitProxy()
+void IcqProtocol::InitProxy()
 {
   if (m_xProxy != NULL)
   {
@@ -227,7 +230,7 @@ void CICQDaemon::InitProxy()
   m_xProxy = gDaemon.createProxy();
 }
 
-unsigned short VersionToUse(unsigned short v_in)
+unsigned short IcqProtocol::dcVersionToUse(unsigned short v_in)
 {
   /*if (ICQ_VERSION_TCP & 4 && v & 4) return 4;
   if (ICQ_VERSION_TCP & 2 && v & 2) return 2;
@@ -1679,7 +1682,7 @@ Licq::Event* IcqProtocol::SendExpectEvent_Client(const User* user, CPacketTcp* p
   return SendExpectEvent_Client(Licq::gProtocolManager.getNextEventId(), user, packet, ue);
 }
 
-string CICQDaemon::getXmlTag(const string& xmlSource, const string& tagName)
+string IcqProtocol::getXmlTag(const string& xmlSource, const string& tagName)
 {
   size_t startPos = xmlSource.find("<" + tagName + ">");
   size_t endPos = xmlSource.find("</" + tagName + ">");

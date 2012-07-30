@@ -40,6 +40,7 @@ using Licq::ICQUserPhoneBook;
 using Licq::IcqUser;
 using Licq::IniFile;
 using Licq::PhoneBookEntry;
+using Licq::UserCategoryMap;
 using Licq::gLog;
 
 
@@ -245,9 +246,9 @@ User::User(const Licq::UserId& id, bool temporary, bool isOwner)
     myOurClientTimestamp = 0;
     myOurClientInfoTimestamp = 0;
     myOurClientStatusTimestamp = 0;
-    myPhoneFollowMeStatus = CICQDaemon::IcqPluginInactive;
-    myIcqPhoneStatus = CICQDaemon::IcqPluginInactive;
-    mySharedFilesStatus = CICQDaemon::IcqPluginInactive;
+    myPhoneFollowMeStatus = Licq::IcqPluginInactive;
+    myIcqPhoneStatus = Licq::IcqPluginInactive;
+    mySharedFilesStatus = Licq::IcqPluginInactive;
     return;
   }
 
@@ -264,9 +265,9 @@ User::User(const Licq::UserId& id, bool temporary, bool isOwner)
   conf.get("OurClientTimestamp", myOurClientTimestamp, 0);
   conf.get("OurClientInfoTimestamp", myOurClientInfoTimestamp, 0);
   conf.get("OurClientStatusTimestamp", myOurClientStatusTimestamp, 0);
-  conf.get("PhoneFollowMeStatus", myPhoneFollowMeStatus, CICQDaemon::IcqPluginInactive);
-  conf.get("ICQphoneStatus", myIcqPhoneStatus, CICQDaemon::IcqPluginInactive);
-  conf.get("SharedFilesStatus", mySharedFilesStatus, CICQDaemon::IcqPluginInactive);
+  conf.get("PhoneFollowMeStatus", myPhoneFollowMeStatus, Licq::IcqPluginInactive);
+  conf.get("ICQphoneStatus", myIcqPhoneStatus, Licq::IcqPluginInactive);
+  conf.get("SharedFilesStatus", mySharedFilesStatus, Licq::IcqPluginInactive);
   conf.get("BuddyIconType", myBuddyIconType, 0);
   conf.get("BuddyIconHashType", myBuddyIconHashType, 0);
   conf.getHex("BuddyIconHash", myBuddyIconHash, "");
@@ -556,5 +557,5 @@ unsigned short User::ConnectionVersion() const
     return myConnectionVersion;
 
   // We aren't connected, see if we know their version
-  return VersionToUse(myVersion);
+  return IcqProtocol::dcVersionToUse(myVersion);
 }

@@ -841,11 +841,11 @@ bool CChatManager::SendChatHandshake(ChatUser* u)
 {
   CChatClient *c = u->m_pClient;
 
-  gLog.info(tr("Chat: Shaking hands [v%d]."), VersionToUse(c->m_nVersion));
+  gLog.info(tr("Chat: Shaking hands [v%d]."), IcqProtocol::dcVersionToUse(c->m_nVersion));
 
   // Send handshake packet:
   if (!IcqProtocol::handshake_Send(&u->sock, c->myUserId, LocalPort(),
-     VersionToUse(c->m_nVersion), false))
+      IcqProtocol::dcVersionToUse(c->m_nVersion), false))
     return false;
 
   // Send color packet

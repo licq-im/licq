@@ -45,6 +45,7 @@ class EventUrl;
 class INetSocket;
 class IniFile;
 class Packet;
+class Proxy;
 class TCPSocket;
 class User;
 class UserEvent;
@@ -150,6 +151,7 @@ public:
   void shutdown()
   { myNewSocketPipe.putChar('X'); }
 
+  bool UseServerSideBuddyIcons() const { return m_bUseBART; }
   void SetUseServerSideBuddyIcons(bool b);
 
   unsigned long icqSendContactList(const Licq::UserId& userId, const Licq::StringList& users,
@@ -343,6 +345,12 @@ public:
 
   EDaemonStatus Status() const                  { return m_eStatus; }
 
+  static unsigned short dcVersionToUse(unsigned short v_in);
+
+  // Proxy options
+  void InitProxy();
+  Licq::Proxy* GetProxy() {  return m_xProxy;  }
+
   bool directMode() const;
 
   static unsigned short icqStatusFromStatus(unsigned status);
@@ -358,6 +366,8 @@ public:
   static std::string parseDigits(const std::string& number);
   static std::string parseRtf(const std::string& rtf);
   static std::string pipeInput(const std::string& message);
+
+  static std::string getXmlTag(const std::string& xmlSource, const std::string& tagName);
 
 private:
   static const int PingFrequency = 60;
@@ -467,9 +477,11 @@ private:
   pthread_t m_nRegisterThreadId;
   bool myDirectMode;
   EDaemonStatus m_eStatus;
+  Licq::Proxy* m_xProxy;
 
   // Services
   COscarService *m_xBARTService;
+  bool m_bUseBART; // server side buddy icons
 
   static std::list <CReverseConnectToUserData *> m_lReverseConnect;
   static pthread_mutex_t mutex_reverseconnect;

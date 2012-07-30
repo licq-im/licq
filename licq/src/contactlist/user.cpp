@@ -34,7 +34,6 @@
 
 #include "gettext.h"
 #include <licq/logging/log.h>
-#include <licq/icq/codes.h>
 #include <licq/inifile.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
@@ -386,7 +385,7 @@ void User::Private::Init()
   myUserInfo["Address"] = string();
   myUserInfo["CellularNumber"] = string();
   myUserInfo["Zipcode"] = string();
-  myUserInfo["Country"] = (unsigned int)COUNTRY_UNSPECIFIED;
+  myUserInfo["Country"] = (unsigned int)0; // COUNTRY_UNSPECIFIED
   myUserInfo["HideEmail"] = false;
   myUser->m_nTimezone = TimezoneUnknown;
   myUser->m_bAuthorization = false;
@@ -418,11 +417,11 @@ void User::Private::Init()
   myUserInfo["CompanyFaxNumber"] = string();
   myUserInfo["CompanyAddress"] = string();
   myUserInfo["CompanyZip"] = string();
-  myUserInfo["CompanyCountry"] = (unsigned int)COUNTRY_UNSPECIFIED;
+  myUserInfo["CompanyCountry"] = (unsigned int)0; // COUNTRY_UNSPECIFIED
   myUserInfo["CompanyName"] = string();
   myUserInfo["CompanyDepartment"] = string();
   myUserInfo["CompanyPosition"] = string();
-  myUserInfo["CompanyOccupation"] = (unsigned int)OCCUPATION_UNSPECIFIED;
+  myUserInfo["CompanyOccupation"] = (unsigned int)0; // OCCUPATION_UNSPECIFIED
   myUserInfo["CompanyHomepage"] = string();
 
   // About

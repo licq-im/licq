@@ -118,10 +118,6 @@ void* LicqIcq::ProcessRunningEvent_Server_tep(void* /* p */)
 
   DEBUG_THREADS("[ProcessRunningEvent_Server_tep] Caught event.\n");
 
-  CICQDaemon *d = gLicqDaemon;
-
-  if (!d) pthread_exit(NULL);
-
   // Must send packets in sequential order
   pthread_mutex_lock(&send_mutex);
   pthread_mutex_lock(&gIcqProtocol.mutex_sendqueue_server);

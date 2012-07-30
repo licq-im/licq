@@ -29,7 +29,6 @@
 
 // Licq
 #include <licq/contactlist/user.h>
-#include <licq/icq/icq.h>
 #include <licq/icq/user.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
@@ -325,17 +324,17 @@ void ContactUserData::updateExtendedStatus()
   if (myStatusTyping && myUserId.protocolId() == LICQ_PPID)
     myExtendedStatus |= ContactListModel::TypingStatus;
 
-  if (myPhoneFollowMeStatus == CICQDaemon::IcqPluginActive)
+  if (myPhoneFollowMeStatus == Licq::IcqPluginActive)
     myExtendedStatus |= ContactListModel::PhoneFollowMeActiveStatus;
-  else if (myPhoneFollowMeStatus == CICQDaemon::IcqPluginBusy)
+  else if (myPhoneFollowMeStatus == Licq::IcqPluginBusy)
     myExtendedStatus |= ContactListModel::PhoneFollowMeBusyStatus;
 
-  if (myIcqPhoneStatus == CICQDaemon::IcqPluginActive)
+  if (myIcqPhoneStatus == Licq::IcqPluginActive)
     myExtendedStatus |= ContactListModel::IcqPhoneActiveStatus;
-  else if (myIcqPhoneStatus == CICQDaemon::IcqPluginBusy)
+  else if (myIcqPhoneStatus == Licq::IcqPluginBusy)
     myExtendedStatus |= ContactListModel::IcqPhoneBusyStatus;
 
-  if (mySharedFilesStatus == CICQDaemon::IcqPluginActive)
+  if (mySharedFilesStatus == Licq::IcqPluginActive)
     myExtendedStatus |= ContactListModel::SharedFilesStatus;
 
   if (myCustomAR)
@@ -717,17 +716,17 @@ QString ContactUserData::tooltip() const
   {
     if (myStatusTyping)
       s += "<br>" + tr("Typing a message");
-    if (myPhoneFollowMeStatus == CICQDaemon::IcqPluginActive)
+    if (myPhoneFollowMeStatus == Licq::IcqPluginActive)
       s += "<br>" + tr("Phone &quot;Follow Me&quot;: Available");
-    else if (myPhoneFollowMeStatus == CICQDaemon::IcqPluginBusy)
+    else if (myPhoneFollowMeStatus == Licq::IcqPluginBusy)
       s += "<br>" + tr("Phone &quot;Follow Me&quot;: Busy");
 
-    if (myIcqPhoneStatus == CICQDaemon::IcqPluginActive)
+    if (myIcqPhoneStatus == Licq::IcqPluginActive)
       s += "<br>" + tr("ICQphone: Available");
-    else if (myIcqPhoneStatus == CICQDaemon::IcqPluginBusy)
+    else if (myIcqPhoneStatus == Licq::IcqPluginBusy)
       s += "<br>" + tr("ICQphone: Busy");
 
-    if (mySharedFilesStatus == CICQDaemon::IcqPluginActive)
+    if (mySharedFilesStatus == Licq::IcqPluginActive)
       s += "<br>" + tr("File Server: Enabled");
   }
 

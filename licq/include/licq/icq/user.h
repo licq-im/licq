@@ -34,6 +34,28 @@ class User;
 namespace Licq
 {
 
+enum IcqPluginStatus
+{
+  IcqPluginInactive = 0,
+  IcqPluginActive = 1,
+  IcqPluginBusy = 2,
+};
+
+enum IcqRandomChatGroups
+{
+  IcqRandomChatGroupNone        = 0,
+  IcqRandomChatGroupGeneral     = 1,
+  IcqRandomChatGroupRomance     = 2,
+  IcqRandomChatGroupGames       = 3,
+  IcqRandomChatGroupStudents    = 4,
+  IcqRandomChatGroup20Some      = 6,
+  IcqRandomChatGroup30Some      = 7,
+  IcqRandomChatGroup40Some      = 8,
+  IcqRandomChatGroup50Plus      = 9,
+  IcqRandomChatGroupSeekF       = 10,
+  IcqRandomChatGroupSeekM       = 11,
+};
+
 const unsigned short MAX_CATEGORY_SIZE  = 60;
 const unsigned int MAX_CATEGORIES = 4;
 

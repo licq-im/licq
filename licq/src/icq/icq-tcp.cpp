@@ -62,6 +62,9 @@
 using namespace std;
 using namespace LicqIcq;
 using Licq::Daemon;
+using Licq::IcqPluginActive;
+using Licq::IcqPluginBusy;
+using Licq::IcqPluginInactive;
 using Licq::Log;
 using Licq::OnEventData;
 using Licq::StringList;
@@ -1253,7 +1256,7 @@ int IcqProtocol::reverseConnectToUser(const Licq::UserId& userId, unsigned long 
   bool bConfirm = ftm == NULL && cm == NULL;
 
   // Make sure we use the right version
-  nVersion = VersionToUse(nVersion);
+  nVersion = IcqProtocol::dcVersionToUse(nVersion);
 
   if (!handshake_Send(s, userId, 0, nVersion, bConfirm, nId))
   {
@@ -3374,7 +3377,7 @@ bool IcqProtocol::Handshake_Recv(DcSocket* s, unsigned short nPort, bool bConfir
   char id[16];
   Licq::UserId userId;
 
-  switch (VersionToUse(nVersionMajor))
+  switch (IcqProtocol::dcVersionToUse(nVersionMajor))
   {
     case 8:
     case 7:
@@ -3470,7 +3473,7 @@ bool IcqProtocol::Handshake_Recv(DcSocket* s, unsigned short nPort, bool bConfir
         }
       }
 
-      nVersion = VersionToUse(nVersionMajor);
+      nVersion = IcqProtocol::dcVersionToUse(nVersionMajor);
 
       break;
     }
@@ -3552,7 +3555,7 @@ bool IcqProtocol::Handshake_Recv(DcSocket* s, unsigned short nPort, bool bConfir
       nUin = b.UnpackUnsignedLong();
       snprintf(id, 16, "%lu", nUin);
       userId = Licq::UserId(id, LICQ_PPID);
-      nVersion = VersionToUse(nVersionMajor);
+      nVersion = IcqProtocol::dcVersionToUse(nVersionMajor);
 
       unsigned long nIntIp;
       unsigned long nIp;

@@ -63,9 +63,13 @@
 using namespace std;
 using namespace LicqIcq;
 using Licq::Daemon;
+using Licq::IcqPluginActive;
+using Licq::IcqPluginBusy;
+using Licq::IcqPluginInactive;
 using Licq::Log;
 using Licq::OnEventData;
 using Licq::StringList;
+using Licq::UserCategoryMap;
 using Licq::gDaemon;
 using Licq::gLog;
 using Licq::gPluginManager;

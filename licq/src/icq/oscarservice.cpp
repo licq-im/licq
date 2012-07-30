@@ -447,7 +447,7 @@ bool COscarService::Initialize()
   ChangeStatus(STATUS_CONNECTED);
   SrvSocket* s = new SrvSocket(Licq::gUserManager.ownerUserId(LICQ_PPID));
   gLog.info(tr("Connecting to separate server for service 0x%02X."), myFam);
-  if (gLicqDaemon->GetProxy() == NULL)
+  if (gIcqProtocol.GetProxy() == NULL)
   {
     if (myProxy != NULL)
     {
