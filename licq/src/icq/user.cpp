@@ -228,6 +228,7 @@ User::User(const Licq::UserId& id, bool temporary, bool isOwner)
   myDirectMode = true;
   myDirectFlag = DirectAnyone;
   myCookie = 0;
+  myVersion = 0;
   clearAllSocketDesc();
 
   if (temporary)
@@ -508,7 +509,7 @@ void User::setSocketDesc(DcSocket* s)
   else if (s->channel() == DcSocket::ChannelStatus)
     myStatusSocketDesc = s->Descriptor();
   m_nLocalPort = s->getLocalPort();
-  m_nConnectionVersion = s->Version();
+  myConnectionVersion = s->Version();
   if (m_bSecure != s->Secure())
   {
     m_bSecure = s->Secure();
@@ -536,7 +537,7 @@ void User::clearSocketDesc(Licq::INetSocket* s)
   if (myStatusSocketDesc == -1 && myInfoSocketDesc == -1 && myNormalSocketDesc == -1)
   {
     m_nLocalPort = 0;
-    m_nConnectionVersion = 0;
+    myConnectionVersion = 0;
 
     if (m_bSecure)
     {
@@ -546,4 +547,14 @@ void User::clearSocketDesc(Licq::INetSocket* s)
             Licq::PluginSignal::UserSecurity, myId, 0));
     }
   }
+}
+
+unsigned short User::ConnectionVersion() const
+{
+  // If we are already connected, use that version
+  if (myConnectionVersion != 0)
+    return myConnectionVersion;
+
+  // We aren't connected, see if we know their version
+  return VersionToUse(myVersion);
 }

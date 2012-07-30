@@ -129,6 +129,11 @@ public:
   int normalSocketDesc() const { return myNormalSocketDesc; }
   int infoSocketDesc() const { return myInfoSocketDesc; }
 
+  unsigned long Version() const { return myVersion; }
+  unsigned short ConnectionVersion() const;
+  void SetVersion(unsigned long s) { myVersion = s; }
+  void SetConnectionVersion(unsigned short s) { myConnectionVersion = s; }
+
 private:
   /**
    * Save a category list
@@ -189,6 +194,9 @@ private:
   int myNormalSocketDesc;
   int myInfoSocketDesc;
   int myStatusSocketDesc;
+
+  unsigned long myVersion;
+  unsigned myConnectionVersion;
 };
 
 

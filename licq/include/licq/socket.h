@@ -62,8 +62,6 @@ public:
   bool DestinationSet()     { return myRemoteAddr.sa_family != AF_UNSPEC; }
   const UserId& userId() const { return myUserId; }
   void setUserId(const UserId& userId) { myUserId = userId; }
-  unsigned long Version() const { return (myVersion); }
-  void SetVersion(unsigned long version) { myVersion = version; }
 
   int Error();
   std::string errorStr() const;
@@ -236,7 +234,6 @@ protected:
   std::string myRemoteName;
   std::string myLogId;
   int mySockType;
-  unsigned short myVersion;
   ErrorType myErrorType;
   Proxy* myProxy;
   UserId myUserId;
@@ -252,7 +249,7 @@ public:
   virtual ~TCPSocket();
 
   bool RecvConnection(TCPSocket &newSocket);
-  void TransferConnectionFrom(TCPSocket &from);
+  virtual void TransferConnectionFrom(TCPSocket &from);
 
   /// Overloaded to add SSL support
   bool send(Buffer& b);

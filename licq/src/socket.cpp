@@ -178,7 +178,6 @@ INetSocket::INetSocket(int sockType, const string& logId, const UserId& userId)
   : myDescriptor(-1),
     myLogId(logId),
     mySockType(sockType),
-    myVersion(0),
     myErrorType(ErrorNone),
     myProxy(NULL),
     myUserId(userId)
@@ -197,15 +196,15 @@ void INetSocket::DumpPacket(Buffer *b, bool isReceiver)
 {
   if (!isReceiver)
   {
-    b->log(Log::Debug, "Packet (%sv%lu, %lu bytes) sent:\n(%s:%d -> %s:%d)",
-           myLogId.c_str(), Version(), b->getDataSize(),
+    b->log(Log::Debug, "Packet (%s, %lu bytes) sent:\n(%s:%d -> %s:%d)",
+           myLogId.c_str(), b->getDataSize(),
            getLocalIpString().c_str(), getLocalPort(),
            getRemoteIpString().c_str(), getRemotePort());
   }
   else
   {
-    b->log(Log::Debug, "Packet (%sv%lu, %lu bytes) received:\n(%s:%d <- %s:%d)",
-           myLogId.c_str(), Version(), b->getDataSize(),
+    b->log(Log::Debug, "Packet (%s, %lu bytes) received:\n(%s:%d <- %s:%d)",
+           myLogId.c_str(), b->getDataSize(),
            getLocalIpString().c_str(), getLocalPort(),
            getRemoteIpString().c_str(), getRemotePort());
   }
@@ -601,7 +600,6 @@ void TCPSocket::TransferConnectionFrom(TCPSocket &from)
   myRemoteAddr = from.myRemoteAddr;
   myUserId = from.myUserId;
 
-  myVersion = from.myVersion;
   if (from.m_p_SSL)
   {
     pthread_mutex_lock(&from.mutex_ssl);

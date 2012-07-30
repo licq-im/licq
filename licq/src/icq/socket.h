@@ -55,6 +55,8 @@ public:
   DcSocket();
   DcSocket(const Licq::UserId& userId);
 
+  void TransferConnectionFrom(Licq::TCPSocket& from);
+
   /**
    * Receive a packet without blocking
    * Check RecvBufferFull() on return to determine if packet is complete
@@ -75,9 +77,13 @@ public:
   void setChannel(int channel) { myChannel = channel; }
   int channel() const { return myChannel; }
 
+  unsigned long Version() const { return (myVersion); }
+  void SetVersion(unsigned long version) { myVersion = version; }
+
 private:
   Licq::Buffer myRecvBuffer;
   int myChannel;
+  unsigned short myVersion;
 };
 
 } // namespace LicqIcq

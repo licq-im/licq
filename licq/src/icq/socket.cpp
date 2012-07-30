@@ -120,7 +120,8 @@ bool SrvSocket::receiveFlap(Licq::Buffer& buf)
 }
 
 DcSocket::DcSocket(const Licq::UserId& userId)
-  : TCPSocket(userId)
+  : TCPSocket(userId),
+    myVersion(0)
 {
   // Empty
 }
@@ -128,6 +129,17 @@ DcSocket::DcSocket(const Licq::UserId& userId)
 DcSocket::DcSocket()
 {
   // Empty
+}
+
+void DcSocket::TransferConnectionFrom(Licq::TCPSocket& from)
+{
+  DcSocket* dcfrom = dynamic_cast<DcSocket*>(&from);
+  if (dcfrom != NULL)
+  {
+    myVersion = dcfrom->myVersion;
+  }
+
+  Licq::TCPSocket::TransferConnectionFrom(from);
 }
 
 bool DcSocket::RecvPacket()

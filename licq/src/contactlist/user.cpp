@@ -34,7 +34,6 @@
 
 #include "gettext.h"
 #include <licq/logging/log.h>
-#include <licq/icq/icq.h> // For VersionToUse()
 #include <licq/icq/codes.h>
 #include <licq/inifile.h>
 #include <licq/contactlist/usermanager.h>
@@ -446,7 +445,6 @@ void User::Private::Init()
   myUser->m_nIp = 0;
   myUser->m_nPort = 0;
   myUser->m_nIntIp = 0;
-  myUser->m_nVersion = 0;
   myUser->m_bUserUpdated = false;
   myUser->myWebPresence = false;
   myUser->myHideIp = false;
@@ -821,14 +819,6 @@ void Licq::User::SetIpPort(unsigned long _nIp, unsigned short _nPort)
 void Licq::User::clearSocketDesc(INetSocket* /* s */)
 {
   /* Empty, reimplemented in subclasses as needed */
-}
-
-unsigned short Licq::User::ConnectionVersion() const
-{
-  // If we are already connected, use that version
-  if (m_nConnectionVersion != 0) return m_nConnectionVersion;
-  // We aren't connected, see if we know their version
-  return VersionToUse(m_nVersion);
 }
 
 int Licq::User::LocalTimeGMTOffset() const

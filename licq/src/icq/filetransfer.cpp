@@ -400,7 +400,7 @@ bool CFileTransferManager::SendFileHandshake()
   // Send handshake packet:
   unsigned short nVersion;
   {
-    Licq::UserReadGuard u(myUserId);
+    UserReadGuard u(myUserId);
     nVersion = u->ConnectionVersion();
   }
   if (!IcqProtocol::handshake_Send(&d->mySock, myUserId, LocalPort(), nVersion, false))

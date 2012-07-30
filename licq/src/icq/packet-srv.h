@@ -645,13 +645,13 @@ protected:
 class CPU_Type2Message : public CPU_CommonFamily
 {
 public:
-  CPU_Type2Message(const Licq::User* u, bool _bAck, bool _bDirectInfo, const uint8_t* cap,
+  CPU_Type2Message(const User* u, bool _bAck, bool _bDirectInfo, const uint8_t* cap,
                    unsigned long nMsgID1 = 0,
                    unsigned long nMsgID2 = 0);
 protected:
   void InitBuffer();
 
-  const Licq::User* m_pUser;
+  const User* m_pUser;
   bool m_bAck;
   bool m_bDirectInfo;
   unsigned long m_nMsgID[2];
@@ -663,7 +663,7 @@ protected:
 class CPU_ReverseConnect : public CPU_Type2Message
 {
 public:
-  CPU_ReverseConnect(const Licq::User* u, unsigned long nLocalIP,
+  CPU_ReverseConnect(const User* u, unsigned long nLocalIP,
                      unsigned short nLocalPort, unsigned short nRemotePort);
 };
 
@@ -680,7 +680,7 @@ public:
 class CPU_PluginMessage : public CPU_Type2Message
 {
 public:
-  CPU_PluginMessage(const Licq::User* u, bool bAck, const uint8_t* PluginGUID,
+  CPU_PluginMessage(const User* u, bool bAck, const uint8_t* PluginGUID,
                     unsigned long nMsgID1 = 0, unsigned long nMsgID2 = 0);
 
 protected:
@@ -693,7 +693,7 @@ protected:
 class CPU_InfoPluginReq : public CPU_PluginMessage
 {
 public:
-  CPU_InfoPluginReq(const Licq::User* u, const uint8_t* GUID, unsigned long nTime);
+  CPU_InfoPluginReq(const User* u, const uint8_t* GUID, unsigned long nTime);
   virtual const char *RequestGUID() { return m_ReqGUID; }
   virtual unsigned short ExtraInfo() { return ServerInfoPluginRequest; }
 
@@ -705,7 +705,7 @@ protected:
 class CPU_StatusPluginReq : public CPU_PluginMessage
 {
 public:
-  CPU_StatusPluginReq(const Licq::User* u, const uint8_t* GUID, unsigned long nTime);
+  CPU_StatusPluginReq(const User* u, const uint8_t* GUID, unsigned long nTime);
   virtual unsigned short ExtraInfo() { return ServerStatusPluginRequest; }
   virtual const char *RequestGUID() { return m_ReqGUID; }
 
@@ -717,7 +717,7 @@ protected:
 class CPU_AdvancedMessage : public CPU_Type2Message
 {
 public:
-  CPU_AdvancedMessage(const Licq::User* u, unsigned short _nMsgType,
+  CPU_AdvancedMessage(const User* u, unsigned short _nMsgType,
                       unsigned short _nMsgFlags, bool _bAck,
                       unsigned short _nSequence,
                       unsigned long nID1 = 0,
@@ -735,14 +735,14 @@ class CPU_ChatRequest : public CPU_AdvancedMessage
 {
 public:
   CPU_ChatRequest(const std::string& message, const std::string& chatUsers, unsigned short nPort,
-      unsigned short nLevel, const Licq::User* pUser, bool bICBM);
+      unsigned short nLevel, const User* pUser, bool bICBM);
 };
 
 //-----FileTransfer------------------------------------------------------------
 class CPU_FileTransfer : public CPU_AdvancedMessage
 {
 public:
-  CPU_FileTransfer(const Licq::User* u, const std::list<std::string>& lFileList,
+  CPU_FileTransfer(const User* u, const std::list<std::string>& lFileList,
       const std::string& file, const std::string& desc, unsigned short nLevel, bool bICBM);
 
   bool IsValid()                { return m_bValid; }

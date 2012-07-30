@@ -34,6 +34,7 @@
 
 #include "icq.h"
 #include "packet-tcp.h"
+#include "socket.h"
 #include "user.h"
 #include "../gettext.h"
 
@@ -865,7 +866,7 @@ bool CChatManager::SendChatHandshake(ChatUser* u)
 
 
 //-----CChatManager::AcceptReverseConnection---------------------------------
-void CChatManager::AcceptReverseConnection(Licq::TCPSocket* s)
+void CChatManager::AcceptReverseConnection(DcSocket* s)
 {
   ChatUser* u = new ChatUser;
   u->sock.TransferConnectionFrom(*s);

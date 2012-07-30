@@ -5216,7 +5216,7 @@ int IcqProtocol::requestReverseConnection(const Licq::UserId& userId,
   if (Licq::gUserManager.isOwner(userId))
     return -1;
 
-  Licq::UserWriteGuard u(userId);
+  UserWriteGuard u(userId);
   if (!u.isLocked())
     return -1;
 

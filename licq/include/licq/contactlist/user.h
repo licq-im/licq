@@ -188,10 +188,8 @@ public:
   bool SendServer() const                       { return m_bSendServer; }
   bool EnableSave() const                       { return m_bEnableSave; }
   bool ShowAwayMsg() const                      { return m_bShowAwayMsg; }
-  unsigned long Version() const                 { return m_nVersion; }
   const std::string& clientInfo() const         { return myClientInfo; }
   bool UserUpdated() const                      { return m_bUserUpdated; }
-  unsigned short ConnectionVersion() const;
   time_t LastOnline() const                     { return m_nLastCounters[LAST_ONLINE]; }
   time_t LastSentEvent() const                  { return m_nLastCounters[LAST_SENT_EVENT]; }
   time_t LastReceivedEvent() const              { return m_nLastCounters[LAST_RECV_EVENT]; }
@@ -305,10 +303,8 @@ public:
   void setAutoResponse(const std::string& s) { myAutoResponse = s; }
   void setUserEncoding(const std::string& s) { myEncoding = s; }
   void SetShowAwayMsg(bool s)         { m_bShowAwayMsg = s; }
-  void SetVersion(unsigned long s)    { m_nVersion = s; }
   void setClientInfo(const std::string& s)      { myClientInfo = s; }
   void SetUserUpdated(bool s)         { m_bUserUpdated = s; }
-  void SetConnectionVersion(unsigned short s)    { m_nConnectionVersion = s; }
   void SetAutoChatAccept(bool s)        { myAutoAcceptChat = s; save(SaveLicqInfo); }
   void SetAutoFileAccept(bool s)        { myAutoAcceptFile = s; save(SaveLicqInfo); }
   void SetAutoSecure(bool s)            { myAutoSecure = s; save(SaveLicqInfo); }
@@ -666,9 +662,9 @@ protected:
   time_t myAwaySince;
   time_t m_nRegisteredTime;
   bool m_bOnContactList;
-  unsigned long m_nIp, m_nIntIp, m_nVersion;
+  unsigned long m_nIp, m_nIntIp;
   bool m_bUserUpdated;
-  unsigned m_nPort, m_nLocalPort, m_nConnectionVersion;
+  unsigned m_nPort, m_nLocalPort;
   bool myIsTyping;
   unsigned myStatus;
   UserGroupList myGroups;               /**< List of user groups */

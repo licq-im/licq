@@ -36,6 +36,7 @@ class UserId;
 namespace LicqIcq
 {
 class ChatUser;
+class DcSocket;
 class User;
 class CPChat_ColorFont;
 }
@@ -365,7 +366,7 @@ public:
   int Pipe() { return myEventsPipe.getReadFd(); }
   CChatEvent *PopChatEvent();
 
-  void AcceptReverseConnection(Licq::TCPSocket*);
+  void AcceptReverseConnection(LicqIcq::DcSocket*);
   static CChatManager *FindByPort(unsigned short);
 
 protected:

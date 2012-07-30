@@ -1334,7 +1334,7 @@ CPU_ThroughServer::CPU_ThroughServer(const string& accountId,
 }
 
 //-----Type2Message-------------------------------------------------------------
-CPU_Type2Message::CPU_Type2Message(const ICQUser* u, bool _bAck, bool _bDirectInfo,
+CPU_Type2Message::CPU_Type2Message(const User* u, bool _bAck, bool _bDirectInfo,
                                    const uint8_t *cap,
                                    unsigned long nMsgID1,
                                    unsigned long nMsgID2)
@@ -1407,7 +1407,7 @@ void CPU_Type2Message::InitBuffer()
 }
 
 //-----ReverseConnect-----------------------------------------------------------
-CPU_ReverseConnect::CPU_ReverseConnect(const ICQUser* u, unsigned long nLocalIP,
+CPU_ReverseConnect::CPU_ReverseConnect(const User* u, unsigned long nLocalIP,
                                        unsigned short nLocalPort,
                                        unsigned short nRemotePort)
   : CPU_Type2Message(u, false, false, ICQ_CAPABILITY_DIRECT)
@@ -1456,7 +1456,7 @@ CPU_ReverseConnectFailed::CPU_ReverseConnectFailed(const string& accountId,
 }
 
 //-----PluginMessage-----------------------------------------------------------
-CPU_PluginMessage::CPU_PluginMessage(const ICQUser* u, bool bAck,
+CPU_PluginMessage::CPU_PluginMessage(const User* u, bool bAck,
                                      const uint8_t* PluginGUID,
                                      unsigned long nMsgID1,
                                      unsigned long nMsgID2)
@@ -1498,7 +1498,7 @@ CPU_PluginError::CPU_PluginError(const ICQUser* u, unsigned long nMsgID1,
 }
 
 //-----Send info plugin request------------------------------------------------
-CPU_InfoPluginReq::CPU_InfoPluginReq(const ICQUser* u, const uint8_t* GUID,
+CPU_InfoPluginReq::CPU_InfoPluginReq(const User* u, const uint8_t* GUID,
                                      unsigned long nTime)
   : CPU_PluginMessage(u, false, PLUGIN_INFOxMANAGER)
 {
@@ -1734,7 +1734,7 @@ CPU_InfoPictureResp::CPU_InfoPictureResp(const ICQUser* u, unsigned long nMsgID1
 }
 
 //-----Send status plugin request---------------------------------------------
-CPU_StatusPluginReq::CPU_StatusPluginReq(const ICQUser* u, const uint8_t* GUID,
+CPU_StatusPluginReq::CPU_StatusPluginReq(const User* u, const uint8_t* GUID,
                                          unsigned long nTime)
   : CPU_PluginMessage(u, false, PLUGIN_STATUSxMANAGER)
 {
@@ -1831,7 +1831,7 @@ CPU_StatusPluginResp::CPU_StatusPluginResp(const ICQUser* u, unsigned long nMsgI
 }
 
 //-----AdvancedMessage---------------------------------------------------------
-CPU_AdvancedMessage::CPU_AdvancedMessage(const ICQUser* u, unsigned short _nMsgType,
+CPU_AdvancedMessage::CPU_AdvancedMessage(const User* u, unsigned short _nMsgType,
   unsigned short _nMsgFlags, bool _bAck, unsigned short _nSequence,
   unsigned long nMsgID1, unsigned long nMsgID2)
   : CPU_Type2Message(u, _bAck,
@@ -1906,7 +1906,7 @@ void CPU_AdvancedMessage::InitBuffer()
 //-----ChatRequest-------------------------------------------------------------
 CPU_ChatRequest::CPU_ChatRequest(const string& message, const string& chatUsers,
                                  unsigned short nPort, unsigned short nLevel,
-    const ICQUser* _pUser, bool bICBM)
+    const User* _pUser, bool bICBM)
   : CPU_AdvancedMessage(_pUser, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_CHAT,
                         nLevel, false, 0)
 {
@@ -1949,7 +1949,7 @@ CPU_ChatRequest::CPU_ChatRequest(const string& message, const string& chatUsers,
 }
 
 //-----FileTransfer------------------------------------------------------------
-CPU_FileTransfer::CPU_FileTransfer(const Licq::User* u, const list<string>& lFileList,
+CPU_FileTransfer::CPU_FileTransfer(const User* u, const list<string>& lFileList,
     const string& file, const string& desc, unsigned short nLevel, bool bICBM)
   : CPU_AdvancedMessage(u, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_FILE, nLevel,
                         false, 0),
