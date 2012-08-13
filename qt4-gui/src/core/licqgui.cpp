@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1096,15 +1096,9 @@ void LicqGui::showDefaultEventDialog(const Licq::UserId& userId)
   if (Config::Chat::instance()->sendFromClipboard())
   {
     QClipboard* clip = QApplication::clipboard();
-    QClipboard::Mode mode = QClipboard::Clipboard;
-
-    QString c = clip->text(mode);
-
+    QString c = clip->text(QClipboard::Clipboard);
     if (c.isEmpty() && clip->supportsSelection())
-    {
-      mode = QClipboard::Selection;
-      c = clip->text(mode);
-    }
+      c = clip->text(QClipboard::Selection);
 
     // Check which message types are supported for this protocol
     unsigned long sendFuncs = 0;
@@ -1121,8 +1115,6 @@ void LicqGui::showDefaultEventDialog(const Licq::UserId& userId)
         return;
       // Set the url
       e->setUrl(c, "");
-      // Clear the buffer now
-      clip->clear(mode);
       return;
     }
     else if (sendFuncs & Licq::ProtocolPlugin::CanSendFile &&
@@ -1139,8 +1131,6 @@ void LicqGui::showDefaultEventDialog(const Licq::UserId& userId)
         c.remove(0, 1);
       c.prepend('/');
       e->setFile(c, "");
-      // Clear the buffer now
-      clip->clear(mode);
       return;
     }
   }
