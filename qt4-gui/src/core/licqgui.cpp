@@ -1031,15 +1031,9 @@ void LicqGui::showDefaultEventDialog(const Licq::UserId& userId)
   if (Config::Chat::instance()->sendFromClipboard())
   {
     QClipboard* clip = QApplication::clipboard();
-    QClipboard::Mode mode = QClipboard::Clipboard;
-
-    QString c = clip->text(mode);
-
+    QString c = clip->text(QClipboard::Clipboard);
     if (c.isEmpty() && clip->supportsSelection())
-    {
-      mode = QClipboard::Selection;
-      c = clip->text(mode);
-    }
+      c = clip->text(QClipboard::Selection);
 
     if (sendFuncs & Licq::ProtocolPlugin::CanSendUrl &&
         (c.left(5) == "http:" || c.left(4) == "ftp:" || c.left(6) == "https:"))
@@ -1050,8 +1044,6 @@ void LicqGui::showDefaultEventDialog(const Licq::UserId& userId)
         return;
       // Set the url
       e->setUrl(c, "");
-      // Clear the buffer now
-      clip->clear(mode);
       return;
     }
     else if (sendFuncs & Licq::ProtocolPlugin::CanSendFile &&
@@ -1068,8 +1060,6 @@ void LicqGui::showDefaultEventDialog(const Licq::UserId& userId)
         c.remove(0, 1);
       c.prepend('/');
       e->setFile(c, "");
-      // Clear the buffer now
-      clip->clear(mode);
       return;
     }
   }
