@@ -40,7 +40,7 @@ Calendar::Calendar(QWidget* parent)
 #if (QT_VERSION >= QT_VERSION_CHECK(4, 8, 0))
   setFirstDayOfWeek(QLocale::system().firstDayOfWeek());
 #else
-#error FAIL
+
 #ifdef __GLIBC__
   // Non-standard locale parameter available in gnu libc only
   int firstday = *nl_langinfo(_NL_TIME_FIRST_WEEKDAY);
