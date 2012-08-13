@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2009 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,9 @@
 
 #include "config.h"
 
-#ifdef __GLIBC__
+#if (QT_VERSION >= QT_VERSION_CHECK(4, 8, 0))
+#include <QLocale>
+#elif defined(__GLIBC__)
 #include <langinfo.h>
 #endif
 
@@ -35,6 +37,10 @@ using namespace LicqQtGui;
 Calendar::Calendar(QWidget* parent)
     : QCalendarWidget(parent)
 {
+#if (QT_VERSION >= QT_VERSION_CHECK(4, 8, 0))
+  setFirstDayOfWeek(QLocale::system().firstDayOfWeek());
+#else
+#error FAIL
 #ifdef __GLIBC__
   // Non-standard locale parameter available in gnu libc only
   int firstday = *nl_langinfo(_NL_TIME_FIRST_WEEKDAY);
@@ -50,6 +56,8 @@ Calendar::Calendar(QWidget* parent)
   else
 #endif
     setFirstDayOfWeek(Qt::Monday);
+
+#endif
 }
 
 void Calendar::markDate(const QDate& date)
