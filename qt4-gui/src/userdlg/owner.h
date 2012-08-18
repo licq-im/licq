@@ -69,6 +69,9 @@ public:
    */
   unsigned long send(UserDlg::UserPage page);
 
+private slots:
+  void portSpinFinished();
+
 private:
   /**
    * Create the settings page

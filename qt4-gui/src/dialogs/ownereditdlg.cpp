@@ -63,8 +63,16 @@ OwnerEditDlg::OwnerEditDlg(unsigned long ppid, QWidget* parent)
   connect(edtPassword, SIGNAL(returnPressed()), SLOT(slot_ok()));
 
   myHostEdit = new QLineEdit();
+#if (QT_VERSION >= QT_VERSION_CHECK(4, 7, 0))
+  myHostEdit->setPlaceholderText(tr("Protocol default"));
+#endif
   myPortSpin = new QSpinBox();
   myPortSpin->setRange(0, 0xFFFF);
+  myPortSpin->setSpecialValueText(tr("Auto"));
+  myPortSpin->setCorrectionMode(QSpinBox::CorrectToNearestValue);
+  myPortSpin->setAccelerated(true);
+  myPortSpin->setValue(0);
+  connect(myPortSpin, SIGNAL(editingFinished()), SLOT(portSpinFinished()));
 
   int i = 0;
   QLabel* lbl;
@@ -107,8 +115,6 @@ OwnerEditDlg::OwnerEditDlg(unsigned long ppid, QWidget* parent)
 
   protocolName->setText(protocol->name().c_str());
   protocolName->setPrependPixmap(IconManager::instance()->iconForProtocol(ppid));
-  myHostEdit->setText(protocol->defaultServerHost().c_str());
-  myPortSpin->setValue(protocol->defaultServerPort());
 
   {
     Licq::OwnerReadGuard o(ppid);
@@ -159,4 +165,11 @@ void OwnerEditDlg::slot_ok()
   }
 
   close();
+}
+
+void OwnerEditDlg::portSpinFinished()
+{
+  // Default to "Auto" if input is bad
+  if (!myPortSpin->hasAcceptableInput())
+    myPortSpin->setValue(0);
 }
