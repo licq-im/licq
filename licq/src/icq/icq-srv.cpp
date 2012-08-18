@@ -55,6 +55,7 @@
 #include <licq/version.h>
 
 #include "../gettext.h"
+#include "icqprotocolplugin.h"
 #include "oscarservice.h"
 #include "owner.h"
 #include "packet-srv.h"
@@ -1691,6 +1692,11 @@ int IcqProtocol::ConnectToLoginServer()
     serverHost = o->serverHost();
     serverPort = o->serverPort();
   }
+
+  if (serverHost.empty())
+    serverHost = gIcqProtocolPlugin->defaultServerHost();
+  if (serverPort <= 0)
+    serverPort = gIcqProtocolPlugin->defaultServerPort();
 
   // Which protocol plugin?
   int r = ConnectToServer(serverHost, serverPort);

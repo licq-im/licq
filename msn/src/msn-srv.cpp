@@ -568,6 +568,11 @@ void CMSN::Logon(unsigned status, string host, int port)
       port = o->serverPort();
   }
 
+  if (host.empty())
+    host = defaultServerHost();
+  if (port <= 0)
+    port = defaultServerPort();
+
   Licq::TCPSocket* sock = new Licq::TCPSocket(myOwnerId);
   gLog.info("Server found at %s:%d", host.c_str(), port);
 

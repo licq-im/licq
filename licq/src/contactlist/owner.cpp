@@ -28,7 +28,6 @@
 #include <unistd.h>
 
 #include <licq/inifile.h>
-#include <licq/plugin/pluginmanager.h>
 
 #include "../daemon.h"
 #include "gettext.h"
@@ -68,19 +67,10 @@ Owner::Owner(const UserId& id)
   if (!User::stringToStatus(statusStr, myStartupStatus))
     myStartupStatus = User::OfflineStatus;
 
-  string defaultHost;
-  int defaultPort = 0;
-  Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(myId.protocolId());
-  if (protocol.get() != NULL)
-  {
-    defaultHost = protocol->defaultServerHost();
-    defaultPort = protocol->defaultServerPort();
-  }
-
   bool gotserver = false;
-  if (conf.get("ServerHost", myServerHost, defaultHost))
+  if (conf.get("ServerHost", myServerHost))
     gotserver = true;
-  if (conf.get("ServerPort", myServerPort, defaultPort))
+  if (conf.get("ServerPort", myServerPort))
     gotserver = true;
 
   if (!gotserver)
@@ -93,8 +83,8 @@ Owner::Owner(const UserId& id)
       {
         Licq::IniFile& oldConf(LicqDaemon::gDaemon.getLicqConf());
         oldConf.setSection("network");
-        oldConf.get("ICQServer", myServerHost, defaultHost);
-        oldConf.get("ICQServerPort", myServerPort, defaultPort);
+        oldConf.get("ICQServer", myServerHost);
+        oldConf.get("ICQServerPort", myServerPort);
         LicqDaemon::gDaemon.releaseLicqConf();
         break;
       }
@@ -103,8 +93,8 @@ Owner::Owner(const UserId& id)
         Licq::IniFile oldConf("licq_msn.conf");
         oldConf.loadFile();
         oldConf.setSection("network");
-        oldConf.get("MsnServerAddress", myServerHost, defaultHost);
-        oldConf.get("MsnServerPort", myServerPort, defaultPort);
+        oldConf.get("MsnServerAddress", myServerHost);
+        oldConf.get("MsnServerPort", myServerPort);
         break;
       }
       case JABBER_PPID:
@@ -112,8 +102,8 @@ Owner::Owner(const UserId& id)
         Licq::IniFile oldConf("licq_jabber.conf");
         oldConf.loadFile();
         oldConf.setSection("network");
-        oldConf.get("Server", myServerHost, defaultHost);
-        oldConf.get("Port", myServerPort, defaultPort);
+        oldConf.get("Server", myServerHost);
+        oldConf.get("Port", myServerPort);
         break;
       }
     }
