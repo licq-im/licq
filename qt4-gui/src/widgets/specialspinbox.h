@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,38 +17,37 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef OWNEREDITDLG_H
-#define OWNEREDITDLG_H
+#ifndef LICQQTGUI_SPECIALSPINBOX_H
+#define LICQQTGUI_SPECIALSPINBOX_H
 
-#include <QDialog>
-
-class QCheckBox;
-class QLineEdit;
+#include <QSpinBox>
 
 namespace LicqQtGui
 {
-class SpecialSpinBox;
 
-class OwnerEditDlg : public QDialog
+/**
+ * Convenience overload of QSpinBox to handle special value better
+ */
+class SpecialSpinBox : public QSpinBox
 {
   Q_OBJECT
 
 public:
-  OwnerEditDlg(unsigned long ppid, QWidget* parent = NULL);
+  /**
+   * Constructor
+   *
+   * @param minimum Lower end of range (used for special value)
+   * @param maximum Upper end of range
+   * @param specialValueText Special text to show for minimum value
+   * @parent Widget parent
+   */
+  SpecialSpinBox(int minimum, int maximum, const QString& specialValueText, QWidget* parent = NULL);
 
 private slots:
-  void slot_ok();
-
-private:
-  QLineEdit* edtId;
-  QLineEdit* edtPassword;
-  QCheckBox* chkSave;
-  QLineEdit* myHostEdit;
-  SpecialSpinBox* myPortSpin;
-  unsigned long myPpid;
-  bool myNewOwner;
+  /// Editing has finished
+  void finished();
 };
 
 } // namespace LicqQtGui
 
-#endif // OWNEREDITDLG_H
+#endif

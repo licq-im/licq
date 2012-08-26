@@ -29,13 +29,13 @@ class QGridLayout;
 class QGroupBox;
 class QLabel;
 class QPushButton;
-class QSpinBox;
 class QVBoxLayout;
 
 namespace LicqQtGui
 {
 class MLEdit;
 class SettingsDlg;
+class SpecialSpinBox;
 
 namespace Settings
 {
@@ -81,9 +81,9 @@ private:
   QLabel* myAutoAwayLabel;
   QLabel* myAutoNaLabel;
   QLabel* myAutoOfflineLabel;
-  QSpinBox* myAutoAwaySpin;
-  QSpinBox* myAutoNaSpin;
-  QSpinBox* myAutoOfflineSpin;
+  SpecialSpinBox* myAutoAwaySpin;
+  SpecialSpinBox* myAutoNaSpin;
+  SpecialSpinBox* myAutoOfflineSpin;
   QComboBox* myAutoAwayMessCombo;
   QComboBox* myAutoNaMessCombo;
 

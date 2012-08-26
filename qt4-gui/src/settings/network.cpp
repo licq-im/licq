@@ -33,6 +33,7 @@
 #include <licq/daemon.h>
 
 #include "settingsdlg.h"
+#include "widgets/specialspinbox.h"
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::Settings::Network */
@@ -68,16 +69,12 @@ QWidget* Settings::Network::createPageNetwork(QWidget* parent)
   myPortsInLabel = new QLabel(tr("Port range:"));
   myPortsInLabel->setToolTip(tr("TCP port range for incoming connections."));
   myPortsInLayout->addWidget(myPortsInLabel);
-  myPortLowSpin = new QSpinBox();
-  myPortLowSpin->setRange(0, 0xFFFF);
-  myPortLowSpin->setSpecialValueText(tr("Auto"));
+  myPortLowSpin = new SpecialSpinBox(0, 0xFFFF, tr("Auto"));
   myPortsInLabel->setBuddy(myPortLowSpin);
   myPortsInLayout->addWidget(myPortLowSpin);
   myPortsIn2Label = new QLabel(tr("to"));
   myPortsInLayout->addWidget(myPortsIn2Label);
-  myPortHighSpin = new QSpinBox();
-  myPortHighSpin->setRange(0, 0xFFFF);
-  myPortHighSpin->setSpecialValueText(tr("Auto"));
+  myPortHighSpin = new SpecialSpinBox(0, 0xFFFF, tr("Auto"));
   myPortsIn2Label->setBuddy(myPortHighSpin);
   myPortsInLayout->addWidget(myPortHighSpin);
   myFirewallLayout->addLayout(myPortsInLayout, 1, 1);
@@ -113,6 +110,7 @@ QWidget* Settings::Network::createPageNetwork(QWidget* parent)
 
   myProxyPortSpin = new QSpinBox();
   myProxyPortSpin->setRange(0, 0xFFFF);
+  myProxyPortSpin->setAccelerated(true);
   myProxyPortLabel->setBuddy(myProxyPortSpin);
   myProxyLayout->addWidget(myProxyPortSpin, 2, 1);
 

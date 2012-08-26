@@ -27,7 +27,6 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QSpinBox>
 
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/usermanager.h>
@@ -37,6 +36,7 @@
 #include "core/messagebox.h"
 #include "helpers/support.h"
 #include "widgets/skinnablelabel.h"
+#include "widgets/specialspinbox.h"
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::OwnerEditDlg */
@@ -66,13 +66,8 @@ OwnerEditDlg::OwnerEditDlg(unsigned long ppid, QWidget* parent)
 #if (QT_VERSION >= QT_VERSION_CHECK(4, 7, 0))
   myHostEdit->setPlaceholderText(tr("Protocol default"));
 #endif
-  myPortSpin = new QSpinBox();
-  myPortSpin->setRange(0, 0xFFFF);
-  myPortSpin->setSpecialValueText(tr("Auto"));
-  myPortSpin->setCorrectionMode(QSpinBox::CorrectToNearestValue);
-  myPortSpin->setAccelerated(true);
+  myPortSpin = new SpecialSpinBox(0, 0xffff, tr("Auto"));
   myPortSpin->setValue(0);
-  connect(myPortSpin, SIGNAL(editingFinished()), SLOT(portSpinFinished()));
 
   int i = 0;
   QLabel* lbl;
@@ -165,11 +160,4 @@ void OwnerEditDlg::slot_ok()
   }
 
   close();
-}
-
-void OwnerEditDlg::portSpinFinished()
-{
-  // Default to "Auto" if input is bad
-  if (!myPortSpin->hasAcceptableInput())
-    myPortSpin->setValue(0);
 }

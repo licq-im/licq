@@ -29,7 +29,6 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
-#include <QSpinBox>
 #include <QVBoxLayout>
 
 #include <licq/contactlist/user.h>
@@ -40,6 +39,7 @@
 #include "core/mainwin.h"
 
 #include "widgets/mledit.h"
+#include "widgets/specialspinbox.h"
 
 #include "settingsdlg.h"
 
@@ -69,8 +69,7 @@ QWidget* Settings::Status::createPageStatus(QWidget* parent)
         "automatically be marked \"away\".  Set to \"0\" to disable."));
   myAutoAwayLayout->addWidget(myAutoAwayLabel, 0, 0);
 
-  myAutoAwaySpin = new QSpinBox();
-  myAutoAwaySpin->setSpecialValueText(tr("Never"));
+  myAutoAwaySpin = new SpecialSpinBox(0, 99, tr("Never"));
   myAutoAwayLayout->addWidget(myAutoAwaySpin, 0, 1);
 
   myAutoAwayMessCombo = new QComboBox();
@@ -81,8 +80,7 @@ QWidget* Settings::Status::createPageStatus(QWidget* parent)
         "automatically be marked \"not available\".  Set to \"0\" to disable."));
   myAutoAwayLayout->addWidget(myAutoNaLabel, 1, 0);
 
-  myAutoNaSpin = new QSpinBox();
-  myAutoNaSpin->setSpecialValueText(tr("Never"));
+  myAutoNaSpin = new SpecialSpinBox(0, 99, tr("Never"));
   myAutoAwayLayout->addWidget(myAutoNaSpin, 1, 1);
 
   myAutoNaMessCombo = new QComboBox();
@@ -93,8 +91,7 @@ QWidget* Settings::Status::createPageStatus(QWidget* parent)
         "automatically go offline.  Set to \"0\" to disable."));
   myAutoAwayLayout->addWidget(myAutoOfflineLabel, 2, 0);
 
-  myAutoOfflineSpin = new QSpinBox();
-  myAutoOfflineSpin->setSpecialValueText(tr("Never"));
+  myAutoOfflineSpin = new SpecialSpinBox(0, 99, tr("Never"));
   myAutoAwayLayout->addWidget(myAutoOfflineSpin, 2, 1);
 
   buildAutoStatusCombos(1);

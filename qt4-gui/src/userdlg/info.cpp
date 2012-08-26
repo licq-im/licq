@@ -33,7 +33,6 @@
 #include <QMovie>
 #include <QPixmap>
 #include <QPushButton>
-#include <QSpinBox>
 #include <QTreeWidget>
 #include <QVBoxLayout>
 
@@ -68,6 +67,7 @@
 #include "widgets/infofield.h"
 #include "widgets/mledit.h"
 #include "widgets/mlview.h"
+#include "widgets/specialspinbox.h"
 #include "widgets/timezoneedit.h"
 #include "userdlg.h"
 
@@ -416,24 +416,17 @@ QWidget* UserPages::Info::createPageMore(QWidget* parent)
     QLabel* lblYear = new QLabel(tr("Year:"));
     lblYear->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     w->addWidget(lblYear);
-    spnBirthYear = new QSpinBox();
-    spnBirthYear->setRange(1900, 2100);
-    spnBirthYear->setSpecialValueText(tr("Not set"));
-    spnBirthYear->setAccelerated(true);
+    spnBirthYear = new SpecialSpinBox(1900, 2100, tr("Not set"));
     w->addWidget(spnBirthYear);
     QLabel* lblMonth = new QLabel(tr("Month:"));
     lblMonth->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     w->addWidget(lblMonth);
-    spnBirthMonth = new QSpinBox();
-    spnBirthMonth->setRange(0, 12);
-    spnBirthMonth->setSpecialValueText(tr("Not set"));
+    spnBirthMonth = new SpecialSpinBox(0, 12, tr("Not set"));
     w->addWidget(spnBirthMonth);
     QLabel* lblDay = new QLabel(tr("Day:"));
     lblDay->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     w->addWidget(lblDay);
-    spnBirthDay = new QSpinBox();
-    spnBirthDay->setRange(0, 31);
-    spnBirthDay->setSpecialValueText(tr("Not set"));
+    spnBirthDay = new SpecialSpinBox(0, 31, tr("Not set"));
     w->addWidget(spnBirthDay);
     lay->addLayout(w, CR, 1, 1, 4);
   }

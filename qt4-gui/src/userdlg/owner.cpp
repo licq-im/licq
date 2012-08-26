@@ -25,7 +25,6 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QListWidget>
-#include <QSpinBox>
 #include <QVBoxLayout>
 
 #include <licq/contactlist/owner.h>
@@ -38,6 +37,7 @@
 #include "dialogs/randomchatdlg.h"
 #include "widgets/infofield.h"
 #include "widgets/skinnablelabel.h"
+#include "widgets/specialspinbox.h"
 
 #include "userdlg.h"
 
@@ -91,13 +91,8 @@ QWidget* UserPages::Owner::createPageSettings(QWidget* parent)
   myServerHostEdit->setToolTip(tr("Host name or IP address of server to connect to. "
       "Leave blank to use protocol default."));
   accountLayout->addWidget(myServerHostEdit, 2, 1);
-  myServerPortSpin = new QSpinBox();
-  myServerPortSpin->setRange(0, 0xFFFF);
-  myServerPortSpin->setSpecialValueText(tr("Auto"));
-  myServerPortSpin->setCorrectionMode(QSpinBox::CorrectToNearestValue);
-  myServerPortSpin->setAccelerated(true);
+  myServerPortSpin = new SpecialSpinBox(0, 0xFFFF, tr("Auto"));
   myServerPortSpin->setToolTip(tr("Port number for server. \"Auto\" will use protocol default."));
-  connect(myServerPortSpin, SIGNAL(editingFinished()), SLOT(portSpinFinished()));
   accountLayout->addWidget(myServerPortSpin, 2, 2);
 
 
@@ -300,11 +295,4 @@ void UserPages::Owner::userUpdated(const Licq::User* user, unsigned long subSign
 {
   if (subSignal == Licq::PluginSignal::UserSettings)
     load(user);
-}
-
-void UserPages::Owner::portSpinFinished()
-{
-  // Default to "Auto" if input is bad
-  if (!myServerPortSpin->hasAcceptableInput())
-    myServerPortSpin->setValue(0);
 }

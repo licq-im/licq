@@ -33,7 +33,6 @@ class QComboBox;
 class QGroupBox;
 class QLabel;
 class QPushButton;
-class QSpinBox;
 class QTreeWidget;
 class QTreeWidgetItem;
 class QVBoxLayout;
@@ -44,6 +43,7 @@ namespace LicqQtGui
 class InfoField;
 class MLEdit;
 class MLView;
+class SpecialSpinBox;
 class TimeZoneEdit;
 class UserDlg;
 
@@ -444,9 +444,9 @@ private:
   MLEdit* mleHomepageDesc;
   QComboBox* cmbLanguage[3];
   QComboBox* cmbGender;
-  QSpinBox* spnBirthDay;
-  QSpinBox* spnBirthMonth;
-  QSpinBox* spnBirthYear;
+  SpecialSpinBox* spnBirthDay;
+  SpecialSpinBox* spnBirthMonth;
+  SpecialSpinBox* spnBirthYear;
 
   // More2 info
   QVBoxLayout* myPageMore2Layout;

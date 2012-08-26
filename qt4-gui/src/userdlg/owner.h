@@ -39,6 +39,7 @@ class UserId;
 
 namespace LicqQtGui
 {
+class SpecialSpinBox;
 
 namespace UserPages
 {
@@ -68,9 +69,6 @@ public:
    * @return Event tag for sent request
    */
   unsigned long send(UserDlg::UserPage page);
-
-private slots:
-  void portSpinFinished();
 
 private:
   /**

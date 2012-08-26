@@ -14,6 +14,7 @@ set(widgets_SRCS
   skinnablebutton.cpp
   skinnablecombobox.cpp
   skinnablelabel.cpp
+  specialspinbox.cpp
   tabwidget.cpp
   timezoneedit.cpp
   treepager.cpp

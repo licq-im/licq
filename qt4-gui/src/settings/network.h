@@ -37,6 +37,7 @@ class QWidget;
 namespace LicqQtGui
 {
 class SettingsDlg;
+class SpecialSpinBox;
 
 namespace Settings
 {
@@ -80,8 +81,8 @@ private:
   QCheckBox* myTcpEnabledCheck;
   QLabel* myPortsInLabel;
   QLabel* myPortsIn2Label;
-  QSpinBox* myPortLowSpin;
-  QSpinBox* myPortHighSpin;
+  SpecialSpinBox* myPortLowSpin;
+  SpecialSpinBox* myPortHighSpin;
   QLabel* myProxyTypeLabel;
   QLabel* myProxyHostLabel;
   QLabel* myProxyPortLabel;
