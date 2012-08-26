@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2009 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,16 +44,16 @@ public:
   /**
    * Set time zone
    *
-   * @param data A time zone in format as used by licq daemon
+   * @param data A time zone in seconds from GMT
    */
-  void setData(char data);
+  void setData(int data);
 
   /**
    * Get current time zone
    *
-   * @return Time zone currently selected in format as used by licq daemon
+   * @return Time zone currently selected in seconds from GMT
    */
-  char data() const;
+  int data() const;
 
 private:
   /**
@@ -81,9 +81,6 @@ private:
    * @return Numerical time zone value
    */
   int valueFromText(const QString& text) const;
-
-  /// Value used to internally represent time zone "Unknown", must be lowest valid zone minus one
-  static const int undefinedValue = -24;
 };
 
 } // namespace LicqQtGui

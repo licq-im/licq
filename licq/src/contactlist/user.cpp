@@ -167,9 +167,11 @@ void User::Private::loadUserInfo()
   // read in the fields, checking for errors each time
   myConf.setSection("user");
   myConf.get("Alias", myUser->myAlias, tr("Unknown"));
-  int timezone;
-  myConf.get("Timezone", timezone, TimezoneUnknown);
-  myUser->m_nTimezone = timezone;
+  myConf.get("Timezone", myUser->myTimezone, TimezoneUnknown);
+  if (myUser->myTimezone == -100) // Old value used for unknown
+    myUser->myTimezone = TimezoneUnknown;
+  if (myUser->myTimezone > -24 && myUser->myTimezone <= 24) // Old ICQ style values
+    myUser->myTimezone *= -1800;
   myConf.get("Authorization", myUser->m_bAuthorization, false);
 
   PropertyMap::iterator i;
@@ -387,7 +389,7 @@ void User::Private::Init()
   myUserInfo["Zipcode"] = string();
   myUserInfo["Country"] = (unsigned int)0; // COUNTRY_UNSPECIFIED
   myUserInfo["HideEmail"] = false;
-  myUser->m_nTimezone = TimezoneUnknown;
+  myUser->myTimezone = TimezoneUnknown;
   myUser->m_bAuthorization = false;
   myUser->myIsTyping = false;
   myUser->m_bNotInList = false;
@@ -820,12 +822,7 @@ void Licq::User::clearSocketDesc(INetSocket* /* s */)
   /* Empty, reimplemented in subclasses as needed */
 }
 
-int Licq::User::LocalTimeGMTOffset() const
-{
-  return GetTimezone() * 1800;
-}
-
-int Licq::User::SystemTimeGMTOffset()
+int Licq::User::systemTimezone()
 {
   // Get local time
   time_t lt = time(NULL);
@@ -836,20 +833,12 @@ int Licq::User::SystemTimeGMTOffset()
   time_t gt = mktime(&gtm);
 
   // Diff is seconds east of UTC
-  return gt - lt;
-}
-
-char Licq::User::SystemTimezone()
-{
-  char nTimezone = SystemTimeGMTOffset() / 1800;
-  if (nTimezone > 23)
-    return 23 - nTimezone;
-  return nTimezone;
+  return lt - gt;
 }
 
 int Licq::User::LocalTimeOffset() const
 {
-  return SystemTimeGMTOffset() - LocalTimeGMTOffset();
+  return myTimezone - systemTimezone();
 }
 
 time_t Licq::User::LocalTime() const
@@ -1119,13 +1108,13 @@ string Licq::User::usprintf(const string& format, int quotes, bool toDos, bool a
 
           case 'z':
           {
-            char zone = GetTimezone();
+            int zone = timezone();
             if (zone == TimezoneUnknown)
               sz = tr("Unknown");
             else
             {
               char buf[128];
-              snprintf(buf, 128, tr("GMT%c%i%c0"), (zone > 0 ? '-' : '+'), abs(zone / 2), (zone & 1 ? '3' : '0'));
+              snprintf(buf, 128, tr("GMT%c%i:%02i"), (zone >= 0 ? '+' : '-'), abs(zone/3600), abs(zone/60)%60);
               sz = buf;
             }
             break;
@@ -1134,12 +1123,12 @@ string Licq::User::usprintf(const string& format, int quotes, bool toDos, bool a
           case 'L':
           case 'F':
           {
-            char zone = GetTimezone();
+            int zone = timezone();
             if (zone == TimezoneUnknown)
               sz = tr("Unknown");
             else
             {
-              time_t t = time(NULL) - zone*30*60;
+              time_t t = time(NULL) + zone;
               struct tm ts;
               char buf[128];
               strftime(buf, 128, (c == 'L' ? "%R" : "%c"), gmtime_r(&t, &ts));
@@ -1312,7 +1301,7 @@ void User::saveUserInfo()
 
   d->myConf.set("Alias", myAlias);
   d->myConf.set("KeepAliasOnUpdate", m_bKeepAliasOnUpdate);
-  d->myConf.set("Timezone", m_nTimezone);
+  d->myConf.set("Timezone", myTimezone);
   d->myConf.set("Authorization", m_bAuthorization);
 
   PropertyMap::const_iterator i;

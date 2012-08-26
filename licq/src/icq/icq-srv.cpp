@@ -3946,7 +3946,7 @@ void IcqProtocol::ProcessVariousFam(Buffer& packet, unsigned short nSubtype)
 
           {
             Licq::OwnerReadGuard o(LICQ_PPID);
-            nTimeSent = mktime(&sendTM) - o->SystemTimeGMTOffset();
+            nTimeSent = mktime(&sendTM) - o->systemTimezone();
           }
 
       // Msg type & flags
@@ -4008,7 +4008,7 @@ void IcqProtocol::ProcessVariousFam(Buffer& packet, unsigned short nSubtype)
         {
           CPU_Meta_SetGeneralInfo *p = (CPU_Meta_SetGeneralInfo *)pEvent->m_pPacket;
 
-              Licq::OwnerWriteGuard o(LICQ_PPID);
+              OwnerWriteGuard o;
               o->SetEnableSave(false);
               o->setAlias(p->myAlias);
               o->setUserInfoString("FirstName", p->myFirstName);

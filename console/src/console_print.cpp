@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -636,10 +636,11 @@ void CLicqConsole::PrintInfo_General(const Licq::UserId& userId)
     else  // known
       winMain->wprintf("%C%s\n", COLOR_WHITE, c->szName);
   }
-  winMain->wprintf("%C%ATimezone: %ZGMT%c%02d%s\n", COLOR_WHITE, A_BOLD, A_BOLD,
-                   u->GetTimezone() > 0 ? '-' : '+',
-                   u->GetTimezone() / 2,
-                   u->GetTimezone() % 2 ? "30" : "00");
+  if (u->timezone() == Licq::User::TimezoneUnknown)
+    winMain->wprintf("%C%ATimezone: %ZUnknown\n", COLOR_WHITE, A_BOLD, A_BOLD);
+  else
+    winMain->wprintf("%C%ATimezone: %ZGMT%c%d:%02d\n", COLOR_WHITE, A_BOLD, A_BOLD,
+        (u->timezone() >= 0 ? '+' : '-'), abs(u->timezone() / 3600), abs(u->timezone() / 60) % 60);
   winMain->wprintf("%C%ALast Seen: %Z%s", COLOR_WHITE, A_BOLD, A_BOLD,
     ctime(&nLast));
   if (u->isOnline())

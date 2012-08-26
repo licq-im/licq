@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,8 +29,10 @@ using namespace LicqQtGui;
 TimeZoneEdit::TimeZoneEdit(QWidget* parent)
   : QSpinBox(parent)
 {
-  setMinimum(-24);
-  setMaximum(24);
+  // Timezones range from -12 to +14 [wikipedia]
+  setMinimum(-13*3600); // Lowest value represents "Unknown"
+  setMaximum(14*3600);
+  setSingleStep(3600/2);
 
   // The world is round so let timezones wrap
   setWrapping(true);
@@ -42,19 +44,19 @@ TimeZoneEdit::TimeZoneEdit(QWidget* parent)
   setSpecialValueText(tr("Unknown"));
 }
 
-void TimeZoneEdit::setData(char data)
+void TimeZoneEdit::setData(int data)
 {
   // The spinbox uses the lowest value to mark the undefined state but the constant is some other value so we need to change it
   // For all defined values, the sign is inverted
-  setValue(data == Licq::User::TimezoneUnknown ? undefinedValue : static_cast<int>(-data));
+  setValue(data <= 12*3600 && data > -12*3600 ? data : minimum());
 }
 
-char TimeZoneEdit::data() const
+int TimeZoneEdit::data() const
 {
   int v = value();
-  if (v == undefinedValue)
+  if (v == minimum())
     return Licq::User::TimezoneUnknown;
-  return static_cast<char>(-v);
+  return v;
 }
 
 QValidator::State TimeZoneEdit::validate(QString& input, int& /* pos */) const
@@ -66,12 +68,12 @@ QValidator::State TimeZoneEdit::validate(QString& input, int& /* pos */) const
     return QValidator::Intermediate;
 
   // Check if this is a complete valid timezone
-  QRegExp rxValid("^GMT[\\+\\-](1[012]|\\d)[03]0$");
+  QRegExp rxValid("^GMT[\\+\\-](1[012]|\\d):[0-5]\\d$");
   if (rxValid.indexIn(input) > -1)
     return QValidator::Acceptable;
 
   // Check if this is anything close to a timezone
-  QRegExp rxPossible("^G?M?T?[\\+\\-]?\\d*$");
+  QRegExp rxPossible("^G?M?T?[\\+\\-]?\\d*:?\\d*$");
   if (rxPossible.indexIn(input) > -1)
     return QValidator::Intermediate;
 
@@ -81,19 +83,17 @@ QValidator::State TimeZoneEdit::validate(QString& input, int& /* pos */) const
 QString TimeZoneEdit::textFromValue(int v) const
 {
   // The internal value in the spinbox is 30min intervals so convert it to something more readable
-  return QString("GMT%1%2%3").arg(v < 0 ? "-" : "+").arg(abs(v) / 2).arg(v % 2 ? "30" : "00");
+  return QString("GMT%1%2:%3").arg(v < 0 ? "-" : "+").arg(abs(v/3600)).arg((abs(v / 60) % 60), 2, 10, QChar('0'));
 }
 
 int TimeZoneEdit::valueFromText(const QString& text) const
 {
   // The user entered something so now we must try and convert it back to the internal int
-  QRegExp rx("^GMT(\\+|-)(\\d+)(0|3)0$");
+  QRegExp rx("^GMT(\\+|-)(1[012]|\\d):([0-5]\\d)$");
   if (rx.indexIn(text) == -1)
-    return undefinedValue;
+    return minimum();
 
-  int ret = rx.cap(2).toInt() * 2;
-  if (rx.cap(3) == "3")
-    ret++;
+  int ret = rx.cap(2).toInt() * 3600 + rx.cap(3).toInt() * 60;
   if (rx.cap(1) == "-")
     ret = -ret;
   return ret;

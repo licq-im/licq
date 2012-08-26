@@ -91,7 +91,7 @@ public:
   };
 
   static const unsigned short AgeUnspecified = 0xFFFF;
-  static const char TimezoneUnknown = (char)-100;
+  static const int TimezoneUnknown = 48*3600;
 
   enum SaveGroups
   {
@@ -159,8 +159,6 @@ public:
    */
   std::string getEmail() const;
 
-  //!Retrieves the user's time code.
-  char GetTimezone() const                      { return m_nTimezone; }
   //!Returns true if the user requires you to be authorized to add
   //!them to anyone's ICQ list.
   bool GetAuthorization() const                 { return m_bAuthorization; }
@@ -242,7 +240,6 @@ public:
 
   // General Info
   virtual void setAlias(const std::string& alias);
-  void SetTimezone (const char n)            {  m_nTimezone = n; save(SaveUserInfo);  }
   void SetAuthorization (bool n)             {  m_bAuthorization = n; save(SaveUserInfo);  }
 
   /**
@@ -292,6 +289,12 @@ public:
    * @param value New value for property
    */
   void setUserInfoBool(const std::string& key, bool value);
+
+  /// Get timezone (as seconds from GMT)
+  int timezone() const { return myTimezone; }
+
+  /// Set timezone
+  void setTimezone(int tz) { myTimezone = tz; save(SaveUserInfo); }
 
   // Picture info
   void SetPicturePresent(bool b)      { m_bPicturePresent = b; save(SavePictureInfo); }
@@ -562,10 +565,8 @@ public:
 
   // Time
   time_t LocalTime() const;
-  int LocalTimeGMTOffset() const;
   int LocalTimeOffset() const;
-  static int SystemTimeGMTOffset();
-  static char SystemTimezone();
+  static int systemTimezone();
 
   // Ip/Port functions
   unsigned long Ip() const                      { return m_nIp; }
@@ -709,7 +710,7 @@ protected:
 
   // General Info
   std::string myAlias;
-  char m_nTimezone;
+  int myTimezone;
   bool m_bAuthorization;
 
   // Picture Info

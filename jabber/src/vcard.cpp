@@ -43,17 +43,17 @@ gloox::VCard* UserToVCard::createVCard() const
     card->addEmail(myUser->getEmail(), gloox::VCard::AddrTypePref);
 
   std::ostringstream tz;
-  if (myUser->GetTimezone() == Licq::User::TimezoneUnknown)
+  int offset = myUser->timezone();
+  if (offset == Licq::User::TimezoneUnknown)
     tz << "-00:00";
   else
   {
-    int offset = myUser->LocalTimeGMTOffset();
-    tz << (offset > 0 ? '-' : '+')
+    tz << (offset >= 0 ? '+' : '-')
        << std::setw(2) << std::setfill('0')
        << std::abs(offset) / 3600
        << ':'
        << std::setw(2) << std::setfill('0')
-       << std::abs(offset) % 3600;
+       << std::abs(offset / 60) % 60;
   }
   card->setTz(tz.str());
 

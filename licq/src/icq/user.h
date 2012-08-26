@@ -99,6 +99,10 @@ public:
   void setIcqPhoneStatus(unsigned n)            { myIcqPhoneStatus = n; }
   void setSharedFilesStatus(unsigned n)         { mySharedFilesStatus = n; }
 
+  // Convert between ICQ timezones and minute based
+  char GetTimezone() const { return myTimezone==TimezoneUnknown ? -100 : myTimezone/-1800; }
+  void SetTimezone(char tz) { setTimezone(tz==-100 ? TimezoneUnknown : ((int)tz)*-1800); }
+
   enum DirectFlags
   {
     DirectDisabled      = 0,    // Direct contact not possible

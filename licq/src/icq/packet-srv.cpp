@@ -3170,7 +3170,7 @@ CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const string& city,
 {
 
   m_nCountry = nCountry;
-  m_cTimezone = ICQUser::SystemTimezone();
+  m_cTimezone = Licq::User::systemTimezone() / -1800;
   m_nAge = nAge;
   m_cSex = cSex;
   m_nZipcode = nZipcode;
@@ -3386,7 +3386,7 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const string& alias,
   m_nMetaCommand = ICQ_CMDxMETA_WPxINFOxSET;
 
   m_nCountryCode = nCountryCode;
-  m_nTimezone = ICQUser::SystemTimezone();
+  m_nTimezone = Licq::User::systemTimezone() / -1800;
   m_nHideEmail = bHideEmail ? 1 : 0;
 
   int packetSize = 2+2+2+4+2+2+2 + alias.size() + firstName.size() + lastName.size() +

@@ -294,7 +294,7 @@ void UserPages::Info::loadPageGeneral(const Licq::User* u)
     ip.append(QString(":%1").arg(u->portToString().c_str()));
   }
   nfoIp->setText(ip);
-  tznZone->setData(u->GetTimezone());
+  tznZone->setData(u->timezone());
   // Owner timezone is not editable, it is taken from system timezone instead
   if (m_bOwner)
     tznZone->setEnabled(false);
@@ -338,7 +338,7 @@ void UserPages::Info::savePageGeneral(Licq::User* u)
   u->setAlias(nfoAlias->text().toUtf8().constData());
   if (!m_bOwner)
     u->SetKeepAliasOnUpdate(chkKeepAliasOnUpdate->isChecked());
-  u->SetTimezone(tznZone->data());
+  u->setTimezone(tznZone->data());
   u->setUserInfoString("FirstName", nfoFirstName->text().toUtf8().constData());
   u->setUserInfoString("LastName", nfoLastName->text().toUtf8().constData());
   u->setUserInfoString("Email1", nfoEmailPrimary->text().toUtf8().constData());

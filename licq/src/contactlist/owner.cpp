@@ -111,11 +111,14 @@ Owner::Owner(const UserId& id)
 
   gLog.info(tr("Loading owner configuration for %s"), myId.toString().c_str());
 
-  if (m_nTimezone != SystemTimezone() && m_nTimezone != TimezoneUnknown)
+  int systz = systemTimezone();
+  int mytz = timezone();
+  if (mytz != TimezoneUnknown && mytz != systz)
   {
-    gLog.warning(tr("Current Licq GMT offset (%d) does not match system GMT offset (%d).\n"
+    gLog.warning(tr("Current Licq GMT offset (%c%i:%02i) does not match system GMT offset (%c%i:%02i).\n"
                     "Update general info on server to fix."),
-                 m_nTimezone, SystemTimezone());
+        (mytz >= 0 ? '+' : '-'), abs(mytz / 3600), abs(mytz / 60) % 60,
+        (systz >= 0 ? '+' : '-'), abs(systz / 3600), abs(systz / 60) % 60);
   }
   SetEnableSave(true);
 }

@@ -283,7 +283,7 @@ void UserEventCommon::flashTaskbar()
 
 void UserEventCommon::updateWidgetInfo(const Licq::User* u)
 {
-  if (u->GetTimezone() == Licq::User::TimezoneUnknown)
+  if (u->timezone() == Licq::User::TimezoneUnknown)
     myTimezone->setText(tr("Unknown"));
   else
   {
