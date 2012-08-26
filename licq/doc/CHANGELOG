@@ -5,6 +5,7 @@ o Forwarder: Write default configuration file to correct directory
 o ICQ: Do reverse direct connects even if port number is wrong
 o ICQ: Fix removing groups from server side list
 o Qt4-Gui: Don't clear clipboard after opening URL/File dialog
+o Qt4-Gui: Controls to set owner birthday were missing
 
 
 New in 1.6.1

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -412,18 +412,28 @@ QWidget* UserPages::Info::createPageMore(QWidget* parent)
   {
     QHBoxLayout* w = new QHBoxLayout();
     w->setSpacing(8);
-    QLabel* lblDay = new QLabel(tr(" Day:"));
-    lblDay->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    spnBirthDay = new QSpinBox();
-    spnBirthDay->setRange(1, 31);
-    QLabel* lblMonth = new QLabel(tr(" Month:"));
-    lblMonth->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    spnBirthMonth = new QSpinBox();
-    spnBirthMonth->setRange(1, 12);
-    QLabel* lblYear = new QLabel(tr(" Year:"));
+    QLabel* lblYear = new QLabel(tr("Year:"));
     lblYear->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    w->addWidget(lblYear);
     spnBirthYear = new QSpinBox();
-    spnBirthYear->setRange(1900, 2020);
+    spnBirthYear->setRange(1900, 2100);
+    spnBirthYear->setSpecialValueText(tr("Not set"));
+    spnBirthYear->setAccelerated(true);
+    w->addWidget(spnBirthYear);
+    QLabel* lblMonth = new QLabel(tr("Month:"));
+    lblMonth->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    w->addWidget(lblMonth);
+    spnBirthMonth = new QSpinBox();
+    spnBirthMonth->setRange(0, 12);
+    spnBirthMonth->setSpecialValueText(tr("Not set"));
+    w->addWidget(spnBirthMonth);
+    QLabel* lblDay = new QLabel(tr("Day:"));
+    lblDay->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    w->addWidget(lblDay);
+    spnBirthDay = new QSpinBox();
+    spnBirthDay->setRange(0, 31);
+    spnBirthDay->setSpecialValueText(tr("Not set"));
+    w->addWidget(spnBirthDay);
     lay->addLayout(w, CR, 1, 1, 4);
   }
   else
@@ -618,7 +628,8 @@ void UserPages::Info::savePageMore(Licq::User* u)
   if (m_bOwner)
   {
     u->setUserInfoUint("Gender", cmbGender->currentIndex());
-    u->setUserInfoUint("BirthYear", spnBirthYear->value());
+    u->setUserInfoUint("BirthYear",
+        (spnBirthYear->value() == spnBirthYear->minimum() ? 0 : spnBirthYear->value()));
     u->setUserInfoUint("BirthMonth", spnBirthMonth->value());
     u->setUserInfoUint("BirthDay", spnBirthDay->value());
     u->setUserInfoUint("Language0", GetLanguageByIndex(cmbLanguage[0]->currentIndex())->nCode);
@@ -1594,7 +1605,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
         nfoAge->text().toUShort(),
         cmbGender->currentIndex(),
           nfoHomepage->text().toLocal8Bit().constData(),
-        spnBirthYear->value(),
+        (spnBirthYear->value() == spnBirthYear->minimum() ? 0 : spnBirthYear->value()),
         spnBirthMonth->value(),
         spnBirthDay->value(),
         GetLanguageByIndex(cmbLanguage[0]->currentIndex())->nCode,
