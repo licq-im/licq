@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,7 +80,7 @@ AuthDlg::AuthDlg(enum AuthDlgType type, const Licq::UserId& userId, QWidget* par
 
   QLabel* accountIdLabel = new QLabel(this);
   accountIdLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-  accountIdLabel->setText(tr("&User Id:"));
+  accountIdLabel->setText(tr("&User ID:"));
   myAccountIdEdit = new QLineEdit(this);
   myAccountIdEdit->setMinimumWidth(90);
   accountIdLabel->setBuddy(myAccountIdEdit);

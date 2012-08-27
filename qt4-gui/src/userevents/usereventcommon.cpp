@@ -247,7 +247,7 @@ void UserEventCommon::updateShortcuts()
   pushToolTip(myHistory, tr("Show user history"));
   pushToolTip(myInfo, tr("Show user information"));
   pushToolTip(myEncoding, tr("Select the text encoding used for outgoing messages."));
-  pushToolTip(mySecure, tr("Open / Close secure channel"));
+  pushToolTip(mySecure, tr("Open / close secure channel"));
 }
 
 bool UserEventCommon::isUserInConvo(const Licq::UserId& userId) const

@@ -75,7 +75,7 @@ QWidget* Settings::Events::createPageOnEvent(QWidget* parent)
   myPageOnEventLayout = new QVBoxLayout(w);
   myPageOnEventLayout->setContentsMargins(0, 0, 0, 0);
 
-  myNewMsgActionsBox = new QGroupBox(tr("Actions On Incoming Messages"));
+  myNewMsgActionsBox = new QGroupBox(tr("Actions on Incoming Messages"));
   myMsgActionsLayout = new QGridLayout(myNewMsgActionsBox);
 
   myBoldOnMsgCheck = new QCheckBox(tr("Bold message label"));

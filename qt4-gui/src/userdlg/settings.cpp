@@ -76,19 +76,19 @@ QWidget* UserPages::Settings::createPageSettings(QWidget* parent)
   mySettingsBox = new QGroupBox(tr("Misc Modes"));
   mySettingsLayout = new QGridLayout(mySettingsBox);
 
-  myAcceptInAwayCheck = new QCheckBox(tr("Accept in away"));
+  myAcceptInAwayCheck = new QCheckBox(tr("Accept in Away"));
   myAcceptInAwayCheck->setToolTip(tr("Play sounds for this contact when my status is away."));
   mySettingsLayout->addWidget(myAcceptInAwayCheck, 0, 0);
 
-  myAcceptInNaCheck = new QCheckBox(tr("Accept in not available"));
+  myAcceptInNaCheck = new QCheckBox(tr("Accept in Not Available"));
   myAcceptInNaCheck->setToolTip(tr("Play sounds for this contact when my status is not available."));
   mySettingsLayout->addWidget(myAcceptInNaCheck, 1, 0);
 
-  myAcceptInOccupiedCheck = new QCheckBox(tr("Accept in occupied"));
+  myAcceptInOccupiedCheck = new QCheckBox(tr("Accept in Occupied"));
   myAcceptInOccupiedCheck->setToolTip(tr("Play sounds for this contact when my status is occupied."));
   mySettingsLayout->addWidget(myAcceptInOccupiedCheck, 2, 0);
 
-  myAcceptInDndCheck = new QCheckBox(tr("Accept in do not disturb"));
+  myAcceptInDndCheck = new QCheckBox(tr("Accept in Do not Disturb"));
   myAcceptInDndCheck->setToolTip(tr("Play sounds for this contact when my status is do not disturb."));
   mySettingsLayout->addWidget(myAcceptInDndCheck, 3, 0);
 
@@ -110,7 +110,7 @@ QWidget* UserPages::Settings::createPageSettings(QWidget* parent)
   if (!Licq::gDaemon.haveGpgSupport())
     myUseGpgCheck->setVisible(false);
 
-  myUseRealIpCheck = new QCheckBox(tr("Use real ip (LAN)"));
+  myUseRealIpCheck = new QCheckBox(tr("Use real IP (LAN)"));
   myUseRealIpCheck->setToolTip(tr("Use real IP for when sending to this contact."));
   mySettingsLayout->addWidget(myUseRealIpCheck, 4, 0);
 

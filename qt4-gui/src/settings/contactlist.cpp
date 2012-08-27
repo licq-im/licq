@@ -271,7 +271,7 @@ QWidget* Settings::ContactList::createPageContactInfo(QWidget* parent)
   }
 
 
-  myPopupBox = new QGroupBox(tr("Popup info"));
+  myPopupBox = new QGroupBox(tr("Popup Info"));
   myPopupLayout = new QGridLayout(myPopupBox);
 
   myPopupPictureCheck = new QCheckBox(tr("Picture"));

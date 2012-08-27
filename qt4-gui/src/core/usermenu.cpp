@@ -173,7 +173,7 @@ UserMenu::UserMenu(QWidget* parent)
   addMenu(myGroupsMenu);
   myRemoveUserAction = addAction(tr("Remove From List"), this, SLOT(removeContact()));
   addSeparator();
-  mySetKeyAction = addAction(tr("Set GPG key..."), this, SLOT(selectKey()));
+  mySetKeyAction = addAction(tr("Set GPG Key..."), this, SLOT(selectKey()));
   if (!Licq::gDaemon.haveGpgSupport())
     mySetKeyAction->setVisible(false);
   myCopyIdAction = addAction(tr("&Copy User ID"), this, SLOT(copyIdToClipboard()));

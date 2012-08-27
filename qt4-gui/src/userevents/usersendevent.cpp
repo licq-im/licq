@@ -163,12 +163,12 @@ UserSendEvent::UserSendEvent(int type, const Licq::UserId& userId, QWidget* pare
   QMenu* mnuSendType = new QMenu(this);
   mnuSendType->addActions(myEventTypeGroup->actions());
 
-  myEventTypeMenu = myToolBar->addAction(tr("Message type"), this, SLOT(showSendTypeMenu()));
+  myEventTypeMenu = myToolBar->addAction(tr("Message Type"), this, SLOT(showSendTypeMenu()));
   myEventTypeMenu->setMenu(mnuSendType);
   if (eventTypesCount <= 1)
     myEventTypeMenu->setEnabled(false);
 
-  mySendServerCheck = myToolBar->addAction(tr("Send through server"));
+  mySendServerCheck = myToolBar->addAction(tr("Send Through Server"));
   mySendServerCheck->setCheckable(true);
 
   bool canSendDirect = false;

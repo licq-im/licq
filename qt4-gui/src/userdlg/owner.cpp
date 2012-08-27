@@ -180,12 +180,12 @@ QWidget* UserPages::Owner::createPageIcqSecurity(QWidget* parent)
   QGroupBox* icqSecurityBox = new QGroupBox(tr("ICQ Security Settings"));
   QVBoxLayout* icqSecurityLayout = new QVBoxLayout(icqSecurityBox);
 
-  myIcqRequireAuthCheck = new QCheckBox(tr("Authorization Required"));
+  myIcqRequireAuthCheck = new QCheckBox(tr("Authorization required"));
   myIcqRequireAuthCheck->setToolTip(tr("Determines whether regular ICQ clients "
       "require your authorization to add you to their contact list."));
   icqSecurityLayout->addWidget(myIcqRequireAuthCheck);
 
-  myIcqWebAwareCheck = new QCheckBox(tr("Web Presence"));
+  myIcqWebAwareCheck = new QCheckBox(tr("Web presence"));
   myIcqWebAwareCheck->setToolTip(tr("Web Presence allows users to see if you "
       "are online through your web indicator."));
   icqSecurityLayout->addWidget(myIcqWebAwareCheck);

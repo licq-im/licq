@@ -179,7 +179,7 @@ QWidget* UserPages::Info::createPageGeneral(QWidget* parent)
 
   if (!m_bOwner)
   {
-    chkKeepAliasOnUpdate = new QCheckBox(tr("Keep Alias on Update"));
+    chkKeepAliasOnUpdate = new QCheckBox(tr("Keep alias on update"));
     chkKeepAliasOnUpdate->setToolTip(tr(
         "Normally Licq overwrites the Alias when updating user details.\n"
         "Check this if you want to keep your changes to the Alias."));
@@ -207,17 +207,17 @@ QWidget* UserPages::Info::createPageGeneral(QWidget* parent)
   nfoLastName = new InfoField(false);
   lay->addWidget(nfoLastName, CR, 2, 1, 3);
 
-  lay->addWidget(new QLabel(tr("EMail 1:")), ++CR, 0);
+  lay->addWidget(new QLabel(tr("Email 1:")), ++CR, 0);
   nfoEmailPrimary = new InfoField(false);
   lay->addWidget(nfoEmailPrimary, CR, 1, 1, 4);
 
   if (myPpid == LICQ_PPID)
   {
-    lay->addWidget(new QLabel(tr("EMail 2:")), ++CR, 0);
+    lay->addWidget(new QLabel(tr("Email 2:")), ++CR, 0);
     nfoEmailSecondary = new InfoField(false);
     lay->addWidget(nfoEmailSecondary, CR, 1, 1, 4);
 
-    lay->addWidget(new QLabel(tr("Old Email:")), ++CR, 0);
+    lay->addWidget(new QLabel(tr("Old email:")), ++CR, 0);
     nfoEmailOld = new InfoField(false);
     lay->addWidget(nfoEmailOld, CR, 1, 1, 4);
 
@@ -1005,7 +1005,7 @@ QWidget* UserPages::Info::createPagePhoneBook(QWidget* parent)
   myPagePhoneBookLayout = new QVBoxLayout(w);
   myPagePhoneBookLayout->setContentsMargins(0, 0, 0, 0);
 
-  myPhoneBookBox = new QGroupBox(tr("PhoneBook"));
+  myPhoneBookBox = new QGroupBox(tr("Phone Book"));
   QVBoxLayout* lay = new QVBoxLayout(myPhoneBookBox);
 
   lsvPhoneBook = new QTreeWidget();
@@ -1308,27 +1308,27 @@ QWidget* UserPages::Info::createPageCounters(QWidget* parent)
   myCountersBox = new QGroupBox(tr("Last"));
   QGridLayout* lay = new QGridLayout(myCountersBox);
 
-  lay->addWidget(new QLabel(tr("Last Online:")), CR, 0);
+  lay->addWidget(new QLabel(tr("Last online:")), CR, 0);
   nfoLastOnline = new InfoField(true);
   lay->addWidget(nfoLastOnline, CR, 1);
 
-  lay->addWidget(new QLabel(tr("Last Sent Event:")), ++CR, 0);
+  lay->addWidget(new QLabel(tr("Last sent event:")), ++CR, 0);
   nfoLastSent = new InfoField(true);
   lay->addWidget(nfoLastSent, CR, 1);
 
-  lay->addWidget(new QLabel(tr("Last Received Event:")), ++CR, 0);
+  lay->addWidget(new QLabel(tr("Last received event:")), ++CR, 0);
   nfoLastRecv = new InfoField(true);
   lay->addWidget(nfoLastRecv, CR, 1);
 
-  lay->addWidget(new QLabel(tr("Last Checked Auto Response:")), ++CR, 0);
+  lay->addWidget(new QLabel(tr("Last checked auto response:")), ++CR, 0);
   nfoLastCheckedAR = new InfoField(true);
   lay->addWidget(nfoLastCheckedAR, CR, 1);
 
-  lay->addWidget(new QLabel(tr("Online Since:")), ++CR, 0);
+  lay->addWidget(new QLabel(tr("Online since:")), ++CR, 0);
   nfoOnlineSince = new InfoField(true);
   lay->addWidget(nfoOnlineSince, CR, 1);
 
-  lay->addWidget(new QLabel(tr("Registration Date:")), ++CR, 0);
+  lay->addWidget(new QLabel(tr("Registration date:")), ++CR, 0);
   nfoRegDate = new InfoField(true);
   lay->addWidget(nfoRegDate, CR, 1);
 

@@ -42,7 +42,7 @@ AddUserDlg::AddUserDlg(const Licq::UserId& userId, QWidget* parent)
   : QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint)
 {
   Support::setWidgetProps(this, "AddUserDialog");
-  setWindowTitle(tr("Licq - Add user"));
+  setWindowTitle(tr("Licq - Add User"));
   setAttribute(Qt::WA_DeleteOnClose, true);
 
   QGridLayout* layDialog = new QGridLayout(this);
@@ -68,7 +68,7 @@ AddUserDlg::AddUserDlg(const Licq::UserId& userId, QWidget* parent)
   layDialog->addWidget(lblGroup, line, 0);
   layDialog->addWidget(myGroup, line++, 1);
 
-  QLabel* lblId = new QLabel(tr("New &User ID:"));
+  QLabel* lblId = new QLabel(tr("&User ID:"));
   QString accountId = userId.accountId().c_str();
   myId = new QLineEdit();
   if (!accountId.isEmpty())
@@ -79,7 +79,7 @@ AddUserDlg::AddUserDlg(const Licq::UserId& userId, QWidget* parent)
   layDialog->addWidget(lblId, line, 0);
   layDialog->addWidget(myId, line++, 1);
 
-  myNotify = new QCheckBox(tr("&Notify User"));
+  myNotify = new QCheckBox(tr("&Notify user"));
   myNotify->setChecked(true);
   layDialog->addWidget(myNotify, line++, 0, 1, 2);
 

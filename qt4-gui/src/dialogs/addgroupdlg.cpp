@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,12 +39,12 @@ AddGroupDlg::AddGroupDlg(QWidget* parent)
   : QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint)
 {
   Support::setWidgetProps(this, "AddGroupDialog");
-  setWindowTitle(tr("Licq - Add group"));
+  setWindowTitle(tr("Licq - Add Group"));
   setAttribute(Qt::WA_DeleteOnClose, true);
 
   QGridLayout* layDialog = new QGridLayout(this);
 
-  QLabel* nameLabel = new QLabel(tr("New &Group Name:"));
+  QLabel* nameLabel = new QLabel(tr("&Group name:"));
   myNameEdit = new QLineEdit();
   connect(myNameEdit, SIGNAL(returnPressed()), SLOT(ok()));
   nameLabel->setBuddy(myNameEdit);

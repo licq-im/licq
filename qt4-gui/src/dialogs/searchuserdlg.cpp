@@ -133,9 +133,9 @@ SearchUserDlg::SearchUserDlg()
   grp_lay->setRowStretch(row++, 1);
 
   ADDLINE(tr("Alias:"), edtNick);
-  ADDLINE(tr("First Name:"), edtFirst);
-  ADDLINE(tr("Last Name:"), edtLast);
-  ADDCMB(tr("Age Range:"), cmbAge, ages);
+  ADDLINE(tr("First name:"), edtFirst);
+  ADDLINE(tr("Last name:"), edtLast);
+  ADDCMB(tr("Age range:"), cmbAge, ages);
   ADDCMB(tr("Gender:"), cmbGender, genders);
   ADDCMB(tr("Language:"), cmbLanguage, languages);
 
@@ -145,18 +145,18 @@ SearchUserDlg::SearchUserDlg()
   ADDLINE(tr("City:"), edtCity);
   ADDLINE(tr("State:"), edtState);
   ADDCMB(tr("Country:"), cmbCountry, countries);
-  ADDLINE(tr("Company Name:"), edtCoName);
-  ADDLINE(tr("Company Department:"), edtCoDept);
-  ADDLINE(tr("Company Position:"), edtCoPos);
+  ADDLINE(tr("Company name:"), edtCoName);
+  ADDLINE(tr("Company department:"), edtCoDept);
+  ADDLINE(tr("Company position:"), edtCoPos);
 
-  ADDFULLLINE(tr("Email Address:"), edtEmail);
+  ADDFULLLINE(tr("Email address:"), edtEmail);
   ADDFULLLINE(tr("Keyword:"), edtKeyword);
 
 #undef ADDLINE
 #undef ADDFULLLINE
 #undef ADDCMB
 
-  chkOnlineOnly = new QCheckBox(tr("Return Online Users Only"));
+  chkOnlineOnly = new QCheckBox(tr("Return online users only"));
   grp_lay->addWidget(chkOnlineOnly, row++, 0, 1, 7);
 
   // Don't let comboboxes grow too much.

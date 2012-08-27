@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2005-2011 Licq developers
+ * Copyright (C) 2005-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ GPGKeySelect::GPGKeySelect(const Licq::UserId& userId, QWidget* parent)
     if (!u.isLocked())
       return;
 
-    setWindowTitle(tr("Select GPG Key for user %1")
+    setWindowTitle(tr("Select GPG Key for %1")
         .arg(QString::fromUtf8(u->getAlias().c_str())));
 
     top_lay->addWidget(new QLabel(tr("Select a GPG key for user %1.")
@@ -75,7 +75,7 @@ GPGKeySelect::GPGKeySelect(const Licq::UserId& userId, QWidget* parent)
       top_lay->addWidget(new QLabel(tr("Current key: %1")
             .arg(QString::fromLocal8Bit(u->gpgKey().c_str()))));
 
-    useGPG = new QCheckBox(tr("Use GPG Encryption"));
+    useGPG = new QCheckBox(tr("Use GPG encryption"));
     useGPG->setChecked(u->UseGPG() || u->gpgKey().empty());
     top_lay->addWidget(useGPG);
 

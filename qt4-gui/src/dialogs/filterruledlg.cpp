@@ -49,7 +49,7 @@ FilterRuleDlg::FilterRuleDlg(const Licq::FilterRule* rule, QWidget* parent)
   QGroupBox* generalBox = new QGroupBox(tr("General"));
   QVBoxLayout* generalLay = new QVBoxLayout(generalBox);
 
-  myEnableCheck = new QCheckBox(tr("Enable Rule"));
+  myEnableCheck = new QCheckBox(tr("Enable rule"));
   myEnableCheck->setToolTip(tr("Uncheck to disable this rule without removing it."));
   generalLay->addWidget(myEnableCheck);
 

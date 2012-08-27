@@ -153,7 +153,7 @@ void AwayMsgDlg::selectAutoResponse(unsigned status, bool autoClose, unsigned lo
 
     if (myPpid == 0)
     {
-      setWindowTitle(QString(tr("Set %1 Response for all accounts"))
+      setWindowTitle(QString(tr("Set %1 Response for All Accounts"))
           .arg(statusStr));
 
       // Check all owners for existing away messages

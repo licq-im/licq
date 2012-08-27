@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2009-2010 Licq developers
+ * Copyright (C) 2009-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,13 +95,13 @@ QWidget* Settings::Shortcuts::createPageMainwinShortcuts(QWidget* parent)
   ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinHide, tr("Hide contact list"))
   ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinExit, tr("Exit Licq"))
 
-  ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinStatusOnline, tr("Switch status to online"))
-  ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinStatusAway, tr("Switch status to away"))
+  ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinStatusOnline, tr("Switch status to Online"))
+  ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinStatusAway, tr("Switch status to Away"))
   ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinStatusNotAvailable, tr("Switch status to N/A"))
-  ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinStatusOccupied, tr("Switch status to occupied"))
+  ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinStatusOccupied, tr("Switch status to Occupied"))
   ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinStatusDoNotDisturb, tr("Switch status to DND"))
   ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinStatusFreeForChat, tr("Switch status to Free For Chat"))
-  ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinStatusOffline, tr("Switch status to offline"))
+  ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinStatusOffline, tr("Switch status to Offline"))
   ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinStatusInvisible, tr("Toggle status Invisible"))
 
 #undef ADD_MAINWINSHORTCUT
