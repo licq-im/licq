@@ -211,6 +211,9 @@ QWidget* Settings::Events::createPageFilter(QWidget* parent)
   QPushButton* ruleHintsButton = new QPushButton(tr("Hints"));
   buttons->addWidget(ruleHintsButton);
 
+  QPushButton* rulesResetButton = new QPushButton(tr("Reset"));
+  buttons->addWidget(rulesResetButton);
+
   myRuleAddButton = new QPushButton(tr("Add"));
   buttons->addWidget(myRuleAddButton);
 
@@ -234,6 +237,7 @@ QWidget* Settings::Events::createPageFilter(QWidget* parent)
   connect(myRulesList, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
       SLOT(editRule(QTreeWidgetItem*,int)));
   connect(ruleHintsButton, SIGNAL(clicked()), SLOT(showRuleHints()));
+  connect(rulesResetButton, SIGNAL(clicked()), SLOT(resetRules()));
   connect(myRuleAddButton, SIGNAL(clicked()), SLOT(insertRule()));
   connect(myRuleRemoveButton, SIGNAL(clicked()), SLOT(removeRule()));
   connect(myRuleEditButton, SIGNAL(clicked()), SLOT(editRule()));
@@ -422,6 +426,12 @@ void Settings::Events::showRuleHints()
       " \"~/.licq/filter.conf\" while Licq is NOT running.</p>"
       );
   new HintsDlg(h, dynamic_cast<QWidget*>(parent()));
+}
+
+void Settings::Events::resetRules()
+{
+  Licq::gFilterManager.getDefaultRules(myFilterRules);
+  updateRulesList();
 }
 
 void Settings::Events::editRule(QTreeWidgetItem* item, int /* index */)

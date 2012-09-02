@@ -82,6 +82,13 @@ public:
    */
   virtual void setRules(const FilterRules& newRules) = 0;
 
+  /**
+   * Get the list of default filter rules
+   *
+   * @param rules List to populate with the default rules
+   */
+  virtual void getDefaultRules(FilterRules& rules) = 0;
+
 protected:
   virtual ~FilterManager() { /* Empty */ }
 };

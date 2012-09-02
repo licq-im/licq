@@ -56,6 +56,7 @@ public:
   // From Licq::FilterManager
   void getRules(Licq::FilterRules& rules);
   void setRules(const Licq::FilterRules& newRules);
+  void getDefaultRules(Licq::FilterRules& rules);
 
 private:
   /**

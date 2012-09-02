@@ -62,6 +62,7 @@ private slots:
   void updateRulesList();
   void updateRuleButtons();
   void showRuleHints();
+  void resetRules();
   void editRule(QTreeWidgetItem* item, int index);
   void insertRule();
   void removeRule();

@@ -49,39 +49,44 @@ FilterManager::~FilterManager()
   myRules.clear();
 }
 
+void FilterManager::getDefaultRules(FilterRules& rules)
+{
+  rules.clear();
+
+  FilterRule rule;
+
+  // Log but don't notify authorization requests containing URLs
+  rule.isEnabled = true;
+  rule.protocolId = 0;
+  rule.eventMask = 1<<UserEvent::TypeAuthRequest;
+  rule.expression = ".*http://.*";
+  rule.action = FilterRule::ActionSilent;
+  rules.push_back(rule);
+
+  // Ignore reoccuring spam messages that are sent as ICQ Authorization Requests
+  rule.isEnabled = true;
+  rule.protocolId = LICQ_PPID;
+  rule.eventMask = 1<<UserEvent::TypeAuthRequest;
+  rule.action = FilterRule::ActionIgnore;
+  rule.expression = "(\xD0\xBF|\xD0\x9F)\xD1\x80\xD0\xB8\xD0\xB2\xD0\xB5\xD1\x82(\xD0\xB8\xD0\xBA)? =\\)";
+  rules.push_back(rule);
+  rule.expression = "\xD0\x90 \xD1\x8F \xD1\x82\xD0\xB5\xD0\xB1\xD1\x8F \xD0\xB7\xD0\xBD\xD0\xB0\xD1\x8E =\\)";
+  rules.push_back(rule);
+  rule.expression = "\xD0\x9F\xD0\xBE\xD0\xB6\xD0\xB5\xD0\xBB\xD1\x83\xD0\xB9\xD1\x81\xD1\x82\xD0\xB0, "
+      "\xD1\x80\xD0\xB0\xD0\xB7\xD1\x80\xD0\xB5\xD1\x88\xD0\xB8\xD1\x82\xD0\xB5 \xD0\xB4\xD0\xBE"
+      "\xD0\xB1\xD0\xB0\xD0\xB2\xD0\xB8\xD1\x82\xD1\x8C \xD0\x92\xD0\xB0\xD1\x81 \xD0\xB2 "
+      "\xD0\xBC\xD0\xBE\xD0\xB9 \xD1\x81\xD0\xBF\xD0\xB8\xD1\x81\xD0\xBE\xD0\xBA "
+      "\xD0\xBA\xD0\xBE\xD0\xBD\xD1\x82\xD0\xB0\xD0\xBA\xD1\x82\xD0\xBE\xD0\xB2";
+  rules.push_back(rule);
+}
+
 void FilterManager::initialize()
 {
   Licq::IniFile conf("filter.conf");
   if(!conf.loadFile())
   {
     // Failed to read configuration, setup defaults
-
-    FilterRule rule;
-
-    // Log but don't notify authorization requests containing URLs
-    rule.isEnabled = true;
-    rule.protocolId = 0;
-    rule.eventMask = 1<<UserEvent::TypeAuthRequest;
-    rule.expression = ".*http://.*";
-    rule.action = FilterRule::ActionSilent;
-    myRules.push_back(rule);
-
-    // Ignore reoccuring spam messages that are sent as ICQ Authorization Requests
-    rule.isEnabled = true;
-    rule.protocolId = LICQ_PPID;
-    rule.eventMask = 1<<UserEvent::TypeAuthRequest;
-    rule.action = FilterRule::ActionIgnore;
-    rule.expression = "(\xD0\xBF|\xD0\x9F)\xD1\x80\xD0\xB8\xD0\xB2\xD0\xB5\xD1\x82(\xD0\xB8\xD0\xBA)? =\\)";
-    myRules.push_back(rule);
-    rule.expression = "\xD0\x90 \xD1\x8F \xD1\x82\xD0\xB5\xD0\xB1\xD1\x8F \xD0\xB7\xD0\xBD\xD0\xB0\xD1\x8E =\\)";
-    myRules.push_back(rule);
-    rule.expression = "\xD0\x9F\xD0\xBE\xD0\xB6\xD0\xB5\xD0\xBB\xD1\x83\xD0\xB9\xD1\x81\xD1\x82\xD0\xB0, "
-        "\xD1\x80\xD0\xB0\xD0\xB7\xD1\x80\xD0\xB5\xD1\x88\xD0\xB8\xD1\x82\xD0\xB5 \xD0\xB4\xD0\xBE"
-        "\xD0\xB1\xD0\xB0\xD0\xB2\xD0\xB8\xD1\x82\xD1\x8C \xD0\x92\xD0\xB0\xD1\x81 \xD0\xB2 "
-        "\xD0\xBC\xD0\xBE\xD0\xB9 \xD1\x81\xD0\xBF\xD0\xB8\xD1\x81\xD0\xBE\xD0\xBA "
-        "\xD0\xBA\xD0\xBE\xD0\xBD\xD1\x82\xD0\xB0\xD0\xBA\xD1\x82\xD0\xBE\xD0\xB2";
-    myRules.push_back(rule);
-
+    getDefaultRules(myRules);
     saveRules();
     return;
   }
