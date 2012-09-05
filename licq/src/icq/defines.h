@@ -516,6 +516,7 @@ const unsigned short BART_TYPExBUDDY_ICON       = 0x0001;
 const unsigned short BART_TYPExSTATUS_STR       = 0x0002;
 const uint16_t BART_TYPExBUDDY_ICON_FLASH       = 0x0008;
 const uint16_t BART_TYPExBUDDY_ICON_PHOTO       = 0x000C;
+const uint16_t BART_TYPExSTATUS_STR_TIMESTAMP   = 0x000D;
 const uint16_t BART_TYPExSTATUS_MOOD            = 0x000E;
 
 const int GUID_LENGTH = 18;

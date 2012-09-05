@@ -449,6 +449,8 @@ private:
       const Licq::UserId& userId, std::string& message, time_t timeSent,
       unsigned long flags);
 
+  void processIconHash(User* u, Buffer& packet);
+
   void ChangeUserStatus(User* u, unsigned long s, time_t onlineSince = 0);
   std::string findUserByCellular(const std::string& cellular);
   bool hasServerEvent(unsigned long subSequence) const;

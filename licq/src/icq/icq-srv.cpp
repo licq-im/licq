@@ -2121,51 +2121,70 @@ void IcqProtocol::ProcessServiceFam(Buffer& packet, unsigned short nSubtype)
     }
     case ICQ_SNACxSRV_EXTSTATUS:
     {
-      while (packet.remainingDataToRead() >= 4)
-      {
-        int type = packet.unpackUInt16BE();
-        int flags = packet.unpackUInt8();
-        int length = packet.unpackUInt8();
-
-        switch (type)
-        {
-          case BART_TYPExBUDDY_ICON_PHOTO:
-          {
-            // TODO: Handle photo item
-            packet.incDataPosRead(length);
-            break;
-          }
-          case BART_TYPExBUDDY_ICON:
-          case BART_TYPExBUDDY_ICON_FLASH:
-          {
-            // TODO: Handle avatar item (length should be 0x10 and data is hash)
-            packet.incDataPosRead(length);
-            break;
-          }
-          case BART_TYPExSTATUS_STR:
-          {
-            string statusMsg = packet.unpackRawString(length);
-            //TODO: Handle status string
-            break;
-          }
-          case BART_TYPExSTATUS_MOOD:
-          {
-            // TODO: Handle status mood item
-            packet.incDataPosRead(length);
-            break;
-          }
-          default:
-            gLog.warning(tr("Unknown Extended Status Data type %04x flags %02x length %02x"),
-                type, flags, length);
-            packet.incDataPosRead(length);
-        }
-      }
+      OwnerWriteGuard o;
+      processIconHash(*o, packet);
       break;
     }
 
   default:
     gLog.warning(tr("Unknown Service Family Subtype: %04hx"), nSubtype);
     break;
+  }
+}
+
+void IcqProtocol::processIconHash(User* u, Buffer& packet)
+{
+  while (packet.remainingDataToRead() >= 4)
+  {
+    int type = packet.unpackUInt16BE();
+    int flags = packet.unpackUInt8();
+    int length = packet.unpackUInt8();
+
+    switch (type)
+    {
+      case BART_TYPExBUDDY_ICON_PHOTO:
+      {
+        // TODO: Handle photo item
+        packet.incDataPosRead(length);
+        break;
+      }
+      case BART_TYPExBUDDY_ICON:
+      case BART_TYPExBUDDY_ICON_SMALL:
+      case BART_TYPExBUDDY_ICON_FLASH:
+      {
+        if (type == 1 && length > 0 && length <= 16)
+        {
+          string hash = packet.unpackRawString(length);
+          u->setBuddyIconHash(hash);
+          u->setBuddyIconType(type);
+          u->setBuddyIconHashType(flags);
+          u->save(Licq::User::SavePictureInfo);
+        }
+        break;
+      }
+      case BART_TYPExSTATUS_STR:
+      {
+        // TODO: Handle status string
+        packet.incDataPosRead(length);
+        break;
+      }
+      case BART_TYPExSTATUS_STR_TIMESTAMP:
+      {
+        // TODO: Handle status string timestamp
+        packet.incDataPosRead(length);
+        break;
+      }
+      case BART_TYPExSTATUS_MOOD:
+      {
+        // TODO: Handle status mood item
+        packet.incDataPosRead(length);
+        break;
+      }
+      default:
+        gLog.warning(tr("Unknown Extended Status Data type 0x%04x flags 0x%02x length 0x%02x"),
+            type, flags, length);
+        packet.incDataPosRead(length);
+    }
   }
 }
 
@@ -2449,16 +2468,33 @@ void IcqProtocol::ProcessBuddyFam(Buffer& packet, unsigned short nSubtype)
       }
 
       string caps;
+
+      // Short capabilities
+      if (packet.hasTLV(0x0019))
+      {
+        Buffer capbuf = packet.UnpackTLV(0x0019);
+        while (capbuf.remainingDataToRead() >= 2)
+        {
+          // Convert to full capabilities
+          uint8_t fullcap[16] = { 0x09, 0x46, 0, 0, 0x4C, 0x7F, 0x11,
+              0xD1, 0x82, 0x22, 0x44, 0x45, 0x53, 0x54, 0x00, 0x00 };
+          fullcap[2] = capbuf.unpackUInt8();
+          fullcap[3] = capbuf.unpackUInt8();
+          caps.append((const char*)fullcap, 16);
+        }
+      }
+
+      // Full capabilities
     if (packet.hasTLV(0x000D))
     {
       CBuffer capBuf = packet.UnpackTLV(0x000D);
-        int capSize = packet.getTLVLen(0x000D);
-        caps = packet.unpackRawString(capSize);
+        caps += packet.unpackRawString(capBuf.remainingDataToRead());
+      }
 
       // Check if they support UTF8
       bool bUTF8 = false;
-        for (int i = 0; i < (capSize / CAP_LENGTH); i++)
-        {
+      for (size_t i = 0; i < (caps.size() / CAP_LENGTH); i++)
+      {
           if (memcmp(caps.c_str()+(i * CAP_LENGTH), ICQ_CAPABILITY_UTF8, CAP_LENGTH) == 0)
           {
           bUTF8 = true;
@@ -2469,8 +2505,7 @@ void IcqProtocol::ProcessBuddyFam(Buffer& packet, unsigned short nSubtype)
         {
         u->SetSupportsUTF8(bUTF8);
       }
-    }
-    
+
     if (packet.hasTLV(0x0011))
     {
       CBuffer msg = packet.UnpackTLV(0x0011);
@@ -2573,35 +2608,11 @@ void IcqProtocol::ProcessBuddyFam(Buffer& packet, unsigned short nSubtype)
     }
 
     if (packet.hasTLV(0x001d))	// Server-stored buddy icon information
-    {
-      CBuffer BART_info = packet.UnpackTLV(0x001d);
-      unsigned short IconType = BART_info.UnpackUnsignedShortBE();
-      char HashType = BART_info.UnpackChar();
-      char HashLength = BART_info.UnpackChar();
-      
-      switch (IconType)
       {
-        case BART_TYPExBUDDY_ICON_SMALL:
-        case BART_TYPExBUDDY_ICON:
-        {
-          if (HashType == 1 && HashLength > 0 && HashLength <= 16)
-          {
-              string hash = BART_info.unpackRawString(HashLength);
-              u->setBuddyIconHash(hash);
-              u->setBuddyIconType(IconType);
-              u->setBuddyIconHashType(HashType);
-              u->save(Licq::User::SavePictureInfo);
-            }
-            break;
-          }
-
-        default:	// Unsupported types of BART
-          gLog.warning(tr("Unsupported type 0x%02X of buddy icon for %s."),
-              IconType, u->getAlias().c_str());
-          break;
+        Buffer iconData = packet.UnpackTLV(0x001d);
+        processIconHash(*u, iconData);
       }
-    }
-    
+
     // maybe use this for auto update info later
     u->SetClientTimestamp(nInfoTimestamp);
     u->SetClientInfoTimestamp(nInfoPluginTimestamp);
