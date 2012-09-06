@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2011 Licq developers
+ * Copyright (C) 2004-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -179,6 +179,7 @@ void CMSN::MSNGetServer()
   m_nNexusSocket = sock->Descriptor();
   CMSNPacket *pHello = new CPS_MSNGetServer();
   sock->SSLSend(pHello->getBuffer());
+  delete pHello;
   gSocketMan.DropSocket(sock);
 }
 
@@ -205,6 +206,7 @@ void CMSN::MSNAuthenticateRedirect(const string &strHost, const string& /* strPa
   m_nSSLSocket = sock->Descriptor();
   CMSNPacket *pHello = new CPS_MSNAuthenticate(m_szUserName, myPassword.c_str(), m_szCookie);
   sock->SSLSend(pHello->getBuffer());
+  delete pHello;
   gSocketMan.DropSocket(sock);
 }
 
@@ -236,6 +238,7 @@ void CMSN::MSNAuthenticate(char *szCookie)
   m_nSSLSocket = sock->Descriptor();
   CMSNPacket *pHello = new CPS_MSNAuthenticate(m_szUserName, myPassword.c_str(), szCookie);
   sock->SSLSend(pHello->getBuffer());
+  delete pHello;
   gSocketMan.DropSocket(sock);
 }
 
