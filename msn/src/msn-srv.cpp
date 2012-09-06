@@ -123,24 +123,17 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         }
 
         // This cookie doesn't work anymore now that we are online
-        if (m_szCookie)
-        {
-          free(m_szCookie);
-          m_szCookie = 0;
-        }
+        myCookie.clear();
 
         pReply = new CPS_MSNSync(listVersion);
       }
       else
       {
         packet->SkipParameter(); // "S"
-        string strParam = packet->GetParameter();
-      
-        m_szCookie = strdup(strParam.c_str());
+        myCookie = packet->GetParameter();
 
-        //MSNGetServer();
         // Make an SSL connection to authenticate
-        MSNAuthenticate(m_szCookie);
+        MSNAuthenticate();
       }
     }
     else if (strCmd == "CHL")

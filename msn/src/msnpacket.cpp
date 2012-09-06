@@ -302,92 +302,16 @@ CPS_MSNUser::CPS_MSNUser(char *szUserName) : CMSNPacket()
   m_pBuffer->Pack("\r\n", 2);
 }
 
-CPS_MSNGetServer::CPS_MSNGetServer() : CMSNPacket()
-{
-  char szParams[] = "GET /rdr/pprdr.asp HTTP/1.0\r\n\r\n";
-  m_nSize += strlen(szParams);
-  
-  m_pBuffer = new CMSNBuffer(m_nSize);
-  m_pBuffer->Pack(szParams, strlen(szParams));
-};
-
-CPS_MSNAuthenticate::CPS_MSNAuthenticate(char *_szUserName, const string& password, const char *szCookie)
+CPS_MSNSendTicket::CPS_MSNSendTicket(const string& ticket)
   : CMSNPacket()
 {
-  //TODO make a real url encoder
-  char *szPassword = new char[password.size() * 3 + 1];
-  char *szUserName = new char[strlen(_szUserName) * 3 + 1];
-  memset(szPassword, 0, (password.size() * 3) + 1);
-  memset(szUserName, 0, (strlen(_szUserName) * 3) + 1);
-  char *szPasswd = szPassword;
-  char *szUser = szUserName;
-  unsigned int i;
-  for (i = 0; i < password.size(); i++)
-  {
-    if (isalnum(password[i]))
-    {
-      *szPasswd = password[i];
-      szPasswd += 1;
-    }
-    else
-    {
-      sprintf(szPasswd, "%%%02X", password[i]);
-      szPasswd += 3;
-    }
-  }
-  szPasswd = '\0';
-  for (i = 0; i < strlen(_szUserName); i++)
-  {
-    if (isalnum(_szUserName[i]))
-    {
-      *szUser = _szUserName[i];
-      szUser += 1;
-    }
-    else
-    {
-      sprintf(szUser, "%%%02X", _szUserName[i]);
-      szUser += 3;
-    }
-  }
-  szUser = '\0';
-  
-  char szParams1[] = "GET /login2.srf HTTP/1.1\r\n"
-                    "Authorization: Passport1.4 OrgVerb=GET,OrgURL=http%3A%2F%2Fmessenger%2Emsn%2Ecom,"
-                    "sign-in=";
-  char szParams2[] = ",pwd=";
-  char szParams3[] = "User-Agent: MSMSGS\r\nHost: loginnet.passport.com\r\n"
-                     "Connection: Keep-Alive\r\nCache-Control: no-cache\r\n";
-  m_nSize = strlen(szParams1) + strlen(szPassword) + strlen(szUserName)
-            + strlen(szParams2) + strlen(szParams3) + strlen(szCookie) + 1 + 4;
-  
-  m_szCookie = strdup(szCookie);
-  
-  m_pBuffer = new CMSNBuffer(m_nSize);
-  m_pBuffer->Pack(szParams1, strlen(szParams1));
-  m_pBuffer->Pack(szUserName, strlen(szUserName));
-  m_pBuffer->Pack(szParams2, strlen(szParams2));
-  m_pBuffer->Pack(szPassword, strlen(szPassword));
-  m_pBuffer->Pack(",", 1);
-  m_pBuffer->Pack(m_szCookie, strlen(m_szCookie));
-  m_pBuffer->Pack("\r\n", 2);
-  m_pBuffer->Pack(szParams3, strlen(szParams3));
-  m_pBuffer->Pack("\r\n", 2);
-
-  delete [] szPassword;
-  delete [] szUserName;
-}
-
-CPS_MSNSendTicket::CPS_MSNSendTicket(const char *szTicket) : CMSNPacket()
-{
   m_szCommand = strdup("USR");
-  char szParams[] = "TWN S ";
-  m_nSize += strlen(szParams) + strlen(szTicket);
+  string params = "TWN S ";
+  m_nSize += params.size() + ticket.size();
   InitBuffer();
-  
-  m_szTicket = strdup(szTicket);
-  
-  m_pBuffer->Pack(szParams, strlen(szParams));
-  m_pBuffer->Pack(m_szTicket, strlen(m_szTicket));
+
+  m_pBuffer->pack(params);
+  m_pBuffer->pack(ticket);
   m_pBuffer->Pack("\r\n", 2);
 }
 

@@ -127,9 +127,8 @@ private:
   void SendPacket(CMSNPacket *);
   void Send_SB_Packet(const Licq::UserId& userId, CMSNPacket* p, int nSocket = -1,
       bool bDelete = true);
-  void MSNGetServer();
-  void MSNAuthenticateRedirect(const std::string& host, const std::string& param);
-  void MSNAuthenticate(char *);
+  void MSNAuthenticate(const std::string& host = "loginnet.passport.com",
+      const std::string& path = "/login2.srf");
   bool MSNSBConnectStart(const std::string& server, const std::string& cookie);
   bool MSNSBConnectAnswer(const std::string& server, const std::string& sessionId,
       const std::string& cookie, const std::string& user);
@@ -198,8 +197,8 @@ private:
                   mutex_MSNEventList,
                   mutex_Bucket;
     
-  char *m_szUserName,
-       *m_szCookie;
+  char *m_szUserName;
+  std::string myCookie;
   std::string myPassword;
 
   friend class CMSNDataEvent;

@@ -139,30 +139,10 @@ protected:
   char *m_szUserName;
 };
 
-class CPS_MSNGetServer : public CMSNPacket
-{
-public:
-  CPS_MSNGetServer();
-};
-
-class CPS_MSNAuthenticate : public CMSNPacket
-{
-public:
-  CPS_MSNAuthenticate(char *, const std::string& password, const char *);
-  virtual ~CPS_MSNAuthenticate() { if (m_szCookie) free(m_szCookie); }
-  
-protected:
-  char *m_szCookie;
-};
-
 class CPS_MSNSendTicket : public CMSNPacket
 {
 public:
-  CPS_MSNSendTicket(const char *);
-  virtual ~CPS_MSNSendTicket() { if (m_szTicket) free(m_szTicket); }
-  
-protected:
-  char *m_szTicket;
+  CPS_MSNSendTicket(const std::string& ticket);
 };
 
 class CPS_MSNChangeStatus : public CMSNPacket

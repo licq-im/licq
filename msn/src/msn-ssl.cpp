@@ -35,6 +35,27 @@ using namespace LicqMsn;
 using Licq::UserId;
 using Licq::gLog;
 
+static string urlencode(const string& str)
+{
+  static char hex[16] = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
+  string ret;
+  for (size_t i = 0; i < str.size(); ++i)
+  {
+    char c = str[i];
+    if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
+    {
+      ret += c;
+    }
+    else
+    {
+      ret += '%';
+      ret += hex[(c>>4)&0xf];
+      ret += hex[c&0xf];
+    }
+  }
+  return ret;
+}
+
 void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
 {
   // Did we receive the entire packet?
@@ -70,21 +91,20 @@ void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
   {
     m_pSSLPacket->ParseHeaders();
     const char* fromPP = strstr(m_pSSLPacket->GetValue("Authentication-Info").c_str(), "from-PP=");
-    char *tag;
+    string tag;
 
     if (fromPP == 0)
-      tag = m_szCookie;
+      tag = myCookie;
     else
     {
       fromPP+= 9; // skip to the tag
       const char* endTag = strchr(fromPP, '\'');
-      tag = strndup(fromPP, endTag - fromPP); // Thanks, this is all we need
+      tag.assign(fromPP, endTag - fromPP); // Thanks, this is all we need
     }
 
-    CMSNPacket *pReply = new CPS_MSNSendTicket(tag);
+    CMSNPacket* pReply = new CPS_MSNSendTicket(tag);
     SendPacket(pReply);
-    free(tag);
-    m_szCookie = 0;
+    myCookie.clear();
   }
   else if (strFirstLine == "HTTP/1.1 302 Found")
   {
@@ -103,8 +123,7 @@ void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
       delete m_pSSLPacket;
       m_pSSLPacket = 0;
 
-      gLog.info("Redirecting to %s:443", strHost.c_str());
-      MSNAuthenticateRedirect(strHost, strToSend);
+      MSNAuthenticate(strHost, strParam);
       return;
     }
     else
@@ -157,89 +176,43 @@ void CMSN::ProcessNexusPacket(CMSNBuffer &packet)
   //char *szEnd = strchr(szLogin, ',');
   //char *szURL = strndup(szEndURL, szEnd - szEndURL);
 
-  MSNAuthenticate(m_szCookie);
+  MSNAuthenticate();
 }
 
-void CMSN::MSNGetServer()
+void CMSN::MSNAuthenticate(const string& server, const string& path)
 {
   UserId myOwnerId(m_szUserName, MSN_PPID);
   Licq::TCPSocket* sock = new Licq::TCPSocket(myOwnerId);
-  if (!sock->connectTo(string("nexus.passport.com"), 443))
-  {
-    delete sock;
-    return;
-  }
-  
-  if (!sock->SecureConnect())
-  {
-    delete sock;
-    return;
-  }
-
-  gSocketMan.AddSocket(sock);
-  m_nNexusSocket = sock->Descriptor();
-  CMSNPacket *pHello = new CPS_MSNGetServer();
-  sock->send(*pHello->getBuffer());
-  delete pHello;
-  gSocketMan.DropSocket(sock);
-}
-
-void CMSN::MSNAuthenticateRedirect(const string &strHost, const string& /* strParam */)
-{
-  UserId myOwnerId(m_szUserName, MSN_PPID);
-  Licq::TCPSocket* sock = new Licq::TCPSocket(myOwnerId);
-  gLog.info("Authenticating to %s:%d", strHost.c_str(), 443);
-  if (!sock->connectTo(strHost, 443))
-  {
-    gLog.error("Connection to %s failed", strHost.c_str());
-    delete sock;
-    return;
-  }
-
-  if (!sock->SecureConnect())
-  {
-    gLog.error("SSL connection failed");
-    delete sock;
-    return;
-  }
-
-  gSocketMan.AddSocket(sock);
-  m_nSSLSocket = sock->Descriptor();
-  CMSNPacket *pHello = new CPS_MSNAuthenticate(m_szUserName, myPassword.c_str(), m_szCookie);
-  sock->send(*pHello->getBuffer());
-  delete pHello;
-  gSocketMan.DropSocket(sock);
-}
-
-void CMSN::MSNAuthenticate(char *szCookie)
-{
-  UserId myOwnerId(m_szUserName, MSN_PPID);
-  string server = "loginnet.passport.com";
-  Licq::TCPSocket* sock = new Licq::TCPSocket(myOwnerId);
-  gLog.info("Authenticating to %s:%d", server.c_str(), 443);
+  gLog.info("Authenticating to https://%s%s", server.c_str(), path.c_str());
   if (!sock->connectTo(server, 443))
   {
     gLog.error("Connection to %s failed", server.c_str());
     delete sock;
-    free(szCookie);
-    szCookie = 0;
     return;
   }
-  
+
   if (!sock->SecureConnect())
   {
     gLog.error("SSL connection failed");
-    free(szCookie);
-    szCookie = 0;
     delete sock;
     return;
   }
-  
+
   gSocketMan.AddSocket(sock);
   m_nSSLSocket = sock->Descriptor();
-  CMSNPacket *pHello = new CPS_MSNAuthenticate(m_szUserName, myPassword.c_str(), szCookie);
-  sock->send(*pHello->getBuffer());
-  delete pHello;
+
+  string request = "GET " + path + " HTTP/1.1\r\n"
+      "Authorization: Passport1.4 OrgVerb=GET,OrgURL=http%3A%2F%2Fmessenger%2Emsn%2Ecom,"
+          "sign-in=" + urlencode(m_szUserName) + ","
+          "pwd=" + urlencode(myPassword) + "," + myCookie + "\r\n"
+      "User-Agent: MSMSGS\r\n"
+      "Host: " + server + "\r\n"
+      "Connection: Keep-Alive\r\n"
+      "Cache-Control: no-cache\r\n"
+      "\r\n";
+
+  Licq::Buffer buf(request.size());
+  buf.pack(request);
+  sock->send(buf);
   gSocketMan.DropSocket(sock);
 }
-
