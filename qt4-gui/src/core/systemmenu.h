@@ -220,12 +220,12 @@ public:
   /**
    * Constructor
    *
-   * @param ppid Protocol id for this owner
+   * @param userId Owner id
    * @param protoName Name of protocol to show in menus
    * @param sendFunctions Send function capabilities for protocol
    * @param parent Parent widget
    */
-  OwnerData(unsigned long ppid, const QString& protoName,
+  OwnerData(const Licq::UserId& userId, const QString& protoName,
       unsigned long sendFunctions, SystemMenu* parent);
 
   /**
@@ -280,7 +280,6 @@ private slots:
 
 private:
   Licq::UserId myUserId;
-  unsigned long myPpid;
   bool myUseAwayMessage;
 
   QMenu* myStatusMenu;

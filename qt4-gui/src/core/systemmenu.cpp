@@ -313,7 +313,7 @@ void SystemMenu::addOwner(const Licq::UserId& userId)
   if (protocol.get() == NULL)
     return;
 
-  OwnerData* newOwner = new OwnerData(ppid, protocol->name().c_str(),
+  OwnerData* newOwner = new OwnerData(userId, protocol->name().c_str(),
       protocol->capabilities(), this);
   QMenu* ownerAdmin = newOwner->getOwnerAdmMenu();
   QMenu* ownerStatus = newOwner->getStatusMenu();
@@ -444,7 +444,7 @@ void SystemMenu::setMainStatus(QAction* action)
     status |= User::InvisibleStatus;
 
   if (withMsg)
-    AwayMsgDlg::showAwayMsgDlg(status, true, 0);
+    AwayMsgDlg::showAwayMsgDlg(status, true);
   else
     gLicqGui->changeStatus(status, invisible);
 }
@@ -524,12 +524,12 @@ void SystemMenu::showGPGKeyManager()
 }
 
 
-OwnerData::OwnerData(unsigned long ppid, const QString& protoName,
+OwnerData::OwnerData(const Licq::UserId& userId, const QString& protoName,
     unsigned long sendFunctions, SystemMenu* parent)
   : QObject(parent),
-    myPpid(ppid)
+    myUserId(userId)
 {
-  myUserId = Licq::gUserManager.ownerUserId(ppid);
+  unsigned long myPpid = userId.protocolId();
   myUseAwayMessage = ((sendFunctions & Licq::ProtocolPlugin::CanHoldStatusMsg) != 0);
 
   // System sub menu
@@ -610,7 +610,7 @@ void OwnerData::updateIcons()
 
 void OwnerData::aboutToShowStatusMenu()
 {
-  Licq::OwnerReadGuard o(myPpid);
+  Licq::OwnerReadGuard o(myUserId);
   if (!o.isLocked())
     return;
 
@@ -653,7 +653,7 @@ void OwnerData::setStatus(QAction* action)
     status |= User::InvisibleStatus;
 
   if (withMsg)
-    AwayMsgDlg::showAwayMsgDlg(status, true, myPpid);
+    AwayMsgDlg::showAwayMsgDlg(status, true, myUserId);
   else
     gLicqGui->changeStatus(status, myUserId, invisible);
 }

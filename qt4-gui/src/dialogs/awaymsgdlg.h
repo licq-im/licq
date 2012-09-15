@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@
 
 #include <QDialog>
 
+#include <licq/userid.h>
+
 class QCloseEvent;
 class QDialogButtonBox;
 class QEvent;
@@ -41,10 +43,10 @@ public:
    *
    * @param status Status to prompt for away message to
    * @param autoClose True if dialog should close after a timeout
-   * @param ppid Protocol to set status for or 0 to change globaly
+   * @param userId Owner to set status for or invalid to change globaly
    */
   static void showAwayMsgDlg(unsigned status, bool autoClose = false,
-      unsigned long ppid = 0);
+      const Licq::UserId& userId = Licq::UserId());
 
   static void showAutoResponseHints(QWidget* parent = 0);
 
@@ -54,7 +56,7 @@ private:
   AwayMsgDlg(QWidget* parent = 0);
   ~AwayMsgDlg();
   void selectAutoResponse(unsigned status, bool autoClose = false,
-      unsigned long ppid = 0);
+      const Licq::UserId& userId = Licq::UserId());
 
   MLEdit* myAwayMsg;
   QMenu* myMenu;
@@ -62,7 +64,7 @@ private:
   QString myOkText;
 
   unsigned myStatus;
-  unsigned long myPpid;
+  Licq::UserId myUserId;
   bool mySetStatus;
   int myAutoCloseCounter;
 

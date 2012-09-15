@@ -1267,7 +1267,6 @@ void LicqGui::listUpdated(unsigned long subSignal, int /* argument */, const Lic
 
 void LicqGui::userUpdated(const Licq::UserId& userId, unsigned long subSignal, int argument, unsigned long cid)
 {
-  QString id = userId.accountId().c_str();
   unsigned long ppid = userId.protocolId();
 
   switch (subSignal)

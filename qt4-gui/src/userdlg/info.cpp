@@ -75,7 +75,6 @@
 #include "core/mainwin.h"
 #endif
 
-using Licq::OwnerWriteGuard;
 using Licq::gProtocolManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserPages::Info */
@@ -1552,14 +1551,12 @@ unsigned long UserPages::Info::retrieve(UserDlg::UserPage page)
 unsigned long UserPages::Info::send(UserDlg::UserPage page)
 {
   unsigned status;
-  Licq::UserId ownerId;
 
   {
-    OwnerWriteGuard owner(myPpid);
+    Licq::OwnerWriteGuard owner(myUserId);
     if (!owner.isLocked())
       return 0;
     status = owner->status();
-    ownerId = owner->id();
 
     // Owner info is read from owner so make sure it's updated
     if (page == UserDlg::GeneralPage)
@@ -1584,7 +1581,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
             nfoEmailSecondary->text().toUtf8().constData(),
             nfoEmailOld->text().toUtf8().constData());
 
-      icqEventTag = gProtocolManager.updateOwnerInfo(ownerId);
+      icqEventTag = gProtocolManager.updateOwnerInfo(myUserId);
       break;
 
     case UserDlg::MorePage:
@@ -1632,7 +1629,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
     case UserDlg::PhonePage:
     {
       {
-        Licq::IcqOwnerWriteGuard o;
+        Licq::IcqOwnerWriteGuard o(myUserId);
         savePagePhoneBook(*o);
       }
       gLicqDaemon->icqUpdatePhoneBookTimestamp();
@@ -1642,7 +1639,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
     case UserDlg::PicturePage:
     {
       {
-        Licq::OwnerWriteGuard o(myPpid);
+        Licq::OwnerWriteGuard o(myUserId);
         savePagePicture(*o);
       }
       gLicqDaemon->icqUpdatePictureTimestamp();

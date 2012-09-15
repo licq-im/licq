@@ -57,14 +57,14 @@ using namespace LicqQtGui;
 
 AwayMsgDlg* AwayMsgDlg::myInstance = NULL;
 
-void AwayMsgDlg::showAwayMsgDlg(unsigned status, bool autoClose, unsigned long ppid)
+void AwayMsgDlg::showAwayMsgDlg(unsigned status, bool autoClose, const Licq::UserId& userId)
 {
   if (myInstance == NULL)
     myInstance = new AwayMsgDlg();
   else
     myInstance->raise();
 
-  myInstance->selectAutoResponse(status, autoClose, ppid);
+  myInstance->selectAutoResponse(status, autoClose, userId);
 }
 
 AwayMsgDlg::AwayMsgDlg(QWidget* parent)
@@ -111,7 +111,7 @@ AwayMsgDlg::~AwayMsgDlg()
   myInstance = NULL;
 }
 
-void AwayMsgDlg::selectAutoResponse(unsigned status, bool autoClose, unsigned long ppid)
+void AwayMsgDlg::selectAutoResponse(unsigned status, bool autoClose, const Licq::UserId& userId)
 {
   // If requested status doesn't support message, set away
   if ((status & User::MessageStatuses) == 0)
@@ -119,7 +119,7 @@ void AwayMsgDlg::selectAutoResponse(unsigned status, bool autoClose, unsigned lo
   status |= User::OnlineStatus;
 
   myStatus = status;
-  myPpid = ppid;
+  myUserId = userId;
   SarManager::List sarList;
 
   // Fill in the select menu
@@ -151,7 +151,7 @@ void AwayMsgDlg::selectAutoResponse(unsigned status, bool autoClose, unsigned lo
     QString statusStr = User::statusToString(myStatus, true, false).c_str();
     QString autoResponse;
 
-    if (myPpid == 0)
+    if (!myUserId.isValid())
     {
       setWindowTitle(QString(tr("Set %1 Response for All Accounts"))
           .arg(statusStr));
@@ -171,7 +171,7 @@ void AwayMsgDlg::selectAutoResponse(unsigned status, bool autoClose, unsigned lo
     }
     else
     {
-      Licq::OwnerReadGuard o(myPpid);
+      Licq::OwnerReadGuard o(myUserId);
       if (!o.isLocked())
         return;
 
@@ -253,13 +253,10 @@ void AwayMsgDlg::ok()
   bool invisible = (myStatus & User::InvisibleStatus) != 0;
 
   QString s = myAwayMsg->toPlainText().trimmed();
-  if (myPpid == 0)
+  if (!myUserId.isValid())
     gLicqGui->changeStatus(myStatus, invisible, s);
   else
-  {
-    Licq::UserId userId = Licq::gUserManager.ownerUserId(myPpid);
-    gLicqGui->changeStatus(myStatus, userId, invisible, s);
-  }
+    gLicqGui->changeStatus(myStatus, myUserId, invisible, s);
 
   close();
 }
