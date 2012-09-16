@@ -29,6 +29,7 @@
 #include "../plugin.h"
 #include "../pluginthread.h"
 
+#define PPID_TEST ('P' << 24 | 'P' << 16 | 'I' << 8 | 'D')
 
 using Licq::ProtocolPlugin;
 using LicqDaemon::DynamicLibrary;
@@ -64,7 +65,7 @@ public:
   { return "ConfigFile"; }
 
   unsigned long protocolId() const
-  { return 'P' << 24 | 'P' << 16 | 'I' << 8 | 'D'; }
+  { return PPID_TEST; }
 
   std::string defaultServerHost() const
   { return "DefSrvHost"; }
@@ -138,7 +139,7 @@ TEST_F(ProtocolPluginFixture, callApiFunctions)
   EXPECT_EQ("Name", plugin.name());
   EXPECT_EQ("Version", plugin.version());
   EXPECT_EQ("ConfigFile", plugin.configFile());
-  unsigned long ppid = 'P' << 24 | 'P' << 16 | 'I' << 8 | 'D';
+  unsigned long ppid = PPID_TEST;
   EXPECT_EQ(ppid, plugin.protocolId());
   EXPECT_TRUE(plugin.callInit());
   EXPECT_EQ(42u, plugin.capabilities());

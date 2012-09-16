@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,13 @@ inline std::string protocolId_toString(unsigned long protocolId)
   ret[3] = ((protocolId & 0x000000FF));
   ret[4] = '\0';
   return ret;
+}
+
+inline unsigned long protocolId_fromString(const std::string& s)
+{
+  if (s.size() < 4)
+    return 0;
+  return (s[0] << 24) | (s[1] << 16) | (s[2] << 8) | (s[3]);
 }
 
 

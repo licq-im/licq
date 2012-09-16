@@ -228,7 +228,7 @@ void OnEventManager::initialize()
     if (userIdStr.size() < 5)
       continue;
     string accountId = userIdStr.substr(4);
-    unsigned long protocolId = (userIdStr[0] << 24) | (userIdStr[1] << 16) | (userIdStr[2] << 8) | userIdStr[3];
+    unsigned long protocolId = Licq::protocolId_fromString(userIdStr.substr(0, 4));
     UserId userId(accountId, protocolId);
     if (!userId.isValid())
       continue;

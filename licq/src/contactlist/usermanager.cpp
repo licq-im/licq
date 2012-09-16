@@ -146,8 +146,7 @@ bool UserManager::Load()
     licqConf.get(sOwnerIDKey, accountId);
     sprintf(sOwnerPPIDKey, "Owner%d.PPID", i);
     licqConf.get(sOwnerPPIDKey, ppidStr);
-    unsigned long protocolId = (ppidStr[0] << 24) | (ppidStr[1] << 16) | (ppidStr[2] << 8) | (ppidStr[3]);
-
+    unsigned long protocolId = Licq::protocolId_fromString(ppidStr);
     myConfiguredOwners.insert(UserId(accountId, protocolId));
   }
   myOwnerListMutex.unlockWrite();
@@ -193,10 +192,7 @@ bool UserManager::Load()
     licqConf.getKeyList(serverIdKeys, key);
     BOOST_FOREACH(const string& serverIdKey, serverIdKeys)
     {
-      size_t keylen = serverIdKey.size();
-      unsigned long protocolId = serverIdKey[keylen-4] << 24 |
-          serverIdKey[keylen-3] << 16 | serverIdKey[keylen-2] << 8 |
-          serverIdKey[keylen-1];
+      unsigned long protocolId = Licq::protocolId_fromString(serverIdKey.substr(serverIdKey.size()-4));
       unsigned long serverId;
       licqConf.get(serverIdKey, serverId, 0);
       newGroup->setServerId(protocolId, serverId);

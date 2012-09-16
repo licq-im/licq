@@ -310,8 +310,7 @@ int CLicqRMS::run()
     else if (protocolStr.size() == 4)
     {
       // Parse protocol id
-      myAuthProtocol = (protocolStr[0] << 24) | (protocolStr[1] << 16) |
-          (protocolStr[2] << 8) | (protocolStr[3]);
+      myAuthProtocol = Licq::protocolId_fromString(protocolStr);
     }
     else
     {
