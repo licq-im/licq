@@ -2180,6 +2180,12 @@ void IcqProtocol::processIconHash(User* u, Buffer& packet)
         packet.incDataPosRead(length);
         break;
       }
+      case BART_TYPExITUNES_LINK:
+      {
+        // TODO: Handle iTunes music store link
+        packet.incDataPosRead(length);
+        break;
+      }
       default:
         gLog.warning(tr("Unknown Extended Status Data type 0x%04x flags 0x%02x length 0x%02x"),
             type, flags, length);
