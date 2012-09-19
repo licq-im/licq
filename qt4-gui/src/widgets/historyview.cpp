@@ -218,7 +218,11 @@ void HistoryView::internalAddMsg(QString s, const QDate& date)
   if (myAddDateHeader && date != myLastDate)
   {
     s.prepend(QString("<hr><center><b>%1</b></center>")
+#if (QT_VERSION >= QT_VERSION_CHECK(4, 4, 0))
         .arg(date.toString(Qt::DefaultLocaleLongDate)));
+#else
+        .arg(date.toString(Qt::LocaleDate)));
+#endif
   }
   else if (myAppendLineBreak)
   {

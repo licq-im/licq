@@ -25,6 +25,7 @@
 
 #include <QAction>
 #include <QDialogButtonBox>
+#include <QHeaderView>
 #include <QPushButton>
 #include <QTreeWidget>
 #include <QVBoxLayout>
@@ -75,7 +76,7 @@ OwnerManagerDlg::OwnerManagerDlg(QWidget* parent)
 
   // Add the list box
   myOwnerView = new QTreeWidget();
-  myOwnerView->setHeaderHidden(true);
+  myOwnerView->header()->hide();
   myOwnerView->setItemsExpandable(false);
   toplay->addWidget(myOwnerView);
 
