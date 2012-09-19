@@ -767,13 +767,11 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const Licq::UserId& userId, i
     parent = myUserEventTabDlg;
   }
 
-  UserEventCommon* e = NULL;
-
   // Creating a new message dialog may steal focus
   // Save the widget currently in focus so we can restore it afterwards
   QWidget* oldFocus = QApplication::focusWidget();
 
-  e = new UserSendEvent(fcn, userId, parent);
+  UserSendEvent* e = new UserSendEvent(fcn, userId, parent);
   if (e == NULL) return NULL;
 
   QWidget* msgWindow = e;
@@ -820,7 +818,7 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const Licq::UserId& userId, i
   // make sure we only remember one, or it will get complicated
   sendEventFinished(userId);
   connect(e, SIGNAL(finished(const Licq::UserId&)), SLOT(sendEventFinished(const Licq::UserId&)));
-  myUserSendList.append(static_cast<UserSendEvent*>(e));
+  myUserSendList.append(e);
 
   return e;
 }

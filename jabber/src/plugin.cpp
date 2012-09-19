@@ -208,50 +208,49 @@ void Plugin::processSignal(Licq::ProtocolSignal* signal)
   switch (signal->signal())
   {
     case Licq::ProtocolSignal::SignalLogon:
-      doLogon(static_cast<Licq::ProtoLogonSignal*>(signal));
+      doLogon(dynamic_cast<Licq::ProtoLogonSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalLogoff:
       doLogoff();
       break;
     case Licq::ProtocolSignal::SignalChangeStatus:
-      doChangeStatus(static_cast<Licq::ProtoChangeStatusSignal*>(signal));
+      doChangeStatus(dynamic_cast<Licq::ProtoChangeStatusSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalAddUser:
-      doAddUser(static_cast<Licq::ProtoAddUserSignal*>(signal));
+      doAddUser(dynamic_cast<Licq::ProtoAddUserSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalRemoveUser:
-      doRemoveUser(static_cast<Licq::ProtoRemoveUserSignal*>(signal));
+      doRemoveUser(dynamic_cast<Licq::ProtoRemoveUserSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalRenameUser:
-      doRenameUser(static_cast<Licq::ProtoRenameUserSignal*>(signal));
+      doRenameUser(dynamic_cast<Licq::ProtoRenameUserSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalChangeUserGroups:
-      doChangeUserGroups(
-          static_cast<Licq::ProtoChangeUserGroupsSignal*>(signal));
+      doChangeUserGroups(dynamic_cast<Licq::ProtoChangeUserGroupsSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalSendMessage:
-      doSendMessage(static_cast<Licq::ProtoSendMessageSignal*>(signal));
+      doSendMessage(dynamic_cast<Licq::ProtoSendMessageSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalNotifyTyping:
-      doNotifyTyping(static_cast<Licq::ProtoTypingNotificationSignal*>(signal));
+      doNotifyTyping(dynamic_cast<Licq::ProtoTypingNotificationSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalGrantAuth:
-      doGrantAuth(static_cast<Licq::ProtoGrantAuthSignal*>(signal));
+      doGrantAuth(dynamic_cast<Licq::ProtoGrantAuthSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalRefuseAuth:
-      doRefuseAuth(static_cast<Licq::ProtoRefuseAuthSignal*>(signal));
+      doRefuseAuth(dynamic_cast<Licq::ProtoRefuseAuthSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalRequestInfo:
-      doGetInfo(static_cast<Licq::ProtoRequestInfo*>(signal));
+      doGetInfo(dynamic_cast<Licq::ProtoRequestInfo*>(signal));
       break;
     case Licq::ProtocolSignal::SignalUpdateInfo:
-      doUpdateInfo(static_cast<Licq::ProtoUpdateInfoSignal*>(signal));
+      doUpdateInfo(dynamic_cast<Licq::ProtoUpdateInfoSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalRequestAuth:
-      doRequestAuth(static_cast<Licq::ProtoRequestAuthSignal*>(signal));
+      doRequestAuth(dynamic_cast<Licq::ProtoRequestAuthSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalRenameGroup:
-      doRenameGroup(static_cast<Licq::ProtoRenameGroupSignal*>(signal));
+      doRenameGroup(dynamic_cast<Licq::ProtoRenameGroupSignal*>(signal));
       break;
     default:
       gLog.error("Unknown signal %u", signal->signal());

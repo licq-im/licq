@@ -426,7 +426,7 @@ void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket *p, int nSocket, bool
   if (!s)
     s = gSocketMan.FetchSocket(nSocket);
   if (!s) return;
-  Licq::TCPSocket* sock = static_cast<Licq::TCPSocket*>(s);
+  Licq::TCPSocket* sock = dynamic_cast<Licq::TCPSocket*>(s);
   if (!sock->send(*p->getBuffer()) && userId.isValid())
   {
     gLog.info("Connection with %s lost", userId.toString().c_str());

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -564,7 +564,7 @@ bool ContactDelegate::eventFilter(QObject* object, QEvent* event)
 
   if (event->type() == QEvent::KeyPress)
   {
-    switch (static_cast<QKeyEvent*>(event)->key())
+    switch (dynamic_cast<QKeyEvent*>(event)->key())
     {
       case Qt::Key_Enter:
       case Qt::Key_Return:
