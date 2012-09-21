@@ -585,14 +585,14 @@ void CMSN::ProcessSignal(Licq::ProtocolSignal* s)
     {
       if (m_nServerSocket < 0)
       {
-        Licq::ProtoLogonSignal* sig = static_cast<Licq::ProtoLogonSignal*>(s);
+        Licq::ProtoLogonSignal* sig = dynamic_cast<Licq::ProtoLogonSignal*>(s);
         Logon(sig->status());
       }
       break;
     }
     case Licq::ProtocolSignal::SignalChangeStatus:
     {
-      Licq::ProtoChangeStatusSignal* sig = static_cast<Licq::ProtoChangeStatusSignal*>(s);
+      Licq::ProtoChangeStatusSignal* sig = dynamic_cast<Licq::ProtoChangeStatusSignal*>(s);
       MSNChangeStatus(sig->status());
       break;
     }
@@ -603,38 +603,38 @@ void CMSN::ProcessSignal(Licq::ProtocolSignal* s)
     }
     case Licq::ProtocolSignal::SignalAddUser:
     {
-      Licq::ProtoAddUserSignal* sig = static_cast<Licq::ProtoAddUserSignal*>(s);
+      Licq::ProtoAddUserSignal* sig = dynamic_cast<Licq::ProtoAddUserSignal*>(s);
       MSNAddUser(sig->userId());
       break;
     }
     case Licq::ProtocolSignal::SignalRemoveUser:
     {
-      Licq::ProtoRemoveUserSignal* sig = static_cast<Licq::ProtoRemoveUserSignal*>(s);
+      Licq::ProtoRemoveUserSignal* sig = dynamic_cast<Licq::ProtoRemoveUserSignal*>(s);
       MSNRemoveUser(sig->userId());
       break;
     }
     case Licq::ProtocolSignal::SignalRenameUser:
     {
-      Licq::ProtoRenameUserSignal* sig = static_cast<Licq::ProtoRenameUserSignal*>(s);
+      Licq::ProtoRenameUserSignal* sig = dynamic_cast<Licq::ProtoRenameUserSignal*>(s);
       MSNRenameUser(sig->userId());
       break;
     }
     case Licq::ProtocolSignal::SignalNotifyTyping:
     {
-      Licq::ProtoTypingNotificationSignal* sig = static_cast<Licq::ProtoTypingNotificationSignal*>(s);
+      Licq::ProtoTypingNotificationSignal* sig = dynamic_cast<Licq::ProtoTypingNotificationSignal*>(s);
       if (sig->active())
         MSNSendTypingNotification(sig->userId(), sig->convoId());
       break;
     }
     case Licq::ProtocolSignal::SignalSendMessage:
     {
-      Licq::ProtoSendMessageSignal* sig = static_cast<Licq::ProtoSendMessageSignal*>(s);
+      Licq::ProtoSendMessageSignal* sig = dynamic_cast<Licq::ProtoSendMessageSignal*>(s);
       MSNSendMessage(sig->eventId(), sig->userId(), sig->message(), sig->callerThread(), sig->convoId());
       break;
     }
     case Licq::ProtocolSignal::SignalGrantAuth:
     {
-      Licq::ProtoGrantAuthSignal* sig = static_cast<Licq::ProtoGrantAuthSignal*>(s);
+      Licq::ProtoGrantAuthSignal* sig = dynamic_cast<Licq::ProtoGrantAuthSignal*>(s);
       MSNGrantAuth(sig->userId());
       Licq::gPluginManager.pushPluginEvent(new Licq::Event(s));
       break;
@@ -653,13 +653,13 @@ void CMSN::ProcessSignal(Licq::ProtocolSignal* s)
     }
     case Licq::ProtocolSignal::SignalBlockUser:
     {
-      Licq::ProtoBlockUserSignal* sig = static_cast<Licq::ProtoBlockUserSignal*>(s);
+      Licq::ProtoBlockUserSignal* sig = dynamic_cast<Licq::ProtoBlockUserSignal*>(s);
       MSNBlockUser(sig->userId());
       break;
     }
     case Licq::ProtocolSignal::SignalUnblockUser:
     {
-      Licq::ProtoUnblockUserSignal* sig = static_cast<Licq::ProtoUnblockUserSignal*>(s);
+      Licq::ProtoUnblockUserSignal* sig = dynamic_cast<Licq::ProtoUnblockUserSignal*>(s);
       MSNUnblockUser(sig->userId());
       break;
     }
