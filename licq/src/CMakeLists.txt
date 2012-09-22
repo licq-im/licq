@@ -35,6 +35,7 @@ set(licq_SRCS
   oneventmanager.cpp
   packet.cpp
   protocolmanager.cpp
+  protocolsignal.cpp
   proxy.cpp
   sarmanager.cpp
   sighandler.cpp
