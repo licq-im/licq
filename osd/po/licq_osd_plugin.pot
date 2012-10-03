@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2011-10-15 18:25+0200\n"
+"POT-Creation-Date: 2012-10-03 17:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,23 +17,23 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/licq-osd.cpp:600
+#: src/licq-osd.cpp:598
 msgid " changed status to: "
 msgstr ""
 
-#: src/licq-osd.cpp:542
+#: src/licq-osd.cpp:540
 msgid " checked your auto-response"
 msgstr ""
 
-#: src/licq-osd.cpp:587
+#: src/licq-osd.cpp:585
 msgid " logged off"
 msgstr ""
 
-#: src/licq-osd.cpp:585
+#: src/licq-osd.cpp:583
 msgid " logged on"
 msgstr ""
 
-#: src/licq-osd.cpp:569
+#: src/licq-osd.cpp:567
 msgid "Message from "
 msgstr ""
 
@@ -45,38 +45,38 @@ msgstr ""
 msgid "XOSD plugin initialized"
 msgstr ""
 
-#: src/licq-osd.cpp:610
+#: src/licq-osd.cpp:608
 msgid "away"
 msgstr ""
 
-#: src/licq-osd.cpp:604
+#: src/licq-osd.cpp:602
 msgid "do not disturb"
 msgstr ""
 
-#: src/licq-osd.cpp:612
+#: src/licq-osd.cpp:610
 msgid "free for chat"
 msgstr ""
 
-#: src/licq-osd.cpp:616
+#: src/licq-osd.cpp:614
 msgid "idle"
 msgstr ""
 
-#: src/licq-osd.cpp:614
+#: src/licq-osd.cpp:612
 msgid "invisible"
 msgstr ""
 
-#: src/licq-osd.cpp:608
+#: src/licq-osd.cpp:606
 msgid "not available"
 msgstr ""
 
-#: src/licq-osd.cpp:606
+#: src/licq-osd.cpp:604
 msgid "occupied"
 msgstr ""
 
-#: src/licq-osd.cpp:602
+#: src/licq-osd.cpp:600
 msgid "offline"
 msgstr ""
 
-#: src/licq-osd.cpp:618
+#: src/licq-osd.cpp:616
 msgid "online"
 msgstr ""

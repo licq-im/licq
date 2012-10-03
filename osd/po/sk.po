@@ -1,11 +1,11 @@
 # Slovak translation for Licq OSD plugin package.
-# Copyright (C) 2004-2011 Licq Developers
+# Copyright (C) 2004-2012 Licq Developers <licq-dev@googlegroups.com>
 # This file is distributed under the same license as the Licq OSD plugin package.
 msgid ""
 msgstr ""
 "Project-Id-Version: licq_osd_plugin 1.2.7.5\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2011-10-15 18:25+0200\n"
+"POT-Creation-Date: 2012-10-03 17:53+0200\n"
 "PO-Revision-Date: 2004-04-19 15:10+0200\n"
 "Last-Translator: Jozef ha <zefo@seznam.cz>\n"
 "Language-Team: Slovak <sk@li.org>\n"
@@ -14,23 +14,23 @@ msgstr ""
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/licq-osd.cpp:600
+#: src/licq-osd.cpp:598
 msgid " changed status to: "
 msgstr " zmenil/a stav na "
 
-#: src/licq-osd.cpp:542
+#: src/licq-osd.cpp:540
 msgid " checked your auto-response"
 msgstr " skontroloval/a Vašu automaticků odpoveď"
 
-#: src/licq-osd.cpp:587
+#: src/licq-osd.cpp:585
 msgid " logged off"
 msgstr " sa odhlásil/a"
 
-#: src/licq-osd.cpp:585
+#: src/licq-osd.cpp:583
 msgid " logged on"
 msgstr " sa prihlásil/a"
 
-#: src/licq-osd.cpp:569
+#: src/licq-osd.cpp:567
 msgid "Message from "
 msgstr "Správa od "
 
@@ -42,39 +42,39 @@ msgstr "Systém"
 msgid "XOSD plugin initialized"
 msgstr "XOSD plugin inicializovan"
 
-#: src/licq-osd.cpp:610
+#: src/licq-osd.cpp:608
 msgid "away"
 msgstr "preč"
 
-#: src/licq-osd.cpp:604
+#: src/licq-osd.cpp:602
 msgid "do not disturb"
 msgstr "nerušiť"
 
-#: src/licq-osd.cpp:612
+#: src/licq-osd.cpp:610
 msgid "free for chat"
 msgstr "free for chat"
 
-#: src/licq-osd.cpp:616
+#: src/licq-osd.cpp:614
 msgid "idle"
 msgstr ""
 
-#: src/licq-osd.cpp:614
+#: src/licq-osd.cpp:612
 msgid "invisible"
 msgstr "neviditený/á"
 
-#: src/licq-osd.cpp:608
+#: src/licq-osd.cpp:606
 msgid "not available"
 msgstr "nedostupný/á"
 
-#: src/licq-osd.cpp:606
+#: src/licq-osd.cpp:604
 msgid "occupied"
 msgstr "zaneprázdnený/á"
 
-#: src/licq-osd.cpp:602
+#: src/licq-osd.cpp:600
 msgid "offline"
 msgstr "offline"
 
-#: src/licq-osd.cpp:618
+#: src/licq-osd.cpp:616
 msgid "online"
 msgstr "online"
 

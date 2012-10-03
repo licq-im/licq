@@ -1,5 +1,5 @@
 # Portuguese translation for Licq OSD plugin package.
-# Copyright (C) 2003-2011 Licq Developers
+# Copyright (C) 2003-2012 Licq Developers <licq-dev@googlegroups.com>
 # This file is distributed under the same license as the Licq OSD plugin package.
 # Thiago Ribeiro Mendes <thiago@linuxmail.org>, 2003.
 #
@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: licq_osd_plugin 1.2.7.3\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2011-10-15 18:25+0200\n"
+"POT-Creation-Date: 2012-10-03 17:53+0200\n"
 "PO-Revision-Date: 2003-06-27 21:16+0200\n"
 "Last-Translator: Thiago Ribeiro Mendes <thiago@linuxmail.org>\n"
 "Language-Team: Brasil <thiago@linuxmail.org>\n"
@@ -19,26 +19,26 @@ msgstr ""
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 # example: "lonestar changed status to: away"
-#: src/licq-osd.cpp:600
+#: src/licq-osd.cpp:598
 msgid " changed status to: "
 msgstr " mudou seu status para: "
 
-#: src/licq-osd.cpp:542
+#: src/licq-osd.cpp:540
 msgid " checked your auto-response"
 msgstr " sua auto-resposta foi ativada"
 
 # example: "lonestar logged off"
-#: src/licq-osd.cpp:587
+#: src/licq-osd.cpp:585
 msgid " logged off"
 msgstr " desconectou."
 
 # example: "lonestar logged on"
-#: src/licq-osd.cpp:585
+#: src/licq-osd.cpp:583
 msgid " logged on"
 msgstr " esta conectado."
 
 # example: "Message from lonestar"
-#: src/licq-osd.cpp:569
+#: src/licq-osd.cpp:567
 msgid "Message from "
 msgstr "Mensagem de "
 
@@ -53,47 +53,47 @@ msgid "XOSD plugin initialized"
 msgstr "Plugin XOSD inicializado"
 
 # example: "lonestar changed status to: away"
-#: src/licq-osd.cpp:610
+#: src/licq-osd.cpp:608
 msgid "away"
 msgstr "ausente"
 
 # example: "lonestar changed status to: do not disturb"
-#: src/licq-osd.cpp:604
+#: src/licq-osd.cpp:602
 msgid "do not disturb"
 msgstr "não perturbe"
 
 # example: "lonestar changed status to: free for chat"
-#: src/licq-osd.cpp:612
+#: src/licq-osd.cpp:610
 msgid "free for chat"
 msgstr "livre para conversar"
 
-#: src/licq-osd.cpp:616
+#: src/licq-osd.cpp:614
 msgid "idle"
 msgstr ""
 
 # example: "lonestar changed status to: invisible"
-#: src/licq-osd.cpp:614
+#: src/licq-osd.cpp:612
 msgid "invisible"
 msgstr "invisível"
 
 # example: "lonestar changed status to: not available"
-#: src/licq-osd.cpp:608
+#: src/licq-osd.cpp:606
 msgid "not available"
 msgstr "não disponível"
 
 # example: "lonestar changed status to: occupied"
-#: src/licq-osd.cpp:606
+#: src/licq-osd.cpp:604
 msgid "occupied"
 msgstr "ocupado"
 
 # example: "lonestar changed status to: online"
-#: src/licq-osd.cpp:602
+#: src/licq-osd.cpp:600
 #, fuzzy
 msgid "offline"
 msgstr "online"
 
 # example: "lonestar changed status to: online"
-#: src/licq-osd.cpp:618
+#: src/licq-osd.cpp:616
 msgid "online"
 msgstr "online"
 
