@@ -2,21 +2,20 @@ Change log for Licq.
 
 New in 1.7.0
 o Always save history as UTF-8 to avoid mixing encodings
+o Fix several memory leaks
 o Fifo: Add commands to show/hide UI contact list window
 o Forwarder: Support for MSN and Jabber protocols
-o ICQ: Fix several memory leaks
+o Forwarder: Write default configuration file to correct directory
+o ICQ: Do reverse direct connects even if port number is wrong
+o ICQ: Fix removing groups from server side list
+o Plugin API: Multiple changes to make api less ICQ specific
 o Plugin API: Allow subclassed user/owner for each protocol
 o Plugin API: Use UTF-8 for all event messages and user data
+o Qt4-Gui: Manage protocols plugins from accounts dialog
 o Qt4-Gui: Moved debug level menu to log window
 o Qt4-Gui: Add settings page for editing event filter rules
 o Qt4-Gui: Add a header in chat history for each new day
 o Qt4-Gui: Move per-account settings to user dialog
-
-
-New in 1.6.2
-o Forwarder: Write default configuration file to correct directory
-o ICQ: Do reverse direct connects even if port number is wrong
-o ICQ: Fix removing groups from server side list
 o Qt4-Gui: Don't clear clipboard after opening URL/File dialog
 o Qt4-Gui: Controls to set owner birthday were missing
 
