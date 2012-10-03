@@ -5775,19 +5775,19 @@ till din ignoreringslista?</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="98"/>
-        <location filename="../src/userdlg/info.cpp" line="636"/>
+        <location filename="../src/userdlg/info.cpp" line="647"/>
         <source>More II</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="100"/>
-        <location filename="../src/userdlg/info.cpp" line="808"/>
+        <location filename="../src/userdlg/info.cpp" line="819"/>
         <source>Work</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="102"/>
-        <location filename="../src/userdlg/info.cpp" line="960"/>
+        <location filename="../src/userdlg/info.cpp" line="971"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5798,13 +5798,13 @@ till din ignoreringslista?</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="107"/>
-        <location filename="../src/userdlg/info.cpp" line="1207"/>
+        <location filename="../src/userdlg/info.cpp" line="1218"/>
         <source>Picture</source>
         <translation type="unfinished">Bild</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="109"/>
-        <location filename="../src/userdlg/info.cpp" line="1296"/>
+        <location filename="../src/userdlg/info.cpp" line="1307"/>
         <source>Last</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5857,8 +5857,8 @@ Markera här för att behålla ändringar av smeknamnet.</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="203"/>
-        <location filename="../src/userdlg/info.cpp" line="813"/>
-        <location filename="../src/userdlg/info.cpp" line="1359"/>
+        <location filename="../src/userdlg/info.cpp" line="824"/>
+        <location filename="../src/userdlg/info.cpp" line="1370"/>
         <source>Name:</source>
         <translation type="unfinished">Namn:</translation>
     </message>
@@ -5879,31 +5879,31 @@ Markera här för att behålla ändringar av smeknamnet.</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="223"/>
-        <location filename="../src/userdlg/info.cpp" line="849"/>
+        <location filename="../src/userdlg/info.cpp" line="860"/>
         <source>Address:</source>
         <translation type="unfinished">Adress:</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="226"/>
-        <location filename="../src/userdlg/info.cpp" line="871"/>
+        <location filename="../src/userdlg/info.cpp" line="882"/>
         <source>Phone:</source>
         <translation type="unfinished">Telefon:</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="230"/>
-        <location filename="../src/userdlg/info.cpp" line="844"/>
+        <location filename="../src/userdlg/info.cpp" line="855"/>
         <source>State:</source>
         <translation type="unfinished">Stat:</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="235"/>
-        <location filename="../src/userdlg/info.cpp" line="874"/>
+        <location filename="../src/userdlg/info.cpp" line="885"/>
         <source>Fax:</source>
         <translation type="unfinished">Fax:</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="240"/>
-        <location filename="../src/userdlg/info.cpp" line="841"/>
+        <location filename="../src/userdlg/info.cpp" line="852"/>
         <source>City:</source>
         <translation type="unfinished">Stad:</translation>
     </message>
@@ -5914,21 +5914,21 @@ Markera här för att behålla ändringar av smeknamnet.</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="249"/>
-        <location filename="../src/userdlg/info.cpp" line="853"/>
+        <location filename="../src/userdlg/info.cpp" line="864"/>
         <source>Zip:</source>
         <translation type="unfinished">Postnummer:</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="253"/>
-        <location filename="../src/userdlg/info.cpp" line="856"/>
+        <location filename="../src/userdlg/info.cpp" line="867"/>
         <source>Country:</source>
         <translation type="unfinished">Land:</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="321"/>
-        <location filename="../src/userdlg/info.cpp" line="593"/>
-        <location filename="../src/userdlg/info.cpp" line="917"/>
-        <location filename="../src/userdlg/info.cpp" line="923"/>
+        <location filename="../src/userdlg/info.cpp" line="603"/>
+        <location filename="../src/userdlg/info.cpp" line="928"/>
+        <location filename="../src/userdlg/info.cpp" line="934"/>
         <source>Unknown (%1)</source>
         <translation type="unfinished">Okänd (%1)</translation>
     </message>
@@ -5944,27 +5944,27 @@ Markera här för att behålla ändringar av smeknamnet.</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="382"/>
-        <location filename="../src/userdlg/info.cpp" line="498"/>
-        <location filename="../src/userdlg/info.cpp" line="504"/>
-        <location filename="../src/userdlg/info.cpp" line="522"/>
+        <location filename="../src/userdlg/info.cpp" line="508"/>
+        <location filename="../src/userdlg/info.cpp" line="514"/>
+        <location filename="../src/userdlg/info.cpp" line="532"/>
         <source>Unspecified</source>
         <translation type="unfinished">Ospecificerat</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="383"/>
-        <location filename="../src/userdlg/info.cpp" line="494"/>
+        <location filename="../src/userdlg/info.cpp" line="504"/>
         <source>Female</source>
         <translation type="unfinished">Kvinnlig</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="384"/>
-        <location filename="../src/userdlg/info.cpp" line="496"/>
+        <location filename="../src/userdlg/info.cpp" line="506"/>
         <source>Male</source>
         <translation type="unfinished">Manlig</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="393"/>
-        <location filename="../src/userdlg/info.cpp" line="878"/>
+        <location filename="../src/userdlg/info.cpp" line="889"/>
         <source>Homepage:</source>
         <translation type="unfinished">Hemsida:</translation>
     </message>
@@ -5984,228 +5984,235 @@ Markera här för att behålla ändringar av smeknamnet.</translation>
         <translation type="unfinished">Födelsedag:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="415"/>
-        <source> Day:</source>
-        <translation type="unfinished"> Dag:</translation>
-    </message>
-    <message>
-        <location filename="../src/userdlg/info.cpp" line="419"/>
-        <source> Month:</source>
-        <translation type="unfinished"> Månad:</translation>
+        <location filename="../src/userdlg/info.cpp" line="430"/>
+        <source>Day:</source>
+        <translation type="unfinished">Dag:</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="423"/>
-        <source> Year:</source>
-        <translation type="unfinished"> År:</translation>
+        <source>Month:</source>
+        <translation type="unfinished">Månad:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="437"/>
-        <location filename="../src/userdlg/info.cpp" line="457"/>
+        <location filename="../src/userdlg/info.cpp" line="415"/>
+        <source>Year:</source>
+        <translation type="unfinished">År:</translation>
+    </message>
+    <message>
+        <location filename="../src/userdlg/info.cpp" line="420"/>
+        <location filename="../src/userdlg/info.cpp" line="428"/>
+        <location filename="../src/userdlg/info.cpp" line="435"/>
+        <source>Not set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/userdlg/info.cpp" line="447"/>
+        <location filename="../src/userdlg/info.cpp" line="467"/>
         <source>Language 1:</source>
         <translation type="unfinished">Språk 1:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="440"/>
-        <location filename="../src/userdlg/info.cpp" line="460"/>
+        <location filename="../src/userdlg/info.cpp" line="450"/>
+        <location filename="../src/userdlg/info.cpp" line="470"/>
         <source>Language 2:</source>
         <translation type="unfinished">Språk 2:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="444"/>
-        <location filename="../src/userdlg/info.cpp" line="464"/>
+        <location filename="../src/userdlg/info.cpp" line="454"/>
+        <location filename="../src/userdlg/info.cpp" line="474"/>
         <source>Language 3:</source>
         <translation type="unfinished">Språk 3:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="600"/>
+        <location filename="../src/userdlg/info.cpp" line="610"/>
         <source>Authorization Required</source>
         <translation type="unfinished">Godkännande nödvändigt</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="602"/>
+        <location filename="../src/userdlg/info.cpp" line="612"/>
         <source>Authorization Not Required</source>
         <translation type="unfinished">Godkännande ej nödvändigt</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="608"/>
+        <location filename="../src/userdlg/info.cpp" line="618"/>
         <source>User has an ICQ Homepage </source>
         <translation type="unfinished">Användaren har en ICQ-hemsida </translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="611"/>
+        <location filename="../src/userdlg/info.cpp" line="621"/>
         <source>User has no ICQ Homepage</source>
         <translation type="unfinished">Användaren har ingen ICQ-hemsida</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="769"/>
-        <location filename="../src/userdlg/info.cpp" line="1103"/>
-        <location filename="../src/userdlg/info.cpp" line="1107"/>
+        <location filename="../src/userdlg/info.cpp" line="780"/>
+        <location filename="../src/userdlg/info.cpp" line="1114"/>
+        <location filename="../src/userdlg/info.cpp" line="1118"/>
         <source>Unknown</source>
         <translation type="unfinished">Okänd</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="789"/>
+        <location filename="../src/userdlg/info.cpp" line="800"/>
         <source>(none)</source>
         <translation type="unfinished">(ingen)</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="817"/>
+        <location filename="../src/userdlg/info.cpp" line="828"/>
         <source>Department:</source>
         <translation type="unfinished">Avdelning:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="821"/>
+        <location filename="../src/userdlg/info.cpp" line="832"/>
         <source>Position:</source>
         <translation type="unfinished">Befattning:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="825"/>
+        <location filename="../src/userdlg/info.cpp" line="836"/>
         <source>Occupation:</source>
         <translation type="unfinished">Sysselsättning:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="996"/>
+        <location filename="../src/userdlg/info.cpp" line="1007"/>
         <source>PhoneBook</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1002"/>
+        <location filename="../src/userdlg/info.cpp" line="1013"/>
         <source>Type</source>
         <translation type="unfinished">Typ</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1003"/>
+        <location filename="../src/userdlg/info.cpp" line="1014"/>
         <source>Number/Gateway</source>
         <translation type="unfinished">Nummer/nätsluss</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1004"/>
+        <location filename="../src/userdlg/info.cpp" line="1015"/>
         <source>Country/Provider</source>
         <translation type="unfinished">Land/Operatör</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1013"/>
+        <location filename="../src/userdlg/info.cpp" line="1024"/>
         <source>Currently at:</source>
         <translation type="unfinished">För tillfället vid:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1037"/>
+        <location filename="../src/userdlg/info.cpp" line="1048"/>
         <source>Add...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1041"/>
-        <location filename="../src/userdlg/info.cpp" line="1222"/>
+        <location filename="../src/userdlg/info.cpp" line="1052"/>
+        <location filename="../src/userdlg/info.cpp" line="1233"/>
         <source>Clear</source>
         <translation type="unfinished">Rensa</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1122"/>
-        <location filename="../src/userdlg/info.cpp" line="1124"/>
+        <location filename="../src/userdlg/info.cpp" line="1133"/>
+        <location filename="../src/userdlg/info.cpp" line="1135"/>
         <source>(</source>
         <translation type="unfinished">(</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1122"/>
-        <location filename="../src/userdlg/info.cpp" line="1124"/>
+        <location filename="../src/userdlg/info.cpp" line="1133"/>
+        <location filename="../src/userdlg/info.cpp" line="1135"/>
         <source>) </source>
         <translation type="unfinished">) </translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1127"/>
+        <location filename="../src/userdlg/info.cpp" line="1138"/>
         <source>-</source>
         <translation type="unfinished">-</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1218"/>
-        <location filename="../src/userdlg/info.cpp" line="1367"/>
+        <location filename="../src/userdlg/info.cpp" line="1229"/>
+        <location filename="../src/userdlg/info.cpp" line="1378"/>
         <source>Browse...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1244"/>
-        <location filename="../src/userdlg/info.cpp" line="1710"/>
+        <location filename="../src/userdlg/info.cpp" line="1255"/>
+        <location filename="../src/userdlg/info.cpp" line="1721"/>
         <source>Not Available</source>
         <translation type="unfinished">Ej tillgänglig</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1252"/>
-        <location filename="../src/userdlg/info.cpp" line="1715"/>
+        <location filename="../src/userdlg/info.cpp" line="1263"/>
+        <location filename="../src/userdlg/info.cpp" line="1726"/>
         <source>Failed to Load</source>
         <translation type="unfinished">Misslyckades att ladda</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1299"/>
+        <location filename="../src/userdlg/info.cpp" line="1310"/>
         <source>Last Online:</source>
         <translation type="unfinished">Senast ansluten:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1303"/>
+        <location filename="../src/userdlg/info.cpp" line="1314"/>
         <source>Last Sent Event:</source>
         <translation type="unfinished">Senast skickade händelse:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1307"/>
+        <location filename="../src/userdlg/info.cpp" line="1318"/>
         <source>Last Received Event:</source>
         <translation type="unfinished">Senast mottagna händelse:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1311"/>
+        <location filename="../src/userdlg/info.cpp" line="1322"/>
         <source>Last Checked Auto Response:</source>
         <translation type="unfinished">Senast visade autosvar:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1315"/>
+        <location filename="../src/userdlg/info.cpp" line="1326"/>
         <source>Online Since:</source>
         <translation type="unfinished">Ansluten sedan:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1319"/>
+        <location filename="../src/userdlg/info.cpp" line="1330"/>
         <source>Registration Date:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1334"/>
+        <location filename="../src/userdlg/info.cpp" line="1345"/>
         <source>Now</source>
         <translation type="unfinished">Nu</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1346"/>
+        <location filename="../src/userdlg/info.cpp" line="1357"/>
         <source>Offline</source>
         <translation type="unfinished">Frånkopplad</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1356"/>
+        <location filename="../src/userdlg/info.cpp" line="1367"/>
         <source>KDE Adress Book</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1363"/>
+        <location filename="../src/userdlg/info.cpp" line="1374"/>
         <source>Email:</source>
         <translation type="unfinished">E-post:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1509"/>
+        <location filename="../src/userdlg/info.cpp" line="1520"/>
         <source>You need to be connected to the
 ICQ Network to retrieve your settings.</source>
         <translation type="unfinished">Du måste vara ansluten till
 ICQ-nätverket för att hämta dina inställningar.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1574"/>
+        <location filename="../src/userdlg/info.cpp" line="1585"/>
         <source>You need to be connected to the
 ICQ Network to change your settings.</source>
         <translation type="unfinished">Du måste vara ansluten till
 ICQ-nätverket för att ändra dina inställningar.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1680"/>
-        <location filename="../src/userdlg/info.cpp" line="1684"/>
+        <location filename="../src/userdlg/info.cpp" line="1691"/>
+        <location filename="../src/userdlg/info.cpp" line="1695"/>
         <source>Select your picture</source>
         <translation type="unfinished">Välj din bild</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1695"/>
+        <location filename="../src/userdlg/info.cpp" line="1706"/>
         <source> is over %1 bytes.
 Select another picture?</source>
         <translation type="unfinished"> är mer än %1 bytes
