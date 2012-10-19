@@ -49,12 +49,12 @@
     <message>
         <location filename="../src/dialogs/addgroupdlg.cpp" line="42"/>
         <source>Licq - Add Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq - Gruppe hinzufügen</translation>
     </message>
     <message>
         <location filename="../src/dialogs/addgroupdlg.cpp" line="47"/>
         <source>&amp;Group name:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Gruppenname:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/addgroupdlg.cpp" line="55"/>
@@ -67,7 +67,7 @@
     <message>
         <location filename="../src/dialogs/adduserdlg.cpp" line="45"/>
         <source>Licq - Add User</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq - Benutzer hinzufügen</translation>
     </message>
     <message>
         <location filename="../src/dialogs/adduserdlg.cpp" line="50"/>
@@ -77,12 +77,12 @@
     <message>
         <location filename="../src/dialogs/adduserdlg.cpp" line="71"/>
         <source>&amp;User ID:</source>
-        <translation type="unfinished">&amp;Benutzer-ID:</translation>
+        <translation>&amp;Benutzer-ID:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/adduserdlg.cpp" line="82"/>
         <source>&amp;Notify user</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Benutzer benachrichtigen</translation>
     </message>
     <message>
         <location filename="../src/dialogs/adduserdlg.cpp" line="60"/>
@@ -95,38 +95,38 @@
     <message>
         <location filename="../src/dialogs/authdlg.cpp" line="57"/>
         <source>Licq - Request Authorization</source>
-        <translation type="unfinished">Licq - Autorisierung anfragen</translation>
+        <translation>Licq - Autorisierung anfragen</translation>
     </message>
     <message>
         <location filename="../src/dialogs/authdlg.cpp" line="58"/>
         <source>Request</source>
-        <translation type="unfinished">Mitteilung</translation>
+        <translation>Anfrage</translation>
     </message>
     <message>
         <location filename="../src/dialogs/authdlg.cpp" line="61"/>
         <source>Licq - Grant Authorization</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq - Autorisierung gewähren</translation>
     </message>
     <message>
         <location filename="../src/dialogs/authdlg.cpp" line="62"/>
         <location filename="../src/dialogs/authdlg.cpp" line="66"/>
         <source>Response</source>
-        <translation type="unfinished">Antwort</translation>
+        <translation>Antwort</translation>
     </message>
     <message>
         <location filename="../src/dialogs/authdlg.cpp" line="65"/>
         <source>Licq - Refuse Authorization</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq - Autorisierung ablehnen</translation>
     </message>
     <message>
         <location filename="../src/dialogs/authdlg.cpp" line="75"/>
         <source>&amp;Protocol:</source>
-        <translation type="unfinished">&amp;Protokoll:</translation>
+        <translation>&amp;Protokoll:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/authdlg.cpp" line="83"/>
         <source>&amp;User ID:</source>
-        <translation type="unfinished">&amp;Benutzer-ID:</translation>
+        <translation>&amp;Benutzer-ID:</translation>
     </message>
 </context>
 <context>
@@ -148,7 +148,7 @@ Sie können mir eine Nachricht hinterlassen.
     <message>
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="156"/>
         <source>Set %1 Response for All Accounts</source>
-        <translation type="unfinished"></translation>
+        <translation>Setze %1 Antwort für alle Accounts</translation>
     </message>
     <message>
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="269"/>
@@ -265,67 +265,67 @@ Siehe Netzwerkfenster für Details.</translation>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="290"/>
         <source>Default (UTF-8)</source>
-        <translation type="unfinished"></translation>
+        <translation>Standard (UTF-8)</translation>
     </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="292"/>
         <source>Western Europe (CP 1252)</source>
-        <translation type="unfinished"></translation>
+        <translation>Westeuropäisch (CP 1252)</translation>
     </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="293"/>
         <source>Shift-JIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Shift-JIS</translation>
     </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="294"/>
         <source>Chinese (GBK)</source>
-        <translation type="unfinished"></translation>
+        <translation>Chinesisch (GBK)</translation>
     </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="295"/>
         <source>Chinese Traditional (Big5)</source>
-        <translation type="unfinished"></translation>
+        <translation>Chinesisisch traditionell (Big5)</translation>
     </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="296"/>
         <source>Greek (CP 1253)</source>
-        <translation type="unfinished"></translation>
+        <translation>Griechisch (CP 1253)</translation>
     </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="297"/>
         <source>Turkish (CP 1254)</source>
-        <translation type="unfinished"></translation>
+        <translation>Türkisch (CP 1254)</translation>
     </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="298"/>
         <source>Hebrew (CP 1255)</source>
-        <translation type="unfinished"></translation>
+        <translation>Hebräisch (CP 1255)</translation>
     </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="299"/>
         <source>Arabic (CP 1256)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arabisch (CP 1256)</translation>
     </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="300"/>
         <source>Baltic (CP 1257)</source>
-        <translation type="unfinished"></translation>
+        <translation>Baltisch (CP 1257)</translation>
     </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="301"/>
         <source>Russian (CP 1251)</source>
-        <translation type="unfinished"></translation>
+        <translation>Russisch (CP 1251)</translation>
     </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="302"/>
         <source>Thai (TIS-620)</source>
-        <translation type="unfinished"></translation>
+        <translation>Thai (TIS-620)</translation>
     </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="303"/>
         <source>Central European (CP 1250)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zentraleuropäisch (CP 1250)</translation>
     </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="964"/>
@@ -1241,84 +1241,86 @@ Siehe Netzwerkfenster für Details.</translation>
     <message>
         <location filename="../src/dialogs/filterruledlg.cpp" line="44"/>
         <source>New Event Filter Rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Neue Ereignisfilterregel</translation>
     </message>
     <message>
         <location filename="../src/dialogs/filterruledlg.cpp" line="44"/>
         <source>Edit Event Filter Rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Ereignisfilterregel bearbeiten</translation>
     </message>
     <message>
         <location filename="../src/dialogs/filterruledlg.cpp" line="49"/>
         <source>General</source>
-        <translation type="unfinished">Allgemein</translation>
+        <translation>Allgemein</translation>
     </message>
     <message>
         <location filename="../src/dialogs/filterruledlg.cpp" line="52"/>
         <source>Enable rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Regel aktivieren</translation>
     </message>
     <message>
         <location filename="../src/dialogs/filterruledlg.cpp" line="53"/>
         <source>Uncheck to disable this rule without removing it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Markierung entfernen um diese Regel zu deaktivieren, ohne sie zu löschen.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/filterruledlg.cpp" line="56"/>
         <source>Any protocol</source>
-        <translation type="unfinished"></translation>
+        <translation>Beliebiges Protokoll</translation>
     </message>
     <message>
         <location filename="../src/dialogs/filterruledlg.cpp" line="60"/>
         <source>Action</source>
-        <translation type="unfinished">Aktion</translation>
+        <translation>Aktion</translation>
     </message>
     <message>
         <location filename="../src/dialogs/filterruledlg.cpp" line="63"/>
         <source>Accept normally</source>
-        <translation type="unfinished"></translation>
+        <translation>Normal akzeptieren</translation>
     </message>
     <message>
         <location filename="../src/dialogs/filterruledlg.cpp" line="64"/>
         <source>Accept event and perform normal on event actions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ereignis akzeptieren und normale Ereignisaktionen ausführen.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/filterruledlg.cpp" line="67"/>
         <source>Accept silently</source>
-        <translation type="unfinished"></translation>
+        <translation>Still akzeptieren</translation>
     </message>
     <message>
         <location filename="../src/dialogs/filterruledlg.cpp" line="68"/>
         <source>Add event to history but don&apos;t show it or perform any on event actions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ereignis in Verlauf aufnehmn, aber nicht anzeigen und keine Ereignisaktionen ausführen.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/filterruledlg.cpp" line="71"/>
         <source>Ignore</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorieren</translation>
     </message>
     <message>
         <location filename="../src/dialogs/filterruledlg.cpp" line="72"/>
         <source>Ignore event completely.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ereignis komplett ignorieren.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/filterruledlg.cpp" line="76"/>
         <source>Event Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Ereignistypen</translation>
     </message>
     <message>
         <location filename="../src/dialogs/filterruledlg.cpp" line="95"/>
         <source>Expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausdruck</translation>
     </message>
     <message>
         <location filename="../src/dialogs/filterruledlg.cpp" line="100"/>
         <source>Regular expression to match event text against.
 Leave empty to match any message, otherwise it must match entire message (Hint: Use &quot;.*part.*&quot; to match messages with &quot;part&quot; in them).
 Note: Multibyte characters are not handled so UTF8 characters will be handled as individual bytes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Regulärer Ausdruck, der mit dem Ereignistext verglichen wird.
+Leer lassen um jedwede Nachricht zu matchen, ansonsten muss die gesamte Nachricht gematched werden (Hinweis: &quot;.*Teil.*&quot; matched Nachrichten, die &quot;Teil&quot; enthalten).
+Achtung: Multibyte-Zeichen in UTF-8 Nachrichten werden als einzelne Zeichen behandelt.</translation>
     </message>
 </context>
 <context>
@@ -1449,17 +1451,17 @@ Der Schlüssel wird nicht von ihrem Schlüsselring entfernt.</translation>
     <message>
         <location filename="../src/dialogs/gpgkeyselect.cpp" line="67"/>
         <source>Select GPG Key for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle GPG-Schlüssel für %1 aus</translation>
     </message>
     <message>
         <location filename="../src/dialogs/gpgkeyselect.cpp" line="70"/>
         <source>Select a GPG key for user %1.</source>
-        <translation>Bitte einen GPG-Schlüssel für den Benutzer %1 auswählen</translation>
+        <translation>Bitte einen GPG-Schlüssel für den Benutzer %1 auswählen.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/gpgkeyselect.cpp" line="78"/>
         <source>Use GPG encryption</source>
-        <translation type="unfinished">GPG-Verschlüsselung aktivieren</translation>
+        <translation>GPG-Verschlüsselung aktivieren</translation>
     </message>
     <message>
         <location filename="../src/dialogs/gpgkeyselect.cpp" line="75"/>
@@ -1905,47 +1907,47 @@ Wollen sie die die alte Version laden?</translation>
     <message>
         <location filename="../src/dialogs/logwindow.cpp" line="95"/>
         <source>Status Info</source>
-        <translation type="unfinished">&amp;Status-Info</translation>
+        <translation>Status-Info</translation>
     </message>
     <message>
         <location filename="../src/dialogs/logwindow.cpp" line="96"/>
         <source>Unknown Packets</source>
-        <translation type="unfinished">&amp;Unbekannte Pakete</translation>
+        <translation>Unbekannte Pakete</translation>
     </message>
     <message>
         <location filename="../src/dialogs/logwindow.cpp" line="97"/>
         <source>Errors</source>
-        <translation type="unfinished">&amp;Fehler</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../src/dialogs/logwindow.cpp" line="98"/>
         <source>Warnings</source>
-        <translation type="unfinished">Warnun&amp;gen</translation>
+        <translation>Warnungen</translation>
     </message>
     <message>
         <location filename="../src/dialogs/logwindow.cpp" line="99"/>
         <source>Debug</source>
-        <translation type="unfinished">Debug</translation>
+        <translation>Debug</translation>
     </message>
     <message>
         <location filename="../src/dialogs/logwindow.cpp" line="100"/>
         <source>Raw Packets</source>
-        <translation type="unfinished">Reine Pakete</translation>
+        <translation>Reine Pakete</translation>
     </message>
     <message>
         <location filename="../src/dialogs/logwindow.cpp" line="102"/>
         <source>Set All</source>
-        <translation type="unfinished">Alle &amp;wählen</translation>
+        <translation>Alle wählen</translation>
     </message>
     <message>
         <location filename="../src/dialogs/logwindow.cpp" line="103"/>
         <source>Clear All</source>
-        <translation type="unfinished">Auswahl &amp;aufheben</translation>
+        <translation>Auswahl aufheben</translation>
     </message>
     <message>
         <location filename="../src/dialogs/logwindow.cpp" line="106"/>
         <source>Log Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Loglevel</translation>
     </message>
     <message>
         <location filename="../src/dialogs/logwindow.cpp" line="116"/>
@@ -2078,7 +2080,7 @@ Wollen sie die die alte Version laden?</translation>
     <message>
         <location filename="../src/core/mainwin.cpp" line="195"/>
         <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%c - &lt;/tt&gt;cellular number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%M - &lt;/tt&gt;# pending messages (if any)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%P - &lt;/tt&gt;Protocol&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;Benutzeralias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%c - &lt;/tt&gt;Mobilfunknummer&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;Email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;Vorname&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;Telefonnummer&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;Benutzer IP&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;Nachname&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;Ortszeit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# wartende Nachrichten&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%M - &lt;/tt&gt;# wartende Nachrichten (falls vorhanden)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;Voller Name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;Zuletzt Online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;Online seit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;Benutzerport&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%P - &lt;/tt&gt;Protokoll&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;Voller Status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;Abgekürzter status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;UIN&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;Webseite&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/mainwin.cpp" line="444"/>
@@ -2149,7 +2151,7 @@ Doppelklick - Auto Antwort setzen</translation>
     <message>
         <location filename="../src/core/mainwin.cpp" line="1113"/>
         <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq %1 Plugin&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Hinweise für die Benutzung&lt;br&gt;des Licq %1 Plugins&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Wechseln Sie ihren Status durch Rechtsklick auf das Statuslabel.&lt;/li&gt;&lt;li&gt;Ändern Sie ihre Autoantwort durch Doppelklick auf das Statuslabel.&lt;/li&gt;&lt;li&gt;Zeigen Sie Systemnachrichten durch Doppelklick auf das Nachrichtenlabel an.&lt;/li&gt;&lt;li&gt;Ändern Sie die Gruppe durch Rechtsklick auf das Nachrichtenlabel.&lt;/li&gt;&lt;li&gt;Halten sie die Steuerung-Taste während des Klickens fest um einen Benutzer aus der Kontaktliste zu löschen.&lt;/li&gt;&lt;li&gt;Drücken Sie Strg-Enter in den meisten Eingabefeldern um &quot;Ok&quot; oder &quot;Akzeptieren&quot; auszuwählen..   Z.B. im Senden-Tab des Benutzerfunktionsfenster.&lt;/li&gt;&lt;li&gt;Hier ist eine vollständige Liste von Benutzer-%-Optionen, welche verwendet werden kann bei &lt;b&gt;OnEvent&lt;/b&gt;   Parametern, &lt;b&gt;Autoantworten&lt;/b&gt; und &lt;b&gt;Werkzeugen&lt;/b&gt;:</translation>
     </message>
     <message>
         <location filename="../src/core/mainwin.cpp" line="1130"/>
@@ -2449,12 +2451,12 @@ Doppelklick - Auto Antwort setzen</translation>
     <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="67"/>
         <source>Protocol default</source>
-        <translation type="unfinished"></translation>
+        <translation>Protokollstandard</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="69"/>
         <source>Auto</source>
-        <translation type="unfinished">Auto</translation>
+        <translation>Auto</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="81"/>
@@ -2507,22 +2509,22 @@ Doppelklick - Auto Antwort setzen</translation>
     <message>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="87"/>
         <source>&amp;Add...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Hinzufügen...</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="96"/>
         <source>R&amp;emove...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Entfernen...</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="152"/>
         <source>%1 (Version: %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (Version: %2)</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="185"/>
         <source>%1 (Not loaded)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (Nicht geladen)</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="299"/>
@@ -2888,42 +2890,42 @@ Nachdem sie Online sind, können sie ihre persönlichen Informationen an den Ser
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="136"/>
         <source>First name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorname:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="137"/>
         <source>Last name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nachname:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="138"/>
         <source>Age range:</source>
-        <translation type="unfinished"></translation>
+        <translation>Altersgruppe:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="148"/>
         <source>Company name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmenname:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="149"/>
         <source>Company department:</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmenabteilung:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="150"/>
         <source>Company position:</source>
-        <translation type="unfinished"></translation>
+        <translation>Position in Firma:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="152"/>
         <source>Email address:</source>
-        <translation type="unfinished"></translation>
+        <translation>Emailadresse:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="159"/>
         <source>Return online users only</source>
-        <translation type="unfinished"></translation>
+        <translation>Nur Onlinebenutzer zurückliefern</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="172"/>
@@ -3249,12 +3251,12 @@ Ansonsten enthält das Menü nur die gebräuchlichsten Zeichensätze.</translati
     <message>
         <location filename="../src/settings/chat.cpp" line="288"/>
         <source>Use header to separate days</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutze Titelzeile um Tage zu trennen</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="290"/>
         <source>Add a separating header before first message each day</source>
-        <translation type="unfinished"></translation>
+        <translation>Fügt eine Titelzeile vor jeweils der ersten Nachricht des Tages ein</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="303"/>
@@ -3723,7 +3725,7 @@ Benutzer immer anzeigen</translation>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="274"/>
         <source>Popup Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Popup-Info</translation>
     </message>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="277"/>
@@ -3995,122 +3997,122 @@ Geben sie die Kurztaste buchstäblich ein, wie &quot;shift-f10&quot; oder &quot;
     <message>
         <location filename="../src/settings/events.cpp" line="197"/>
         <source>Rules for Incoming Events</source>
-        <translation type="unfinished"></translation>
+        <translation>Regeln für einkommende Ereignisse</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="203"/>
         <source>Enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktiviert</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="203"/>
         <source>Action</source>
-        <translation type="unfinished">Aktion</translation>
+        <translation>Aktion</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="203"/>
         <source>Protocol</source>
-        <translation type="unfinished">Protokoll</translation>
+        <translation>Protokoll</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="203"/>
         <source>Event Type</source>
-        <translation type="unfinished">Ereignistyp</translation>
+        <translation>Ereignistyp</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="203"/>
         <source>Expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausdruck</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="211"/>
         <source>Hints</source>
-        <translation type="unfinished">Hinweise</translation>
+        <translation>Hinweise</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="214"/>
         <source>Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Zurücksetzen</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="217"/>
         <source>Add</source>
-        <translation type="unfinished">Hinzufügen</translation>
+        <translation>Hinzufügen</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="220"/>
         <source>Remove</source>
-        <translation type="unfinished">Entfernen</translation>
+        <translation>Entfernen</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="223"/>
         <source>Modify</source>
-        <translation type="unfinished"></translation>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="226"/>
         <source>Move Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Nach oben</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="229"/>
         <source>Move Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Nach unten</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="340"/>
         <source>Yes</source>
-        <translation type="unfinished">Ja</translation>
+        <translation>Ja</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="340"/>
         <source>No</source>
-        <translation type="unfinished">Nein</translation>
+        <translation>Nein</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="345"/>
         <source>Accept</source>
-        <translation type="unfinished"></translation>
+        <translation>Akzeptieren</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="346"/>
         <source>Silent</source>
-        <translation type="unfinished"></translation>
+        <translation>Still</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="347"/>
         <source>Ignore</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorieren</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="353"/>
         <source>Any</source>
-        <translation type="unfinished"></translation>
+        <translation>Beliebig</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="373"/>
         <source>(Multiple)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Mehrere)</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="405"/>
         <source>&lt;h2&gt;Hints for Event Filter Rules&lt;/h2&gt;&lt;p&gt;Incoming events are run through the list of rules to decide how to handle them. The first rule to match decides the action and if no rule matches the default action is to accept the event. (To override the default, add a rule last with another action that matches all event types and has an empty expression.)&lt;/p&gt;&lt;p&gt;Any event from a user already in the contact list is always accepted (unless they&apos;re in the ignore list). The event filter is only applied to events from unknown users.&lt;/p&gt;&lt;p&gt;The following actions are available:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Accept - the event as handled as normal and on events performed.&lt;/li&gt;&lt;li&gt;Silent - the event is written to history but otherwise ignored.&lt;/li&gt;&lt;li&gt;Ignore - the event is completely ignored.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;If the expression is empty, it will match any event. Otherwise it is applied as a regular expression to any message in the event. The expression must match the entire message text. (To match only part of a message, enter it as &quot;.*part.*&quot;.)&lt;/p&gt;&lt;p&gt;The filter has a default set of rules that will block some common spam messages. The defaults can be restored by removing the file &quot;~/.licq/filter.conf&quot; while Licq is NOT running.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Hinweise für Ereignisfilterregeln&lt;/h2&gt;&lt;p&gt;Eingehende Ereignisse werde durch diese Liste von Regeln gefiltert, um festzulegen, wie weiter mit ihnen vorzugehen ist. Die erste Regel die zutrifft entscheidet über die auszuführende Aktion, und falls keine Regel zutrifft wird die Standardaktion ausgeführt. (Um die Standardaktion zu überschreiben, füge eine Regel am Ende der Liste ein, welche alle Ereignistypen matched und einen leeren Ausdruck enthält.)&lt;/p&gt;&lt;p&gt;Jegliches Ereignis von einem Benutzer in der Kontaktliste wird immer akzeptiert (es sei denn er befindet sich in der Ignorieren-Liste). Der Ereignisfilter wird nur auf Ereignisse von unbekannten Benutzern angewendet.&lt;/p&gt;&lt;p&gt;Die folgenden Aktionen sind möglich:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Akzeptieren - Das Ereignis wird normal verarbeitet.&lt;/li&gt;&lt;li&gt;Still - Das Ereignis wird in den Verlauf geschrieben, aber ansonsten ignoriert und nicht angezeigt.&lt;/li&gt;&lt;li&gt;Ignorieren - Das Ereignis wird komplett ignoriert.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Falls der Ausdruck leer ist, matched er alle Ereignisse. Ansonsten wird er als regulärer Ausdruck auf die Nachricht angewandt. Der Ausdruck muss dide gesamte Nachricht matchen. (Um einen Teilausdruck zu matchen, verwenden Sie einen Ausdruck wie &quot;.*Teil.*&quot;)&lt;/p&gt;&lt;p&gt;Der Filter hat einige Standardregeln, die häufige Spam-Nachrichten blockieren. Der Standardfilter kann wiederhergestellt werden indem man die Datei &quot;~/.licq/filter.conf&quot; löscht, währen Licq NICHT läuft.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="94"/>
         <source>Auto-popup message:</source>
-        <translation>Nachricht automatisch öffnen</translation>
+        <translation>Nachricht automatisch öffnen:</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="67"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filter</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="78"/>
         <source>Actions on Incoming Messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktionen bei hereinkommenden Nachrichten</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="97"/>
@@ -4209,7 +4211,7 @@ Online beinhaltet auch &quot;Frei für Chat&quot;.</translation>
         <source>Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf
 and a shorter 64x48 icon for use in the Gnome/KDE panel.</source>
         <translation>Wechselt zwischen dem normalen 64x64 Icon, das in WindowMaker und Afterstep benutzt wird
-und einem kleineren 64x48 Icon für das Gnome- oder KDE-Panel</translation>
+und einem kleineren 64x48 Icon für das Gnome- oder KDE-Panel.</translation>
     </message>
     <message>
         <location filename="../src/settings/general.cpp" line="80"/>
@@ -4355,7 +4357,7 @@ Funktioniert mit vielen verschiedenen Fenstermanagern.</translation>
     <message>
         <location filename="../src/settings/network.cpp" line="101"/>
         <source>Proxy server:</source>
-        <translation>Proxy-Server</translation>
+        <translation>Proxy-Server:</translation>
     </message>
     <message>
         <location filename="../src/settings/network.cpp" line="108"/>
@@ -4384,72 +4386,72 @@ Funktioniert mit vielen verschiedenen Fenstermanagern.</translation>
         <location filename="../src/settings/plugins.cpp" line="60"/>
         <location filename="../src/settings/plugins.cpp" line="67"/>
         <source>Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugins</translation>
     </message>
     <message>
         <location filename="../src/settings/plugins.cpp" line="73"/>
         <source>Name</source>
-        <translation type="unfinished">Name</translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../src/settings/plugins.cpp" line="73"/>
         <source>Version</source>
-        <translation type="unfinished">Version</translation>
+        <translation>Version</translation>
     </message>
     <message>
         <location filename="../src/settings/plugins.cpp" line="73"/>
         <source>Enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktiviert</translation>
     </message>
     <message>
         <location filename="../src/settings/plugins.cpp" line="73"/>
         <source>Description</source>
-        <translation type="unfinished">Beschreibung</translation>
+        <translation>Beschreibung</translation>
     </message>
     <message>
         <location filename="../src/settings/plugins.cpp" line="81"/>
         <source>Load</source>
-        <translation type="unfinished">Laden</translation>
+        <translation>Laden</translation>
     </message>
     <message>
         <location filename="../src/settings/plugins.cpp" line="84"/>
         <source>Unload</source>
-        <translation type="unfinished"></translation>
+        <translation>Entladen</translation>
     </message>
     <message>
         <location filename="../src/settings/plugins.cpp" line="87"/>
         <source>Enable</source>
-        <translation type="unfinished">Aktivieren</translation>
+        <translation>Aktivieren</translation>
     </message>
     <message>
         <location filename="../src/settings/plugins.cpp" line="90"/>
         <source>Disable</source>
-        <translation type="unfinished"></translation>
+        <translation>Deaktiveren</translation>
     </message>
     <message>
         <location filename="../src/settings/plugins.cpp" line="93"/>
         <source>Refresh</source>
-        <translation type="unfinished">Auffrischen</translation>
+        <translation>Auffrischen</translation>
     </message>
     <message>
         <location filename="../src/settings/plugins.cpp" line="122"/>
         <source>Yes</source>
-        <translation type="unfinished">Ja</translation>
+        <translation>Ja</translation>
     </message>
     <message>
         <location filename="../src/settings/plugins.cpp" line="122"/>
         <source>No</source>
-        <translation type="unfinished">Nein</translation>
+        <translation>Nein</translation>
     </message>
     <message>
         <location filename="../src/settings/plugins.cpp" line="136"/>
         <source>(Not loaded)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Nicht geladen)</translation>
     </message>
     <message>
         <location filename="../src/settings/plugins.cpp" line="231"/>
         <source>Plugin %1 has no configuration file</source>
-        <translation type="unfinished">Plugin %1 hat keine Konfigurationsdatei</translation>
+        <translation>Plugin %1 hat keine Konfigurationsdatei</translation>
     </message>
 </context>
 <context>
@@ -4607,22 +4609,22 @@ Funktioniert mit vielen verschiedenen Fenstermanagern.</translation>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="98"/>
         <source>Switch status to Online</source>
-        <translation type="unfinished"></translation>
+        <translation>Status auf Online setzen</translation>
     </message>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="99"/>
         <source>Switch status to Away</source>
-        <translation type="unfinished"></translation>
+        <translation>Status auf Abwesend setzen</translation>
     </message>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="101"/>
         <source>Switch status to Occupied</source>
-        <translation type="unfinished"></translation>
+        <translation>Status auf beschäftigt setzen</translation>
     </message>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="104"/>
         <source>Switch status to Offline</source>
-        <translation type="unfinished"></translation>
+        <translation>Status auf Offline setzen</translation>
     </message>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="105"/>
@@ -4800,7 +4802,7 @@ Funktioniert mit vielen verschiedenen Fenstermanagern.</translation>
     <message>
         <location filename="../src/settings/skin.cpp" line="194"/>
         <source>&amp;Edit Skin...</source>
-        <translation type="unfinished"></translation>
+        <translation>Skin b&amp;earbeiten...</translation>
     </message>
     <message>
         <location filename="../src/settings/skin.cpp" line="217"/>
@@ -5229,7 +5231,7 @@ zurückgesetzt werden?</translation>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="175"/>
         <source>&amp;Accounts...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zugänge...</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="176"/>
@@ -5252,7 +5254,7 @@ zurückgesetzt werden?</translation>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="539"/>
         <source>&amp;Settings...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein&amp;stellungen...</translation>
     </message>
 </context>
 <context>
@@ -5487,7 +5489,7 @@ zurückgesetzt werden?</translation>
     <message>
         <location filename="../src/userevents/usereventcommon.cpp" line="250"/>
         <source>Open / close secure channel</source>
-        <translation type="unfinished">Sichere Verbindung</translation>
+        <translation>Sichere Verbindung</translation>
     </message>
     <message>
         <location filename="../src/userevents/usereventcommon.cpp" line="115"/>
@@ -5753,7 +5755,7 @@ zurückgesetzt werden?</translation>
     <message>
         <location filename="../src/core/usermenu.cpp" line="176"/>
         <source>Set GPG Key...</source>
-        <translation type="unfinished"></translation>
+        <translation>GPG Schlüssel setzen...</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="620"/>
@@ -5982,32 +5984,32 @@ Aktivieren Sie dieses Kontrollfeld damit der Alias bei einem Update nicht verän
     <message>
         <location filename="../src/userdlg/info.cpp" line="1303"/>
         <source>Last online:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zuletzt online:</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="1307"/>
         <source>Last sent event:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zuletzt gesendetes Ereignis:</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="1311"/>
         <source>Last received event:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zuletzt empfangenes Ereignis:</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="1315"/>
         <source>Last checked auto response:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zuletzt abgefragte Autoantwort:</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="1319"/>
         <source>Online since:</source>
-        <translation type="unfinished"></translation>
+        <translation>Online seit:</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="1323"/>
         <source>Registration date:</source>
-        <translation type="unfinished"></translation>
+        <translation>Registrierungsdatum:</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="420"/>
@@ -6017,22 +6019,22 @@ Aktivieren Sie dieses Kontrollfeld damit der Alias bei einem Update nicht verän
     <message>
         <location filename="../src/userdlg/info.cpp" line="181"/>
         <source>Keep alias on update</source>
-        <translation type="unfinished"></translation>
+        <translation>Alias behalten bei Update</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="209"/>
         <source>Email 1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Email 1:</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="215"/>
         <source>Email 2:</source>
-        <translation type="unfinished"></translation>
+        <translation>Email 2:</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="219"/>
         <source>Old email:</source>
-        <translation type="unfinished"></translation>
+        <translation>Alte Email:</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="415"/>
@@ -6044,7 +6046,7 @@ Aktivieren Sie dieses Kontrollfeld damit der Alias bei einem Update nicht verän
         <location filename="../src/userdlg/info.cpp" line="423"/>
         <location filename="../src/userdlg/info.cpp" line="428"/>
         <source>Not set</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht gesetzt</translation>
     </message>
     <message>
         <location filename="../src/userdlg/info.cpp" line="440"/>
