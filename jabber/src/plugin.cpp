@@ -24,6 +24,7 @@
 
 #include "client.h"
 #include "handler.h"
+#include "owner.h"
 #include "plugin.h"
 #include "pluginversion.h"
 #include "sessionmanager.h"
@@ -51,11 +52,8 @@ using std::string;
 
 const time_t PING_TIMEOUT = 60;
 
-const char* const JabberConfigFile = "licq_jabber.conf";
-
 Plugin::Plugin(Params& p) :
     Licq::ProtocolPlugin(p),
-    myConfig(JabberConfigFile),
   myHandler(NULL),
   myDoRun(false),
   myClient(NULL)
@@ -78,11 +76,6 @@ string Plugin::name() const
 string Plugin::version() const
 {
   return PLUGIN_VERSION_STRING;
-}
-
-string Plugin::configFile() const
-{
-  return JabberConfigFile;
 }
 
 unsigned long Plugin::protocolId() const
@@ -175,6 +168,11 @@ int Plugin::run()
 void Plugin::destructor()
 {
   delete this;
+}
+
+Licq::Owner* Plugin::createOwner(const Licq::UserId& id)
+{
+  return new Owner(id);
 }
 
 void Plugin::processPipe(int pipe)
@@ -272,8 +270,10 @@ void Plugin::doLogon(Licq::ProtoLogonSignal* signal)
   string password;
   string host;
   int port;
+  string resource;
+  gloox::TLSPolicy tlsPolicy;
   {
-    Licq::OwnerReadGuard owner(JABBER_PPID);
+    OwnerReadGuard owner;
     if (!owner.isLocked())
     {
       gLog.error("No owner set");
@@ -284,10 +284,12 @@ void Plugin::doLogon(Licq::ProtoLogonSignal* signal)
     password = owner->password();
     host = owner->serverHost();
     port = owner->serverPort();
+    resource = owner->resource();
+    tlsPolicy = owner->tlsPolicy();
   }
 
   if (myClient == NULL)
-    myClient = new Client(myConfig, *myHandler, username, password, host, port);
+    myClient = new Client(*myHandler, username, password, host, port, resource, tlsPolicy);
   else
     myClient->setPassword(password);
 

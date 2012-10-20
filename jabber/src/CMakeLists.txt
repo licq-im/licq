@@ -1,8 +1,8 @@
 set(jabber_SRCS
   client.cpp
-  config.cpp
   handler.cpp
   jabberplugin.cpp
+  owner.cpp
   plugin.cpp
   sessionmanager.cpp
   vcard.cpp

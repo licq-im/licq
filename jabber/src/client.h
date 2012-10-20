@@ -65,8 +65,8 @@ class Client : private boost::noncopyable,
                public gloox::VCardHandler
 {
 public:
-  Client(const Config& config, Handler& handler, const std::string& user,
-      const std::string& password, const std::string& host, int port);
+  Client(Handler& handler, const std::string& user, const std::string& password,
+      const std::string& host, int port, const std::string& resource, gloox::TLSPolicy tlsPolicy);
   virtual ~Client();
 
   int getSocket();

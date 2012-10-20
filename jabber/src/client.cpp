@@ -21,7 +21,6 @@
  */
 
 #include "client.h"
-#include "config.h"
 #include "handler.h"
 #include "sessionmanager.h"
 #include "vcard.h"
@@ -66,11 +65,11 @@ bool JClient::checkStreamVersion(const string& version)
   return gloox::Client::checkStreamVersion(version);
 }
 
-Client::Client(const Config& config, Handler& handler, const string& username,
-    const string& password, const string& host, int port) :
+Client::Client(Handler& handler, const string& username, const string& password,
+    const string& host, int port, const string& resource, gloox::TLSPolicy tlsPolicy) :
   myHandler(handler),
   mySessionManager(NULL),
-  myJid(username + "/" + config.getResource()),
+  myJid(username + "/" + resource),
   myClient(myJid, password),
   myTcpClient(NULL),
   myRosterManager(myClient.rosterManager()),
@@ -87,7 +86,7 @@ Client::Client(const Config& config, Handler& handler, const string& username,
   myClient.disco()->setIdentity("client", "pc");
   myClient.disco()->setVersion("Licq", LICQ_VERSION_STRING);
 
-  myClient.setTls(config.getTlsPolicy());
+  myClient.setTls(tlsPolicy);
 
   if (!gDaemon.proxyEnabled())
   {

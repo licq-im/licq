@@ -25,8 +25,6 @@
 
 #include <licq/plugin/protocolplugin.h>
 
-#include "config.h"
-
 #include <gloox/gloox.h>
 
 namespace Licq
@@ -53,7 +51,6 @@ namespace LicqJabber
 {
 
 class Client;
-class Config;
 class Handler;
 
 class Plugin : public Licq::ProtocolPlugin
@@ -65,7 +62,6 @@ public:
   // From Licq::ProtocolPlugin
   std::string name() const;
   std::string version() const;
-  std::string configFile() const;
   unsigned long protocolId() const;
   unsigned long capabilities() const;
   std::string defaultServerHost() const;
@@ -76,6 +72,7 @@ private:
   bool init(int, char**);
   int run();
   void destructor();
+  Licq::Owner* createOwner(const Licq::UserId& id);
 
   void processPipe(int pipe);
   void processSignal(Licq::ProtocolSignal* signal);
@@ -97,7 +94,6 @@ private:
   void doRequestAuth(Licq::ProtoRequestAuthSignal* signal);
   void doRenameGroup(Licq::ProtoRenameGroupSignal* s);
 
-  Config myConfig;
   Handler* myHandler;
   bool myDoRun;
   Client* myClient;

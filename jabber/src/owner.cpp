@@ -1,9 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
- *
- * Please refer to the COPYRIGHT file distributed with this source
- * distribution for the names of the individual contributors.
+ * Copyright (C) 2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,51 +17,52 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "config.h"
+#include "owner.h"
 
 #include <licq/inifile.h>
 
 using namespace LicqJabber;
 
-Config::Config(const std::string& filename) :
-  myFile(NULL),
-  myTlsPolicy(gloox::TLSOptional),
-  myResource("Licq")
+Owner::Owner(const Licq::UserId& id)
+  : Licq::User(id, false, true), Licq::Owner(id)
 {
-  myFile = new Licq::IniFile(filename);
+  Licq::IniFile& conf(userConf());
 
-  if (!myFile->loadFile()) {
-    return;
+  conf.get("JabberResource", myResource, "Licq");
+  std::string tlspolicy;
+  if (!conf.get("JabberTlsPolicy", tlspolicy, "optional"))
+  {
+    // Jabber paremeters missing, this could be due to upgrade from Licq 1.7.x or older
+    Licq::IniFile oldConf("licq_jabber.conf");
+    oldConf.loadFile();
+    oldConf.setSection("network");
+    oldConf.get("TlsPolicy", tlspolicy, "optional");
+    oldConf.get("Resource", myResource, "Licq");
   }
 
-  std::string value;
-  myFile->setSection("network");
-
-  myFile->get("TlsPolicy", value, "optional");
-  if (value == "disabled")
+  if (tlspolicy == "disabled")
     myTlsPolicy = gloox::TLSDisabled;
-  else if (value == "required")
+  else if (tlspolicy == "required")
     myTlsPolicy = gloox::TLSRequired;
   else
     myTlsPolicy = gloox::TLSOptional;
-
-  if (myFile->get("Resource", value) && !value.empty())
-    myResource = value;
 }
 
-Config::~Config()
+Owner::~Owner()
 {
-  myFile->setSection("network");
+  // Empty
+}
 
+void Owner::saveOwnerInfo()
+{
+  Licq::Owner::saveOwnerInfo();
+
+  Licq::IniFile& conf(userConf());
+  conf.set("JabberResource", myResource);
   if (myTlsPolicy == gloox::TLSDisabled)
-    myFile->set("TlsPolicy", "disabled");
+    conf.set("JabberTlsPolicy", "disabled");
   else if (myTlsPolicy == gloox::TLSRequired)
-    myFile->set("TlsPolicy", "required");
+    conf.set("JabberTlsPolicy", "required");
   else if (myTlsPolicy == gloox::TLSOptional)
-    myFile->set("TlsPolicy", "optional");
-
-  myFile->set("Resource", myResource);
-
-  myFile->writeFile();
-  delete myFile;
+    conf.set("JabberTlsPolicy", "optional");
 }
