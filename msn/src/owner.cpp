@@ -33,7 +33,7 @@ Owner::Owner(const Licq::UserId& id)
     Licq::IniFile oldConf("licq_msn.conf");
     oldConf.loadFile();
     oldConf.setSection("network");
-    oldConf.set("ListVersion", myListVersion);
+    oldConf.get("ListVersion", myListVersion);
   }
 }
 
