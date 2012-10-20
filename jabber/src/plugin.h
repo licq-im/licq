@@ -64,7 +64,6 @@ public:
   std::string version() const;
   unsigned long protocolId() const;
   unsigned long capabilities() const;
-  std::string defaultServerHost() const;
   int defaultServerPort() const;
 
 private:

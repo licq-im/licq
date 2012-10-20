@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2011 Licq developers
+ * Copyright (C) 2011-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,6 +58,9 @@ public:
 
   /// Get the plugin's usage instructions
   virtual std::string usage() const = 0;
+
+  /// Configuration file for the plugin. Empty string if none. Path is relative to BASE_DIR
+  virtual std::string configFile() const;
 
   /// Ask the plugin to enable itself
   void enable();

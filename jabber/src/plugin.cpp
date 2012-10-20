@@ -91,11 +91,6 @@ unsigned long Plugin::capabilities() const
       | Licq::ProtocolPlugin::CanSendAuthReq;
 }
 
-string Plugin::defaultServerHost() const
-{
-  return string();
-}
-
 int Plugin::defaultServerPort() const
 {
   return 5222;

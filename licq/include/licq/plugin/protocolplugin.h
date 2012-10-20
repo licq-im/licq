@@ -67,12 +67,6 @@ public:
   /// Get the protocol's unique identifier
   virtual unsigned long protocolId() const = 0;
 
-  /// Get default server host to connect to
-  virtual std::string defaultServerHost() const = 0;
-
-  /// Get default server port to connect to
-  virtual int defaultServerPort() const = 0;
-
   /**
    * Get protocol plugin supported features
    *

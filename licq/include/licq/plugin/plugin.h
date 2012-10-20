@@ -67,9 +67,6 @@ public:
   /// Get the plugin's version.
   virtual std::string version() const = 0;
 
-  /// Configuration file for the plugin. Empty string if none. Path is relative to BASE_DIR
-  virtual std::string configFile() const;
-
   /// Get the name of the library from where the plugin was loaded.
   const std::string& libraryName() const;
 
