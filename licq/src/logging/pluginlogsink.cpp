@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -37,8 +37,12 @@ public:
   void log(Message::Ptr message)
   {
     MutexLocker locker(myMutex);
-    myMessages.push_back(message);
-    myPipe.putChar('M');
+
+    // The pipe is non-blocking so we won't risk hanging here while holding
+    // several mutexes. If putChar fails, don't push this message, the receiver
+    // is either overloaded or hanged and it's just a log message anyway.
+    if (myPipe.putChar('M'))
+      myMessages.push_back(message);
   }
 
   LogSink::Message::Ptr popMessage(bool readPipe)
@@ -62,7 +66,11 @@ public:
 PluginLogSink::PluginLogSink() :
   myPrivate(new Private())
 {
-  // Empty
+  LICQ_D();
+
+  // Make the pipe non-blocking. If a logsink is too slow it's better to drop a
+  // few log messages than to block and risk deadlocking the application.
+  d->myPipe.setWriteBlocking(false);
 }
 
 PluginLogSink::~PluginLogSink()
