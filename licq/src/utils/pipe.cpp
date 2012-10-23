@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,8 @@
  */
 
 #include <licq/pipe.h>
+
+#include <fcntl.h>
 
 using namespace Licq;
 
@@ -40,4 +42,10 @@ ssize_t Pipe::read(void* buf, size_t count)
 ssize_t Pipe::write(const void* buf, size_t count)
 {
   return ::write(getWriteFd(), buf, count);
+}
+
+void Pipe::setWriteBlocking(bool block)
+{
+  int f = ::fcntl(getWriteFd(), F_GETFL);
+  ::fcntl(getWriteFd(), F_SETFL, (block ? (f & ~O_NONBLOCK) : (f | O_NONBLOCK)));
 }
