@@ -53,7 +53,7 @@ FilterRuleDlg::FilterRuleDlg(const Licq::FilterRule* rule, QWidget* parent)
   myEnableCheck->setToolTip(tr("Uncheck to disable this rule without removing it."));
   generalLay->addWidget(myEnableCheck);
 
-  myProtocolCombo = new ProtoComboBox(ProtoComboBox::FilterIncludeAll, tr("Any protocol"));
+  myProtocolCombo = new ProtoComboBox(tr("Any protocol"));
   generalLay->addWidget(myProtocolCombo);
 
 

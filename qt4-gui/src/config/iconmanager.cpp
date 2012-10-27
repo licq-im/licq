@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2011 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -308,6 +308,11 @@ const QPixmap& IconManager::iconForStatus(unsigned status, const Licq::UserId& u
   if (protocol == ProtocolIcq && userId.accountId().size() > 0 && !isdigit(userId.accountId()[0]))
     protocol = ProtocolAim;
 
+  return iconForProtocol(status, protocol, allowInvisible);
+}
+
+const QPixmap& IconManager::iconForProtocol(unsigned status, ProtocolType protocol, bool allowInvisible)
+{
   if (Config::ContactList::instance()->showExtendedIcons() && !allowInvisible)
     // Extended icons shows if user is invisible so skip it here
     status &= ~User::InvisibleStatus;
@@ -338,10 +343,9 @@ const QPixmap& IconManager::iconForStatus(unsigned status, const Licq::UserId& u
   return myStatusIconMap[QPair<ProtocolType, unsigned>(ProtocolIcq, User::OnlineStatus)];
 }
 
-const QPixmap& IconManager::iconForProtocol(unsigned long protocolId)
+const QPixmap& IconManager::iconForProtocol(unsigned long protocolId, unsigned status)
 {
-  Licq::UserId userId = Licq::UserId("1", protocolId);
-  return iconForStatus(Licq::User::OnlineStatus, userId);
+  return iconForProtocol(status, static_cast<ProtocolType>(protocolId));
 }
 
 const QPixmap& IconManager::iconForEvent(unsigned eventType)

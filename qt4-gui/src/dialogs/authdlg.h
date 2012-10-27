@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ class QLineEdit;
 namespace LicqQtGui
 {
 class MLEdit;
-class ProtoComboBox;
+class OwnerComboBox;
 
 
 class AuthDlg : public QDialog
@@ -63,7 +63,7 @@ private slots:
 private:
   enum AuthDlgType myType;
   Licq::UserId myUserId;
-  ProtoComboBox* myProtocolCombo;
+  OwnerComboBox* myOwnerCombo;
   QLineEdit* myAccountIdEdit;
   MLEdit* myMessageEdit;
 };

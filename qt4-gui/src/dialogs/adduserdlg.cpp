@@ -33,7 +33,7 @@
 #include "helpers/support.h"
 
 #include "widgets/groupcombobox.h"
-#include "widgets/protocombobox.h"
+#include "widgets/ownercombobox.h"
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::AddUserDlg */
@@ -47,15 +47,16 @@ AddUserDlg::AddUserDlg(const Licq::UserId& userId, QWidget* parent)
 
   QGridLayout* layDialog = new QGridLayout(this);
 
-  QLabel* lblProtocol = new QLabel(tr("&Protocol:"));
-  myProtocol = new ProtoComboBox(ProtoComboBox::FilterOwnersOnly);
-  myProtocol->setCurrentPpid(userId.protocolId());
-  lblProtocol->setBuddy(myProtocol);
+  QLabel* ownerLabel = new QLabel(tr("&Account:"));
+  myOwnerCombo = new OwnerComboBox();
+  if (userId.isValid())
+    myOwnerCombo->setCurrentOwnerId(Licq::gUserManager.ownerUserId(userId.protocolId()));
+  ownerLabel->setBuddy(myOwnerCombo);
 
   unsigned line = 0;
 
-  layDialog->addWidget(lblProtocol, line, 0);
-  layDialog->addWidget(myProtocol, line++, 1);
+  layDialog->addWidget(ownerLabel, line, 0);
+  layDialog->addWidget(myOwnerCombo, line++, 1);
 
   QLabel* lblGroup = new QLabel(tr("&Group:"));
   myGroup = new GroupComboBox();
@@ -98,7 +99,7 @@ AddUserDlg::AddUserDlg(const Licq::UserId& userId, QWidget* parent)
 void AddUserDlg::ok()
 {
   QString accountId = myId->text().trimmed();
-  Licq::UserId userId(accountId.toLatin1().constData(), myProtocol->currentPpid());
+  Licq::UserId userId(accountId.toUtf8().constData(), myOwnerCombo->currentOwnerId().protocolId());
   int group = myGroup->currentGroupId();
   bool notify = myNotify->isChecked();
   bool added = false;

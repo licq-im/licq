@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,15 +17,20 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef PROTOCOMBOBOX_H
-#define PROTOCOMBOBOX_H
+#ifndef LICQGUI_OWNERCOMBOBOX_H
+#define LICQGUI_OWNERCOMBOBOX_H
 
 #include <QComboBox>
+
+#include <licq/userid.h>
 
 namespace LicqQtGui
 {
 
-class ProtoComboBox : public QComboBox
+/**
+ * Combo box to select an owner
+ */
+class OwnerComboBox : public QComboBox
 {
   Q_OBJECT
 
@@ -33,13 +38,17 @@ public:
   /**
    * Constructor
    *
-   * @param extra Text of additional selection (will use ppid=0)
+   * @param filter Which owner to include
+   * @param extra Text of additional selection (will return invalid userid)
    * @param parent Parent widget
    */
-  ProtoComboBox(const QString& extra = QString(), QWidget* parent = 0);
+  OwnerComboBox(const QString& extra = QString(), QWidget* parent = 0);
 
-  unsigned long currentPpid() const;
-  bool setCurrentPpid(unsigned long ppid);
+  /// Get userid of selected owner
+  Licq::UserId currentOwnerId() const;
+
+  /// Set selection
+  bool setCurrentOwnerId(const Licq::UserId& ownerId);
 };
 
 } // namespace LicqQtGui

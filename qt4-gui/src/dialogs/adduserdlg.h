@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ class QLineEdit;
 namespace LicqQtGui
 {
 class GroupComboBox;
-class ProtoComboBox;
+class OwnerComboBox;
 
 class AddUserDlg : public QDialog
 {
@@ -43,7 +43,7 @@ private:
    QCheckBox* myNotify;
    QLineEdit* myId;
    GroupComboBox* myGroup;
-   ProtoComboBox* myProtocol;
+   OwnerComboBox* myOwnerCombo;
 
 private slots:
    void ok();

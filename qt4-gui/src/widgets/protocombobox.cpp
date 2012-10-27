@@ -21,7 +21,6 @@
 
 #include <boost/foreach.hpp>
 
-#include <licq/contactlist/usermanager.h>
 #include <licq/plugin/pluginmanager.h>
 
 #include "config/iconmanager.h"
@@ -29,37 +28,20 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::ProtoComboBox */
 
-ProtoComboBox::ProtoComboBox(unsigned filter, const QString& extra, QWidget* parent)
+ProtoComboBox::ProtoComboBox(const QString& extra, QWidget* parent)
   : QComboBox(parent)
 {
   if (!extra.isNull())
     addItem(extra, 0);
 
-  fillComboBox(filter);
-}
-
-void ProtoComboBox::fillComboBox(unsigned filter)
-{
   Licq::ProtocolPluginsList protocols;
   Licq::gPluginManager.getProtocolPluginsList(protocols);
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
   {
     unsigned long ppid = protocol->protocolId();
-    Licq::UserId userId = Licq::gUserManager.ownerUserId(ppid);
-    if (userId.isValid())
-    {
-      if (filter == FilterSkipOwners)
-        continue;
-    }
-    else
-    {
-      if (filter == FilterOwnersOnly)
-        continue;
-      userId = Licq::UserId("", ppid);
-    }
 
     addItem(
-        IconManager::instance()->iconForStatus(Licq::User::OnlineStatus, userId), // icon
+        IconManager::instance()->iconForProtocol(ppid, Licq::User::OnlineStatus), // icon
         protocol->name().c_str(), // protocol name
         QString::number(ppid) // user data
         );

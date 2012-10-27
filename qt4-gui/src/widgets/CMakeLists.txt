@@ -9,6 +9,7 @@ set(widgets_SRCS
   messagelist.cpp
   mledit.cpp
   mlview.cpp
+  ownercombobox.cpp
   protocombobox.cpp
   shortcutedit.cpp
   skinnablebutton.cpp

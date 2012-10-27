@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2011 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -170,9 +170,10 @@ public:
    * Note: Will always return ICQ icon for oscar protocol, never AIM
    *
    * @param protocolId Protocol to get icon for
-   * @return Online icon for the requested protocol
+   * @param status Status to get icon for
+   * @return Status icon for the requested protocol
    */
-  const QPixmap& iconForProtocol(unsigned long protocolId);
+  const QPixmap& iconForProtocol(unsigned long protocolId, unsigned status = Licq::User::OnlineStatus);
 
   /**
    * Get icon for a user
@@ -233,6 +234,8 @@ private:
    * Destructor
    */
   virtual ~IconManager() {}
+
+  const QPixmap& iconForProtocol(unsigned status, ProtocolType protocol, bool allowInvisible);
 
   QString myIconSet;
   QString myExtendedIconSet;

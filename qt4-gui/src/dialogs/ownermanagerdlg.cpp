@@ -181,7 +181,7 @@ void OwnerManagerDlg::updateList()
       ppid = JABBER_PPID;
 
     QTreeWidgetItem* protoItem = new QTreeWidgetItem(myOwnerView);
-    protoItem->setIcon(0, iconman->iconForStatus(Licq::User::OfflineStatus, Licq::UserId("1", ppid)));
+    protoItem->setIcon(0, iconman->iconForProtocol(ppid, Licq::User::OfflineStatus));
     protoItem->setText(0, QString(tr("%1 (Not loaded)").arg(protocol.c_str())));
     protoItem->setData(0, Qt::UserRole, protocol.c_str());
   }
