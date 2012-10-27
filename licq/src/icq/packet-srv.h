@@ -379,39 +379,57 @@ protected:
 class CPU_AddToServerList : public CPU_CommonFamily
 {
 public:
-  CPU_AddToServerList(const std::string& name, unsigned short _nType,
-                      unsigned short _nGroup = 0,
+  CPU_AddToServerList(const Licq::UserId& userId, unsigned short _nType,
+      unsigned short _nGroup = 0, bool _bAuthReq = false);
+
+  CPU_AddToServerList(const std::string& groupName,
                       bool _bAuthReq = false, bool _bTopLevel = false);
 
   unsigned short GetSID()   { return m_nSID; }
   unsigned short GetGSID()  { return m_nGSID; }
 
 protected:
+  void init(const std::string& name, unsigned short _nType, bool _bAuthReq, bool _bTopLevel);
+
   unsigned short m_nSID,
                  m_nGSID;
+  Buffer tlvBuffer;
 };
 
 //-----RemoveFromServerList-----------------------------------------------------
 class CPU_RemoveFromServerList : public CPU_CommonFamily
 {
 public:
-  CPU_RemoveFromServerList(const std::string& name, unsigned short _nGSID,
-                           unsigned short _nSID, unsigned short _nType);
+  CPU_RemoveFromServerList(const Licq::UserId& userId, unsigned short _nGSID,
+      unsigned short _nSID, unsigned short _nType);
+  CPU_RemoveFromServerList(const std::string& name, unsigned short _nGSID);
+
+protected:
+  void init(const std::string& name, unsigned short _nGSID,
+      unsigned short _nSID, unsigned short _nType);
+
+  Buffer tlvBuffer;
 };
 
 //-----ClearServerList----------------------------------------------------------
 class CPU_ClearServerList : public CPU_CommonFamily
 {
 public:
-  CPU_ClearServerList(const Licq::StringList& users, unsigned short);
+  CPU_ClearServerList(const std::list<Licq::UserId>& userIds, unsigned short type);
 };
 
 //-----UpdateToServerList-------------------------------------------------------
 class CPU_UpdateToServerList : public CPU_CommonFamily
 {
 public:
-  CPU_UpdateToServerList(const std::string& name, unsigned short _nType,
-                         unsigned short _nSID = 0, bool _bAuthReq = false);
+  CPU_UpdateToServerList(const Licq::UserId& userId, unsigned short _nType, bool _bAuthReq = false);
+  CPU_UpdateToServerList(const std::string& name, unsigned short _nSID = 0);
+protected:
+  void init(const std::string& name, unsigned short _nType, bool _bAuthReq,
+      unsigned short nGSID, unsigned short nSID, unsigned short nExtraLen);
+
+  Buffer tlvBuffer;
+  std::list<unsigned long> groupIds;
 };
 
 //-----SetPrivacy---------------------------------------------------------------
@@ -1152,12 +1170,10 @@ protected:
 class CPU_Meta_RequestAllInfo : public CPU_CommonFamily
 {
 public:
-  CPU_Meta_RequestAllInfo(const std::string& accountId);
+  CPU_Meta_RequestAllInfo(const Licq::UserId& userId);
   virtual unsigned short SubCommand()  { return m_nMetaCommand; }
-  const std::string& accountId() const {  return myAccountId; }
 protected:
   unsigned short m_nMetaCommand;
-  std::string myAccountId;
 };
 
 

@@ -394,6 +394,19 @@ void Buffer::packShortNullStringLE(const string& data)
   incDataPosWrite(data.size()+1);
 }
 
+void Buffer::packString16BE(const char* data, size_t length)
+{
+  assert(remainingDataToWrite() >= length + 2);
+
+  *(uint16_t*)getDataPosWrite() = BE_16(length);
+  incDataPosWrite(2);
+  if (length > 0)
+  {
+    memcpy(getDataPosWrite(), data, length);
+    incDataPosWrite(length);
+  }
+}
+
 void Buffer::packString32LE(const char* data, size_t length)
 {
   assert(remainingDataToWrite() >= length + 4);

@@ -126,14 +126,14 @@ void IcqProtocol::icqAddUserServer(const Licq::UserId& userId, bool _bAuthRequir
   }
   if (!serverGroupExists)
   {
-    CPU_AddToServerList* pAdd = new CPU_AddToServerList(groupName, ICQ_ROSTxGROUP);
+    CPU_AddToServerList* pAdd = new CPU_AddToServerList(groupName);
     int nGSID = pAdd->GetGSID();
     gLog.info(tr("Adding group %s (%d) to server list ..."), groupName.c_str(), nGSID);
     addToModifyUsers(pAdd->SubSequence(), groupName);
     SendExpectEvent_Server(pAdd, NULL);
   }
 
-  CPU_AddToServerList* pAdd = new CPU_AddToServerList(userId.accountId(), ICQ_ROSTxNORMAL,
+  CPU_AddToServerList* pAdd = new CPU_AddToServerList(userId, ICQ_ROSTxNORMAL,
     groupId, _bAuthRequired);
   gLog.info(tr("Adding %s to server list..."), userId.accountId().c_str());
   addToModifyUsers(pAdd->SubSequence(), userId.accountId());
@@ -238,7 +238,7 @@ void IcqProtocol::icqUpdateServerGroups()
   if (!UseServerContactList())  return;
   CSrvPacketTcp *pReply;
 
-  pReply = new CPU_UpdateToServerList("", ICQ_ROSTxGROUP, 0);
+  pReply = new CPU_UpdateToServerList("", 0);
   addToModifyUsers(pReply->SubSequence(), "");
   gLog.info(tr("Updating top level group."));
   SendExpectEvent_Server(pReply, NULL);
@@ -250,7 +250,7 @@ void IcqProtocol::icqUpdateServerGroups()
     unsigned int gid = pGroup->serverId(LICQ_PPID);
     if (gid != 0)
     {
-      pReply = new CPU_UpdateToServerList(pGroup->name(), ICQ_ROSTxGROUP, gid);
+      pReply = new CPU_UpdateToServerList(pGroup->name(), gid);
       gLog.info(tr("Updating group %s."), pGroup->name().c_str());
       addToModifyUsers(pReply->SubSequence(), "");
       SendExpectEvent_Server(pReply, NULL);
@@ -285,14 +285,13 @@ void IcqProtocol::icqChangeGroup(const Licq::UserId& userId)
   if (oldGSID != 0)
   {
     // Don't attempt removing users from the root group, they can't be there
-    CSrvPacketTcp* pRemove =
-        new CPU_RemoveFromServerList(userId.accountId(), oldGSID, nSID, ICQ_ROSTxNORMAL);
+    CSrvPacketTcp* pRemove = new CPU_RemoveFromServerList(userId, oldGSID, nSID, ICQ_ROSTxNORMAL);
     addToModifyUsers(pRemove->SubSequence(), userId.accountId());
     SendExpectEvent_Server(pRemove, NULL);
   }
 
   // Add the user, with the new group
-  CPU_AddToServerList* pAdd = new CPU_AddToServerList(userId.accountId(), ICQ_ROSTxNORMAL, newGroup);
+  CPU_AddToServerList* pAdd = new CPU_AddToServerList(userId, ICQ_ROSTxNORMAL, newGroup);
   addToModifyUsers(pAdd->SubSequence(), userId.accountId());
   SendExpectEvent_Server(pAdd, NULL);
 }
@@ -363,14 +362,14 @@ void IcqProtocol::icqRemoveUser(const Licq::UserId& userId, bool ignored)
       u->save(Licq::User::SaveLicqInfo);
     }
 
-    CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(userId.accountId(),
+    CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(userId,
         nGSID, nSID, (bIgnored ? ICQ_ROSTxIGNORE : ICQ_ROSTxNORMAL));
     addToModifyUsers(pRemove->SubSequence(), userId.accountId());
     SendExpectEvent_Server(pRemove, NULL);
 
     if (nVisibleSID)
     {
-      CSrvPacketTcp* pVisRemove = new CPU_RemoveFromServerList(userId.accountId(), 0,
+      CSrvPacketTcp* pVisRemove = new CPU_RemoveFromServerList(userId, 0,
         nVisibleSID, ICQ_ROSTxVISIBLE);
       /* XXX Check if we get an ack response on this packet
       pthread_mutex_lock(&mutex_modifyserverusers);
@@ -382,7 +381,7 @@ void IcqProtocol::icqRemoveUser(const Licq::UserId& userId, bool ignored)
 
     if (nInvisibleSID)
     {
-      CSrvPacketTcp* pInvisRemove = new CPU_RemoveFromServerList(userId.accountId(), 0,
+      CSrvPacketTcp* pInvisRemove = new CPU_RemoveFromServerList(userId, 0,
           nInvisibleSID, ICQ_ROSTxINVISIBLE);
       /* XXX Check if we get an ack response on this packet
       pthread_mutex_lock(&mutex_modifyserverusers);
@@ -408,8 +407,7 @@ void IcqProtocol::icqRemoveGroup(const Licq::ProtoRemoveGroupSignal* ps)
     ICQ_SNACxLIST_ROSTxEDITxSTART);
   SendEvent_Server(pStart);
 
-  CSrvPacketTcp* pRemove = new CPU_RemoveFromServerList(ps->groupName(),
-      ps->groupServerId(), 0, ICQ_ROSTxGROUP);
+  CSrvPacketTcp* pRemove = new CPU_RemoveFromServerList(ps->groupName(), ps->groupServerId());
   gLog.info(tr("Removing group from server side list (%s)..."), ps->groupName().c_str());
   addToModifyUsers(pRemove->SubSequence(), ps->groupName());
   SendExpectEvent_Server(pRemove, NULL);
@@ -434,7 +432,7 @@ void IcqProtocol::icqRenameGroup(const Licq::ProtoRenameGroupSignal* ps)
   if (serverId == 0)
     return;
 
-  CSrvPacketTcp* pUpdate = new CPU_UpdateToServerList(newName, ICQ_ROSTxGROUP, serverId);
+  CSrvPacketTcp* pUpdate = new CPU_UpdateToServerList(newName, serverId);
   gLog.info(tr("Renaming group with id %d to %s..."), serverId, newName.c_str());
   addToModifyUsers(pUpdate->SubSequence(), newName);
   SendExpectEvent_Server(pUpdate, NULL);
@@ -450,7 +448,7 @@ void IcqProtocol::icqRenameUser(const Licq::UserId& userId)
     newAlias = u->getAlias();
   }
 
-  CSrvPacketTcp* pUpdate = new CPU_UpdateToServerList(userId.accountId(), ICQ_ROSTxNORMAL);
+  CSrvPacketTcp* pUpdate = new CPU_UpdateToServerList(userId, ICQ_ROSTxNORMAL);
   gLog.info(tr("Renaming %s to %s..."), userId.accountId().c_str(), newAlias.c_str());
   addToModifyUsers(pUpdate->SubSequence(), userId.accountId());
   SendExpectEvent_Server(pUpdate, NULL);
@@ -616,7 +614,7 @@ void IcqProtocol::icqRequestMetaInfo(const Licq::UserId& userId, const Licq::Pro
   if (bIsAIM)
     p = new CPU_RequestInfo(userId.accountId());
   else
-    p = new CPU_Meta_RequestAllInfo(userId.accountId());
+    p = new CPU_Meta_RequestAllInfo(userId);
   gLog.info(tr("Requesting meta info for %s (#%hu/#%d)..."),
       userId.toString().c_str(), p->Sequence(), p->SubSequence());
   SendExpectEvent_Server(ps, userId, p, NULL, !bIsAIM);
@@ -933,7 +931,7 @@ unsigned long IcqProtocol::icqUserBasicInfo(const Licq::UserId& userId)
   if (bIsAIM)
     p = new CPU_RequestInfo(userId.accountId());
   else
-    p = new CPU_Meta_RequestAllInfo(userId.accountId());
+    p = new CPU_Meta_RequestAllInfo(userId);
   gLog.info(tr("Requesting user info (#%hu/#%d)..."), p->Sequence(), p->SubSequence());
   Licq::Event* e = SendExpectEvent_Server(userId, p, NULL, !bIsAIM);
   if (e != NULL)
@@ -1117,7 +1115,7 @@ void IcqProtocol::icqAddToVisibleList(const Licq::UserId& userId)
 
   if (UseServerContactList())
   {
-    CSrvPacketTcp* pAdd = new CPU_AddToServerList(userId.accountId(), ICQ_ROSTxVISIBLE);
+    CSrvPacketTcp* pAdd = new CPU_AddToServerList(userId, ICQ_ROSTxVISIBLE);
     addToModifyUsers(pAdd->SubSequence(), userId.accountId());
     SendExpectEvent_Server(pAdd, NULL);
   }
@@ -1141,8 +1139,7 @@ void IcqProtocol::icqRemoveFromVisibleList(const Licq::UserId& userId)
     UserReadGuard u(userId);
     if (u.isLocked())
     {
-      CSrvPacketTcp* pRemove = new CPU_RemoveFromServerList(userId.accountId(), 0, u->GetVisibleSID(),
-        ICQ_ROSTxVISIBLE);
+      CSrvPacketTcp* pRemove = new CPU_RemoveFromServerList(userId, 0, u->GetVisibleSID(), ICQ_ROSTxVISIBLE);
       addToModifyUsers(pRemove->SubSequence(), userId.accountId());
       SendExpectEvent_Server(userId, pRemove, NULL);
     }
@@ -1164,7 +1161,7 @@ void IcqProtocol::icqAddToInvisibleList(const Licq::UserId& userId)
 
   if (UseServerContactList())
   {
-    CSrvPacketTcp* pAdd = new CPU_AddToServerList(userId.accountId(), ICQ_ROSTxINVISIBLE);
+    CSrvPacketTcp* pAdd = new CPU_AddToServerList(userId, ICQ_ROSTxINVISIBLE);
     addToModifyUsers(pAdd->SubSequence(), userId.accountId());
     SendEvent_Server(pAdd);
   }
@@ -1188,8 +1185,7 @@ void IcqProtocol::icqRemoveFromInvisibleList(const Licq::UserId& userId)
     UserReadGuard u(userId);
     if (u.isLocked())
     {
-      CSrvPacketTcp* pRemove = new CPU_RemoveFromServerList(userId.accountId(), 0, u->GetInvisibleSID(),
-        ICQ_ROSTxINVISIBLE);
+      CSrvPacketTcp* pRemove = new CPU_RemoveFromServerList(userId, 0, u->GetInvisibleSID(), ICQ_ROSTxINVISIBLE);
       addToModifyUsers(pRemove->SubSequence(), userId.accountId());
       SendEvent_Server(pRemove);
     }
@@ -1202,8 +1198,7 @@ void IcqProtocol::icqAddToIgnoreList(const Licq::UserId& userId)
   if (!UseServerContactList()) return;
 
   icqRemoveUser(userId);
-  CPU_AddToServerList* pAdd = new CPU_AddToServerList(userId.accountId(), ICQ_ROSTxIGNORE,
-    0, false);
+  CPU_AddToServerList* pAdd = new CPU_AddToServerList(userId, ICQ_ROSTxIGNORE, 0, false);
   SendEvent_Server(pAdd);
 }
 
@@ -1222,7 +1217,7 @@ void IcqProtocol::icqClearServerList()
   if (!UseServerContactList()) return;
 
   unsigned short n = 0;
-  StringList users;
+  std::list<Licq::UserId> users;
 
   // Delete all the users in groups
   {
@@ -1230,7 +1225,7 @@ void IcqProtocol::icqClearServerList()
     BOOST_FOREACH(const Licq::User* u, **userList)
     {
       n++;
-      users.push_back(u->accountId());
+      users.push_back(u->id());
       if (n == myMaxUsersPerPacket)
       {
         CSrvPacketTcp *p = new CPU_ClearServerList(users, ICQ_ROSTxNORMAL);
@@ -1265,7 +1260,7 @@ void IcqProtocol::icqClearServerList()
         if (pUser->GetInvisibleSID())
         {
           n++;
-          users.push_back(pUser->accountId());
+          users.push_back(pUser->id());
         }
       }
 
@@ -1300,7 +1295,7 @@ void IcqProtocol::icqClearServerList()
         if (pUser->GetVisibleSID())
         {
           n++;
-          users.push_back(pUser->accountId());
+          users.push_back(pUser->id());
         }
       }
 
@@ -3703,14 +3698,14 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
               {
                 bTopLevelUpdated = true;
                 if (nListTime == 0)
-                  pReply = new CPU_AddToServerList("", ICQ_ROSTxGROUP, 0, false, true);
+                  pReply = new CPU_AddToServerList("", false, true);
                 else
-                  pReply = new CPU_UpdateToServerList("", ICQ_ROSTxGROUP, 0);
+                  pReply = new CPU_UpdateToServerList("", 0);
                 gLog.info(tr("Updating top level group."));
               }
               else
               {
-                pReply = new CPU_UpdateToServerList(groupName, ICQ_ROSTxGROUP, e->ExtraInfo());
+                pReply = new CPU_UpdateToServerList(groupName, e->ExtraInfo());
                 gLog.info(tr("Updating group %s."), groupName.c_str());
               }
               addToModifyUsers(pReply->SubSequence(), groupName);
@@ -3749,7 +3744,7 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
                 
               if (nError == 0x0E)
               {
-                pReply = new CPU_UpdateToServerList(pending, ICQ_ROSTxNORMAL, 0, true);
+                pReply = new CPU_UpdateToServerList(Licq::UserId(pending, LICQ_PPID), ICQ_ROSTxNORMAL, true);
                 addToModifyUsers(pReply->SubSequence(), pending);
                 SendExpectEvent_Server(pReply, NULL);
               }

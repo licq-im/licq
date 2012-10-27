@@ -2565,23 +2565,13 @@ CPU_AddPDINFOToServerList::CPU_AddPDINFOToServerList()
 }
 
 //-----AddToServerList----------------------------------------------------------
-CPU_AddToServerList::CPU_AddToServerList(const string& name,
+CPU_AddToServerList::CPU_AddToServerList(const Licq::UserId& userId,
                                          unsigned short _nType,
-                                         unsigned short _nGroup, bool _bAuthReq,
-                                         bool _bTopLevel)
+                                         unsigned short _nGroup, bool _bAuthReq)
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxADD),
-    m_nSID(0),
+    m_nSID(IcqProtocol::generateSid()),
     m_nGSID(0)
 {
-  UserId userId(name, LICQ_PPID);
-  unsigned short nStrLen = name.size();
-  unsigned short nExportSize = 0;
-  string unicodeName;
-  TlvList tlvs;
-  Buffer tlvBuffer;
-
-  m_nSID = IcqProtocol::generateSid();
-
   switch (_nType)
   {
     case ICQ_ROSTxNORMAL:
@@ -2634,7 +2624,7 @@ CPU_AddToServerList::CPU_AddToServerList(const string& name,
 
       // Get all the TLV's attached to this user, otherwise the server will delete
       // all of the ones that we don't send
-      tlvs = u->GetTLVList();
+      TlvList tlvs = u->GetTLVList();
 
       // We need to iterate two times since we don't have a dynamic CBuffer
       unsigned short extraTlvSize = 0;
@@ -2653,27 +2643,6 @@ CPU_AddToServerList::CPU_AddToServerList(const string& name,
       u->SetGSID(m_nGSID);
       u->addToGroup(IcqProtocol::getGroupFromId(m_nGSID));
 
-      break;
-    }
-
-    case ICQ_ROSTxGROUP:
-    {
-      // the way it works
-      m_nGSID = _bTopLevel ? 0 : m_nSID;
-      m_nSID = 0;
-      SetExtraInfo(0);
-
-      unicodeName = gTranslator.toUnicode(name);
-      nStrLen = unicodeName.size();
-
-      if (_bTopLevel)
-        nExportSize += 4 + (2 * gUserManager.NumGroups());
-      else
-      {
-        int groupId = Licq::gUserManager.GetGroupFromName(name);
-        if (groupId != 0)
-          Licq::gUserManager.setGroupServerId(groupId, LICQ_PPID, m_nGSID);
-      }
       break;
     }
 
@@ -2699,12 +2668,37 @@ CPU_AddToServerList::CPU_AddToServerList(const string& name,
     }
   }
 
+  init(userId.accountId(), _nType, _bAuthReq, false);
+}
+
+CPU_AddToServerList::CPU_AddToServerList(const std::string& groupName,
+    bool _bAuthReq, bool _bTopLevel)
+  : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxADD),
+    m_nSID(0),
+    m_nGSID(_bTopLevel ? 0 : IcqProtocol::generateSid())
+{
+  SetExtraInfo(0);
+
+  if (!_bTopLevel)
+  {
+    int groupId = Licq::gUserManager.GetGroupFromName(groupName);
+    if (groupId != 0)
+      Licq::gUserManager.setGroupServerId(groupId, LICQ_PPID, m_nGSID);
+  }
+
+  init(gTranslator.toUnicode(groupName), ICQ_ROSTxGROUP, _bAuthReq, _bTopLevel);
+}
+
+void CPU_AddToServerList::init(const string& name, unsigned short _nType, bool _bAuthReq, bool _bTopLevel)
+{
+  unsigned short nExportSize = (_bTopLevel ? (4 + (2 * gUserManager.NumGroups())) : 0);
+
   // Do we need extras since we handle the tlvs as a complete block?
-  m_nSize += 10+nStrLen+nExportSize+(_bAuthReq ? 4 : 0)+tlvBuffer.getDataSize();
+  m_nSize += 10+name.size()+nExportSize+(_bAuthReq ? 4 : 0)+tlvBuffer.getDataSize();
+
   InitBuffer();
 
-  buffer->PackUnsignedShortBE(nStrLen);
-  buffer->pack(!unicodeName.empty() ? unicodeName : name);
+  buffer->packString16BE(name);
   buffer->PackUnsignedShortBE(m_nGSID);
   buffer->PackUnsignedShortBE(m_nSID);
   buffer->PackUnsignedShortBE(_nType);
@@ -2731,8 +2725,8 @@ CPU_AddToServerList::CPU_AddToServerList(const string& name,
       // TODO Have this be a part of tlvBuffer
       buffer->PackUnsignedShortBE(0x0131);
       buffer->PackUnsignedShortBE(nExportSize-4);
-      if (!unicodeName.empty())
-        buffer->Pack(unicodeName.c_str(), nExportSize-4);
+      if (_nType == ICQ_ROSTxGROUP)
+        buffer->Pack(name.c_str(), nExportSize-4);
     }
   }
 
@@ -2745,15 +2739,10 @@ CPU_AddToServerList::CPU_AddToServerList(const string& name,
 }
 
 //-----RemoveFromServerList-----------------------------------------------------
-CPU_RemoveFromServerList::CPU_RemoveFromServerList(const string& name,
+CPU_RemoveFromServerList::CPU_RemoveFromServerList(const Licq::UserId& userId,
 	unsigned short _nGSID, unsigned short _nSID, unsigned short _nType)
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxREM)
 {
-  UserId userId(name, LICQ_PPID);
-  int nNameLen = name.size();
-  string unicodeName;
-  Buffer tlvBuffer;
-
   if (_nType == ICQ_ROSTxNORMAL)
   {
     UserReadGuard u(userId);
@@ -2774,17 +2763,24 @@ CPU_RemoveFromServerList::CPU_RemoveFromServerList(const string& name,
         tlvBuffer.PackTLV(tlv_iter->second);
     }
   }
-  else if (_nType == ICQ_ROSTxGROUP)
-  {
-    unicodeName = gTranslator.toUnicode(name);
-    nNameLen = unicodeName.size();
-  }
 
-  m_nSize += 10+nNameLen+tlvBuffer.getDataSize();
+  init(userId.accountId(), _nGSID, _nSID, _nType);
+}
+
+CPU_RemoveFromServerList::CPU_RemoveFromServerList(const string& groupName,
+	unsigned short _nGSID)
+  : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxREM)
+{
+  init(gTranslator.toUnicode(groupName), _nGSID, 0, ICQ_ROSTxGROUP);
+}
+
+void CPU_RemoveFromServerList::init(const string& name,
+    unsigned short _nGSID, unsigned short _nSID, unsigned short _nType)
+{
+  m_nSize += 10+name.size()+tlvBuffer.getDataSize();
   InitBuffer();
 
-  buffer->PackUnsignedShortBE(nNameLen);
-  buffer->pack(!unicodeName.empty() ? unicodeName : name);
+  buffer->packString16BE(name);
   buffer->PackUnsignedShortBE(_nGSID);
   buffer->PackUnsignedShortBE(_nSID);
   buffer->PackUnsignedShortBE(_nType);
@@ -2799,23 +2795,22 @@ CPU_RemoveFromServerList::CPU_RemoveFromServerList(const string& name,
 }
 
 //-----ClearServerList------------------------------------------------------
-CPU_ClearServerList::CPU_ClearServerList(const StringList& uins,
+CPU_ClearServerList::CPU_ClearServerList(const std::list<Licq::UserId>& userIds,
                                          unsigned short _nType)
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxREM)
 {
   int nSize = 0;
-  StringList::const_iterator i;
+  std::list<Licq::UserId>::const_iterator i;
 
   if (_nType == ICQ_ROSTxGROUP)
     return;
 
-  for (i = uins.begin(); i != uins.end(); ++i)
+  for (i = userIds.begin(); i != userIds.end(); ++i)
   {
-    UserId userId(*i, LICQ_PPID);
-    Licq::UserReadGuard u(userId);
+    Licq::UserReadGuard u(*i);
     if (u.isLocked())
     {
-      nSize += i->size() + 2;
+      nSize += i->accountId().size() + 2;
       nSize += 8;
       if (u->GetAwaitingAuth())
         nSize += 4;
@@ -2825,10 +2820,9 @@ CPU_ClearServerList::CPU_ClearServerList(const StringList& uins,
   m_nSize += nSize;
   InitBuffer();
 
-  for (i = uins.begin(); i != uins.end(); i++)
+  for (i = userIds.begin(); i != userIds.end(); i++)
   {
-    UserId userId(*i, LICQ_PPID);
-    UserWriteGuard pUser(userId);
+    UserWriteGuard pUser(*i);
     if (pUser.isLocked())
     {
       bool bAuthReq = pUser->GetAwaitingAuth();
@@ -2837,8 +2831,7 @@ CPU_ClearServerList::CPU_ClearServerList(const StringList& uins,
       if (_nType == ICQ_ROSTxNORMAL)
         nGSID = pUser->GetGSID();
 
-      buffer->PackUnsignedShortBE(i->size());
-      buffer->Pack(i->c_str(), i->size());
+      buffer->packString16BE(i->accountId());
       buffer->PackUnsignedShortBE(nGSID);
       buffer->PackUnsignedShortBE(pUser->GetSID());
       buffer->PackUnsignedShortBE(_nType);
@@ -2867,21 +2860,14 @@ CPU_ClearServerList::CPU_ClearServerList(const StringList& uins,
 }
 
 //-----UpdateToServerList---------------------------------------------------
-CPU_UpdateToServerList::CPU_UpdateToServerList(const string& name,
+CPU_UpdateToServerList::CPU_UpdateToServerList(const Licq::UserId& userId,
                                                unsigned short _nType,
-                                               unsigned short _nGSID, // only for groups
                                                bool _bAuthReq)
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxUPD_GROUP)
 {
-  UserId userId(name, LICQ_PPID);
   unsigned short nGSID = 0;
   unsigned short nSID = 0;
   unsigned short nExtraLen = 0;
-  unsigned short nNameLen = name.size();
-  string unicodeName;
-  Buffer tlvBuffer;
-
-  list<unsigned long> groupIds;
 
   switch (_nType)
   {
@@ -2917,54 +2903,55 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const string& name,
 
       break;
     }
+  }
 
-    case ICQ_ROSTxGROUP:
+  init(userId.accountId(), _nType, _bAuthReq, nGSID, nSID, nExtraLen);
+}
+
+CPU_UpdateToServerList::CPU_UpdateToServerList(const string& name, unsigned short nGSID)
+  : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxUPD_GROUP)
+{
+  unsigned short nExtraLen = 0;
+
+  if (nGSID == 0)
+  {
+    // Get group ids from list, we'll need them later
+    Licq::GroupListGuard groups;
+    BOOST_FOREACH(const Group* i, **groups)
     {
-      nGSID = _nGSID;
-      nSID = 0;
-
-      if (nGSID == 0)
-      {
-        // Get group ids from list, we'll need them later
-        Licq::GroupListGuard groups;
-        BOOST_FOREACH(const Group* i, **groups)
-        {
-          i->lockRead();
-          groupIds.push_back(i->serverId(LICQ_PPID));
-          i->unlockRead();
-        }
-        nExtraLen += (groups->size() * 2);
-      }
-      else
-      {
-        unicodeName = gTranslator.toUnicode(name);
-        nNameLen = unicodeName.size();
-
-        Licq::UserListGuard userList;
-        BOOST_FOREACH(const Licq::User* user, **userList)
-        {
-          if (user->protocolId() != LICQ_PPID)
-            continue;
-          UserReadGuard pUser(dynamic_cast<const User*>(user));
-          if (pUser->GetGSID() == nGSID)
-            nExtraLen += 2;
-        }
-      }
-
-      if (nExtraLen)
-        nExtraLen += 4;
-      break;
+      i->lockRead();
+      groupIds.push_back(i->serverId(LICQ_PPID));
+      i->unlockRead();
+    }
+    nExtraLen += (groups->size() * 2);
+  }
+  else
+  {
+    Licq::UserListGuard userList;
+    BOOST_FOREACH(const Licq::User* user, **userList)
+    {
+      if (user->protocolId() != LICQ_PPID)
+        continue;
+      UserReadGuard pUser(dynamic_cast<const User*>(user));
+      if (pUser->GetGSID() == nGSID)
+        nExtraLen += 2;
     }
   }
 
-  m_nSize += 10 + nNameLen + nExtraLen + (_bAuthReq ? 4 : 0);
+  if (nExtraLen)
+    nExtraLen += 4;
+
+  init(gTranslator.toUnicode(name), ICQ_ROSTxGROUP, false, nGSID, 0, nExtraLen);
+}
+
+void CPU_UpdateToServerList::init(const std::string& name, unsigned short _nType, bool _bAuthReq,
+    unsigned short nGSID, unsigned short nSID, unsigned short nExtraLen)
+{
+  m_nSize += 10 + name.size() + nExtraLen + (_bAuthReq ? 4 : 0);
   InitBuffer();
 
-  buffer->PackUnsignedShortBE(nNameLen);
-  if (!unicodeName.empty() && _nType == ICQ_ROSTxGROUP)
-    buffer->pack(unicodeName);
-  else
-    buffer->pack(name);
+  buffer->PackUnsignedShortBE(name.size());
+  buffer->pack(name);
   buffer->PackUnsignedShortBE(nGSID);
   buffer->PackUnsignedShortBE(nSID);
   buffer->PackUnsignedShortBE(_nType);
@@ -3778,14 +3765,13 @@ CPU_Meta_SetSecurityInfo::CPU_Meta_SetSecurityInfo(
 
 
 //-----Meta_RequestInfo------------------------------------------------------
-CPU_Meta_RequestAllInfo::CPU_Meta_RequestAllInfo(const string& accountId)
+CPU_Meta_RequestAllInfo::CPU_Meta_RequestAllInfo(const Licq::UserId& userId)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
-  if (accountId == gUserManager.ownerUserId(LICQ_PPID).accountId())
+  if (userId == gUserManager.ownerUserId(LICQ_PPID))
     m_nMetaCommand = ICQ_CMDxMETA_REQUESTxALLxINFO;
   else
     m_nMetaCommand = ICQ_CMDxMETA_REQUESTxALLxINFOxOWNER;
-  myAccountId = accountId;
 
   int packetSize = 2+2+2+4+2+2+2+4;
   m_nSize += packetSize;
@@ -3799,7 +3785,7 @@ CPU_Meta_RequestAllInfo::CPU_Meta_RequestAllInfo(const string& accountId)
   buffer->PackUnsignedShortBE(0xd007); // type
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); // subtype
-  buffer->PackUnsignedLong(strtoul(myAccountId.c_str(), (char **)NULL, 10));
+  buffer->PackUnsignedLong(strtoul(userId.accountId().c_str(), (char **)NULL, 10));
 }
 
 //-----Meta_RequestInfo------------------------------------------------------
