@@ -23,6 +23,7 @@
 #include <licq/icq/chat.h>
 
 #include <deque>
+#include <list>
 #include <pthread.h>
 #include <string>
 
@@ -30,6 +31,45 @@
 
 namespace LicqIcq
 {
+class CPChat_ColorFond;
+class User;
+
+class CChatClient
+{
+public:
+  CChatClient();
+  CChatClient(const User* u);
+  CChatClient(const CChatClient &);
+  CChatClient& operator=(const CChatClient &);
+  ~CChatClient();
+
+  // Initialize from the handshake buffer (does not set the session
+  // or port fields however)
+  bool LoadFromHandshake_v2(Licq::Buffer&);
+  bool LoadFromHandshake_v4(Licq::Buffer&);
+  bool LoadFromHandshake_v6(Licq::Buffer&);
+  bool LoadFromHandshake_v7(Licq::Buffer&);
+
+  unsigned long m_nVersion;
+  unsigned short m_nPort;
+  unsigned long myUin;
+  unsigned long m_nIp;
+  unsigned long m_nIntIp;
+  char m_nMode;
+  unsigned short m_nSession;
+  unsigned long m_nHandshake;
+  unsigned short m_nId;
+
+protected:
+  CChatClient(Licq::Buffer&);
+  bool LoadFromBuffer(Licq::Buffer&);
+
+  friend class CPChat_ColorFont;
+};
+
+typedef std::list<CChatClient> ChatClientList;
+typedef std::list<CChatClient *> ChatClientPList;
+
 
 class ChatUser : public CChatUser
 {

@@ -25,10 +25,10 @@
 #include <string>
 
 #include <licq/buffer.h>
-#include <licq/icq/chat.h> // ChatClientList
 #include <licq/userid.h>
 #include <licq/packet.h>
 
+#include "chat.h" // ChatClientList
 #include "defines.h"
 
 namespace Licq
@@ -667,7 +667,7 @@ public:
 
   // Accessors
   const std::string& name() const { return myName; }
-  const Licq::UserId& userId() const { return myUserId; }
+  unsigned long uin() const { return myUin; }
   unsigned short Port() { return m_nPort; }
   int ColorForeRed() { return m_nColorForeRed; }
   int ColorForeGreen() { return m_nColorForeGreen; }
@@ -679,7 +679,7 @@ public:
   virtual ~CPChat_Color();
 
 protected:
-  Licq::UserId myUserId;
+  unsigned long myUin;
   std::string myName;
   unsigned short m_nPort;
   int m_nColorForeRed;
@@ -712,7 +712,7 @@ public:
 
   // Accessors
   const std::string& name() const { return myName; }
-  const Licq::UserId& userId() const { return myUserId; }
+  unsigned long uin() const { return myUin; }
   unsigned short Session() { return m_nSession; }
   int ColorForeRed() { return m_nColorForeRed; }
   int ColorForeGreen() { return m_nColorForeGreen; }
@@ -733,7 +733,7 @@ public:
   ChatClientList &ChatClients()  { return chatClients; }
 
 protected:
-  Licq::UserId myUserId;
+  unsigned long myUin;
   unsigned short m_nSession;
   std::string myName;
   int m_nColorForeRed;

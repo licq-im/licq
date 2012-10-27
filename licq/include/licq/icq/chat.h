@@ -35,10 +35,9 @@ class UserId;
 
 namespace LicqIcq
 {
+class CChatClient;
 class ChatUser;
 class DcSocket;
-class User;
-class CPChat_ColorFont;
 }
 
 /*----------------------
@@ -197,43 +196,6 @@ typedef std::list<SVoteInfo *> VoteInfoList;
 
 class CChatManager;
 
-//-----ChatColorFont------------------------------------------------------------
-class CChatClient
-{
-public:
-  CChatClient();
-  CChatClient(const LicqIcq::User* u);
-  CChatClient(const CChatClient &);
-  CChatClient& operator=(const CChatClient &);
-  ~CChatClient();
-
-  // Initialize from the handshake buffer (does not set the session
-  // or port fields however)
-  bool LoadFromHandshake_v2(Licq::Buffer&);
-  bool LoadFromHandshake_v4(Licq::Buffer&);
-  bool LoadFromHandshake_v6(Licq::Buffer&);
-  bool LoadFromHandshake_v7(Licq::Buffer&);
-
-  unsigned long m_nVersion;
-  unsigned short m_nPort;
-  Licq::UserId myUserId;
-  unsigned long m_nIp;
-  unsigned long m_nIntIp;
-  char m_nMode;
-  unsigned short m_nSession;
-  unsigned long m_nHandshake;
-  unsigned short m_nId;
-  
-protected:
-  CChatClient(Licq::Buffer&);
-  bool LoadFromBuffer(Licq::Buffer&);
-
-  friend class LicqIcq::CPChat_ColorFont;
-};
-
-typedef std::list<CChatClient> ChatClientList;
-typedef std::list<CChatClient *> ChatClientPList;
-
 
 //=====CChatUser=============================================================
 extern "C"
@@ -385,7 +347,7 @@ protected:
   ThreadList waitingThreads;
   pthread_mutex_t thread_list_mutex;
   pthread_t thread_chat;
-  CChatClient *m_pChatClient;
+  LicqIcq::CChatClient *m_pChatClient;
 
   int m_nColorFore[3], m_nColorBack[3];
   std::string myName;
@@ -401,7 +363,7 @@ protected:
   bool m_bThreadCreated;
 
   bool StartChatServer();
-  bool ConnectToChat(CChatClient *);
+  bool ConnectToChat(LicqIcq::CChatClient *);
   bool SendChatHandshake(LicqIcq::ChatUser*);
   LicqIcq::ChatUser* FindChatUser(int);
   void CloseClient(LicqIcq::ChatUser*);
