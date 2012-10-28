@@ -47,7 +47,8 @@ using std::string;
 
 #define TRACE() Licq::gLog.debug("In Handler::%s()", __func__)
 
-Handler::Handler()
+Handler::Handler(const Licq::UserId& ownerId)
+  : myOwnerId(ownerId)
 {
   // Empty
 }
@@ -57,7 +58,7 @@ void Handler::onConnect(const string& ip, int port, unsigned status)
   TRACE();
 
   {
-    Licq::OwnerWriteGuard owner(JABBER_PPID);
+    Licq::OwnerWriteGuard owner(myOwnerId);
     if (owner.isLocked())
     {
       owner->statusChanged(status);
@@ -68,14 +69,14 @@ void Handler::onConnect(const string& ip, int port, unsigned status)
 
   Licq::gPluginManager.pushPluginSignal(
       new Licq::PluginSignal(Licq::PluginSignal::SignalLogon,
-      0, gUserManager.ownerUserId(JABBER_PPID)));
+      0, myOwnerId));
 }
 
 void Handler::onChangeStatus(unsigned status)
 {
   TRACE();
 
-  Licq::OwnerWriteGuard owner(JABBER_PPID);
+  Licq::OwnerWriteGuard owner(myOwnerId);
   if (owner.isLocked())
     owner->statusChanged(status);
 }
@@ -85,7 +86,7 @@ void Handler::onDisconnect(bool authError)
   TRACE();
 
   {
-    Licq::UserListGuard userList(JABBER_PPID);
+    Licq::UserListGuard userList(myOwnerId);
     BOOST_FOREACH(Licq::User* licqUser, **userList)
     {
       Licq::UserWriteGuard user(licqUser);
@@ -95,7 +96,7 @@ void Handler::onDisconnect(bool authError)
   }
 
   {
-    Licq::OwnerWriteGuard owner(JABBER_PPID);
+    Licq::OwnerWriteGuard owner(myOwnerId);
     if (owner.isLocked())
       owner->statusChanged(Licq::User::OfflineStatus);
   }
@@ -105,7 +106,7 @@ void Handler::onDisconnect(bool authError)
                              authError ?
                              Licq::PluginSignal::LogoffPassword :
                              Licq::PluginSignal::LogoffRequested,
-                             gUserManager.ownerUserId(JABBER_PPID)));
+                             myOwnerId));
 }
 
 void Handler::onUserAdded(
@@ -216,7 +217,7 @@ void Handler::onRosterReceived(const std::set<string>& ids)
   std::list<UserId>::const_iterator it;
 
   {
-    Licq::UserListGuard userList(JABBER_PPID);
+    Licq::UserListGuard userList(myOwnerId);
     BOOST_FOREACH(const Licq::User* user, **userList)
     {
       if (ids.count(user->accountId()) == 0)
@@ -241,7 +242,7 @@ void Handler::onUserAuthorizationRequest(
       message,
       time(0), 0);
 
-  Licq::OwnerWriteGuard owner(JABBER_PPID);
+  Licq::OwnerWriteGuard owner(myOwnerId);
   if (Licq::gDaemon.addUserEvent(*owner, event))
   {
     event->AddToHistory(*owner, true);
@@ -287,7 +288,7 @@ string Handler::getStatusMessage(unsigned status)
   if ((status & Licq::User::MessageStatuses) == 0)
     return string();
 
-  Licq::OwnerReadGuard o(JABBER_PPID);
+  Licq::OwnerReadGuard o(myOwnerId);
   if (!o.isLocked())
     return string();
 

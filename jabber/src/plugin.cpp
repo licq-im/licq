@@ -23,7 +23,6 @@
 #include <boost/foreach.hpp>
 
 #include "client.h"
-#include "handler.h"
 #include "owner.h"
 #include "plugin.h"
 #include "pluginversion.h"
@@ -54,18 +53,15 @@ const time_t PING_TIMEOUT = 60;
 
 Plugin::Plugin(Params& p) :
     Licq::ProtocolPlugin(p),
-  myHandler(NULL),
   myDoRun(false),
   myClient(NULL)
 {
   gLog.debug("Using gloox version %s", gloox::GLOOX_VERSION.c_str());
-  myHandler = new Handler();
 }
 
 Plugin::~Plugin()
 {
   delete myClient;
-  delete myHandler;
 }
 
 string Plugin::name() const
@@ -268,7 +264,7 @@ void Plugin::doLogon(Licq::ProtoLogonSignal* signal)
   string resource;
   gloox::TLSPolicy tlsPolicy;
   {
-    OwnerReadGuard owner;
+    OwnerReadGuard owner(signal->userId());
     if (!owner.isLocked())
     {
       gLog.error("No owner set");
@@ -284,7 +280,7 @@ void Plugin::doLogon(Licq::ProtoLogonSignal* signal)
   }
 
   if (myClient == NULL)
-    myClient = new Client(*myHandler, username, password, host, port, resource, tlsPolicy);
+    myClient = new Client(signal->userId(), username, password, host, port, resource, tlsPolicy);
   else
     myClient->setPassword(password);
 
@@ -455,7 +451,7 @@ void Plugin::doRequestAuth(Licq::ProtoRequestAuthSignal* signal)
 
 void Plugin::doRenameGroup(Licq::ProtoRenameGroupSignal* s)
 {
-  Licq::UserListGuard userList(JABBER_PPID);
+  Licq::UserListGuard userList(s->userId());
   BOOST_FOREACH(Licq::User* licqUser, **userList)
   {
     Licq::UserReadGuard user(licqUser);

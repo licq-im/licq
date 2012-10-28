@@ -51,7 +51,6 @@ namespace LicqJabber
 {
 
 class Client;
-class Handler;
 
 class Plugin : public Licq::ProtocolPlugin
 {
@@ -93,7 +92,6 @@ private:
   void doRequestAuth(Licq::ProtoRequestAuthSignal* signal);
   void doRenameGroup(Licq::ProtoRenameGroupSignal* s);
 
-  Handler* myHandler;
   bool myDoRun;
   Client* myClient;
 };

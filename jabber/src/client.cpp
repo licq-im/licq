@@ -21,7 +21,6 @@
  */
 
 #include "client.h"
-#include "handler.h"
 #include "sessionmanager.h"
 #include "vcard.h"
 
@@ -65,9 +64,9 @@ bool JClient::checkStreamVersion(const string& version)
   return gloox::Client::checkStreamVersion(version);
 }
 
-Client::Client(Handler& handler, const string& username, const string& password,
+Client::Client(const Licq::UserId& ownerId, const string& username, const string& password,
     const string& host, int port, const string& resource, gloox::TLSPolicy tlsPolicy) :
-  myHandler(handler),
+  myHandler(ownerId),
   mySessionManager(NULL),
   myJid(username + "/" + resource),
   myClient(myJid, password),

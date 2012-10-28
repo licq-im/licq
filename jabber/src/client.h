@@ -32,6 +32,8 @@
 #include <gloox/vcardmanager.h>
 #include <gloox/vcardhandler.h>
 
+#include "handler.h"
+
 namespace gloox
 {
 class Client;
@@ -65,7 +67,7 @@ class Client : private boost::noncopyable,
                public gloox::VCardHandler
 {
 public:
-  Client(Handler& handler, const std::string& user, const std::string& password,
+  Client(const Licq::UserId& ownerId, const std::string& user, const std::string& password,
       const std::string& host, int port, const std::string& resource, gloox::TLSPolicy tlsPolicy);
   virtual ~Client();
 
@@ -128,7 +130,7 @@ public:
                          gloox::StanzaError error);
 
 private:
-  Handler& myHandler;
+  Handler myHandler;
   SessionManager* mySessionManager;
   gloox::JID myJid;
   JClient myClient;

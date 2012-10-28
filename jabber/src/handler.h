@@ -29,6 +29,8 @@
 #include <set>
 #include <string>
 
+#include <licq/userid.h>
+
 namespace LicqJabber
 {
 
@@ -37,7 +39,7 @@ class VCardToUser;
 class Handler : private boost::noncopyable
 {
 public:
-  Handler();
+  Handler(const Licq::UserId& ownerId);
 
   void onConnect(const std::string& ip, int port, unsigned status);
   void onChangeStatus(unsigned status);
@@ -61,6 +63,7 @@ public:
   std::string getStatusMessage(unsigned status);
 
 private:
+  Licq::UserId myOwnerId;
 };
 
 } // namespace LicqJabber
