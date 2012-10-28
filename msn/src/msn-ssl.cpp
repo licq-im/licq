@@ -134,7 +134,7 @@ void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
     gLog.error("Invalid password");
     Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
         Licq::PluginSignal::SignalLogoff,
-        Licq::PluginSignal::LogoffPassword, UserId(m_szUserName, MSN_PPID)));
+        Licq::PluginSignal::LogoffPassword, myOwnerId));
   }
   else
   {
@@ -181,7 +181,6 @@ void CMSN::ProcessNexusPacket(CMSNBuffer &packet)
 
 void CMSN::MSNAuthenticate(const string& server, const string& path)
 {
-  UserId myOwnerId(m_szUserName, MSN_PPID);
   Licq::TCPSocket* sock = new Licq::TCPSocket(myOwnerId);
   gLog.info("Authenticating to https://%s%s", server.c_str(), path.c_str());
   if (!sock->connectTo(server, 443))
@@ -203,7 +202,7 @@ void CMSN::MSNAuthenticate(const string& server, const string& path)
 
   string request = "GET " + path + " HTTP/1.1\r\n"
       "Authorization: Passport1.4 OrgVerb=GET,OrgURL=http%3A%2F%2Fmessenger%2Emsn%2Ecom,"
-          "sign-in=" + urlencode(m_szUserName) + ","
+          "sign-in=" + urlencode(myOwnerId.accountId()) + ","
           "pwd=" + urlencode(myPassword) + "," + myCookie + "\r\n"
       "User-Agent: MSMSGS\r\n"
       "Host: " + server + "\r\n"

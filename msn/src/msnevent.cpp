@@ -42,7 +42,6 @@ CMSNDataEvent::CMSNDataEvent(CMSN *p)
   m_pMSN = p;
   m_nSocketDesc = -1;
   m_nEvent = 0;
-  m_strId = "";
   m_eState = STATE_WAITING_ACK;
   m_nFileDesc = -1;
   m_strFileName = "";
@@ -53,19 +52,18 @@ CMSNDataEvent::CMSNDataEvent(CMSN *p)
   m_nBaseId = 0;
   m_nDataSize[0] = 0;
   m_nDataSize[1] = 0;
-  m_strFromId = "";
   m_strCallId = "";
 }
 
 CMSNDataEvent::CMSNDataEvent(unsigned long _nEvent, unsigned long _nSessionId,
-    unsigned long _nBaseId, const Licq::UserId& userId,
-			     const string &_strFromId, const string &_strCallId,
-                             CMSN *p)
+    unsigned long _nBaseId, const Licq::UserId& userId, const Licq::UserId& fromId,
+    const string &_strCallId, CMSN *p)
+  : myUserId(userId),
+    myFromId(fromId)
 {
   m_pMSN = p;
   m_nSocketDesc = -1;
   m_nEvent = _nEvent;
-  m_strId = userId.accountId();
   m_eState = STATE_WAITING_ACK;
   m_nFileDesc = -1;
   {
@@ -79,7 +77,6 @@ CMSNDataEvent::CMSNDataEvent(unsigned long _nEvent, unsigned long _nSessionId,
   m_nBaseId = _nBaseId;
   m_nDataSize[0] = 0;
   m_nDataSize[1] = 0;
-  m_strFromId = _strFromId;
   m_strCallId = _strCallId;
 }
 
@@ -158,10 +155,10 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
 
 	  gLog.info("Display Picture: Session Id received (%ld)",
 		    m_nSessionId);
-	  CMSNPacket *pAck = new CPS_MSNP2PAck(m_strId.c_str(), m_nSessionId,
+	  CMSNPacket* pAck = new CPS_MSNP2PAck(myUserId.accountId(), m_nSessionId,
 					       m_nBaseId-3, nIdentifier, nAckId,
 					       nDataSize[1], nDataSize[0]);
-          m_pMSN->Send_SB_Packet(UserId(m_strId, MSN_PPID), pAck, m_nSocketDesc);
+          m_pMSN->Send_SB_Packet(myUserId, pAck, m_nSocketDesc);
 	  m_eState = STATE_GOT_SID;
 	}
       }
@@ -172,10 +169,10 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
 
     case STATE_GOT_SID:
     {
-      CMSNPacket *pAck = new CPS_MSNP2PAck(m_strId.c_str(), m_nSessionId,
+      CMSNPacket* pAck = new CPS_MSNP2PAck(myUserId.accountId(), m_nSessionId,
 					   m_nBaseId-2, nIdentifier, nAckId,
 					   nDataSize[1], nDataSize[0]);
-      m_pMSN->Send_SB_Packet(UserId(m_strId, MSN_PPID), pAck, m_nSocketDesc);
+      m_pMSN->Send_SB_Packet(myUserId, pAck, m_nSocketDesc);
       m_eState = STATE_RECV_DATA;
 
       gLog.info("Display Picture: Got data start message (%ld)",
@@ -236,7 +233,7 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
 	m_eState = STATE_FINISHED;
 
         {
-          Licq::UserWriteGuard u(UserId(m_strId, MSN_PPID));
+          Licq::UserWriteGuard u(myUserId);
           if (u.isLocked())
           {
             u->SetPicturePresent(true);
@@ -247,18 +244,15 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
         }
 
 	// Ack that we got the data
-	CMSNPacket *pAck = new CPS_MSNP2PAck(m_strId.c_str(), m_nSessionId,
+	CMSNPacket* pAck = new CPS_MSNP2PAck(myUserId.accountId(), m_nSessionId,
 					     m_nBaseId-1, nIdentifier, nAckId,
 					     nDataSize[1], nDataSize[0]);
-        m_pMSN->Send_SB_Packet(UserId(m_strId, MSN_PPID), pAck, m_nSocketDesc);
+        m_pMSN->Send_SB_Packet(myUserId, pAck, m_nSocketDesc);
 
         // Send a bye command
-        CMSNPacket *pBye = new CPS_MSNP2PBye(m_strId.c_str(),
-					     m_strFromId.c_str(),
-					     m_strCallId.c_str(),
-	  				     m_nBaseId, nAckId,
-					     nDataSize[1], nDataSize[0]);
-        m_pMSN->Send_SB_Packet(UserId(m_strId, MSN_PPID), pBye, m_nSocketDesc);
+        CMSNPacket* pBye = new CPS_MSNP2PBye(myUserId.accountId(), myFromId.accountId(),
+            m_strCallId, m_nBaseId, nAckId, nDataSize[1], nDataSize[0]);
+        m_pMSN->Send_SB_Packet(myUserId, pBye, m_nSocketDesc);
 	return 0;
       }
 
@@ -268,8 +262,7 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
     case STATE_FINISHED:
     {
       // Don't have to send anything back, just return and close the socket.
-      gLog.info("Display Picture: closing connection with %s",
-                m_strId.c_str());
+      gLog.info("Display Picture: closing connection with %s", myUserId.accountId().c_str());
       return 10;
       break;
     }

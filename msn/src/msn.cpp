@@ -87,7 +87,6 @@ CMSN::CMSN(Licq::ProtocolPlugin::Params& p)
   m_pNexusBuff = 0;
   m_pSSLPacket = 0;
   myStatus = Licq::User::OfflineStatus;
-  m_szUserName = 0;
   myPassword = "";
   m_nSessionStart = 0;
 
@@ -97,8 +96,6 @@ CMSN::~CMSN()
 {
   if (m_pPacketBuf)
     delete m_pPacketBuf;
-  if (m_szUserName)
-    free(m_szUserName);
 }
 
 std::string CMSN::name() const
@@ -149,7 +146,7 @@ void CMSN::StorePacket(SBuffer *_pBuf, int _nSock)
   }
 }
 
-void CMSN::RemovePacket(const string& _strUser, int _nSock, int nSize)
+void CMSN::RemovePacket(const Licq::UserId& userId, int _nSock, int nSize)
 {
   pthread_mutex_lock(&mutex_Bucket);
   BufferList &b = m_vlPacketBucket[HashValue(_nSock)];
@@ -159,7 +156,7 @@ void CMSN::RemovePacket(const string& _strUser, int _nSock, int nSize)
 
   for (it = b.begin(); it != b.end(); it++)
   {
-    if ((*it)->m_strUser == _strUser)
+    if ((*it)->myUserId == userId)
     {
       // Found a packet that has part of another packet at the end
       // so we have to save it and put it back on the queue.
@@ -169,7 +166,7 @@ void CMSN::RemovePacket(const string& _strUser, int _nSock, int nSize)
 	if (nNewSize)
 	{
 	  pNewBuf = new SBuffer;
-	  pNewBuf->m_strUser = _strUser;
+	  pNewBuf->myUserId = userId;
 	  pNewBuf->m_pBuf = new CMSNBuffer(nNewSize);
 	  pNewBuf->m_pBuf->Pack((*it)->m_pBuf->getDataStart()+nSize,
 				nNewSize);
@@ -188,14 +185,14 @@ void CMSN::RemovePacket(const string& _strUser, int _nSock, int nSize)
   pthread_mutex_unlock(&mutex_Bucket);
 }
 
-SBuffer *CMSN::RetrievePacket(const string &_strUser, int _nSock)
+SBuffer *CMSN::RetrievePacket(const Licq::UserId& userId, int _nSock)
 {
   pthread_mutex_lock(&mutex_Bucket);
   BufferList &b = m_vlPacketBucket[HashValue(_nSock)];
   BufferList::iterator it;
   for (it = b.begin(); it != b.end(); it++)
   {
-    if ((*it)->m_strUser == _strUser)
+    if ((*it)->myUserId == userId)
     {
       pthread_mutex_unlock(&mutex_Bucket);
       return *it;
@@ -224,9 +221,9 @@ Licq::Event *CMSN::RetrieveEvent(unsigned long _nTag)
   return e;
 }
 
-void CMSN::HandlePacket(int _nSocket, CMSNBuffer &packet, const char* _szUser)
+void CMSN::HandlePacket(int _nSocket, CMSNBuffer &packet, const Licq::UserId& userId)
 {
-  SBuffer *pBuf = RetrievePacket(_szUser, _nSocket);
+  SBuffer* pBuf = RetrievePacket(userId, _nSocket);
   bool bProcess = false;
 
   if (pBuf)
@@ -235,7 +232,7 @@ void CMSN::HandlePacket(int _nSocket, CMSNBuffer &packet, const char* _szUser)
   {
     pBuf = new SBuffer;
     pBuf->m_pBuf = new CMSNBuffer(packet);
-    pBuf->m_strUser = _szUser;
+    pBuf->myUserId = userId;
     pBuf->m_bStored = false;
   }
 
@@ -334,14 +331,13 @@ void CMSN::HandlePacket(int _nSocket, CMSNBuffer &packet, const char* _szUser)
       if (m_nServerSocket == _nSocket)
         ProcessServerPacket(pPart ? pPart : pBuf->m_pBuf);
       else
-        ProcessSBPacket(const_cast<char *>(_szUser), pPart ? pPart : pBuf->m_pBuf,
-                        _nSocket);
-      RemovePacket(_szUser, _nSocket, nFullSize);
+        ProcessSBPacket(userId, pPart ? pPart : pBuf->m_pBuf, _nSocket);
+      RemovePacket(userId, _nSocket, nFullSize);
       if (pPart)
         delete pPart;
       else
         delete pBuf;
-      pBuf = RetrievePacket(_szUser, _nSocket);
+      pBuf = RetrievePacket(userId, _nSocket);
     }
     else
       pBuf = 0;
@@ -460,7 +456,7 @@ int CMSN::run()
           {
             gSocketMan.DropSocket(sock);
 
-            HandlePacket(m_nServerSocket, packet, m_szUserName);
+            HandlePacket(m_nServerSocket, packet, myOwnerId);
           }
           else
           {
@@ -471,7 +467,7 @@ int CMSN::run()
             m_nServerSocket = -1;
             gSocketMan.DropSocket(sock);
             gSocketMan.CloseSocket(nSD);
-            Logon(myStatus);
+            Logon(myOwnerId, myStatus);
           }
         }
         
@@ -504,12 +500,10 @@ int CMSN::run()
           CMSNBuffer packet;
           if (sock && sock->receive(packet))
           {
-            char *szUser = strdup(sock->userId().accountId().c_str());
+            Licq::UserId userId(sock->userId());
             gSocketMan.DropSocket(sock);
 
-            HandlePacket(nCurrent, packet, szUser);
-            
-	    free(szUser);
+            HandlePacket(nCurrent, packet, userId);
 	  }
 	  else
 	  {
@@ -586,7 +580,7 @@ void CMSN::ProcessSignal(Licq::ProtocolSignal* s)
       if (m_nServerSocket < 0)
       {
         Licq::ProtoLogonSignal* sig = dynamic_cast<Licq::ProtoLogonSignal*>(s);
-        Logon(sig->status());
+        Logon(sig->userId(), sig->status());
       }
       break;
     }
@@ -690,7 +684,7 @@ bool CMSN::RemoveDataEvent(CMSNDataEvent *pData)
   pthread_mutex_lock(&mutex_MSNEventList);
   for (it = m_lMSNEvents.begin(); it != m_lMSNEvents.end(); it++)
   {
-    if ((*it)->getUser() == pData->getUser() &&
+    if ((*it)->userId() == pData->userId() &&
 	(*it)->getSocket() == pData->getSocket())
     {
       // Close the socket
@@ -711,14 +705,14 @@ bool CMSN::RemoveDataEvent(CMSNDataEvent *pData)
   return (pData == 0);
 }
 
-CMSNDataEvent *CMSN::FetchDataEvent(const string &_strUser, int _nSocket)
+CMSNDataEvent* CMSN::FetchDataEvent(const Licq::UserId& userId, int _nSocket)
 {
   CMSNDataEvent *pReturn = 0;
   list<CMSNDataEvent *>::iterator it;
   pthread_mutex_lock(&mutex_MSNEventList);
   for (it = m_lMSNEvents.begin(); it != m_lMSNEvents.end(); it++)
   {
-    if ((*it)->getUser() == _strUser && (*it)->getSocket() == _nSocket)
+    if ((*it)->userId() == userId && (*it)->getSocket() == _nSocket)
     {
       pReturn = *it;
       break;
@@ -727,7 +721,7 @@ CMSNDataEvent *CMSN::FetchDataEvent(const string &_strUser, int _nSocket)
 
   if (!pReturn)
   {
-    pReturn = FetchStartDataEvent(_strUser);
+    pReturn = FetchStartDataEvent(userId);
     if (pReturn)
       pReturn->setSocket(_nSocket);
   }
@@ -736,13 +730,13 @@ CMSNDataEvent *CMSN::FetchDataEvent(const string &_strUser, int _nSocket)
   return pReturn;
 }
 
-CMSNDataEvent *CMSN::FetchStartDataEvent(const string &_strUser)
+CMSNDataEvent* CMSN::FetchStartDataEvent(const Licq::UserId& userId)
 {
   CMSNDataEvent *pReturn = 0;
   list<CMSNDataEvent *>::iterator it;
   for (it = m_lMSNEvents.begin(); it != m_lMSNEvents.end(); it++)
   {
-    if ((*it)->getUser() == _strUser && (*it)->getSocket() == -1)
+    if ((*it)->userId() == userId && (*it)->getSocket() == -1)
     {
       pReturn = *it;
       break;

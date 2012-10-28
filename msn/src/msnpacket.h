@@ -82,7 +82,7 @@ protected:
 class CMSNP2PPacket : public CMSNPayloadPacket
 {
 public:
-  CMSNP2PPacket(const char *,unsigned long = 0, unsigned long = 0, unsigned long = 0,
+  CMSNP2PPacket(const std::string& toEmail,unsigned long = 0, unsigned long = 0, unsigned long = 0,
 		unsigned long = 0, unsigned long = 0, unsigned long = 0,
 		unsigned long = 0, unsigned long = 0, unsigned long = 0,
 		unsigned long = 0, unsigned long = 0, unsigned long = 0);
@@ -97,8 +97,8 @@ public:
   //unsigned long Offset() {}
 
 protected:
-  char *m_szToEmail,
-       *m_szCallGUID;
+  std::string myToEmail;
+  char *m_szCallGUID;
   unsigned long m_nSessionId,
     m_nBaseId,
     m_nDataSizeLO,
@@ -122,21 +122,13 @@ public:
 class CPS_MSNClientVersion : public CMSNPacket
 {
 public:
-  CPS_MSNClientVersion(char *);
-  virtual ~CPS_MSNClientVersion() { if (m_szUserName) free(m_szUserName); }
-
-protected:
-  char *m_szUserName;
+  CPS_MSNClientVersion(const std::string& username);
 };
 
 class CPS_MSNUser : public CMSNPacket
 {
 public:
-  CPS_MSNUser(char *);
-  virtual ~CPS_MSNUser() { if(m_szUserName) free(m_szUserName); }
-  
-protected:
-  char *m_szUserName;
+  CPS_MSNUser(const std::string& username);
 };
 
 class CPS_MSNSendTicket : public CMSNPacket
@@ -178,62 +170,31 @@ public:
 class CPS_MSNAddUser : public CMSNPacket
 {
 public:
-  CPS_MSNAddUser(const char *, const char *szList);
-  virtual ~CPS_MSNAddUser() { if (m_szUser) free(m_szUser); if (m_szList) free(m_szList); }
-  
-protected:
-  char *m_szUser;
-  char *m_szList;
+  CPS_MSNAddUser(const std::string& username, const char* list);
 };
 
 class CPS_MSNRemoveUser : public CMSNPacket
 {
 public:
-  CPS_MSNRemoveUser(const char *, const char *szList);
-  virtual ~CPS_MSNRemoveUser() { if (m_szUser) free(m_szUser); if (m_szList) free (m_szList); }
-  
-protected:
-  char *m_szUser;
-  char *m_szList;
+  CPS_MSNRemoveUser(const std::string& username, const char* list);
 };
 
 class CPS_MSNRenameUser : public CMSNPacket
 {
 public:
-  CPS_MSNRenameUser(const char *, const char *);
-  virtual ~CPS_MSNRenameUser() { if (m_szUser) free(m_szUser); if (m_szNewNick) free (m_szNewNick); }
-
-protected:
-  char *m_szUser;
-  char *m_szNewNick;
+  CPS_MSNRenameUser(const std::string& username, const std::string& newNick);
 };
 
 class CPS_MSN_SBStart : public CMSNPacket
 {
 public:
-  CPS_MSN_SBStart(const char *, const char *);
-  virtual ~CPS_MSN_SBStart()
-  { if (m_szUser) free(m_szUser); if (m_szCookie) free(m_szCookie); }
-  
-protected:
-  char *m_szUser,
-       *m_szCookie;
+  CPS_MSN_SBStart(const std::string& cookie, const std::string& username);
 };
 
 class CPS_MSN_SBAnswer : public CMSNPacket
 {
 public:
-  CPS_MSN_SBAnswer(const char *, const char *, const char *);
-  virtual ~CPS_MSN_SBAnswer()
-  {
-    if (m_szSession) free(m_szSession); if (m_szCookie) free(m_szCookie);
-    if (m_szUser) free(m_szUser);
-  }
-  
-protected:
-  char *m_szSession,
-       *m_szCookie,
-       *m_szUser;
+  CPS_MSN_SBAnswer(const std::string& session, const std::string& cookie, const std::string& username);
 };
 
 class CPS_MSNMessage : public CMSNPayloadPacket
@@ -267,17 +228,13 @@ public:
 class CPS_MSNCall : public CMSNPacket
 {
 public:
-  CPS_MSNCall(const char*);
-  virtual ~CPS_MSNCall() { if (m_szUser) free(m_szUser); }
-  
-protected:
-  char *m_szUser;
+  CPS_MSNCall(const std::string& username);
 };
 
 class CPS_MSNTypingNotification : public CMSNPayloadPacket
 {
 public:
-  CPS_MSNTypingNotification(const char *);
+  CPS_MSNTypingNotification(const std::string& email);
 };
 
 class CPS_MSNCancelInvite : public CMSNPayloadPacket
@@ -289,14 +246,14 @@ public:
 class CPS_MSNInvitation : public CMSNP2PPacket
 {
 public:
-  CPS_MSNInvitation(const char* szToEmail, const char* szFromEmail,
-      const char* szMSNObject);
+  CPS_MSNInvitation(const std::string& toEmail, const std::string& fromEmail,
+      const std::string& msnObject);
 };
 
 class CPS_MSNP2PBye : public CMSNP2PPacket
 {
 public:
-  CPS_MSNP2PBye(const char *szId, const char *szFromId, const char *szCallId,
+  CPS_MSNP2PBye(const std::string& toEmail, const std::string& fromEmail, const std::string& szCallId,
                 unsigned long nBaseId, unsigned long nAckId,
 		unsigned long nDataSizeHI, unsigned long nDataSizeLO);
 };
@@ -304,7 +261,7 @@ public:
 class CPS_MSNP2PAck : public CMSNP2PPacket
 {
 public:
-  CPS_MSNP2PAck(const char *szId, unsigned long nSessionId,
+  CPS_MSNP2PAck(const std::string& toEmail, unsigned long nSessionId,
 		unsigned long nBaseId, unsigned long nAckId,
 		unsigned long nAckBaseId, unsigned long nDataSizeHI,
 		unsigned long nDataSizeLO);

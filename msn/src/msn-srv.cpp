@@ -64,12 +64,12 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
     if (strCmd == "VER")
     {
       // Don't really care about this packet's data.
-      pReply = new CPS_MSNClientVersion(m_szUserName);
+      pReply = new CPS_MSNClientVersion(myOwnerId.accountId());
     }
     else if (strCmd == "CVR")
     {
       // Don't really care about this packet's data.
-      pReply = new CPS_MSNUser(m_szUserName);
+      pReply = new CPS_MSNUser(myOwnerId.accountId());
     }
     else if (strCmd == "XFR")
     {
@@ -99,7 +99,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         gSocketMan.CloseSocket(m_nServerSocket, false, true);
   
         // Make the new connection
-        Logon(myStatus, host.c_str(), port);
+        Logon(myOwnerId, myStatus, host.c_str(), port);
       }
     }
     else if (strCmd == "USR")
@@ -117,7 +117,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         // Set our alias here
         unsigned long listVersion;
         {
-          OwnerWriteGuard o;
+          OwnerWriteGuard o(myOwnerId);
           o->setAlias(strDecodedNick);
           listVersion = o->listVersion();
         }
@@ -149,17 +149,17 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       string strVersion = packet->GetParameter();
       unsigned long newListVersion = atol(strVersion.c_str());
       {
-        OwnerWriteGuard o;
+        OwnerWriteGuard o(myOwnerId);
         o->setListVersion(newListVersion);
       }
 
       MSNChangeStatus(myStatus);
 
       // Send our local list now
-      //Licq::UserListGuard userList(MSN_PPID);
+      //Licq::UserListGuard userList(myOwnerId);
       //BOOST_FOREACH(const Licq::User* user, **userList)
       //{
-      //  pReply = new CPS_MSNAddUser(user->accountId().c_str());
+      //  pReply = new CPS_MSNAddUser(user->accountId());
       //  SendPacket(pReply);
       //}
     }
@@ -167,18 +167,18 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
     {
       // Add user
       string strUser = packet->GetParameter();
+      UserId userId(strUser, MSN_PPID);
       string strNick = packet->GetParameter();
       string strLists = packet->GetParameter();
       string strUserLists;
 
-      if (strUser == gUserManager.ownerUserId(MSN_PPID).accountId())
+      if (userId == myOwnerId)
         return;
 
       int nLists = atoi(strLists.c_str());
       if (nLists & FLAG_CONTACT_LIST)
         strUserLists = packet->GetParameter();
 
-      UserId userId(strUser, MSN_PPID);
       if (nLists & FLAG_CONTACT_LIST)
         gUserManager.addUser(userId, true, false);
 
@@ -223,7 +223,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
 
       unsigned long newListVersion = atol(strVersion.c_str());
       {
-        OwnerWriteGuard o;
+        OwnerWriteGuard o(myOwnerId);
         o->setListVersion(newListVersion);
       }
 
@@ -234,7 +234,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         Licq::UserEvent* e = new Licq::EventAuthRequest(userId,
             strNick.c_str(), "", "", "", "", time(0), 0);
 
-        Licq::OwnerWriteGuard o(MSN_PPID);
+        Licq::OwnerWriteGuard o(myOwnerId);
         if (Licq::gDaemon.addUserEvent(*o, e))
         {
           e->AddToHistory(*o, true);
@@ -268,7 +268,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
 
       unsigned long newListVersion = atol(strVersion.c_str());
       {
-        OwnerWriteGuard o;
+        OwnerWriteGuard o(myOwnerId);
         o->setListVersion(newListVersion);
       }
 
@@ -283,13 +283,13 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
 
       unsigned long newListVersion = atol(strVersion.c_str());
       {
-        OwnerWriteGuard o;
+        OwnerWriteGuard o(myOwnerId);
         o->setListVersion(newListVersion);
       }
 
-      if (strcmp(m_szUserName, strUser.c_str()) == 0)
+      if (strUser == myOwnerId.accountId())
       {
-        Licq::OwnerWriteGuard o(MSN_PPID);
+        Licq::OwnerWriteGuard o(myOwnerId);
         string strDecodedNick = Decode(strNick);
         o->setAlias(strDecodedNick);
       }
@@ -317,7 +317,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
           User::statusToString(status, true, false).c_str());
       myStatus = status;
 
-      Licq::OwnerWriteGuard o(MSN_PPID);
+      Licq::OwnerWriteGuard o(myOwnerId);
       if (o.isLocked())
         o->statusChanged(status);
     }
@@ -326,7 +326,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       if (strCmd == "ILN")
         packet->SkipParameter(); // seq
       string strStatus = packet->GetParameter();
-      string strUser = packet->GetParameter();
+      Licq::UserId userId(packet->GetParameter(), MSN_PPID);
       string strNick = packet->GetParameter();
       string strClientId = packet->GetParameter();
       string strMSNObject = packet->GetParameter();
@@ -342,7 +342,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       else
         status = User::OnlineStatus | User::AwayStatus;
 
-      UserWriteGuard u(UserId(strUser, MSN_PPID));
+      UserWriteGuard u(userId);
       if (u.isLocked())
       {
         u->SetSendServer(true); // no direct connections
@@ -403,9 +403,9 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       string strServer = packet->GetParameter();
       packet->SkipParameter(); // 'CKI'
       string strCookie = packet->GetParameter();
-      string strUser = packet->GetParameter();
-      
-      MSNSBConnectAnswer(strServer, strSessionID, strCookie, strUser);
+      Licq::UserId userId(packet->GetParameter(), MSN_PPID);
+
+      MSNSBConnectAnswer(strServer, strSessionID, strCookie, userId);
     }
     else if (strCmd == "MSG")
     {
@@ -455,13 +455,12 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
           sprintf(&szHexOut[i*2], "%02x", szDigest[i]);
     
         gLog.info("New email from %s (%s)", strFrom.c_str(), strFromAddr.c_str());
-        Licq::EventEmailAlert* pEmailAlert = new Licq::EventEmailAlert(strFrom.c_str(), m_szUserName,
-          strFromAddr.c_str(), strSubject.c_str(), time(0), m_strMSPAuth.c_str(), m_strSID.c_str(),
-          m_strKV.c_str(), packet->GetValue("id").c_str(),
-          packet->GetValue("Post-URL").c_str(), packet->GetValue("Message-URL").c_str(),
+        Licq::EventEmailAlert* pEmailAlert = new Licq::EventEmailAlert(strFrom, myOwnerId.accountId(),
+            strFromAddr, strSubject, time(0), m_strMSPAuth, m_strSID, m_strKV, packet->GetValue("id"),
+            packet->GetValue("Post-URL"), packet->GetValue("Message-URL"),
           szHexOut, m_nSessionStart);
 
-        Licq::OwnerWriteGuard o(MSN_PPID);
+        Licq::OwnerWriteGuard o(myOwnerId);
         if (Licq::gDaemon.addUserEvent(*o, pEmailAlert))
         {
           pEmailAlert->AddToHistory(*o, true);
@@ -539,21 +538,20 @@ void CMSN::SendPacket(CMSNPacket *p)
   delete p;
 }
 
-void CMSN::Logon(unsigned status, string host, int port)
+void CMSN::Logon(const Licq::UserId& ownerId, unsigned status, string host, int port)
 {
   if (status == User::OfflineStatus)
     return;
 
-  UserId myOwnerId;
+  myOwnerId = ownerId;
+
   {
-    Licq::OwnerReadGuard o(MSN_PPID);
+    Licq::OwnerReadGuard o(myOwnerId);
     if (!o.isLocked())
     {
       gLog.error("No owner set");
       return;
     }
-    m_szUserName = strdup(o->accountId().c_str());
-    myOwnerId = o->id();
     myPassword = o->password();
     if (host.empty())
       host = o->serverHost();
@@ -639,7 +637,7 @@ void CMSN::MSNLogoff(bool bDisconnected)
   
   // Close user sockets and update the daemon
   {
-    Licq::UserListGuard userList(MSN_PPID);
+    Licq::UserListGuard userList(myOwnerId);
     BOOST_FOREACH(Licq::User* user, **userList)
     {
       UserWriteGuard u(dynamic_cast<User*>(user));
@@ -653,7 +651,7 @@ void CMSN::MSNLogoff(bool bDisconnected)
     }
   }
 
-  Licq::OwnerWriteGuard o(MSN_PPID);
+  Licq::OwnerWriteGuard o(myOwnerId);
   if (o.isLocked())
     o->statusChanged(Licq::User::OfflineStatus);
 }
@@ -671,13 +669,13 @@ void CMSN::MSNAddUser(const UserId& userId)
     }
   }
 
-  CMSNPacket* pSend = new CPS_MSNAddUser(userId.accountId().c_str(), CONTACT_LIST);
+  CMSNPacket* pSend = new CPS_MSNAddUser(userId.accountId(), CONTACT_LIST);
   SendPacket(pSend);
 }
 
 void CMSN::MSNRemoveUser(const UserId& userId)
 {
-  CMSNPacket* pSend = new CPS_MSNRemoveUser(userId.accountId().c_str(), CONTACT_LIST);
+  CMSNPacket* pSend = new CPS_MSNRemoveUser(userId.accountId(), CONTACT_LIST);
   SendPacket(pSend);
   Licq::gUserManager.removeLocalUser(userId);
 }
@@ -692,21 +690,19 @@ void CMSN::MSNRenameUser(const UserId& userId)
     strNick = u->getAlias();
   }
 
-  string strEncodedNick = Encode(strNick);
-  CMSNPacket* pSend = new CPS_MSNRenameUser(userId.accountId().c_str(), strEncodedNick.c_str());
+  CMSNPacket* pSend = new CPS_MSNRenameUser(userId.accountId(), Encode(strNick));
   SendPacket(pSend);
 }
 
 void CMSN::MSNGrantAuth(const UserId& userId)
 {
-  CMSNPacket* pSend = new CPS_MSNAddUser(userId.accountId().c_str(), ALLOW_LIST);
+  CMSNPacket* pSend = new CPS_MSNAddUser(userId.accountId(), ALLOW_LIST);
   SendPacket(pSend);
 }
 
 void CMSN::MSNUpdateUser(const string& alias)
 {
-  string strEncodedNick = Encode(alias);
-  CMSNPacket *pSend = new CPS_MSNRenameUser(m_szUserName, strEncodedNick.c_str());
+  CMSNPacket* pSend = new CPS_MSNRenameUser(myOwnerId.accountId(), Encode(alias));
   SendPacket(pSend);
 }
 
@@ -719,10 +715,10 @@ void CMSN::MSNBlockUser(const UserId& userId)
     u->SetInvisibleList(true);
   }
 
-  CMSNPacket* pRem = new CPS_MSNRemoveUser(userId.accountId().c_str(), ALLOW_LIST);
+  CMSNPacket* pRem = new CPS_MSNRemoveUser(userId.accountId(), ALLOW_LIST);
   gLog.info("Removing user %s from the allow list", userId.toString().c_str());
   SendPacket(pRem);
-  CMSNPacket* pAdd = new CPS_MSNAddUser(userId.accountId().c_str(), BLOCK_LIST);
+  CMSNPacket* pAdd = new CPS_MSNAddUser(userId.accountId(), BLOCK_LIST);
   gLog.info("Adding user %s to the block list", userId.toString().c_str());
   SendPacket(pAdd);
 }
@@ -736,10 +732,10 @@ void CMSN::MSNUnblockUser(const UserId& userId)
     u->SetInvisibleList(false);
   }
 
-  CMSNPacket* pRem = new CPS_MSNRemoveUser(userId.accountId().c_str(), BLOCK_LIST);
+  CMSNPacket* pRem = new CPS_MSNRemoveUser(userId.accountId(), BLOCK_LIST);
   gLog.info("Removing user %s from the block list", userId.toString().c_str());
   SendPacket(pRem);
-  CMSNPacket* pAdd = new CPS_MSNAddUser(userId.accountId().c_str(), ALLOW_LIST);
+  CMSNPacket* pAdd = new CPS_MSNAddUser(userId.accountId(), ALLOW_LIST);
   gLog.info("Adding user %s to the allow list", userId.toString().c_str());
   SendPacket(pAdd);
 }
@@ -750,15 +746,13 @@ void CMSN::MSNGetDisplayPicture(const Licq::UserId& userId, const string &strMSN
   if (myStatus & User::InvisibleStatus)
     return;
 
-  CMSNPacket *pGetMSNDP = new CPS_MSNInvitation(userId.accountId().c_str(),
-						m_szUserName,
-						const_cast<char *>(strMSNObject.c_str()));
+  CMSNPacket* pGetMSNDP = new CPS_MSNInvitation(userId.accountId(), myOwnerId.accountId(), strMSNObject);
   CMSNP2PPacket *p = (CMSNP2PPacket *)(pGetMSNDP);
   CMSNDataEvent *pDataResponse = new CMSNDataEvent(MSN_DP_EVENT,
-      p->SessionId(), p->BaseId(), userId, m_szUserName, p->CallGUID(), this);
+      p->SessionId(), p->BaseId(), userId, myOwnerId, p->CallGUID(), this);
   WaitDataEvent(pDataResponse);
   gLog.info("Requesting %s's display picture", userId.toString().c_str());
-  MSNSendInvitation(userId.accountId().c_str(), pGetMSNDP);
+  MSNSendInvitation(userId, pGetMSNDP);
 }
 
 
@@ -768,7 +762,7 @@ void CMSN::MSNPing()
   SendPacket(pSend);
 }
 
-void *MSNPing_tep(void *p)
+void* LicqMsn::MSNPing_tep(void* p)
 {
   CMSN *pMSN = (CMSN *)p;
 
@@ -785,7 +779,7 @@ void *MSNPing_tep(void *p)
       pMSN->SetWaitingPingReply(false);
       unsigned status = pMSN->status();
       pMSN->MSNLogoff();
-      pMSN->Logon(status);
+      pMSN->Logon(pMSN->myOwnerId, status);
       pthread_mutex_unlock(&(pMSN->mutex_ServerSocket));
     }
     else if (pMSN->CanSendPing())

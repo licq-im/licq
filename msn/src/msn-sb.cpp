@@ -52,7 +52,7 @@ using Licq::gOnEventManager;
 using Licq::gUserManager;
 
 
-void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
+void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer *packet, int nSock)
 {
   CMSNPacket *pReply;
   bool bSkipPacket;
@@ -86,7 +86,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       // Add the user to the conversation
       Conversation* convo = gConvoManager.getFromSocket(nSock);
       if (convo == NULL)
-        convo = gConvoManager.add(gUserManager.ownerUserId(MSN_PPID), nSock);
+        convo = gConvoManager.add(myOwnerId, nSock);
       convo->addUser(userId);
 
       // Notify the plugins of the new CID
@@ -107,7 +107,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
     }
     else if (strCmd == "MSG")
     {
-      string strUser = packet->GetParameter();
+      Licq::UserId userId(packet->GetParameter(), MSN_PPID);
       packet->SkipParameter(); // Nick
       string strSize = packet->GetParameter(); // Size
       int nSize = atoi(strSize.c_str()) + 1; // Make up for the \n
@@ -124,7 +124,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         packet->SkipRN();
         packet->SkipRN();
         packet->SkipRN();
-        Licq::UserWriteGuard u(UserId(strUser, MSN_PPID));
+        Licq::UserWriteGuard u(userId);
         if (u.isLocked())
         {
           u->setIsTyping(true);
@@ -135,13 +135,13 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       }
       else if (strncmp(strType.c_str(), "text/plain", 10) == 0)
       {
-        gLog.info("Message from %s", strUser.c_str());
+        gLog.info("Message from %s", userId.accountId().c_str());
 
         bSkipPacket = false;  
         string msg = Licq::gTranslator.returnToUnix(packet->unpackRawString(nSize));
 
         Licq::EventMsg* e = new Licq::EventMsg(msg, time(0), 0, SocketToCID(nSock));
-        Licq::UserWriteGuard u(UserId(strUser, MSN_PPID));
+        Licq::UserWriteGuard u(userId);
         if (u.isLocked())
           u->setIsTyping(false);
         if (Licq::gDaemon.addUserEvent(*u, e))
@@ -160,7 +160,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         {
           // Invitation for unknown application, tell inviter that we don't have it
           gLog.info("Invitation from %s for unknown application (%s)",
-                    strUser.c_str(), application.c_str());
+              userId.accountId().c_str(), application.c_str());
           pReply = new CPS_MSNCancelInvite(cookie, "REJECT_NOT_INSTALLED");
         }
       }
@@ -188,7 +188,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
 	      nAckDataSize[0], nAckDataSize[1]);
 	*/
 
-	CMSNDataEvent *p = FetchDataEvent(strUser, nSock);
+	CMSNDataEvent *p = FetchDataEvent(userId, nSock);
 	if (p)
 	{
 	  if (p->ProcessPacket(packet) > 0)
@@ -206,14 +206,14 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         {
           gLog.info("Identified user client as %s", userClient.c_str());
 
-          Licq::UserWriteGuard u(UserId(strUser, MSN_PPID));
+          Licq::UserWriteGuard u(userId);
           u->setClientInfo(userClient);
         }
       }
       else
       {
         gLog.info("Message from %s with unknown content type (%s)",
-                  strUser.c_str(), strType.c_str());
+            userId.accountId().c_str(), strType.c_str());
       }
     }
     else if (strCmd == "ACK")
@@ -279,8 +279,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       if (pStart)
       {
 	pStart->m_bConnecting = true;
-        string accountId = pStart->userId.accountId();
-        pReply = new CPS_MSNCall(accountId.c_str());
+        pReply = new CPS_MSNCall(pStart->userId.accountId());
 	pStart->m_nSeq = pReply->Sequence();
       }
       pthread_mutex_unlock(&mutex_StartList);
@@ -311,7 +310,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         // Add the user to the conversation
         Conversation* convo = gConvoManager.getFromSocket(nSock);
         if (convo == NULL)
-          convo = gConvoManager.add(gUserManager.ownerUserId(MSN_PPID), nSock);
+          convo = gConvoManager.add(myOwnerId, nSock);
         convo->addUser(userId);
 
         // Notify the plugins of the new CID
@@ -404,8 +403,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
     
     if (pReply)
     {
-      UserId userId(szUser, MSN_PPID);
-      Send_SB_Packet(userId, pReply, nSock);
+      Send_SB_Packet(socketUserId, pReply, nSock);
     }
   }
   
@@ -522,17 +520,16 @@ bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
     }
   }
   gSocketMan.DropSocket(sock);
-  
-  CMSNPacket *pReply = new CPS_MSN_SBStart(strCookie.c_str(), m_szUserName);
+
+  CMSNPacket* pReply = new CPS_MSN_SBStart(strCookie, myOwnerId.accountId());
   Send_SB_Packet(pStart->userId, pReply, nSocket);
 
   return true;
 }
 
 bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionId,
-    const string& strCookie, const string& strUser)
+    const string& strCookie, const Licq::UserId& userId)
 {
-  UserId userId(strUser, MSN_PPID);
   size_t sep = strServer.rfind(':');
   string host;
   int port;
@@ -562,8 +559,7 @@ bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionI
   killConversation(nSocket);
 
   gSocketMan.AddSocket(sock);
-  CMSNPacket *pReply = new CPS_MSN_SBAnswer(strSessionId.c_str(),
-    strCookie.c_str(), m_szUserName);
+  CMSNPacket* pReply = new CPS_MSN_SBAnswer(strSessionId, strCookie, myOwnerId.accountId());
 
   {
     bool newUser = false;
@@ -585,11 +581,8 @@ bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionI
   return true;
 }
 
-void CMSN::MSNSendInvitation(const char* _szUser, CMSNPacket* _pPacket)
+void CMSN::MSNSendInvitation(const Licq::UserId& userId, CMSNPacket* _pPacket)
 {
-  UserId userId(_szUser, MSN_PPID);
-  //if (!gUserManager.userExists(userId)) return;
-
   // Must connect to the SB and call the user
   CMSNPacket *pSB = new CPS_MSNXfr();
       
@@ -653,7 +646,7 @@ void CMSN::MSNSendMessage(unsigned long eventId, const UserId& userId, const str
 
 void CMSN::MSNSendTypingNotification(const UserId& userId, unsigned long _nCID)
 {
-  CMSNPacket *pSend = new CPS_MSNTypingNotification(m_szUserName);
+  CMSNPacket* pSend = new CPS_MSNTypingNotification(myOwnerId.accountId());
   int nSockDesc = -1;
   
   if (_nCID)

@@ -59,11 +59,12 @@ char *strndup(const char *s, size_t n);
 
 class CMSNPacket;
 class CMSNDataEvent;
+void* MSNPing_tep(void* p);
 
 struct SBuffer
 {
   CMSNBuffer *m_pBuf;
-  std::string m_strUser;
+  Licq::UserId myUserId;
   bool m_bStored;
 };
 
@@ -98,7 +99,7 @@ public:
   void MSNPing();
   bool Connected() { return m_nServerSocket != -1; }
   bool CanSendPing() { return m_bCanPing; }
-  void Logon(unsigned status, std::string host = std::string(), int port = 0);
+  void Logon(const Licq::UserId& ownerId, unsigned status, std::string host = std::string(), int port = 0);
   void MSNLogoff(bool = false);
   unsigned status() const { return myStatus; }
 
@@ -121,7 +122,7 @@ private:
   void ProcessServerPacket(CMSNBuffer *);
   void ProcessNexusPacket(CMSNBuffer &);
   void ProcessSSLServerPacket(CMSNBuffer &);
-  void ProcessSBPacket(char *, CMSNBuffer *, int);
+  void ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer *, int);
 
   // Network functions
   void SendPacket(CMSNPacket *);
@@ -131,9 +132,9 @@ private:
       const std::string& path = "/login2.srf");
   bool MSNSBConnectStart(const std::string& server, const std::string& cookie);
   bool MSNSBConnectAnswer(const std::string& server, const std::string& sessionId,
-      const std::string& cookie, const std::string& user);
+      const std::string& cookie, const Licq::UserId& userId);
 
-  void MSNSendInvitation(const char* _szUser, CMSNPacket* _pPacket);
+  void MSNSendInvitation(const Licq::UserId& userId, CMSNPacket* _pPacket);
   void MSNSendMessage(unsigned long eventId, const Licq::UserId& userId, const std::string& message,
       pthread_t _tPlugin, unsigned long _nCID);
   void MSNSendTypingNotification(const Licq::UserId& userId, unsigned long convoId);
@@ -150,17 +151,17 @@ private:
   // Internal functions
   int HashValue(int n) { return n % 211; }
   void StorePacket(SBuffer *, int);
-  void RemovePacket(const std::string& user, int socketId, int size = 0);
-  SBuffer *RetrievePacket(const std::string& user, int socketId);
+  void RemovePacket(const Licq::UserId& userId, int socketId, int size = 0);
+  SBuffer* RetrievePacket(const Licq::UserId& userId, int socketId);
   Licq::Event* RetrieveEvent(unsigned long);
-  void HandlePacket(int, CMSNBuffer &, const char *);
+  void HandlePacket(int, CMSNBuffer &, const Licq::UserId& userId);
   unsigned long SocketToCID(int);
   static std::string Decode(const std::string& strIn);
   static std::string Encode(const std::string& strIn);
   void WaitDataEvent(CMSNDataEvent *);
   bool RemoveDataEvent(CMSNDataEvent *);
-  CMSNDataEvent* FetchDataEvent(const std::string& user, int socketId);
-  CMSNDataEvent* FetchStartDataEvent(const std::string& user);
+  CMSNDataEvent* FetchDataEvent(const Licq::UserId& userId, int socketId);
+  CMSNDataEvent* FetchStartDataEvent(const Licq::UserId& userId);
 
   /**
    * Kill a conversation and all users associated with it
@@ -171,6 +172,7 @@ private:
   void killConversation(int sock);
 
   // Variables
+  Licq::UserId myOwnerId;
   bool m_bExit;
   int m_nServerSocket;
   int m_nNexusSocket;
@@ -196,12 +198,12 @@ private:
   pthread_mutex_t mutex_StartList,
                   mutex_MSNEventList,
                   mutex_Bucket;
-    
-  char *m_szUserName;
+
   std::string myCookie;
   std::string myPassword;
 
   friend class CMSNDataEvent;
+  friend void* MSNPing_tep(void* p);
 };
 
 } // namespace LicqMsn
