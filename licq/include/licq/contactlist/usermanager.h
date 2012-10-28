@@ -258,6 +258,14 @@ public:
   UserListGuard(unsigned long protocolId = 0);
 
   /**
+   * Constructor
+   * Will read-lock the user list in user manager
+   *
+   * @param ownerId Owner to get users for
+   */
+  UserListGuard(const UserId& ownerId);
+
+  /**
    * Destructor, will release lock on user list
    */
   ~UserListGuard();

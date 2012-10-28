@@ -1289,6 +1289,15 @@ UserListGuard::UserListGuard(unsigned long protocolId)
       myUserList.push_back(i->second);
 }
 
+UserListGuard::UserListGuard(const Licq::UserId& ownerId)
+{
+  const UserMap& userMap = LicqDaemon::gUserManager.lockUserList();
+
+  for (UserMap::const_iterator i = userMap.begin(); i != userMap.end(); ++i)
+    if (!ownerId.isValid() || i->first.protocolId() == ownerId.protocolId())
+      myUserList.push_back(i->second);
+}
+
 UserListGuard::~UserListGuard()
 {
   LicqDaemon::gUserManager.unlockUserList();
