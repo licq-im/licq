@@ -65,7 +65,7 @@ pthread_mutex_t Licq::User::mutex_nNumUserEvents = PTHREAD_MUTEX_INITIALIZER;
 User::Private::Private(User* user, const UserId& id)
   : myUser(user),
     myId(id),
-    myHistory(myId.protocolId())
+    myHistory(myId)
 {
   // Empty
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ namespace LicqDaemon
 class UserHistory
 {
 public:
-  explicit UserHistory(unsigned long ppid);
+  explicit UserHistory(const Licq::UserId& userId);
   ~UserHistory();
 
   /**
@@ -74,12 +74,12 @@ public:
   const std::string& filename() const { return myFilename; }
 
 protected:
-  unsigned long myPpid;
+  Licq::UserId myUserId;
   std::string myFilename;
   std::string myDescription;
 };
 
-} // namespace Licq
+} // namespace LicqDaemon
 
 #endif
 
