@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,16 +31,13 @@
 #include <QMenu>
 #include <QMouseEvent>
 
-#include <licq/contactlist/owner.h>
-#include <licq/contactlist/user.h>
-#include <licq/contactlist/usermanager.h>
-
 #include "config/contactlist.h"
 
 #include "contactlist/contactlist.h"
 #include "contactlist/multicontactproxy.h"
 
 #include "core/gui-defines.h"
+#include "core/licqgui.h"
 #include "core/messagebox.h"
 
 using std::set;
@@ -145,37 +142,11 @@ void MMUserView::dropEvent(QDropEvent* event)
   // get to the end of this function.
   event->ignore();
 
-  if (event->mimeData()->hasText() && event->mimeData()->text().length() > 4)
-  {
-    QString text = event->mimeData()->text();
-
-    unsigned long ppid = 0;
-
-    {
-      Licq::OwnerListGuard ownerList;
-      BOOST_FOREACH(Licq::Owner* owner, **ownerList)
-      {
-        unsigned long protocolId = owner->protocolId();
-        if (text.startsWith(Licq::protocolId_toString(protocolId).c_str()))
-        {
-          ppid = protocolId;
-          break;
-        }
-      }
-    }
-
-    if (ppid == 0)
-      return;
-
-    QString id = text.mid(4);
-
-    if (id.isEmpty())
-      return;
-
-    add(Licq::UserId(id.toLatin1().constData(), ppid));
-  }
-  else
+  Licq::UserId dropUserId(gLicqGui->userIdFromMimeData(*event->mimeData()));
+  if (!dropUserId.isValid())
     return; // Not accepted
+
+  add(dropUserId);
 
   event->acceptProposedAction();
 }

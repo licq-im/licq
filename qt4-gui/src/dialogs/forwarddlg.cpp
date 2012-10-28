@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,12 +32,11 @@
 #include <QLabel>
 #include <QPushButton>
 
-#include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
-#include <licq/contactlist/usermanager.h>
 #include <licq/userevents.h>
 
 #include "core/gui-defines.h"
+#include "core/licqgui.h"
 #include "core/messagebox.h"
 
 #include "helpers/support.h"
@@ -143,29 +142,11 @@ void ForwardDlg::dragEnterEvent(QDragEnterEvent* dee)
 
 void ForwardDlg::dropEvent(QDropEvent* de)
 {
-  QString text = de->mimeData()->text();
-  if (text.isEmpty())
+  Licq::UserId dropUserId(gLicqGui->userIdFromMimeData(*de->mimeData()));
+  if (!dropUserId.isValid())
     return;
 
-  unsigned long nPPID = 0;
-
-  {
-    Licq::OwnerListGuard ownerList;
-    BOOST_FOREACH(Licq::Owner* owner, **ownerList)
-    {
-      unsigned long ppid = owner->protocolId();
-      if (text.startsWith(Licq::protocolId_toString(ppid).c_str()))
-      {
-        nPPID = ppid;
-        break;
-      }
-    }
-  }
-
-  if (nPPID == 0 || text.length() <= 4)
-    return;
-
-  myUserId = Licq::UserId(text.toLatin1().constData(), nPPID);
+  myUserId = dropUserId;
 
   Licq::UserReadGuard u(myUserId);
   if (!u.isLocked())

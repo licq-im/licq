@@ -853,6 +853,24 @@ void LicqGui::sendChatRequest(const Licq::UserId& userId)
     return;
 }
 
+Licq::UserId LicqGui::userIdFromMimeData(const QMimeData& mimeData)
+{
+  QString text = mimeData.text();
+
+  if (text.length() <= 4)
+    return Licq::UserId();
+
+  Licq::OwnerListGuard ownerList;
+  BOOST_FOREACH(Licq::Owner* owner, **ownerList)
+  {
+    unsigned long ppid = owner->protocolId();
+    if (text.startsWith(Licq::protocolId_toString(ppid).c_str()))
+      return Licq::UserId(text.mid(4).toLocal8Bit().constData(), ppid);
+  }
+
+  return Licq::UserId();
+}
+
 bool LicqGui::userDropEvent(const Licq::UserId& userId, const QMimeData& mimeData)
 {
   if (mimeData.hasUrls())
@@ -896,28 +914,11 @@ bool LicqGui::userDropEvent(const Licq::UserId& userId, const QMimeData& mimeDat
   {
     // Text might be a user id
 
-    QString text = mimeData.text();
+    Licq::UserId dropUserId = userIdFromMimeData(mimeData);
 
-    unsigned long dropPpid = 0;
-
+    if (dropUserId.isValid())
     {
-      Licq::OwnerListGuard ownerList;
-      BOOST_FOREACH(Licq::Owner* owner, **ownerList)
-      {
-        unsigned long ppid = owner->protocolId();
-        if (text.startsWith(Licq::protocolId_toString(ppid).c_str()))
-        {
-          dropPpid = ppid;
-          break;
-        }
-      }
-    }
-
-    if (dropPpid != 0 && text.length() > 4)
-    {
-      QString dropId = text.mid(4);
-      Licq::UserId dropUserId(dropId.toLatin1().constData(), dropPpid);
-      if (!dropUserId.isValid() || userId == dropUserId)
+      if (userId == dropUserId)
         return false;
 
       UserSendEvent* sendContact = dynamic_cast<UserSendEvent*>(showEventDialog(ContactEvent, userId));
@@ -933,7 +934,7 @@ bool LicqGui::userDropEvent(const Licq::UserId& userId, const QMimeData& mimeDat
       if (!sendMsg)
         return false;
 
-      sendMsg->setText(text);
+      sendMsg->setText(mimeData.text());
       sendMsg->show();
     }
   }

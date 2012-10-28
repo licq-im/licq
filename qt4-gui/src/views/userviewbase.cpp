@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@
 
 #include <boost/foreach.hpp>
 
-#include <licq/contactlist/owner.h>
 #include <licq/contactlist/usermanager.h>
 
 #include "contactlist/contactlist.h"
@@ -210,68 +209,41 @@ void UserViewBase::dropEvent(QDropEvent* event)
     }
     case ContactListModel::GroupItem:
     {
+      Licq::UserId dropUserId(gLicqGui->userIdFromMimeData(*event->mimeData()));
+      if (!dropUserId.isValid())
+        return;
+
       int gid = dropIndex.data(ContactListModel::GroupIdRole).toInt();
 
-      if (event->mimeData()->hasText() && event->mimeData()->text().length() > 4)
-      {
-        QString text = event->mimeData()->text();
-
-        unsigned long dropPpid = 0;
-
-        {
-          Licq::OwnerListGuard ownerList;
-          BOOST_FOREACH(Licq::Owner* owner, **ownerList)
-          {
-            unsigned long ppid = owner->protocolId();
-            if (text.startsWith(Licq::protocolId_toString(ppid).c_str()))
-            {
-              dropPpid = ppid;
-              break;
-            }
-          }
-        }
-
-        if (dropPpid == 0)
-          return;
-
-        QString dropId = text.mid(4);
-        Licq::UserId dropUserId(dropId.toLatin1().constData(), dropPpid);
-
-        if (dropUserId.isValid())
-        {
-          // Should user be moved or just added to the new group?
-          bool moveUser;
-          if ((event->keyboardModifiers() & Qt::ShiftModifier) != 0)
-            moveUser = true;
-          else if ((event->keyboardModifiers() & Qt::ControlModifier) != 0)
-            moveUser = false;
-          else
-            moveUser = Config::ContactList::instance()->dragMovesUser();
-
-          Licq::gUserManager.setUserInGroup(dropUserId, gid, true, moveUser);
-
-          // If we are moving user we now need to remove it from the old group.
-          // However, since the drop event doesn't contain the originating
-          // group, we don't know which group that is so we'll just have to
-          // remove the user from all other groups.
-          if (moveUser)
-          {
-            Licq::UserGroupList userGroups;
-            {
-              Licq::UserReadGuard u(dropUserId);
-              if (u.isLocked())
-                userGroups = u->GetGroups();
-            }
-
-            Licq::UserGroupList::const_iterator i;
-            for (i = userGroups.begin(); i != userGroups.end(); ++i)
-              if (*i != gid)
-                Licq::gUserManager.setUserInGroup(dropUserId, *i, false, false);
-          }
-        }
-      }
+      // Should user be moved or just added to the new group?
+      bool moveUser;
+      if ((event->keyboardModifiers() & Qt::ShiftModifier) != 0)
+        moveUser = true;
+      else if ((event->keyboardModifiers() & Qt::ControlModifier) != 0)
+        moveUser = false;
       else
-        return; // Not accepted
+        moveUser = Config::ContactList::instance()->dragMovesUser();
+
+      Licq::gUserManager.setUserInGroup(dropUserId, gid, true, moveUser);
+
+      // If we are moving user we now need to remove it from the old group.
+      // However, since the drop event doesn't contain the originating
+      // group, we don't know which group that is so we'll just have to
+      // remove the user from all other groups.
+      if (moveUser)
+      {
+        Licq::UserGroupList userGroups;
+        {
+          Licq::UserReadGuard u(dropUserId);
+          if (u.isLocked())
+            userGroups = u->GetGroups();
+        }
+
+        Licq::UserGroupList::const_iterator i;
+        for (i = userGroups.begin(); i != userGroups.end(); ++i)
+          if (*i != gid)
+            Licq::gUserManager.setUserInGroup(dropUserId, *i, false, false);
+      }
       break;
     }
     default:

@@ -154,6 +154,14 @@ public:
    */
   void setUserInGroup(const Licq::UserId& userId, int groupId, bool inGroup, bool updateServer = true);
 
+  /**
+   * Extract user id from mime data
+   *
+   * @param mimeData Mime data from a drop event
+   * @return Valid user id if found, otherwise invalid
+   */
+  Licq::UserId userIdFromMimeData(const QMimeData& mimeData);
+
 public slots:
   /**
    * Write current configuration to file

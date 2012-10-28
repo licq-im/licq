@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2005-2011 Licq developers
+ * Copyright (C) 2005-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,12 +30,12 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-#include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/pluginsignal.h>
 
 #include "contactlist/contactlist.h"
+#include "core/licqgui.h"
 #include "core/messagebox.h"
 
 #include "helpers/support.h"
@@ -228,33 +228,11 @@ void KeyList::dragEnterEvent(QDragEnterEvent* event)
 
 void KeyList::dropEvent(QDropEvent* event)
 {
-  if (!event->mimeData()->hasText())
+  Licq::UserId dropUserId(gLicqGui->userIdFromMimeData(*event->mimeData()));
+  if (!dropUserId.isValid())
     return;
 
-  QString text = event->mimeData()->text();
-
-  if (text.length() <= 4)
-    return;
-
-  unsigned long nPPID = 0;
-
-  {
-    Licq::OwnerListGuard ownerList;
-    BOOST_FOREACH(Licq::Owner* owner, **ownerList)
-    {
-      unsigned long ppid = owner->protocolId();
-      if (text.startsWith(Licq::protocolId_toString(ppid).c_str()))
-      {
-        nPPID = ppid;
-        break;
-      }
-    }
-  }
-
-  if (nPPID == 0)
-    return;
-
-  editUser(Licq::UserId(text.mid(4).toLatin1().constData(), nPPID));
+  editUser(dropUserId);
 }
 
 void KeyList::resizeEvent(QResizeEvent* e)
