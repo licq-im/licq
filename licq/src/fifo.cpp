@@ -235,7 +235,7 @@ static std::string buffer_get_ids(const std::string& buffer, unsigned long* prot
  * @param buff string to convert
  * @return Valid user id on success
  */
-static Licq::UserId atoid(const char* buff)
+static Licq::UserId atoid(const char* buff, bool missingok = true)
 {
   if (buff == NULL)
     return Licq::UserId();
@@ -250,6 +250,9 @@ static Licq::UserId atoid(const char* buff)
     if (u->accountId() == name || u->getAlias() == name)
       return u->id();
   }
+
+  if (missingok && protocolId != 0)
+    return Licq::UserId(name, protocolId);
 
   return Licq::UserId();
 }
@@ -460,7 +463,7 @@ static int fifo_userinfo(int argc, const char* const* argv)
     return -1;
   }
 
-  Licq::UserId userId(atoid(argv[1]));
+  Licq::UserId userId(atoid(argv[1], false));
   if (!userId.isValid())
   {
     ReportBadBuddy(argv[0],argv[1]);
@@ -564,7 +567,7 @@ static int fifo_ui_viewevent(int argc, const char* const* argv)
 
   if (argc > 1)
   {
-    userId = atoid(argv[1]);
+    userId = atoid(argv[1], false);
     if (!userId.isValid())
     {
       ReportBadBuddy(argv[0],argv[1]);
@@ -587,7 +590,7 @@ static int fifo_ui_message(int argc, const char* const* argv)
     return -1;
   }
 
-  Licq::UserId userId(atoid(argv[1]));
+  Licq::UserId userId(atoid(argv[1], false));
   if (!userId.isValid())
   {
     ReportBadBuddy(argv[0],argv[1]);
