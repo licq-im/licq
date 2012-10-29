@@ -642,23 +642,29 @@ unsigned long CRMSClient::getProtocol(const string& data)
 void CRMSClient::ParseUser(const string& strData)
 {
   myUserId = UserId();
-  string::size_type nPos= strData.find_last_of(".");
-  if (nPos == string::npos)
+  unsigned long ppid;
+  string accountId;
+
+  size_t pos = strData.rfind('.');
+  if (pos != string::npos)
   {
-    Licq::ProtocolPluginsList plugins;
-    gPluginManager.getProtocolPluginsList(plugins);
-    BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
-    {
-      myUserId = UserId(data_arg, plugin->protocolId());
-      if (gUserManager.userExists(myUserId))
-        break;
-    }
+    // Protocol specified, accept any user, even if it isn't currently in list
+    ppid = getProtocol(strData.substr(pos+1));
+    myUserId = UserId(strData.substr(0, pos-1), ppid);
+    return;
   }
   else
   {
-    string strId(strData, 0, strData.find_last_of("."));
-    string strProtocol(strData, strData.find_last_of(".")+1, strData.size());
-    myUserId = UserId(strId, getProtocol(strProtocol));
+    // Protocol not specified, find an existing user that matches
+    Licq::UserListGuard userList;
+    BOOST_FOREACH(const Licq::User* user, **userList)
+    {
+      if (user->accountId() == strData)
+      {
+        myUserId = user->id();
+        return;
+      }
+    }
   }
 }
 
@@ -890,16 +896,12 @@ int CRMSClient::ProcessCommand()
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_INFO()
 {
-  char *szId = strdup(data_arg);
-  NEXT_WORD(data_arg);
-  unsigned long nPPID = getProtocol(data_arg);
-
-  UserId userId = UserId(szId, nPPID);
+  ParseUser(data_arg);
 
   //XXX Handle the case when we have the owner
 
   // Print the user info
-  Licq::UserReadGuard u(userId);
+  Licq::UserReadGuard u(myUserId);
   if (!u.isLocked())
   {
     fprintf(fs, "%d No such user.\n", CODE_INVALIDxUSER);
@@ -919,9 +921,6 @@ int CRMSClient::Process_INFO()
   fprintf(fs, "%d %s Email 2: %s\n", CODE_USERxINFO, u->accountId().c_str(),
     u->getUserInfoString("Email2").c_str());
 
-  if (szId)
-    free(szId);
-    
   return fflush(fs);
 }
 
@@ -972,18 +971,16 @@ int CRMSClient::Process_STATUS()
     string strStatus(strData, 0, strData.find_last_of("."));
     string strProtocol(strData, strData.find_last_of(".")+1, strData.size());
     unsigned long nPPID = getProtocol(strProtocol);
-    char *szStatus = strdup(strStatus.c_str());
-    changeStatus(nPPID, szStatus);
-    free(szStatus);
+    changeStatus(nPPID, strStatus);
   }
   fprintf(fs, "%d Done setting status\n", CODE_STATUSxDONE);
   return fflush(fs);
 }
 
-int CRMSClient::changeStatus(unsigned long nPPID, const char *szStatus)
+int CRMSClient::changeStatus(unsigned long nPPID, const string& strStatus)
 {
   unsigned status;
-  if (!Licq::User::stringToStatus(szStatus, status))
+  if (!Licq::User::stringToStatus(strStatus, status))
   {
     fprintf(fs, "%d Invalid status.\n", CODE_INVALIDxSTATUS);
     return -1;
@@ -991,7 +988,7 @@ int CRMSClient::changeStatus(unsigned long nPPID, const char *szStatus)
   UserId ownerId = gUserManager.ownerUserId(nPPID);
   if (status == Licq::User::OfflineStatus)
   {
-    fprintf(fs, "%d [0] Logging off %s.\n", CODE_COMMANDxSTART, szStatus);
+    fprintf(fs, "%d [0] Logging off %s.\n", CODE_COMMANDxSTART, strStatus.c_str());
     fflush(fs);
     gProtocolManager.setStatus(ownerId, Licq::User::OfflineStatus);
     fprintf(fs, "%d [0] Event done.\n", CODE_STATUSxDONE);
@@ -1011,9 +1008,9 @@ int CRMSClient::changeStatus(unsigned long nPPID, const char *szStatus)
     }
     unsigned long tag = gProtocolManager.setStatus(ownerId, status);
     if (b)
-      fprintf(fs, "%d [%ld] Logging on to %s.\n", CODE_COMMANDxSTART, tag, szStatus);
+      fprintf(fs, "%d [%ld] Logging on to %s.\n", CODE_COMMANDxSTART, tag, strStatus.c_str());
     else
-      fprintf(fs, "%d [%ld] Setting status for %s.\n", CODE_COMMANDxSTART, tag, szStatus);
+      fprintf(fs, "%d [%ld] Setting status for %s.\n", CODE_COMMANDxSTART, tag, strStatus.c_str());
     tags.push_back(tag);
   }
   return 0;
@@ -1346,16 +1343,15 @@ int CRMSClient::Process_URL_text()
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_SMS()
 {
-  unsigned long nUin = strtoul(data_arg, (char**)NULL, 10);
+  ParseUser(data_arg);
 
-  if (nUin < 10000)
+  if (!myUserId.isValid())
   {
     fprintf(fs, "%d Invalid UIN.\n", CODE_INVALIDxUSER);
     return fflush(fs);
   }
   fprintf(fs, "%d Enter NUMBER:\n", CODE_ENTERxLINE);
 
-  m_nUin = nUin;
   myText.clear();
 
   m_nState = STATE_ENTERxSMSxNUMBER;
@@ -1379,14 +1375,11 @@ int CRMSClient::Process_SMS_number()
 
 int CRMSClient::Process_SMS_message()
 {
-  char id[16];
-  snprintf(id, 16, "%lu", m_nUin);
-  Licq::UserId userId(id, LICQ_PPID);
-  unsigned long tag = gLicqDaemon->icqSendSms(userId, myLine,
+  unsigned long tag = gLicqDaemon->icqSendSms(myUserId, myLine,
       Licq::gTranslator.toUtf8(myText));
 
-  fprintf(fs, "%d [%lu] Sending SMS to %lu (%s).\n", CODE_COMMANDxSTART,
-     tag, m_nUin, myLine.c_str());
+  fprintf(fs, "%d [%lu] Sending SMS to %s (%s).\n", CODE_COMMANDxSTART,
+     tag, myUserId.accountId().c_str(), myLine.c_str());
 
   tags.push_back(tag);
   m_nState = STATE_COMMAND;
@@ -1411,7 +1404,7 @@ int CRMSClient::Process_AR()
 {
   ParseUser(data_arg);
 
-  if (myUserId.isValid() && !gUserManager.userExists(myUserId))
+  if (!myUserId.isValid())
   {
     fprintf(fs, "%d Invalid User.\n", CODE_INVALIDxUSER);
     return fflush(fs);
@@ -1620,12 +1613,13 @@ void CRMSClient::printUserEvent(const Licq::UserEvent* e, const string& alias)
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_ADDUSER()
 {
-  char *szId = strdup(data_arg);
-  NEXT_WORD(data_arg);
-  unsigned long nPPID = getProtocol(data_arg);
-  UserId userId(szId, nPPID);
+  ParseUser(data_arg);
 
-  if (gUserManager.addUser(userId) != 0)
+  if (!myUserId.isValid())
+  {
+    fprintf(fs, "%d Invalid UIN.\n", CODE_INVALIDxUSER);
+  }
+  else if (gUserManager.addUser(myUserId) != 0)
   {
     fprintf(fs, "%d User added\n", CODE_ADDUSERxDONE);
   }
@@ -1634,7 +1628,6 @@ int CRMSClient::Process_ADDUSER()
     fprintf(fs, "%d User not added\n", CODE_ADDUSERxERROR);
   }
 
-  free(szId);
   return fflush(fs);
 }
 
@@ -1649,11 +1642,11 @@ int CRMSClient::Process_ADDUSER()
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_REMUSER()
 {
-  unsigned long nUin = strtoul(data_arg, (char**)NULL, 10);
+  ParseUser(data_arg);
 
-  if (nUin >= 10000)
+  if (myUserId.isValid() && gUserManager.userExists(myUserId))
   {
-    gUserManager.removeUser(UserId(data_arg, LICQ_PPID));
+    gUserManager.removeUser(myUserId);
     fprintf(fs, "%d User removed\n", CODE_REMUSERxDONE);
   }
   else
@@ -1675,45 +1668,36 @@ int CRMSClient::Process_REMUSER()
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_SECURE()
 {
-  unsigned long nUin = 0;
-
   if (!Licq::gDaemon.haveCryptoSupport())
   {
     fprintf(fs, "%d Licq secure channel not compiled. Please recompile with OpenSSL.\n", CODE_SECURExNOTCOMPILED);
     return fflush(fs);
   }
 
-  if (!isdigit(*data_arg))
+  ParseUser(data_arg);
+
+  if (!myUserId.isValid())
   {
     fprintf(fs, "%d Invalid UIN.\n", CODE_INVALIDxUSER);
     return fflush(fs);
   }
-  char* id = strdup(data_arg);
-  UserId userId(id, LICQ_PPID);
-  nUin = strtoul(data_arg, (char**)NULL, 10);
   while (*data_arg != '\0' && *data_arg != ' ') data_arg++;
   NEXT_WORD(data_arg);
-
-  if (nUin < 10000)
-  {
-    fprintf(fs, "%d Invalid UIN.\n", CODE_INVALIDxUSER);
-    return fflush(fs);
-  }
 
   if (strncasecmp(data_arg, "open", 4) == 0)
   {
     fprintf(fs, "%d Opening secure connection.\n", CODE_SECURExOPEN);
-    gProtocolManager.secureChannelOpen(userId);
+    gProtocolManager.secureChannelOpen(myUserId);
   }
   else
   if (strncasecmp(data_arg, "close", 5) == 0)
   {
     fprintf(fs, "%d Closing secure connection.\n", CODE_SECURExCLOSE);
-    gProtocolManager.secureChannelClose(userId);
+    gProtocolManager.secureChannelClose(myUserId);
   }
   else
   {
-    Licq::UserReadGuard u(userId);
+    Licq::UserReadGuard u(myUserId);
     if (u.isLocked())
     {
       if (u->Secure() == 0)
@@ -1723,6 +1707,5 @@ int CRMSClient::Process_SECURE()
     }
   }
 
-  free(id);
   return fflush(fs);
 }

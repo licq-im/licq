@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -128,7 +128,6 @@ protected:
   unsigned int myLogLevelsBitmask;
   bool m_bNotify;
 
-  unsigned long m_nUin;
   Licq::UserId myUserId;
   std::string myText;
   std::string myLine;
@@ -139,7 +138,7 @@ protected:
   bool AddLineToText();
   unsigned long getProtocol(const std::string& data);
   void ParseUser(const std::string& data);
-  int changeStatus(unsigned long, const char *);
+  int changeStatus(unsigned long, const std::string& strStatus);
 
   int Process_MESSAGE_text();
   int Process_URL_url();
