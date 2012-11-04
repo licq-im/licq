@@ -345,7 +345,7 @@ const QPixmap& IconManager::iconForProtocol(unsigned status, ProtocolType protoc
 
 const QPixmap& IconManager::iconForProtocol(unsigned long protocolId, unsigned status)
 {
-  return iconForProtocol(status, static_cast<ProtocolType>(protocolId));
+  return iconForProtocol(status, static_cast<ProtocolType>(protocolId), true);
 }
 
 const QPixmap& IconManager::iconForEvent(unsigned eventType)
