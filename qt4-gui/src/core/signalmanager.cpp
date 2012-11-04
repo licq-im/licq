@@ -95,7 +95,7 @@ void SignalManager::ProcessSignal(Licq::PluginSignal* sig)
 
     case Licq::PluginSignal::SignalLogoff:
       if (sig->subSignal() == Licq::PluginSignal::LogoffPassword)
-        new OwnerEditDlg(ppid);
+        new OwnerEditDlg(userId);
 
       emit logoff();
       break;

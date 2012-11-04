@@ -93,6 +93,7 @@ extern "C"
 
 #include "dialogs/authdlg.h"
 #include "dialogs/logwindow.h"
+#include "dialogs/ownereditdlg.h"
 
 #include "dockicons/dockicon.h"
 #include "dockicons/systemtrayicon.h"
@@ -571,6 +572,7 @@ void LicqGui::changeStatus(unsigned status, bool invisible, const QString& autoM
 void LicqGui::changeStatus(unsigned status, const Licq::UserId& userId, bool invisible, const QString& autoMessage)
 {
   unsigned oldStatus;
+  bool needpwd;
 
   {
     Licq::OwnerReadGuard o(userId);
@@ -578,6 +580,7 @@ void LicqGui::changeStatus(unsigned status, const Licq::UserId& userId, bool inv
       return;
 
     oldStatus = o->status();
+    needpwd = o->password().empty();
   }
 
   if (status == User::InvisibleStatus)
@@ -608,6 +611,13 @@ void LicqGui::changeStatus(unsigned status, const Licq::UserId& userId, bool inv
       if (myMainWindow->systemMenu()->getInvisibleStatus(userId))
         status |= User::InvisibleStatus;
     }
+  }
+
+  if (needpwd)
+  {
+    // Show dialog to ask for password, it will set status when complete
+    new OwnerEditDlg(userId, status, autoMessage);
+    return;
   }
 
   gProtocolManager.setStatus(userId, status,

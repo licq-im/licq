@@ -32,7 +32,6 @@ set(dialogs_SRCS
   searchuserdlg.cpp
   showawaymsgdlg.cpp
   statsdlg.cpp
-  userselectdlg.cpp
   utilitydlg.cpp
 )
 

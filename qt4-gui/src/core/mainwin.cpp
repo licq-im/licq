@@ -91,7 +91,6 @@
 #include "dialogs/ownermanagerdlg.h"
 #include "dialogs/showawaymsgdlg.h"
 #include "dialogs/statsdlg.h"
-#include "dialogs/userselectdlg.h"
 
 #include "helpers/support.h"
 
@@ -258,18 +257,6 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
   // verify we exist
   if (Licq::gUserManager.NumOwners() == 0)
     OwnerManagerDlg::showOwnerManagerDlg();
-  else
-  {
-    // Do we need to get a password
-    bool needpwd = false;
-    {
-      Licq::OwnerReadGuard o(LICQ_PPID);
-      if (o.isLocked() && o->password().empty())
-        needpwd = true;
-    }
-    if (needpwd)
-      new UserSelectDlg();
-  }
 
 #ifdef USE_KDE
   /* TODO

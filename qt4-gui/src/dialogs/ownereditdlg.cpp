@@ -31,6 +31,7 @@
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/plugin/pluginmanager.h>
+#include <licq/protocolmanager.h>
 
 #include "config/iconmanager.h"
 #include "core/messagebox.h"
@@ -43,7 +44,44 @@ using namespace LicqQtGui;
 
 OwnerEditDlg::OwnerEditDlg(unsigned long ppid, QWidget* parent)
   : QDialog(parent),
-    myPpid(ppid)
+    myPpid(ppid),
+    myNewOwner(true),
+    mySetStatus(Licq::User::OfflineStatus)
+{
+  init();
+  show();
+}
+
+OwnerEditDlg::OwnerEditDlg(const Licq::UserId& ownerId, unsigned setStatus, const QString& autoMessage, QWidget* parent)
+  : QDialog(parent),
+    myOwnerId(ownerId),
+    myPpid(ownerId.protocolId()),
+    myNewOwner(false),
+    mySetStatus(setStatus),
+    myAutoMessage(autoMessage)
+{
+  init();
+
+  {
+    Licq::OwnerReadGuard o(myOwnerId);
+    if (!o.isLocked())
+    {
+      close();
+      return;
+    }
+
+    edtId->setText(o->accountId().c_str());
+    edtId->setEnabled(false);
+    edtPassword->setText(QString::fromLocal8Bit(o->password().c_str()));
+    chkSave->setChecked(o->SavePassword());
+    myHostEdit->setText(QString::fromLocal8Bit(o->serverHost().c_str()));
+    myPortSpin->setValue(o->serverPort());
+  }
+
+  show();
+}
+
+void OwnerEditDlg::init()
 {
   Support::setWidgetProps(this, "OwnerEdit");
   setAttribute(Qt::WA_DeleteOnClose, true);
@@ -100,64 +138,43 @@ OwnerEditDlg::OwnerEditDlg(unsigned long ppid, QWidget* parent)
   lay->addWidget(buttons, i++, 0, 1, 3);
 
 
-  Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(ppid);
-  if (protocol.get() == NULL)
-  {
-    InformUser(this, tr("Protocol plugin is not loaded."));
-    close();
-    return;
-  }
-
-  protocolName->setText(protocol->name().c_str());
-  protocolName->setPrependPixmap(IconManager::instance()->iconForProtocol(ppid));
-
-  {
-    Licq::OwnerReadGuard o(ppid);
-    if (o.isLocked())
-    {
-      myNewOwner = false;
-      edtId->setText(o->accountId().c_str());
-      edtId->setEnabled(false);
-      edtPassword->setText(o->password().c_str());
-      chkSave->setChecked(o->SavePassword());
-      myHostEdit->setText(o->serverHost().c_str());
-      myPortSpin->setValue(o->serverPort());
-    }
-    else
-    {
-      myNewOwner = true;
-    }
-  }
-
-  show();
+  Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(myPpid);
+  if (protocol.get() != NULL)
+    protocolName->setText(protocol->name().c_str());
+  protocolName->setPrependPixmap(IconManager::instance()->iconForProtocol(myPpid));
 }
 
 void OwnerEditDlg::slot_ok()
 {
-  QString id = edtId->text();
-  QString pwd = edtPassword->text();
-
-  if (id.isEmpty())
+  if (myNewOwner)
   {
-    InformUser(this, tr("User ID field cannot be empty."));
-    return;
+    QString id = edtId->text();
+    if (id.isEmpty())
+    {
+      InformUser(this, tr("User ID field cannot be empty."));
+      return;
+    }
+
+    myOwnerId = Licq::UserId(id.toLocal8Bit().constData(), myPpid);
+    Licq::gUserManager.addOwner(myOwnerId);
   }
 
-  Licq::UserId ownerId(id.toLocal8Bit().constData(), myPpid);
-
-  if (myNewOwner)
-    Licq::gUserManager.addOwner(ownerId);
+  QString pwd = edtPassword->text();
 
   {
-    Licq::OwnerWriteGuard o(ownerId);
+    Licq::OwnerWriteGuard o(myOwnerId);
     if (!o.isLocked())
       return;
 
     o->setPassword(pwd.toLocal8Bit().constData());
     o->SetSavePassword(chkSave->isChecked());
-    o->setServer(myHostEdit->text().toLatin1().constData(), myPortSpin->value());
+    o->setServer(myHostEdit->text().toLocal8Bit().constData(), myPortSpin->value());
     o->save(Licq::Owner::SaveOwnerInfo);
   }
+
+  if (mySetStatus != Licq::User::OfflineStatus)
+    Licq::gProtocolManager.setStatus(myOwnerId, mySetStatus,
+        (myAutoMessage.isNull() ? Licq::gProtocolManager.KeepAutoResponse : myAutoMessage.toUtf8().constData()));
 
   close();
 }

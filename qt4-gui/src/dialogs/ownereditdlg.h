@@ -22,6 +22,8 @@
 
 #include <QDialog>
 
+#include <licq/userid.h>
+
 class QCheckBox;
 class QLineEdit;
 
@@ -36,17 +38,25 @@ class OwnerEditDlg : public QDialog
 public:
   OwnerEditDlg(unsigned long ppid, QWidget* parent = NULL);
 
+  OwnerEditDlg(const Licq::UserId& ownerId, unsigned setStatus = 0,
+      const QString& autoMessage = QString::null, QWidget* parent = NULL);
+
 private slots:
   void slot_ok();
 
 private:
+  void init();
+
   QLineEdit* edtId;
   QLineEdit* edtPassword;
   QCheckBox* chkSave;
   QLineEdit* myHostEdit;
   SpecialSpinBox* myPortSpin;
+  Licq::UserId myOwnerId;
   unsigned long myPpid;
   bool myNewOwner;
+  unsigned mySetStatus;
+  QString myAutoMessage;
 };
 
 } // namespace LicqQtGui
