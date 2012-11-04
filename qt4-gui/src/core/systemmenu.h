@@ -122,8 +122,6 @@ private slots:
 
   void aboutToShowMenu();
   void aboutToShowGroupMenu();
-  void aboutToShowFollowMeMenu();
-  void setFollowMeStatus(QAction* action);
   void setMainStatus(QAction* action);
   void toggleMainInvisibleStatus();
   void setCurrentGroup(QAction* action);
@@ -142,13 +140,6 @@ private slots:
   void showGPGKeyManager();
 
 private:
-  /**
-   * Show or hide ICQ specific entries in the system menu
-   *
-   * @param visible True if ICQ entries should be visible
-   */
-  void setIcqEntriesVisible(bool visible);
-
   // Actions on top menu
   QAction* mySetArAction;
   QAction* myLogWinAction;
@@ -177,7 +168,6 @@ private:
   QAction* myShowHeaderAction;
 
   // Actions on status menu
-  QAction* myIcqFollowMeAction;
   QAction* myStatusOnlineAction;
   QAction* myStatusAwayAction;
   QAction* myStatusNotAvailableAction;
@@ -192,19 +182,16 @@ private:
   QMenu* myUserAdmMenu;
   QMenu* myStatusMenu;
   QMenu* myGroupMenu;
-  QMenu* myFollowMeMenu;
   QMenu* myHelpMenu;
 
   QActionGroup* myStatusActions;
   QActionGroup* myUserGroupActions;
-  QActionGroup* myFollowMeActions;
 
   QAction* myGroupSeparator;
   QAction* myStatusSeparator;
   QAction* myIcqFollowMeSeparator;
 
   QMap<Licq::UserId, SystemMenuPrivate::OwnerData*> myOwnerData;
-  bool myHasIcqOwner;
 };
 
 namespace SystemMenuPrivate
@@ -246,6 +233,10 @@ public:
   QMenu* getStatusMenu()
   { return myStatusMenu; }
 
+  /// Get ICQ Follow Me menu
+  QMenu* getIcqFollowMeMenu()
+  { return myIcqFollowMeMenu; }
+
   /**
    * Get owner system menu
    *
@@ -277,6 +268,8 @@ private slots:
   void showSettingsDlg();
   void setStatus(QAction* action);
   void toggleInvisibleStatus();
+  void aboutToShowIcqFollowMeMenu();
+  void setIcqFollowMeStatus(QAction* action);
 
 private:
   Licq::UserId myUserId;
@@ -284,6 +277,7 @@ private:
 
   QMenu* myStatusMenu;
   QMenu* myOwnerAdmMenu;
+  QMenu* myIcqFollowMeMenu;
 
   // Actions on owner menu
   QAction* myOwnerAdmInfoAction;
@@ -301,6 +295,7 @@ private:
   QAction* myStatusInvisibleAction;
 
   QActionGroup* myStatusActions;
+  QActionGroup* myIcqFollowMeActions;
 };
 
 } // namespace SystemMenuPrivate
