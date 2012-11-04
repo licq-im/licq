@@ -137,11 +137,6 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
       SIGNAL(currentListChanged()), SLOT(updateCurrentGroup()));
 
   myCaption = "Licq";
-  {
-    Licq::OwnerReadGuard o(LICQ_PPID);
-    if (o.isLocked())
-      myCaption += QString(" (%1)").arg(QString::fromUtf8(o->getAlias().c_str()));
-  }
   setWindowTitle(myCaption);
   setWindowIconText(myCaption);
 
@@ -652,28 +647,6 @@ void MainWindow::slot_updatedUser(const Licq::UserId& userId, unsigned long subS
     case Licq::PluginSignal::UserSecurity:
     case Licq::PluginSignal::UserTyping:
     {
-      if (Licq::gUserManager.isOwner(userId))
-      {
-        if (subSignal == Licq::PluginSignal::UserStatus ||
-            subSignal == Licq::PluginSignal::UserSettings)
-          break;
-
-        myCaption = "Licq (|)";
-        Licq::UserReadGuard u(userId);
-        if (u.isLocked())
-          myCaption.replace("|", QString::fromUtf8(u->getAlias().c_str()));
-        else
-          myCaption.replace("|", tr("Error! No owner set"));
-
-        QString caption = myCaption;
-        if (windowTitle()[0] == '*')
-          caption.prepend("* ");
-
-        setWindowTitle(caption);
-        setWindowIconText(caption);
-        break;
-      }
-
       Licq::UserReadGuard u(userId);
       if (!u.isLocked())
       {
