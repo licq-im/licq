@@ -40,7 +40,14 @@ class UserManager : private boost::noncopyable
 public:
   virtual void addOwner(const UserId& userId) = 0;
 
-  virtual void RemoveOwner(unsigned long) = 0;
+  /**
+   * Remove an owner
+   * Note: Will fail if owner is not offline
+   *
+   * @param userId Id of owner to remove
+   * @return True if owner was removed
+   */
+  virtual bool removeOwner(const UserId& userId) = 0;
 
   /**
    * Check if a user id is in the list

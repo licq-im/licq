@@ -105,10 +105,20 @@ void UserManager::addOwner(const UserId& userId)
     return;
   }
 
+  // We currently only support one owner per protocol. Enforce this until we're ready
+  for (OwnerMap::const_iterator i = myOwners.begin(); i != myOwners.end(); ++i)
+  {
+    if (i->first.protocolId() == userId.protocolId())
+    {
+      myOwnerListMutex.unlockWrite();
+      return;
+    }
+  }
+
   Owner* o = createOwner(userId);
 
   myConfiguredOwners.insert(userId);
-  myOwners[userId.protocolId()] = o;
+  myOwners[userId] = o;
 
   myOwnerListMutex.unlockWrite();
 
@@ -297,7 +307,7 @@ void UserManager::loadProtocol(unsigned long protocolId)
 
     // Load owner
     Owner* o = createOwner(ownerId);
-    myOwners[ownerId.protocolId()] = o;
+    myOwners[ownerId] = o;
 
     // Notify plugins that the owner has been added
     gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,
@@ -338,13 +348,18 @@ void UserManager::unloadProtocol(unsigned long protocolId)
 
   // Delete owner object for this protocol
   myOwnerListMutex.lockWrite();
-  OwnerMap::iterator i = myOwners.find(protocolId);
-  if (i != myOwners.end())
+  for (OwnerMap::iterator i = myOwners.begin(); i != myOwners.end(); )
   {
+    if (i->first.protocolId() != protocolId)
+    {
+      ++i;
+      continue;
+    }
+
     Owner* o = i->second;
     UserId ownerId = o->id();
     o->lockWrite();
-    myOwners.erase(i);
+    myOwners.erase(i++);
     o->unlockWrite();
     delete o;
 
@@ -420,17 +435,24 @@ void UserManager::saveUserList(const UserId& ownerId)
 
 bool UserManager::allowUnloadProtocol(unsigned long protocolId)
 {
-  Licq::OwnerReadGuard owner(protocolId);
-  if (owner.isLocked())
+  myOwnerListMutex.lockRead();
+  for (OwnerMap::const_iterator i = myOwners.begin(); i != myOwners.end(); ++i)
   {
+    if (i->first.protocolId() != protocolId)
+      continue;
+
     // If owner is online, don't allow unloading the protocol
-    if (owner->status() != Owner::OfflineStatus)
+    i->second->lockRead();
+    bool isOnline = i->second->isOnline();
+    i->second->unlockRead();
+    if (isOnline)
     {
+      myOwnerListMutex.unlockRead();
       gLog.warning(tr("Protocol must be offline to be unloaded"));
       return false;
     }
   }
-
+  myOwnerListMutex.unlockRead();
   return true;
 }
 
@@ -569,16 +591,16 @@ void UserManager::writeToUserHistory(Licq::User* user, const string& text)
   user->myPrivate->writeToHistory(text);
 }
 
-void UserManager::RemoveOwner(unsigned long ppid)
+bool UserManager::removeOwner(const Licq::UserId& userId)
 {
   // List should only be locked when not holding any user lock to avoid
   // deadlock, so we cannot call FetchOwner here.
   myOwnerListMutex.lockWrite();
-  OwnerMap::iterator iter = myOwners.find(ppid);
+  OwnerMap::iterator iter = myOwners.find(userId);
   if (iter == myOwners.end())
   {
     myOwnerListMutex.unlockWrite();
-    return;
+    return false;
   }
 
   Owner* o = iter->second;
@@ -589,13 +611,12 @@ void UserManager::RemoveOwner(unsigned long ppid)
   {
     myOwnerListMutex.unlockWrite();
     o->unlockWrite();
-    return;
+    return false;
   }
 
   myOwners.erase(iter);
   o->myPrivate->removeFiles();
-  UserId id = o->id();
-  myConfiguredOwners.erase(id);
+  myConfiguredOwners.erase(userId);
   myOwnerListMutex.unlockWrite();
   o->unlockWrite();
   delete o;
@@ -603,7 +624,9 @@ void UserManager::RemoveOwner(unsigned long ppid)
   saveOwnerList();
 
   gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,
-      PluginSignal::ListOwnerRemoved, id));
+      PluginSignal::ListOwnerRemoved, userId));
+
+  return true;
 }
 
 Licq::User* UserManager::fetchUser(const UserId& userId,
@@ -619,17 +642,14 @@ Licq::User* UserManager::fetchUser(const UserId& userId,
 
   // Check for an owner first
   myOwnerListMutex.lockRead();
-  OwnerMap::iterator iter_o = myOwners.find(userId.protocolId());
+  OwnerMap::const_iterator iter_o = myOwners.find(userId);
   if (iter_o != myOwners.end())
   {
-    if (iter_o->second->id() == userId)
-    {
-      user = iter_o->second;
-      if (writeLock)
-        user->lockWrite();
-      else
-        user->lockRead();
-    }
+    user = iter_o->second;
+    if (writeLock)
+      user->lockWrite();
+    else
+      user->lockRead();
   }
   myOwnerListMutex.unlockRead();
 
@@ -684,12 +704,9 @@ bool UserManager::userExists(const UserId& userId)
   bool exists = false;
 
   myOwnerListMutex.lockRead();
-  OwnerMap::iterator iter_o = myOwners.find(userId.protocolId());
+  OwnerMap::const_iterator iter_o = myOwners.find(userId);
   if (iter_o != myOwners.end())
-  {
-    if (iter_o->second->id() == userId)
-      exists = true;
-  }
+    exists = true;
   myOwnerListMutex.unlockRead();
   if (exists)
     return true;
@@ -704,11 +721,18 @@ bool UserManager::userExists(const UserId& userId)
 
 UserId UserManager::ownerUserId(unsigned long ppid)
 {
-  Licq::OwnerReadGuard owner(ppid);
-  if (!owner.isLocked())
-    return UserId();
+  myOwnerListMutex.lockRead();
+  for (OwnerMap::const_iterator i = myOwners.begin(); i != myOwners.end(); ++i)
+  {
+    if (i->first.protocolId() != ppid)
+      continue;
 
-  return owner->id();
+    myOwnerListMutex.unlockRead();
+    return i->first;
+  }
+
+  myOwnerListMutex.unlockRead();
+  return UserId();
 }
 
 bool UserManager::isOwner(const UserId& userId)
@@ -716,12 +740,9 @@ bool UserManager::isOwner(const UserId& userId)
   bool exists = false;
 
   myOwnerListMutex.lockRead();
-  OwnerMap::iterator iter_o = myOwners.find(userId.protocolId());
+  OwnerMap::const_iterator iter_o = myOwners.find(userId);
   if (iter_o != myOwners.end())
-  {
-    if (iter_o->second->id() == userId)
-      exists = true;
-  }
+    exists = true;
   myOwnerListMutex.unlockRead();
 
   return exists;
@@ -891,7 +912,7 @@ void UserManager::RemoveGroup(int groupId)
 
     // Group object is no long reachable so include protocol specific server id and name in signal
     gPluginManager.pushProtocolSignal(new Licq::ProtoRemoveGroupSignal(
-        i->second->id(), groupId, group->serverId(i->first), group->name()));
+        i->first, groupId, group->serverId(i->first.protocolId()), group->name()));
   }
   myOwnerListMutex.unlockRead();
 
@@ -981,7 +1002,7 @@ bool UserManager::RenameGroup(int groupId, const string& name, unsigned long ski
   for (OwnerMap::const_iterator i = myOwners.begin(); i != myOwners.end(); ++i)
   {
     // Don't notify the protocol that called us
-    if (i->first == skipProtocolId)
+    if (i->first.protocolId() == skipProtocolId)
       continue;
 
     i->second->lockRead();
@@ -990,7 +1011,7 @@ bool UserManager::RenameGroup(int groupId, const string& name, unsigned long ski
     if (!isOnline)
       continue;
 
-    gPluginManager.pushProtocolSignal(new Licq::ProtoRenameGroupSignal(i->second->id(), groupId));
+    gPluginManager.pushProtocolSignal(new Licq::ProtoRenameGroupSignal(i->first, groupId));
   }
   myOwnerListMutex.unlockRead();
 
@@ -1092,12 +1113,12 @@ void UserManager::setGroupServerId(int groupId, unsigned long protocolId,
   myGroupListMutex.unlockRead();
 }
 
-Licq::Owner* UserManager::fetchOwner(unsigned long protocolId, bool writeLock)
+Licq::Owner* UserManager::fetchOwner(const UserId& userId, bool writeLock)
 {
   Owner* o = NULL;
 
   myOwnerListMutex.lockRead();
-  OwnerMap::iterator iter = myOwners.find(protocolId);
+  OwnerMap::const_iterator iter = myOwners.find(userId);
   if (iter != myOwners.end())
   {
     o = iter->second;
@@ -1250,7 +1271,7 @@ OwnerReadGuard::OwnerReadGuard(const UserId& userId)
 }
 
 OwnerReadGuard::OwnerReadGuard(unsigned long protocolId)
-  : ReadMutexGuard<Owner>(LicqDaemon::gUserManager.fetchOwner(protocolId, false), true)
+  : ReadMutexGuard<Owner>(LicqDaemon::gUserManager.fetchOwner(LicqDaemon::gUserManager.ownerUserId(protocolId), false), true)
 {
   // Empty
 }
@@ -1262,7 +1283,7 @@ OwnerWriteGuard::OwnerWriteGuard(const UserId& userId)
 }
 
 OwnerWriteGuard::OwnerWriteGuard(unsigned long protocolId)
-  : WriteMutexGuard<Owner>(LicqDaemon::gUserManager.fetchOwner(protocolId, true), true)
+  : WriteMutexGuard<Owner>(LicqDaemon::gUserManager.fetchOwner(LicqDaemon::gUserManager.ownerUserId(protocolId), true), true)
 {
   // Empty
 }

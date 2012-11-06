@@ -35,7 +35,7 @@ class Group;
 
 typedef std::map<Licq::UserId, Licq::User*> UserMap;
 typedef std::map<int, Group*> GroupMap;
-typedef std::map<unsigned long, Licq::Owner*> OwnerMap;
+typedef std::map<Licq::UserId, Licq::Owner*> OwnerMap;
 
 class UserManager : public Licq::UserManager
 {
@@ -136,29 +136,15 @@ public:
   /**
    * Fetch and lock an owner object based on protocolId
    *
-   * @param protocolId Protocol to get owner for
+   * @param userId Id of owner to get
    * @param writeLock True to lock owner for writing, false for read lock
    * @return The locked owner object if owner exists, otherwise NULL
    */
-  Licq::Owner* fetchOwner(unsigned long protocolId, bool writeLock = false);
-
-  /**
-   * Find and lock an owner object based on userId
-   *
-   * Note: Currently this is just a convenience wrapper but if/when Licq
-   *   starts supporting multiple owners per protocol this call will be needed
-   *   to be able to get any owner.
-   *
-   * @param userId User id of owner
-   * @param writeLock True to lock owner for writing, false for read lock
-   * @return The locked owner object if owner exists, otherwise NULL
-   */
-  Licq::Owner* fetchOwner(const Licq::UserId& userId, bool writeLock = false)
-  { return fetchOwner(userId.protocolId(), writeLock); }
+  Licq::Owner* fetchOwner(const Licq::UserId& userId, bool writeLock = false);
 
   // From Licq::UserManager
   void addOwner(const Licq::UserId& userId);
-  void RemoveOwner(unsigned long);
+  bool removeOwner(const Licq::UserId& userId);
   bool userExists(const Licq::UserId& userId);
   Licq::UserId ownerUserId(unsigned long ppid);
   bool isOwner(const Licq::UserId& userId);

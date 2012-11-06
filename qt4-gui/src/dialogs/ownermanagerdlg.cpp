@@ -374,6 +374,6 @@ void OwnerManagerDlg::remove()
       return;
 
     Licq::UserId ownerId = data.value<Licq::UserId>();
-    Licq::gUserManager.RemoveOwner(ownerId.protocolId());
+    Licq::gUserManager.removeOwner(ownerId);
   }
 }
