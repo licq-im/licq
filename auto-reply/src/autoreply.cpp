@@ -17,11 +17,13 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <boost/foreach.hpp>
 #include <cctype>
 #include <climits>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <list>
 #include <sys/select.h>
 #include <sys/time.h>
 #include <sys/types.h>
@@ -38,6 +40,7 @@
 #include "autoreply.h"
 
 #include <licq/logging/log.h>
+#include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
@@ -171,7 +174,18 @@ int CLicqAutoReply::run()
     if (!Licq::User::stringToStatus(myStartupStatus, s))
       gLog.warning("Invalid startup status");
     else
-      gProtocolManager.setStatus(gUserManager.ownerUserId(LICQ_PPID), s);
+    {
+      // Get a list of owners first since we can't call changeStatus with list locked
+      std::list<Licq::UserId> owners;
+      {
+        Licq::OwnerListGuard ownerList;
+        BOOST_FOREACH(const Licq::Owner* o, **ownerList)
+          owners.push_back(o->id());
+      }
+
+      BOOST_FOREACH(const Licq::UserId& ownerId, owners)
+        gProtocolManager.setStatus(ownerId, s);
+    }
   }
 
   fd_set fdSet;
