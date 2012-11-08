@@ -58,6 +58,7 @@
 
 #include "licqgui.h"
 #include "mainwin.h"
+#include "signalmanager.h"
 
 using Licq::User;
 using namespace LicqQtGui;
@@ -192,6 +193,17 @@ SystemMenu::SystemMenu(QWidget* parent)
 
   // Hide ICQ specific menus until we actually get an ICQ owner
   myIcqRandomChatAction->setVisible(false);
+
+  connect(gGuiSignalManager, SIGNAL(ownerAdded(const Licq::UserId&)),
+      SLOT(addOwner(const Licq::UserId&)));
+  connect(gGuiSignalManager, SIGNAL(ownerRemoved(const Licq::UserId&)),
+      SLOT(removeOwner(const Licq::UserId&)));
+
+  {
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
+      addOwner(owner->id());
+  }
 }
 
 SystemMenu::~SystemMenu()

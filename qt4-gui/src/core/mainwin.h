@@ -96,7 +96,6 @@ public slots:
    */
   void slot_updatedList(unsigned long subSignal);
 
-  void slot_pluginUnloaded(unsigned long ppid);
   void updateGroups(bool initial = false);
 
   void showHints();
@@ -177,7 +176,6 @@ private slots:
   void prevGroup();
 
   void slot_logon();
-  void slot_protocolPlugin(unsigned long);
   void slot_updateContactList();
   void slot_updatedUser(const Licq::UserId& userId, unsigned long subSignal, int argument);
 

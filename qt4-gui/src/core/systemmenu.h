@@ -94,7 +94,7 @@ public:
    */
   bool getInvisibleStatus(const Licq::UserId& userId) const;
 
-public slots:
+private slots:
   /**
    * Add menu entries for a new owner
    *
@@ -109,7 +109,6 @@ public slots:
    */
   void removeOwner(const Licq::UserId& userId);
 
-private slots:
   /**
    * Update icons in menu.
    */

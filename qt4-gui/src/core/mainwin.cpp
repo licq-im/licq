@@ -22,8 +22,6 @@
 #include "config.h"
 
 #include <boost/foreach.hpp>
-#include <list>
-#include <map>
 #include <cctype>
 
 #ifdef USE_KDE
@@ -215,14 +213,6 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
       SLOT(updateStatus()));
   connect(gGuiSignalManager, SIGNAL(logon()),
       SLOT(slot_logon()));
-  connect(gGuiSignalManager, SIGNAL(protocolPluginLoaded(unsigned long)),
-      SLOT(slot_protocolPlugin(unsigned long)));
-  connect(gGuiSignalManager, SIGNAL(protocolPluginUnloaded(unsigned long)),
-      SLOT(slot_pluginUnloaded(unsigned long)));
-  connect(gGuiSignalManager, SIGNAL(ownerAdded(const Licq::UserId&)),
-      mySystemMenu, SLOT(addOwner(const Licq::UserId&)));
-  connect(gGuiSignalManager, SIGNAL(ownerRemoved(const Licq::UserId&)),
-      mySystemMenu, SLOT(removeOwner(const Licq::UserId&)));
   connect(gGuiSignalManager, SIGNAL(ui_showuserlist()), SLOT(unhide()));
   connect(gGuiSignalManager, SIGNAL(ui_hideuserlist()), SLOT(hide()));
 
@@ -253,18 +243,7 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
   if (Licq::gUserManager.NumOwners() == 0)
     OwnerManagerDlg::showOwnerManagerDlg();
 
-  list<unsigned long> protocolIds;
-  {
-    Licq::OwnerListGuard ownerList;
-    BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
-    {
-      unsigned long protocolId = owner->protocolId();
-      protocolIds.push_back(protocolId);
-    }
-  }
-
-  BOOST_FOREACH(unsigned long protocolId, protocolIds)
-    slot_protocolPlugin(protocolId);
+  updateStatus();
 
   // Check if MainWin should be sticky
   if (Config::General::instance()->mainwinSticky())
@@ -974,15 +953,6 @@ void MainWindow::slot_logon()
   updateStatus();
 }
 
-void MainWindow::slot_protocolPlugin(unsigned long nPPID)
-{
-  Licq::UserId userId = Licq::gUserManager.ownerUserId(nPPID);
-  if (userId.isValid())
-    mySystemMenu->addOwner(userId);
-
-  updateStatus();
-}
-
 void MainWindow::slot_updateContactList()
 {
   gLicqDaemon->icqUpdateContactList();
@@ -1015,13 +985,6 @@ void MainWindow::setMiniMode(bool miniMode)
 
   if (myUserView != NULL)
     myUserView->setVisible(!miniMode);
-}
-
-void MainWindow::slot_pluginUnloaded(unsigned long _nPPID)
-{
-  Licq::UserId userId = Licq::gUserManager.ownerUserId(_nPPID);
-  if (userId.isValid())
-    mySystemMenu->removeOwner(userId);
 }
 
 void MainWindow::showHints()
