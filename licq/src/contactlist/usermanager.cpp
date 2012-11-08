@@ -1324,12 +1324,13 @@ UserListGuard::~UserListGuard()
   LicqDaemon::gUserManager.unlockUserList();
 }
 
-OwnerListGuard::OwnerListGuard()
+OwnerListGuard::OwnerListGuard(unsigned long protocolId)
 {
   const OwnerMap& ownerMap = LicqDaemon::gUserManager.lockOwnerList();
 
   for (OwnerMap::const_iterator i = ownerMap.begin(); i != ownerMap.end(); ++i)
-    myOwnerList.push_back(i->second);
+    if (protocolId == 0 || i->first.protocolId() == protocolId)
+      myOwnerList.push_back(i->second);
 }
 
 OwnerListGuard::~OwnerListGuard()

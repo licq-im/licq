@@ -65,9 +65,9 @@ signals:
   /**
    * Status has changed
    *
-   * @param ppid Protocol instance id for owner that changed status
+   * @param ownerId Id of owner that changed status
    */
-  void updatedStatus(unsigned long ppid);
+  void updatedStatus(const Licq::UserId& ownerId);
 
   void doneUserFcn(const Licq::Event* ev);
   void searchResult(const Licq::Event* ev);

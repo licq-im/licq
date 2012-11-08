@@ -308,8 +308,10 @@ public:
   /**
    * Constructor
    * Will read-lock the owner list in user manager
+   *
+   * @param protocolId Protocol id to get owners for or zero to get all
    */
-  OwnerListGuard();
+  OwnerListGuard(unsigned long protocolId = 0);
 
   /**
    * Destructor, will release lock on group list

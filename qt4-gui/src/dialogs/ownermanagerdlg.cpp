@@ -113,7 +113,7 @@ OwnerManagerDlg::OwnerManagerDlg(QWidget* parent)
       SLOT(protocolLoaded(unsigned long)));
   connect(gGuiSignalManager, SIGNAL(protocolPluginUnloaded(unsigned long)),
       SLOT(updateList()));
-  connect(gGuiSignalManager, SIGNAL(updatedStatus(unsigned long)),
+  connect(gGuiSignalManager, SIGNAL(updatedStatus(const Licq::UserId& ownerId)),
       SLOT(updateList()));
 
   // Add the protocals and owners to the list
@@ -153,18 +153,17 @@ void OwnerManagerDlg::updateList()
         .arg(protocol->version().c_str()));
     protoItem->setData(0, Qt::UserRole, (unsigned int)ppid);
 
-    // Currently only one owner per protocol
-    Licq::UserId ownerId = Licq::gUserManager.ownerUserId(ppid);
-    if (ownerId.isValid())
+    Licq::OwnerListGuard ownerList(ppid);
+    BOOST_FOREACH(const Licq::Owner* o, **ownerList)
     {
-      Licq::OwnerReadGuard owner(ownerId);
+      Licq::OwnerReadGuard owner(o);
 
       QTreeWidgetItem* ownerItem = new QTreeWidgetItem(protoItem);
-      ownerItem->setIcon(0, iconman->iconForStatus(owner->status(), ownerId));
+      ownerItem->setIcon(0, iconman->iconForStatus(owner->status(), owner->id()));
       ownerItem->setText(0, QString("%1 (%2)")
-          .arg(QString::fromUtf8(ownerId.accountId().c_str()))
+          .arg(QString::fromUtf8(owner->id().accountId().c_str()))
           .arg(owner->statusString(true, false).c_str()));
-      ownerItem->setData(0, Qt::UserRole, QVariant::fromValue(ownerId));
+      ownerItem->setData(0, Qt::UserRole, QVariant::fromValue(owner->id()));
       ownerItem->setData(0, Qt::UserRole+1, owner->status());
     }
   }

@@ -86,7 +86,7 @@ void SignalManager::ProcessSignal(Licq::PluginSignal* sig)
       emit updatedUser(userId, sig->subSignal(), sig->argument(), sig->cid());
 
       if (Licq::gUserManager.isOwner(userId) && sig->subSignal() == Licq::PluginSignal::UserStatus)
-        emit updatedStatus(ppid);
+        emit updatedStatus(userId);
       break;
 
     case Licq::PluginSignal::SignalLogon:
