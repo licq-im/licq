@@ -39,13 +39,6 @@
 #ifdef USE_KDE
 #include <KDE/KFileDialog>
 #include <kdeversion.h>
-
-// TODO
-//#include <kabc/stdaddressbook.h>
-//#include <kabc/addressee.h>
-//#include <kabc/addresseedialog.h>
-//#include "core/licqkimiface.h"
-//#define USE_KABC
 #else
 #include <QFileDialog>
 #endif
@@ -70,10 +63,6 @@
 #include "widgets/specialspinbox.h"
 #include "widgets/timezoneedit.h"
 #include "userdlg.h"
-
-#ifdef USE_KABC
-#include "core/mainwin.h"
-#endif
 
 using Licq::gProtocolManager;
 using namespace LicqQtGui;
@@ -106,10 +95,6 @@ UserPages::Info::Info(bool isOwner, unsigned long protocolId, UserDlg* parent)
       tr("Picture"), UserDlg::GeneralPage);
   parent->addPage(UserDlg::CountersPage, createPageCounters(parent),
       tr("Last"));
-#ifdef USE_KABC
-  parent->addPage(UserDlg::KabcPage, createPageKabc(parent),
-      tr("KDE Adressbook"));
-#endif
 }
 
 void UserPages::Info::load(const Licq::User* user)
@@ -129,9 +114,6 @@ void UserPages::Info::load(const Licq::User* user)
   }
   loadPagePicture(user);
   loadPageCounters(user);
-#ifdef USE_KABC
-  loadPageKabc(user);
-#endif
 }
 
 void UserPages::Info::apply(Licq::User* user)
@@ -154,10 +136,6 @@ void UserPages::Info::apply2(const Licq::UserId& /* userId */)
   if (myAliasHasChanged)
     gProtocolManager.updateUserAlias(myUserId);
   myAliasHasChanged = false;
-
-#ifdef USE_KABC
-  savePageKabc();
-#endif
 }
 
 QWidget* UserPages::Info::createPageGeneral(QWidget* parent)
@@ -1350,73 +1328,6 @@ void UserPages::Info::loadPageCounters(const Licq::User* u)
     nfoOnlineSince->setText(tr("Offline"));
 }
 
-#ifdef USE_KABC
-QWidget* UserPages::Info::createPageKabc(QWidget* parent)
-{
-  QWidget* w = new QWidget(parent);
-  myPageKabcLayout = new QVBoxLayout(w);
-  myPageKabcLayout->setContentsMargins(0, 0, 0, 0);
-
-  myKabcBox = new QGroupBox(tr("KDE Adress Book"));
-  QGridLayout* lay = new QGridLayout(myKabcBox);
-
-  lay->addWidget(new QLabel(tr("Name:")), 0, 0);
-  nfoKABCName = new InfoField(true);
-  lay->addWidget(nfoKABCName, 0, 1);
-
-  lay->addWidget(new QLabel(tr("Email:")), 1, 0);
-  nfoKABCEmail = new InfoField(true);
-  lay->addWidget(nfoKABCEmail, 1, 1);
-
-  myKabcBrowseButton = new QPushButton(tr("Browse..."));
-  connect(myKabcBrowseButton, SIGNAL(clicked()), SLOT(browseKabc()));
-  lay->addWidget(myKabcBrowseButton, 2, 0, 1, 2);
-
-  myPageKabcLayout->addWidget(myKabcBox);
-  myPageKabcLayout->addStretch(1);
-
-  return w;
-}
-
-void UserPages::Info::loadPageKabc(const Licq::User* u)
-{
-  if (m_kabcID.isEmpty())
-    m_kabcID = mainwin->kdeIMInterface->kabcIDForUser(myId.toLatin1(), myPpid);
-
-  if (!m_kabcID.isEmpty())
-  {
-    KABC::AddressBook* adrBook = KABC::StdAddressBook::self();
-    if (adrBook == 0)
-      return;
-
-    KABC::Addressee contact = adrBook->findByUid(m_kabcID);
-    if (!contact.isEmpty())
-    {
-      nfoKABCName->setText(contact.assembledName());
-      QString email = contact.preferredEmail();
-      nfoKABCEmail->setText(email);
-    }
-  }
-}
-
-void UserPages::Info::browseKabc()
-{
-    KABC::Addressee contact = KABC::AddresseeDialog::getAddressee(this);
-    if (!contact.isEmpty())
-    {
-      nfoKABCName->setText(contact.assembledName());
-      QString email = contact.preferredEmail();
-      nfoKABCEmail->setText(email);
-      m_kabcID = contact.uid();
-    }
-}
-
-void UserPages::Info::savePageKabc()
-{
-  mainwin->kdeIMInterface->setKABCIDForUser(myId, myPpid, m_kabcID);
-}
-#endif
-
 void UserPages::Info::editCategory(QTreeWidgetItem* selected)
 {
   //undo the effect of double click
@@ -1496,7 +1407,7 @@ void UserPages::Info::changeActivePhone(int index)
 
 unsigned long UserPages::Info::retrieve(UserDlg::UserPage page)
 {
-  if (page == UserDlg::CountersPage || page == UserDlg::KabcPage)
+  if (page == UserDlg::CountersPage)
     return 0;
 
   unsigned status;

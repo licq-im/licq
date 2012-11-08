@@ -107,11 +107,6 @@
 #include "systemmenu.h"
 #include "usermenu.h"
 
-#ifdef USE_KDE
-// TODO
-// #include "licqkimiface.h"
-// #include "dcopclient.h"
-#endif
 
 using namespace std;
 using namespace LicqQtGui;
@@ -258,36 +253,12 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
   if (Licq::gUserManager.NumOwners() == 0)
     OwnerManagerDlg::showOwnerManagerDlg();
 
-#ifdef USE_KDE
-  /* TODO
-  kdeIMInterface = new LicqKIMIface(KApplication::dcopClient()->appId(), this);
-  connect(kdeIMInterface,
-      SIGNAL(sendMessage(const Licq::UserId&, unsigned long, const QString&)),
-      gLicqGui, SLOT(sendMsg(const Licq::UserId&, unsigned long, const QString&)));
-  connect(kdeIMInterface,
-      SIGNAL(sendFileTransfer(const Licq::UserId&, unsigned long,
-          const QString&, const QString&)),
-      gLicqGui, SLOT(sendFileTransfer(const Licq::UserId&, unsigned long,
-          const QString&, const QString&)));
-  connect(kdeIMInterface,
-      SIGNAL(sendChatRequest(const Licq::UserId&, unsigned long)),
-      gLicqGui, SLOT(sendChatRequest(const Licq::UserId&, unsigned long)));
-  connect(kdeIMInterface,
-      SIGNAL(addUser(const Licq::UserId&)),
-      SLOT(addUser(const Licq::UserId&)));
-  */
-#endif
-
   list<unsigned long> protocolIds;
   {
     Licq::OwnerListGuard ownerList;
     BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
     {
       unsigned long protocolId = owner->protocolId();
-#ifdef USE_KDE
-      // TODO
-      // kdeIMInterface->addProtocol(protocol->getName(), protocolId);
-#endif
       protocolIds.push_back(protocolId);
     }
   }
@@ -625,10 +596,6 @@ void MainWindow::slot_updatedUser(const Licq::UserId& userId, unsigned long subS
       // Fall through
     }
     case Licq::PluginSignal::UserStatus:
-#ifdef USE_KDE
-      // TODO
-      // kdeIMInterface->userStatusChanged(id, ppid);
-#endif
     case Licq::PluginSignal::UserBasic: // for alias
     case Licq::PluginSignal::UserSettings: // for online notify
     case Licq::PluginSignal::UserSecurity:
@@ -1014,12 +981,6 @@ void MainWindow::slot_protocolPlugin(unsigned long nPPID)
     mySystemMenu->addOwner(userId);
 
   updateStatus();
-
-#ifdef USE_KDE
-  // TODO
-  // let KDE IM interface know about the new protocol
-  // kdeIMInterface->addProtocol(QString(pName), nPPID);
-#endif
 }
 
 void MainWindow::slot_updateContactList()
@@ -1061,11 +1022,6 @@ void MainWindow::slot_pluginUnloaded(unsigned long _nPPID)
   Licq::UserId userId = Licq::gUserManager.ownerUserId(_nPPID);
   if (userId.isValid())
     mySystemMenu->removeOwner(userId);
-
-#ifdef USE_KDE
-  // TODO
-  // kdeIMInterface->removeProtocol(_nPPID);
-#endif
 }
 
 void MainWindow::showHints()

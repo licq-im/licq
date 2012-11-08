@@ -64,7 +64,6 @@ public:
     PhonePage,
     PicturePage,
     CountersPage,
-    KabcPage,
     SettingsPage,
     StatusPage,
     OnEventPage,

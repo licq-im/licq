@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,10 +62,6 @@ class SystemMenu;
 class UserEventCommon;
 class UserView;
 
-#ifdef USE_KDE
-class LicqKIMIface;
-#endif
-
 //=====MainWindow===============================================================
 class MainWindow : public QWidget
 {
@@ -80,10 +76,6 @@ public:
   SystemMenu* systemMenu() { return mySystemMenu; }
 
   QString usprintfHelp;
-
-#ifdef USE_KDE
-    LicqKIMIface* kdeIMInterface;
-#endif
 
   // Functions
   void CreateUserView();

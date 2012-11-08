@@ -179,13 +179,6 @@ private slots:
    */
   void clearPicture();
 
-#ifdef USE_KABC
-  /**
-   * Open dialog to browse for KDE address book entry
-   */
-  void browseKabc();
-#endif
-
 private:
   /**
    * Setup the general page.
@@ -378,28 +371,6 @@ private:
    */
   void loadPageCounters(const Licq::User* user);
 
-#ifdef USE_KABC
-  /**
-   * Setup the KDE adressbook page.
-   *
-   * @param parent Parent dialog
-   * @return a widget with the KDE adressbook
-   */
-  QWidget* createPageKabc(QWidget* parent);
-
-  /**
-   * Load user data for KDE adressbook page
-   *
-   * @param user User to get data from
-   */
-  void loadPageKabc(const Licq::User* user);
-
-  /**
-   * Save user data for KDE adressbook page
-   */
-  void savePageKabc();
-#endif
-
   Licq::UserId myUserId;
   QString myId;
   unsigned long myPpid;
@@ -508,16 +479,6 @@ private:
   InfoField* nfoLastCheckedAR;
   InfoField* nfoOnlineSince;
   InfoField* nfoRegDate;
-
-#ifdef USE_KABC
-  // KDE AddressBook
-  QVBoxLayout* myPageKabcLayout;
-  QGroupBox* myKabcBox;
-  InfoField* nfoKABCName;
-  InfoField* nfoKABCEmail;
-  QPushButton* myKabcBrowseButton;
-  QString m_kabcID;
-#endif
 };
 
 } // namespace UserPages
