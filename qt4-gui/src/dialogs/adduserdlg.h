@@ -44,8 +44,10 @@ private:
    QLineEdit* myId;
    GroupComboBox* myGroup;
    OwnerComboBox* myOwnerCombo;
+  QCheckBox* myReqAuthCheck;
 
 private slots:
+  void protocolChanged();
    void ok();
 };
 

@@ -1,5 +1,9 @@
 Change log for Licq.
 
+New in 1.7.1
+o Qt4-Gui: Show authorization request dialog when adding a user
+
+
 New in 1.7.0
 o Always save history as UTF-8 to avoid mixing encodings
 o Fix several memory leaks

@@ -27,6 +27,8 @@
 
 #include <licq/contactlist/usermanager.h>
 #include <licq/icq/icq.h>
+#include <licq/plugin/protocolplugin.h>
+#include <licq/plugin/pluginmanager.h>
 
 #include "config/contactlist.h"
 #include "contactlist/contactlist.h"
@@ -34,6 +36,8 @@
 
 #include "widgets/groupcombobox.h"
 #include "widgets/ownercombobox.h"
+
+#include "authdlg.h"
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::AddUserDlg */
@@ -84,16 +88,31 @@ AddUserDlg::AddUserDlg(const Licq::UserId& userId, QWidget* parent)
   myNotify->setChecked(true);
   layDialog->addWidget(myNotify, line++, 0, 1, 2);
 
+  myReqAuthCheck = new QCheckBox(tr("&Request authorization"));
+  myReqAuthCheck->setChecked(true);
+  layDialog->addWidget(myReqAuthCheck, line++, 0, 1, 2);
+
   QDialogButtonBox* buttons = new QDialogButtonBox(
       QDialogButtonBox::Ok |
       QDialogButtonBox::Cancel);
+
+  connect(myProtocol, SIGNAL(currentIndexChanged(int)), SLOT(protocolChanged()));
   connect(buttons, SIGNAL(accepted()), SLOT(ok()));
   connect(buttons, SIGNAL(rejected()), SLOT(close()));
 
   layDialog->addWidget(buttons, line++, 0, 1, 2);
 
   myId->setFocus();
+  protocolChanged();
   show();
+}
+
+void AddUserDlg::protocolChanged()
+{
+  unsigned long ppid = myProtocol->currentPpid();
+  Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(ppid);
+  myReqAuthCheck->setEnabled(protocol.get() != NULL &&
+    (protocol->capabilities() & Licq::ProtocolPlugin::CanSendAuthReq));
 }
 
 void AddUserDlg::ok()
@@ -102,6 +121,7 @@ void AddUserDlg::ok()
   Licq::UserId userId(accountId.toUtf8().constData(), myOwnerCombo->currentOwnerId().protocolId());
   int group = myGroup->currentGroupId();
   bool notify = myNotify->isChecked();
+  bool reqAuth = myReqAuthCheck->isEnabled() && myReqAuthCheck->isChecked();
   bool added = false;
 
   if (userId.isValid())
@@ -109,6 +129,9 @@ void AddUserDlg::ok()
 
   if (added && notify)
     gLicqDaemon->icqAlertUser(userId);
+
+  if (added && reqAuth)
+    new AuthDlg(AuthDlg::RequestAuth, userId);
 
   close();
 }
