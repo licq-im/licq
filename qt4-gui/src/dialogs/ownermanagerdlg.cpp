@@ -113,7 +113,7 @@ OwnerManagerDlg::OwnerManagerDlg(QWidget* parent)
       SLOT(protocolLoaded(unsigned long)));
   connect(gGuiSignalManager, SIGNAL(protocolPluginUnloaded(unsigned long)),
       SLOT(updateList()));
-  connect(gGuiSignalManager, SIGNAL(updatedStatus(const Licq::UserId& ownerId)),
+  connect(gGuiSignalManager, SIGNAL(updatedStatus(const Licq::UserId&)),
       SLOT(updateList()));
 
   // Add the protocals and owners to the list
