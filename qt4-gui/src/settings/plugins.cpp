@@ -218,7 +218,14 @@ void Settings::Plugins::disablePlugin()
 void Settings::Plugins::pluginDoubleClicked(QTreeWidgetItem* item, int /* index */)
 {
   if (item->data(0, Qt::UserRole).type() == QVariant::String)
+  {
+    // Item data is string, i.e. it's an unloaded plugin => Load it
+    QString pluginName = item->data(0, Qt::UserRole).toString();
+    Licq::gPluginManager.startGeneralPlugin(pluginName.toLocal8Bit().constData(), 0, NULL);
+
+    QTimer::singleShot(1000, this, SLOT(updatePluginList()));
     return;
+  }
 
   int index = item->data(0, Qt::UserRole).toInt();
   Licq::GeneralPlugin::Ptr plugin = getGeneralPlugin(index);
