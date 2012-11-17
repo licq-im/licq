@@ -47,7 +47,7 @@ private:
   QCheckBox* myReqAuthCheck;
 
 private slots:
-  void protocolChanged();
+  void ownerChanged();
    void ok();
 };
 

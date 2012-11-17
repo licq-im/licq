@@ -96,20 +96,20 @@ AddUserDlg::AddUserDlg(const Licq::UserId& userId, QWidget* parent)
       QDialogButtonBox::Ok |
       QDialogButtonBox::Cancel);
 
-  connect(myProtocol, SIGNAL(currentIndexChanged(int)), SLOT(protocolChanged()));
+  connect(myOwnerCombo, SIGNAL(currentIndexChanged(int)), SLOT(ownerChanged()));
   connect(buttons, SIGNAL(accepted()), SLOT(ok()));
   connect(buttons, SIGNAL(rejected()), SLOT(close()));
 
   layDialog->addWidget(buttons, line++, 0, 1, 2);
 
   myId->setFocus();
-  protocolChanged();
+  ownerChanged();
   show();
 }
 
-void AddUserDlg::protocolChanged()
+void AddUserDlg::ownerChanged()
 {
-  unsigned long ppid = myProtocol->currentPpid();
+  unsigned long ppid = myOwnerCombo->currentOwnerId().protocolId();
   Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(ppid);
   myReqAuthCheck->setEnabled(protocol.get() != NULL &&
     (protocol->capabilities() & Licq::ProtocolPlugin::CanSendAuthReq));
