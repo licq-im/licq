@@ -197,6 +197,12 @@ void OnEventManager::initialize()
 
     licqConf.setSection("onevent");
     myGlobalData.load(licqConf);
+    myGlobalData.save(conf);
+    conf.writeFile();
+
+    // Remove old section from licq.conf
+    licqConf.removeSection("onevent");
+    licqConf.writeFile();
     gDaemon.releaseLicqConf();
     return;
   }

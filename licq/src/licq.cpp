@@ -924,6 +924,13 @@ void CLicq::SaveLoadedPlugins()
     licqConf.set(szKey, plugin->libraryName());
   }
 
+  // Don't leave old higher numbered plugins in config
+  do
+  {
+    sprintf(szKey, "Plugin%d", i++);
+  }
+  while (licqConf.unset(szKey));
+
   Licq::ProtocolPluginsList protocols;
   gPluginManager.getProtocolPluginsList(protocols);
 
@@ -940,6 +947,13 @@ void CLicq::SaveLoadedPlugins()
       licqConf.set(szKey, plugin->libraryName());
     }
   }
+
+  // Don't leave old higher numbered protocols in config
+  do
+  {
+    sprintf(szKey, "ProtoPlugin%d", i++);
+  }
+  while (licqConf.unset(szKey));
 
   licqConf.writeFile();
 }

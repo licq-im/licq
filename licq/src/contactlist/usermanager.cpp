@@ -176,14 +176,19 @@ bool UserManager::Load()
     sprintf(key, "Group%d.name", i);
     licqConf.get(key, groupName);
 
-    sprintf(key, "Group%d.id", i);
-    licqConf.get(key, groupId, 0);
-
     sprintf(key, "Group%d.Sorting", i);
     bool newConfig = licqConf.get(key, sortIndex, i-1);
+    if (!newConfig)
+      licqConf.set(key, sortIndex);
+
+    sprintf(key, "Group%d.id", i);
+    licqConf.get(key, groupId, 0);
+    if (!newConfig)
+      licqConf.set(key, i);
 
     sprintf(key, "Group%d.IcqServerId", i);
-    licqConf.get(key, icqGroupId, 0);
+    if (licqConf.get(key, icqGroupId, 0))
+      licqConf.unset(key);
 
     // Sorting and IcqServerId did not exist in older versions.
     // If they are missing, assume that we are reading an old configuration
@@ -211,7 +216,10 @@ bool UserManager::Load()
     // ServerId per protocol didn't exist in 1.3.x and older.
     // This will preserve ICQ group ids when reading old config.
     if (serverIdKeys.empty() && icqGroupId != 0)
+    {
       newGroup->setServerId(LICQ_PPID, icqGroupId);
+      licqConf.set(key + Licq::protocolId_toString(LICQ_PPID), icqGroupId);
+    }
 
     myGroups[groupId] = newGroup;
   }
@@ -221,6 +229,7 @@ bool UserManager::Load()
   licqConf.setSection("network");
   licqConf.get("DefaultUserEncoding", myDefaultEncoding, "");
 
+  licqConf.writeFile();
   gDaemon.releaseLicqConf();
 
   return true;
@@ -398,6 +407,15 @@ void UserManager::saveOwnerList()
     }
   }
 
+  // Don't leave old higher numbered owners in config
+  char key[14];
+  do
+  {
+    ++count;
+    sprintf(key, "Owner%d.", count);
+  }
+  while (licqConf.unset(string(key) + "Id") | licqConf.unset(string(key) + "PPID"));
+
   licqConf.writeFile();
   gDaemon.releaseLicqConf();
 
@@ -430,6 +448,16 @@ void UserManager::saveUserList(const UserId& ownerId)
     usersConf.set(key, accountId);
   }
   usersConf.set("NumUsers", count);
+
+  // Don't leave old higher numbered users in config
+  char key[20];
+  do
+  {
+    ++count;
+    sprintf(key, "User%i", count);
+  }
+  while (usersConf.unset(key));
+
   usersConf.writeFile();
 }
 
@@ -1040,6 +1068,20 @@ void UserManager::SaveGroups()
     group->second->lockRead();
     group->second->save(licqConf, i);
     group->second->unlockRead();
+    ++i;
+  }
+
+  // Don't leave old higher numbered groups in config
+  while (true)
+  {
+    char key[32];
+    sprintf(key, "Group%d.", i);
+    list<string> groupKeys;
+    licqConf.getKeyList(groupKeys, key);
+    if (groupKeys.empty())
+      break;
+    BOOST_FOREACH(const string& key, groupKeys)
+      licqConf.unset(key);
     ++i;
   }
 

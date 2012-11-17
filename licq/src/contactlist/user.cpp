@@ -1322,6 +1322,7 @@ void User::saveLicqInfo()
 
    char buf[64];
   d->myConf.set("History", historyName());
+  d->myConf.unset("Groups.System");
   d->myConf.set("OnVisibleList", myOnVisibleList);
   d->myConf.set("OnInvisibleList", myOnInvisibleList);
   d->myConf.set("OnIgnoreList", myOnIgnoreList);
@@ -1370,6 +1371,7 @@ void User::saveLicqInfo()
 
   if (myServerGroup > -1)
     d->myConf.set("ServerGroup", myServerGroup);
+  d->myConf.unset("Groups.User");
   d->myConf.set("GroupCount", static_cast<unsigned int>(myGroups.size()));
   int i = 1;
   for (Licq::UserGroupList::iterator g = myGroups.begin(); g != myGroups.end(); ++g)

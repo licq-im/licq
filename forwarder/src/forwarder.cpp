@@ -192,14 +192,12 @@ int CLicqForwarder::run()
           gLog.error("Invalid ICQ forward UIN: %s", accountId.c_str());
           return 1;
         }
+        protocol = "ICQ";
 
-        myUserId = UserId(accountId, LICQ_PPID);
-
-        conf.setSection("Licq");
-        conf.set("Protocol", "ICQ");
+        conf.unset("Uin");
+        conf.set("Protocol", protocol);
         conf.set("UserId", accountId);
         conf.writeFile();
-        break;
       }
 
       if (accountId.empty())
@@ -208,17 +206,19 @@ int CLicqForwarder::run()
         return 1;
       }
 
+      unsigned long protocolId;
       if (protocol == "ICQ")
-        myUserId = UserId(accountId, LICQ_PPID);
+        protocolId = LICQ_PPID;
       else if (protocol == "MSN")
-        myUserId = UserId(accountId, MSN_PPID);
+        protocolId = MSN_PPID;
       else if (protocol == "Jabber" || protocol == "XMPP")
-        myUserId = UserId(accountId, JABBER_PPID);
+        protocolId = JABBER_PPID;
       else
       {
         gLog.error("Invalid protocol: %s", protocol.c_str());
         return 1;
       }
+      myUserId = UserId(accountId, protocolId);
       break;
     }
     default:
