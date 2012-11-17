@@ -682,3 +682,24 @@ bool IniFile::setHex(const string& key, const string& data)
   }
   return set(key, strData);
 }
+
+bool IniFile::unset(const std::string& key)
+{
+  if (mySectionStart == string::npos)
+    return false;
+
+  string::size_type start = myConfigData.find('\n' + key + '=', mySectionStart-1);
+  if (start == string::npos && start >= mySectionEnd)
+    // Parameter doesn't exist
+    return false;
+
+  string::size_type end = myConfigData.find('\n', start+1);
+  string::size_type len = (end == string::npos ? string::npos : end - start);
+  myConfigData.erase(start, len);
+  mySectionEnd -= len;
+
+  // Data has changed
+  myIsModified = true;
+
+  return true;
+}

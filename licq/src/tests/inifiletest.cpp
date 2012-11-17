@@ -183,6 +183,30 @@ TEST(IniFile, set)
   EXPECT_EQ("[FirstSection]\nparam1=1\nparam2=2\n[Section2]\nparam1=1\n", ini.getRawConfiguration());
 }
 
+TEST(IniFile, unset)
+{
+  IniFile ini("/tmp/testini.conf");
+
+  ini.loadRawConfiguration("[Section]\nparam1=1\nparam2=2\nparam3=3\n");
+  EXPECT_TRUE(ini.setSection("Section", true));
+
+  // Remove non-existing parameter
+  EXPECT_FALSE(ini.unset("param"));
+  EXPECT_EQ("[Section]\nparam1=1\nparam2=2\nparam3=3\n", ini.getRawConfiguration());
+
+  // Remove middle parameter
+  EXPECT_TRUE(ini.unset("param2"));
+  EXPECT_EQ("[Section]\nparam1=1\nparam3=3\n", ini.getRawConfiguration());
+
+  // Remove last parameter
+  EXPECT_TRUE(ini.unset("param3"));
+  EXPECT_EQ("[Section]\nparam1=1\n", ini.getRawConfiguration());
+
+  // Remove only parameter
+  EXPECT_TRUE(ini.unset("param1"));
+  EXPECT_EQ("[Section]\n", ini.getRawConfiguration());
+}
+
 TEST(IniFile, getSections)
 {
   IniFile ini("/tmp/testini.conf");
