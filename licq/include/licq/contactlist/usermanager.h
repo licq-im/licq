@@ -24,12 +24,13 @@
 #include <list>
 #include <string>
 
+#include "../userid.h"
+
 namespace Licq
 {
 class Group;
 class Owner;
 class User;
-class UserId;
 
 typedef std::list<User*> UserList;
 typedef std::list<Owner*> OwnerList;
@@ -139,7 +140,7 @@ public:
    * @param skipProtocolId Id of protocol to not notify
    * @return True if group was successfully renamed
    */
-  virtual bool RenameGroup(int groupId, const std::string& name, unsigned long skipProtocolId = 0) = 0;
+  virtual bool RenameGroup(int groupId, const std::string& name, const UserId& skipOwnerId = UserId()) = 0;
 
   /**
    * Get number of user groups

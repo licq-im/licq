@@ -969,7 +969,7 @@ void UserManager::ModifyGroupSorting(int groupId, int newIndex)
       PluginSignal::ListGroupsReordered));
 }
 
-bool UserManager::RenameGroup(int groupId, const string& name, unsigned long skipProtocolId)
+bool UserManager::RenameGroup(int groupId, const string& name, const Licq::UserId& skipOwnerId)
 {
   int foundGroupId = GetGroupFromName(name);
 
@@ -1002,7 +1002,7 @@ bool UserManager::RenameGroup(int groupId, const string& name, unsigned long ski
   for (OwnerMap::const_iterator i = myOwners.begin(); i != myOwners.end(); ++i)
   {
     // Don't notify the protocol that called us
-    if (i->first.protocolId() == skipProtocolId)
+    if (i->first == skipOwnerId)
       continue;
 
     i->second->lockRead();

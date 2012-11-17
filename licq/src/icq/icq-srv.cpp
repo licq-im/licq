@@ -3337,6 +3337,8 @@ void IcqProtocol::processStatsFam(Buffer& packet, int subType)
 //--------ProcessListFam--------------------------------------------
 void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
 {
+  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
+
   unsigned short nFlags = packet.UnpackUnsignedShortBE();
   unsigned long nSubSequence = packet.UnpackUnsignedLongBE();
 
@@ -3457,7 +3459,7 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
               if (groupId != 0)
               {
                 // Group exist, make sure it has the correct name
-                Licq::gUserManager.RenameGroup(groupId, id, LICQ_PPID);
+                Licq::gUserManager.RenameGroup(groupId, id, ownerId);
                 break;
               }
 
