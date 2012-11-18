@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,7 +86,8 @@ void DockIcon::updateIconStatus()
       // Any account is better than no account
       //   and try and get account with "best" status
       unsigned status = pOwner->status();
-      if (!myUserId.isValid() || (status != User::OfflineStatus && status < myStatus))
+      if (!myUserId.isValid() || (status != User::OfflineStatus &&
+          (status < myStatus || myStatus == User::OfflineStatus)))
       {
         myUserId = pOwner->id();
         myStatus = status;
