@@ -19,6 +19,7 @@
 
 #include "forwarder.h"
 
+#include <boost/foreach.hpp>
 #include <cctype>
 #include <climits>
 #include <cstdio>
@@ -233,7 +234,17 @@ int CLicqForwarder::run()
     if (!Licq::User::stringToStatus(myStartupStatus, s))
       gLog.warning("Invalid startup status");
     else
-      gProtocolManager.setStatus(gUserManager.ownerUserId(LICQ_PPID), s);
+    {
+      // Get a list of owners first since we can't call changeStatus with list locked
+      std::list<Licq::UserId> owners;
+      {
+        Licq::OwnerListGuard ownerList;
+        BOOST_FOREACH(const Licq::Owner* o, **ownerList)
+          owners.push_back(o->id());
+      }
+      BOOST_FOREACH(const Licq::UserId& ownerId, owners)
+        gProtocolManager.setStatus(ownerId, s);
+    }
   }
 
   fd_set fdSet;
