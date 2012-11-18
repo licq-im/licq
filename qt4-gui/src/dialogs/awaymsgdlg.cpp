@@ -113,6 +113,28 @@ AwayMsgDlg::~AwayMsgDlg()
 
 void AwayMsgDlg::selectAutoResponse(unsigned status, bool autoClose, const Licq::UserId& userId)
 {
+  if (status == 0)
+  {
+    if (userId.isValid())
+    {
+      Licq::OwnerReadGuard o(userId);
+      status = o->status();
+    }
+    else
+    {
+      Licq::OwnerListGuard ownerList;
+      BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
+      {
+        Licq::OwnerReadGuard o(owner);
+
+        // Get status for an account that isn't online or offline
+        unsigned s = o->status();
+        if (s != User::OfflineStatus && (s < myStatus || status == User::OfflineStatus))
+          status = s;
+      }
+    }
+  }
+
   // If requested status doesn't support message, set away
   if ((status & User::MessageStatuses) == 0)
     status |= User::AwayStatus;

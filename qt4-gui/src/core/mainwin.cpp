@@ -1024,17 +1024,7 @@ void MainWindow::updateStatus()
 
 void MainWindow::showAwayMsgDlg()
 {
-  //TODO iterate all owners that support fetching away message
-  unsigned status;
-  {
-    Licq::OwnerReadGuard o(LICQ_PPID);
-    if (!o.isLocked())
-      return;
-
-    status = o->status();
-  }
-
-  AwayMsgDlg::showAwayMsgDlg(status);
+  AwayMsgDlg::showAwayMsgDlg();
 }
 
 void MainWindow::slot_shutdown()
