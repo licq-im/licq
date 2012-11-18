@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@
 #include <licq/inifile.h>
 #include <licq/userid.h>
 
-using std::map;
 using std::string;
 using namespace LicqDaemon;
 
@@ -58,26 +57,26 @@ void Group::save(Licq::IniFile& file, int num) const
   sprintf(key, "Group%d.Sorting", num);
   file.set(key, mySortIndex);
 
-  map<unsigned long, unsigned long>::const_iterator i;
+  ServerIdMap::const_iterator i;
   for (i = myServerIds.begin(); i != myServerIds.end(); ++i)
   {
-    sprintf(key, "Group%d.ServerId.%s", num, Licq::protocolId_toString(i->first).c_str());
-    file.set(key, i->second);
+    sprintf(key, "Group%d.ServerId.", num);
+    file.set(key + i->first.toString(), i->second);
   }
 }
 
-unsigned long Group::serverId(unsigned long protocolId) const
+unsigned long Group::serverId(const Licq::UserId& ownerId) const
 {
-  map<unsigned long, unsigned long>::const_iterator iter;
-  iter = myServerIds.find(protocolId);
+  ServerIdMap::const_iterator iter;
+  iter = myServerIds.find(ownerId);
   if (iter == myServerIds.end())
     return 0;
   return iter->second;
 }
 
-void Group::setServerId(unsigned long protocolId, unsigned long serverId)
+void Group::setServerId(const Licq::UserId& ownerId, unsigned long serverId)
 {
-  myServerIds[protocolId] = serverId;
+  myServerIds[ownerId] = serverId;
 }
 
 

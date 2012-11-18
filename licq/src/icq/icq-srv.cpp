@@ -102,6 +102,8 @@ void IcqProtocol::icqAddUser(const Licq::UserId& userId, bool _bAuthRequired)
 void IcqProtocol::icqAddUserServer(const Licq::UserId& userId, bool _bAuthRequired,
     unsigned short groupId)
 {
+  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
+
   CSrvPacketTcp *pStart = 0;
 
   // Skip the authorization needed step
@@ -120,7 +122,7 @@ void IcqProtocol::icqAddUserServer(const Licq::UserId& userId, bool _bAuthRequir
     Licq::GroupReadGuard group(groupId);
     if (group.isLocked())
     {
-      serverGroupExists = (group->serverId(LICQ_PPID) != 0);
+      serverGroupExists = (group->serverId(ownerId) != 0);
       groupName = group->name();
     }
   }
@@ -147,6 +149,8 @@ void IcqProtocol::icqAddUserServer(const Licq::UserId& userId, bool _bAuthRequir
 //-----CheckExport-------------------------------------------------------------
 void IcqProtocol::CheckExport()
 {
+  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
+
   // Export groups
   GroupNameMap groups;
   {
@@ -154,7 +158,7 @@ void IcqProtocol::CheckExport()
     BOOST_FOREACH(const Licq::Group* group, **groupList)
     {
       Licq::GroupReadGuard g(group);
-      if (g->serverId(LICQ_PPID) == 0)
+      if (g->serverId(ownerId) == 0)
         groups[g->id()] = g->name();
     }
   }
@@ -165,7 +169,7 @@ void IcqProtocol::CheckExport()
   // Just upload all of the users now
   list<Licq::UserId> users;
   {
-    Licq::UserListGuard userList(LICQ_PPID);
+    Licq::UserListGuard userList(ownerId);
     BOOST_FOREACH(const Licq::User* user, **userList)
     {
       UserReadGuard u(dynamic_cast<const User*>(user));
@@ -185,7 +189,7 @@ void IcqProtocol::CheckExport()
   // Export visible/invisible/ignore list
   list<Licq::UserId> visibleUsers, invisibleUsers, ignoredUsers;
   {
-    Licq::UserListGuard userList(LICQ_PPID);
+    Licq::UserListGuard userList(ownerId);
     BOOST_FOREACH(const Licq::User* user, **userList)
     {
       UserReadGuard pUser(dynamic_cast<const User*>(user));
@@ -238,6 +242,8 @@ void IcqProtocol::icqUpdateServerGroups()
   if (!UseServerContactList())  return;
   CSrvPacketTcp *pReply;
 
+  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
+
   pReply = new CPU_UpdateToServerList("", 0);
   addToModifyUsers(pReply->SubSequence(), "");
   gLog.info(tr("Updating top level group."));
@@ -247,7 +253,7 @@ void IcqProtocol::icqUpdateServerGroups()
   BOOST_FOREACH(const Licq::Group* group, **groupList)
   {
     Licq::GroupReadGuard pGroup(group);
-    unsigned int gid = pGroup->serverId(LICQ_PPID);
+    unsigned int gid = pGroup->serverId(ownerId);
     if (gid != 0)
     {
       pReply = new CPU_UpdateToServerList(pGroup->name(), gid);
@@ -426,7 +432,7 @@ void IcqProtocol::icqRenameGroup(const Licq::ProtoRenameGroupSignal* ps)
     if (!group.isLocked())
       return;
     newName = group->name();
-    serverId = group->serverId(LICQ_PPID);
+    serverId = group->serverId(ps->userId());
   }
 
   if (serverId == 0)
@@ -3467,7 +3473,7 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
               if (groupId != 0)
               {
                 // A local group has same name, save the server id for it
-                Licq::gUserManager.setGroupServerId(groupId, LICQ_PPID, nTag);
+                Licq::gUserManager.setGroupServerId(groupId, ownerId, nTag);
                 break;
               }
 
@@ -3475,7 +3481,7 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
               if (groupId != 0)
               {
                 // Local group created, save the server id for it
-                Licq::gUserManager.setGroupServerId(groupId, LICQ_PPID, nTag);
+                Licq::gUserManager.setGroupServerId(groupId, ownerId, nTag);
                 gLog.info(tr("Added group %s (%u) to list from server"), id.c_str(), nTag);
               }
             }

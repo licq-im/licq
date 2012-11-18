@@ -147,6 +147,9 @@ bool UserManager::Load()
   licqConf.setSection("owners");
   licqConf.get("NumOfOwners", nOwners, 0);
 
+  // Make a map of owners to easier migrate server ids for groups
+  std::map<unsigned long, std::string> oldOwners;
+
   myOwnerListMutex.lockWrite();
   for (unsigned short i = 1; i <= nOwners; i++)
   {
@@ -158,6 +161,7 @@ bool UserManager::Load()
     licqConf.get(sOwnerPPIDKey, ppidStr);
     unsigned long protocolId = Licq::protocolId_fromString(ppidStr);
     myConfiguredOwners.insert(UserId(accountId, protocolId));
+    oldOwners[protocolId] = accountId;
   }
   myOwnerListMutex.unlockWrite();
 
@@ -207,18 +211,42 @@ bool UserManager::Load()
     licqConf.getKeyList(serverIdKeys, key);
     BOOST_FOREACH(const string& serverIdKey, serverIdKeys)
     {
-      unsigned long protocolId = Licq::protocolId_fromString(serverIdKey.substr(serverIdKey.size()-4));
       unsigned long serverId;
       licqConf.get(serverIdKey, serverId, 0);
-      newGroup->setServerId(protocolId, serverId);
+
+      string id = serverIdKey.substr(strlen(key));
+      unsigned long protocolId = Licq::protocolId_fromString(id.substr(0, 4));
+      string accountId;
+      if (id.size() <= 4)
+      {
+        // Old (pre 1.8.0) config with only protocol id
+        // Get first (and hopefully only) owner
+        std::map<unsigned long, std::string>::const_iterator iter = oldOwners.find(protocolId);
+        if (iter != oldOwners.end())
+        {
+          accountId = iter->second;
+
+          // Update configuration with full owner id in key
+          licqConf.unset(serverIdKey);
+          licqConf.set(serverIdKey + accountId, serverId);
+        }
+      }
+      else
+      {
+        accountId = id.substr(4);
+      }
+
+      if (!accountId.empty())
+        newGroup->setServerId(Licq::UserId(accountId, protocolId), serverId);
     }
 
     // ServerId per protocol didn't exist in 1.3.x and older.
     // This will preserve ICQ group ids when reading old config.
     if (serverIdKeys.empty() && icqGroupId != 0)
     {
-      newGroup->setServerId(LICQ_PPID, icqGroupId);
-      licqConf.set(key + Licq::protocolId_toString(LICQ_PPID), icqGroupId);
+      Licq::UserId licqOwnerId(ownerUserId(LICQ_PPID));
+      newGroup->setServerId(licqOwnerId, icqGroupId);
+      licqConf.set(key + licqOwnerId.toString(), icqGroupId);
     }
 
     myGroups[groupId] = newGroup;
@@ -940,7 +968,7 @@ void UserManager::RemoveGroup(int groupId)
 
     // Group object is no long reachable so include protocol specific server id and name in signal
     gPluginManager.pushProtocolSignal(new Licq::ProtoRemoveGroupSignal(
-        i->first, groupId, group->serverId(i->first.protocolId()), group->name()));
+        i->first, groupId, group->serverId(i->first), group->name()));
   }
   myOwnerListMutex.unlockRead();
 
@@ -1089,7 +1117,7 @@ void UserManager::SaveGroups()
   gDaemon.releaseLicqConf();
 }
 
-int UserManager::getGroupFromServerId(unsigned long protocolId, unsigned long serverId)
+int UserManager::getGroupFromServerId(const Licq::UserId& ownerId, unsigned long serverId)
 {
   myGroupListMutex.lockRead();
   GroupMap::const_iterator iter;
@@ -1097,7 +1125,7 @@ int UserManager::getGroupFromServerId(unsigned long protocolId, unsigned long se
   for (iter = myGroups.begin(); iter != myGroups.end(); ++iter)
   {
     iter->second->lockRead();
-    if (iter->second->serverId(protocolId) == serverId)
+    if (iter->second->serverId(ownerId) == serverId)
       groupId = iter->first;
     iter->second->unlockRead();
   }
@@ -1140,14 +1168,14 @@ std::string UserManager::GetGroupNameFromGroup(int groupId)
   return name;
 }
 
-void UserManager::setGroupServerId(int groupId, unsigned long protocolId,
+void UserManager::setGroupServerId(int groupId, const Licq::UserId& ownerId,
     unsigned long serverId)
 {
   Group* group = fetchGroup(groupId, true);
   if (group == NULL)
     return;
 
-  group->setServerId(protocolId, serverId);
+  group->setServerId(ownerId, serverId);
   group->unlockWrite();
 
   myGroupListMutex.lockRead();

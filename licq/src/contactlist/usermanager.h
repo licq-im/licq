@@ -158,8 +158,8 @@ public:
   void RemoveGroup(int groupId);
   bool RenameGroup(int groupId, const std::string& name, const Licq::UserId& skipOwnerId = Licq::UserId());
   void ModifyGroupSorting(int groupId, int newIndex);
-  void setGroupServerId(int groupId, unsigned long protocolId, unsigned long serverId);
-  int getGroupFromServerId(unsigned long protocolId, unsigned long serverId);
+  void setGroupServerId(int groupId, const Licq::UserId& ownerId, unsigned long serverId);
+  int getGroupFromServerId(const Licq::UserId& ownerId, unsigned long serverId);
   int GetGroupFromName(const std::string& name);
   std::string GetGroupNameFromGroup(int groupId);
   void setUserInGroup(const Licq::UserId& userId, int groupId,

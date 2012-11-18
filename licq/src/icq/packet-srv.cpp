@@ -2394,6 +2394,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
   unsigned short m_nSID = 0;
   unsigned short m_nGSID = 0;
   int nSize = 0;
+  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
 
   list<UserId>::const_iterator i;
   for (i = users.begin(); i != users.end(); ++i)
@@ -2452,7 +2453,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
       for (UserGroupList::const_iterator j = userGroups.begin(); j != userGroups.end(); ++j)
       {
         Licq::GroupReadGuard group(*j);
-        m_nGSID = group->serverId(LICQ_PPID);
+        m_nGSID = group->serverId(ownerId);
         if (m_nGSID != 0)
           break;
       }
@@ -2467,7 +2468,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
           {
             Group* g = *groups->begin();
             g->lockRead();
-            m_nGSID = g->serverId(LICQ_PPID);
+            m_nGSID = g->serverId(ownerId);
             g->unlockRead();
           }
         }
@@ -2511,6 +2512,7 @@ CPU_ExportGroupsToServerList::CPU_ExportGroupsToServerList(const GroupNameMap& g
 {
   int nSize = 0;
   int nGSID = 0;
+  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
 
   GroupNameMap::const_iterator g;
   for (g = groups.begin(); g != groups.end(); ++g)
@@ -2530,7 +2532,7 @@ CPU_ExportGroupsToServerList::CPU_ExportGroupsToServerList(const GroupNameMap& g
   {
     nGSID = IcqProtocol::generateSid();
 
-    Licq::gUserManager.setGroupServerId(g->first, LICQ_PPID, nGSID);
+    Licq::gUserManager.setGroupServerId(g->first, ownerId, nGSID);
 
     string unicodeName = gTranslator.toUnicode(g->second);
 
@@ -2572,6 +2574,8 @@ CPU_AddToServerList::CPU_AddToServerList(const Licq::UserId& userId,
     m_nSID(IcqProtocol::generateSid()),
     m_nGSID(0)
 {
+  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
+
   switch (_nType)
   {
     case ICQ_ROSTxNORMAL:
@@ -2588,7 +2592,7 @@ CPU_AddToServerList::CPU_AddToServerList(const Licq::UserId& userId,
         m_nGSID = 0;
         Licq::GroupReadGuard group(_nGroup);
         if (group.isLocked())
-          m_nGSID = group->serverId(LICQ_PPID);
+          m_nGSID = group->serverId(ownerId);
       }
       if (m_nGSID == 0)
       {
@@ -2602,7 +2606,7 @@ CPU_AddToServerList::CPU_AddToServerList(const Licq::UserId& userId,
         for (UserGroupList::iterator iter = userGroups.begin(); iter != userGroups.end(); ++iter)
         {
           Licq::GroupReadGuard group(*iter);
-          m_nGSID = group->serverId(LICQ_PPID);
+          m_nGSID = group->serverId(ownerId);
           if (m_nGSID != 0)
             break;
         }
@@ -2615,7 +2619,7 @@ CPU_AddToServerList::CPU_AddToServerList(const Licq::UserId& userId,
         {
           Group* g = *groups->begin();
           g->lockRead();
-          m_nGSID = g->serverId(LICQ_PPID);
+          m_nGSID = g->serverId(ownerId);
           g->unlockRead();
         }
       }
@@ -2677,13 +2681,14 @@ CPU_AddToServerList::CPU_AddToServerList(const std::string& groupName,
     m_nSID(0),
     m_nGSID(_bTopLevel ? 0 : IcqProtocol::generateSid())
 {
+  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
   SetExtraInfo(0);
 
   if (!_bTopLevel)
   {
     int groupId = Licq::gUserManager.GetGroupFromName(groupName);
     if (groupId != 0)
-      Licq::gUserManager.setGroupServerId(groupId, LICQ_PPID, m_nGSID);
+      Licq::gUserManager.setGroupServerId(groupId, ownerId, m_nGSID);
   }
 
   init(gTranslator.toUnicode(groupName), ICQ_ROSTxGROUP, _bAuthReq, _bTopLevel);
@@ -2708,6 +2713,8 @@ void CPU_AddToServerList::init(const string& name, unsigned short _nType, bool _
   {
     if (_bTopLevel)
     {
+      Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
+
       // We are creating our top level group, so attach all the group ids now
       buffer->PackUnsignedShortBE(0x00C8);
       buffer->PackUnsignedShortBE(gUserManager.NumGroups() * 2);
@@ -2716,7 +2723,7 @@ void CPU_AddToServerList::init(const string& name, unsigned short _nType, bool _
       BOOST_FOREACH(const Licq::Group* group, **groupList)
       {
         Licq::GroupReadGuard pGroup(group);
-        buffer->PackUnsignedShortBE(pGroup->serverId(LICQ_PPID));
+        buffer->PackUnsignedShortBE(pGroup->serverId(ownerId));
       }
     }
     else
@@ -2912,6 +2919,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const string& name, unsigned shor
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxUPD_GROUP)
 {
   unsigned short nExtraLen = 0;
+  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
 
   if (nGSID == 0)
   {
@@ -2920,14 +2928,14 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const string& name, unsigned shor
     BOOST_FOREACH(const Group* i, **groups)
     {
       i->lockRead();
-      groupIds.push_back(i->serverId(LICQ_PPID));
+      groupIds.push_back(i->serverId(ownerId));
       i->unlockRead();
     }
     nExtraLen += (groups->size() * 2);
   }
   else
   {
-    Licq::UserListGuard userList;
+    Licq::UserListGuard userList(ownerId);
     BOOST_FOREACH(const Licq::User* user, **userList)
     {
       if (user->protocolId() != LICQ_PPID)

@@ -387,7 +387,7 @@ void User::loadCategory(UserCategoryMap& category, const string& key)
 void User::SetGSID(unsigned short s)
 {
   myGroupSid = s;
-  setServerGroup(Licq::gUserManager.getGroupFromServerId(protocolId(), s));
+  setServerGroup(Licq::gUserManager.getGroupFromServerId(Licq::gUserManager.ownerUserId(LICQ_PPID), s));
 }
 
 unsigned short User::Sequence(bool increment)

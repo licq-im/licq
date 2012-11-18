@@ -1910,7 +1910,7 @@ bool IcqProtocol::UseServerContactList() const
 
 int IcqProtocol::getGroupFromId(unsigned short gsid)
 {
-  return Licq::gUserManager.getGroupFromServerId(LICQ_PPID, gsid);
+  return Licq::gUserManager.getGroupFromServerId(Licq::gUserManager.ownerUserId(LICQ_PPID), gsid);
 }
 
 unsigned long IcqProtocol::icqOwnerUin()
@@ -1920,9 +1920,11 @@ unsigned long IcqProtocol::icqOwnerUin()
 
 unsigned short IcqProtocol::generateSid()
 {
+  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
+
   unsigned short ownerPDINFO;
   {
-    OwnerReadGuard o;
+    OwnerReadGuard o(ownerId);
     ownerPDINFO = o->GetPDINFO();
   }
 
@@ -1945,7 +1947,7 @@ unsigned short IcqProtocol::generateSid()
       sid++;
 
     {
-      Licq::UserListGuard userList(LICQ_PPID);
+      Licq::UserListGuard userList(ownerId);
       BOOST_FOREACH(const Licq::User* user, **userList)
       {
         UserReadGuard u(dynamic_cast<const User*>(user));
@@ -1972,7 +1974,7 @@ unsigned short IcqProtocol::generateSid()
       {
         Licq::GroupReadGuard g(group);
 
-        unsigned short icqGroupId = g->serverId(LICQ_PPID);
+        unsigned short icqGroupId = g->serverId(ownerId);
         if (icqGroupId == sid)
         {
           if (sid == 0x7FFF)

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ class IniFile;
 
 namespace LicqDaemon
 {
+typedef std::map<Licq::UserId, unsigned long> ServerIdMap;
 
 class Group : public Licq::Group
 {
@@ -58,11 +59,11 @@ public:
 
 
   // From Licq::Group
-  unsigned long serverId(unsigned long protocolId) const;
-  void setServerId(unsigned long protocolId, unsigned long serverId);
+  unsigned long serverId(const Licq::UserId& ownerId) const;
+  void setServerId(const Licq::UserId& ownerId, unsigned long serverId);
 
 private:
-  std::map<unsigned long, unsigned long> myServerIds;
+  ServerIdMap myServerIds;
 };
 
 /**

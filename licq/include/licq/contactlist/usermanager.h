@@ -163,19 +163,19 @@ public:
    * Change ICQ server group id for a user group
    *
    * @param groupId Id of group to change
-   * @param protocolId Protocol to change server id for
+   * @param ownerId Owner to change server id for
    * @param serverId New server id for group
    */
-  virtual void setGroupServerId(int groupId, unsigned long protocolId, unsigned long serverId) = 0;
+  virtual void setGroupServerId(int groupId, const UserId& ownerId, unsigned long serverId) = 0;
 
   /**
    * Get local group id from server group id
    *
-   * @param protocolId Protocol server id is valid for
+   * @param ownerId Owner server id is valid for
    * @param serverId Server group id to find local group for
    * @return Id for group or 0 if not found
    */
-  virtual int getGroupFromServerId(unsigned long protocolId, unsigned long serverId) = 0;
+  virtual int getGroupFromServerId(const UserId& ownerId, unsigned long serverId) = 0;
 
   /**
    * Find id for group with a given name
