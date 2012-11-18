@@ -939,16 +939,13 @@ int CRMSClient::Process_STATUS()
   // Show status
   if (data_arg[0] == '\0')
   {
-    Licq::ProtocolPluginsList plugins;
-    gPluginManager.getProtocolPluginsList(plugins);
-    BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
     {
-      Licq::OwnerReadGuard o(plugin->protocolId());
-      if (o.isLocked())
-      {
-        fprintf(fs, "%d %s %s %s\n", CODE_STATUS, o->accountId().c_str(),
-            plugin->name().c_str(), o->statusString().c_str());
-      }
+      Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(owner->protocolId());
+      Licq::OwnerReadGuard o(owner);
+      fprintf(fs, "%d %s %s %s\n", CODE_STATUS, o->accountId().c_str(),
+          protocol->name().c_str(), o->statusString().c_str());
     }
     fprintf(fs, "%d\n", CODE_STATUSxDONE);
     return fflush(fs);
@@ -957,27 +954,38 @@ int CRMSClient::Process_STATUS()
   // Set status
   string strData(data_arg);
   string::size_type nPos = strData.find_last_of(".");
+  string status;
+
+  // Get a list of owners first since we can't call changeStatus with list locked
+  std::list<Licq::UserId> owners;
   if (nPos == string::npos)
   {
-    Licq::ProtocolPluginsList plugins;
-    gPluginManager.getProtocolPluginsList(plugins);
-    BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
-    {
-      changeStatus(plugin->protocolId(), data_arg);
-    }
+    status = data_arg;
+
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(const Licq::Owner* o, **ownerList)
+      owners.push_back(o->id());
   }
   else
   {
-    string strStatus(strData, 0, strData.find_last_of("."));
-    string strProtocol(strData, strData.find_last_of(".")+1, strData.size());
-    unsigned long nPPID = getProtocol(strProtocol);
-    changeStatus(nPPID, strStatus);
+    status = string(strData, 0, nPos);
+    string param(strData, nPos+1);
+    unsigned long protocolId = getProtocol(param);
+
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(const Licq::Owner* o, **ownerList)
+      if (o->protocolId() == protocolId || o->accountId() == param)
+        owners.push_back(o->id());
   }
+
+  BOOST_FOREACH(const Licq::UserId& ownerId, owners)
+    changeStatus(ownerId, status);
+
   fprintf(fs, "%d Done setting status\n", CODE_STATUSxDONE);
   return fflush(fs);
 }
 
-int CRMSClient::changeStatus(unsigned long nPPID, const string& strStatus)
+int CRMSClient::changeStatus(const Licq::UserId& ownerId, const string& strStatus)
 {
   unsigned status;
   if (!Licq::User::stringToStatus(strStatus, status))
@@ -985,7 +993,6 @@ int CRMSClient::changeStatus(unsigned long nPPID, const string& strStatus)
     fprintf(fs, "%d Invalid status.\n", CODE_INVALIDxSTATUS);
     return -1;
   }
-  UserId ownerId = gUserManager.ownerUserId(nPPID);
   if (status == Licq::User::OfflineStatus)
   {
     fprintf(fs, "%d [0] Logging off %s.\n", CODE_COMMANDxSTART, strStatus.c_str());
@@ -998,7 +1005,7 @@ int CRMSClient::changeStatus(unsigned long nPPID, const string& strStatus)
   {
     bool b;
     {
-      Licq::OwnerReadGuard o(nPPID);
+      Licq::OwnerReadGuard o(ownerId);
       if (!o.isLocked())
       {
         fprintf(fs, "%d Invalid protocol.\n", CODE_INVALIDxUSER);

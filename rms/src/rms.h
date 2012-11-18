@@ -138,7 +138,7 @@ protected:
   bool AddLineToText();
   unsigned long getProtocol(const std::string& data);
   void ParseUser(const std::string& data);
-  int changeStatus(unsigned long, const std::string& strStatus);
+  int changeStatus(const Licq::UserId& ownerId, const std::string& strStatus);
 
   int Process_MESSAGE_text();
   int Process_URL_url();
