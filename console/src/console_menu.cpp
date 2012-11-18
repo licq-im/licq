@@ -560,14 +560,15 @@ void CLicqConsole::MenuStatus(char *_szArg)
     return;
   }
 
-  //set same status for all protocols for now
-  Licq::ProtocolPluginsList protocols;
-  gPluginManager.getProtocolPluginsList(protocols);
-  BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
+  // Get a list of owners first since we can't call changeStatus with list locked
+  std::list<Licq::UserId> owners;
   {
-    unsigned long nPPID = protocol->protocolId();
-    gProtocolManager.setStatus(Licq::gUserManager.ownerUserId(nPPID), status);
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(const Licq::Owner* o, **ownerList)
+      owners.push_back(o->id());
   }
+  BOOST_FOREACH(const Licq::UserId& ownerId, owners)
+    gProtocolManager.setStatus(ownerId, status);
 }
 
 
