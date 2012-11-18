@@ -679,6 +679,16 @@ bool UserManager::removeOwner(const Licq::UserId& userId)
 
   saveOwnerList();
 
+  myGroupListMutex.lockWrite();
+  for (GroupMap::iterator group = myGroups.begin(); group != myGroups.end(); ++group)
+  {
+    group->second->lockRead();
+    group->second->unsetServerId(userId);
+    group->second->unlockRead();
+  }
+  SaveGroups();
+  myGroupListMutex.unlockWrite();
+
   gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,
       PluginSignal::ListOwnerRemoved, userId));
 

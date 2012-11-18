@@ -92,10 +92,17 @@ public:
   /**
    * Set server side id for this group
    *
-   * @param protocolId Id of protocol to set group id for
+   * @param ownerId Id of owner to set group id for
    * @param serverId Id for this group on server side list
    */
   virtual void setServerId(const UserId& ownerId, unsigned long serverId) = 0;
+
+  /**
+   * Remove a server side id for this group
+   *
+   * @param ownerId Id of owner to clear group id for
+   */
+  virtual void unsetServerId(const UserId& ownerId) = 0;
 
 protected:
   virtual ~Group() { /* Empty */ }

@@ -79,6 +79,11 @@ void Group::setServerId(const Licq::UserId& ownerId, unsigned long serverId)
   myServerIds[ownerId] = serverId;
 }
 
+void Group::unsetServerId(const Licq::UserId& ownerId)
+{
+  myServerIds.erase(ownerId);
+}
+
 
 bool LicqDaemon::compare_groups(const Licq::Group* first, const Licq::Group* second)
 {

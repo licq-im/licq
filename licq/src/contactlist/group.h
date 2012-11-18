@@ -61,6 +61,7 @@ public:
   // From Licq::Group
   unsigned long serverId(const Licq::UserId& ownerId) const;
   void setServerId(const Licq::UserId& ownerId, unsigned long serverId);
+  void unsetServerId(const Licq::UserId& ownerId);
 
 private:
   ServerIdMap myServerIds;
