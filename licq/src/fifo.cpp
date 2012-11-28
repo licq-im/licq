@@ -210,16 +210,9 @@ static std::string buffer_get_ids(const std::string& buffer, unsigned long* prot
   std::string protocolName = name.substr(pos+1);
   name.erase(pos);
 
-  Licq::ProtocolPluginsList plugins;
-  gPluginManager.getProtocolPluginsList(plugins);
-  BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
-  {
-    if (plugin->name() == protocolName)
-    {
-      *protocolId = plugin->protocolId();
-      return name;
-    }
-  }
+  *protocolId = Licq::protocolId_fromString(protocolName);
+  if (*protocolId != 0)
+    return name;
 
   // Protocol not recognized, return unmodified buffer
   return buffer;
@@ -497,20 +490,7 @@ static int fifo_setpicture(int argc, const char* const* argv)
   {
     // Just one plugin, find which one
 
-    unsigned long protocolId = 0;
-
-    Licq::ProtocolPluginsList plugins;
-    gPluginManager.getProtocolPluginsList(plugins);
-
-    BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
-    {
-      if (plugin->name() == argv[2])
-      {
-        protocolId = plugin->protocolId();
-        break;
-      }
-    }
-
+    unsigned long protocolId = Licq::protocolId_fromString(argv[2]);
     if (protocolId == 0)
     {
       gLog.info(tr("Couldn't find plugin '%s'"), argv[2]);

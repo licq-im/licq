@@ -136,7 +136,6 @@ protected:
   int ProcessCommand();
   bool ProcessEvent(Licq::Event* e);
   bool AddLineToText();
-  unsigned long getProtocol(const std::string& data);
   void ParseUser(const std::string& data);
   int changeStatus(const Licq::UserId& ownerId, const std::string& strStatus);
 

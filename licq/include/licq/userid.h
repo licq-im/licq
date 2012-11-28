@@ -44,12 +44,14 @@ inline std::string protocolId_toString(unsigned long protocolId)
   return ret;
 }
 
-inline unsigned long protocolId_fromString(const std::string& s)
-{
-  if (s.size() < 4)
-    return 0;
-  return (s[0] << 24) | (s[1] << 16) | (s[2] << 8) | (s[3]);
-}
+/**
+ * Get protocol id from a protocol name
+ * Matches both protocol names and the string forms of the PPID constants
+ *
+ * @param protocolName Protocol name to identify
+ * @return Protocol id on success, otherwise zero
+ */
+unsigned long protocolId_fromString(const std::string& protocolName);
 
 
 /**

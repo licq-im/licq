@@ -289,7 +289,7 @@ int CLicqRMS::run()
       conf.get("Port", myPort, 0);
 
     string protocolStr;
-    conf.get("AuthProtocol", protocolStr, "Licq");
+    conf.get("AuthProtocol", protocolStr, "ICQ");
     if (protocolStr == "Config")
     {
       // Get user and password from config file
@@ -307,17 +307,17 @@ int CLicqRMS::run()
         myAuthProtocol = 1;
       }
     }
-    else if (protocolStr.size() == 4)
+    else
     {
       // Parse protocol id
       myAuthProtocol = Licq::protocolId_fromString(protocolStr);
-    }
-    else
-    {
-      // Invalid
-      gLog.warning("Invalid value for AuthProtocol in configuration, "
-          "will use ICQ account.");
-      myAuthProtocol = LICQ_PPID;
+      if (myAuthProtocol == 0)
+      {
+        // Invalid
+        gLog.warning("Invalid value for AuthProtocol in configuration, "
+            "will use ICQ account.");
+        myAuthProtocol = LICQ_PPID;
+      }
     }
   }
 
@@ -616,27 +616,6 @@ CRMSClient::~CRMSClient()
 }
 
 /*---------------------------------------------------------------------------
- * CRMSClient::GetProtocol
- *-------------------------------------------------------------------------*/
-unsigned long CRMSClient::getProtocol(const string& data)
-{
-  unsigned long nPPID = 0;
-
-  Licq::ProtocolPluginsList plugins;
-  gPluginManager.getProtocolPluginsList(plugins);
-  BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
-  {
-    if (strcasecmp(plugin->name().c_str(), data.c_str()) == 0)
-    {
-      nPPID = plugin->protocolId();
-      break;
-    }
-  }
-  
-  return nPPID;
-}
-
-/*---------------------------------------------------------------------------
  * CRMSClient::ParseUser
  *-------------------------------------------------------------------------*/
 void CRMSClient::ParseUser(const string& strData)
@@ -649,7 +628,7 @@ void CRMSClient::ParseUser(const string& strData)
   if (pos != string::npos)
   {
     // Protocol specified, accept any user, even if it isn't currently in list
-    ppid = getProtocol(strData.substr(pos+1));
+    ppid = Licq::protocolId_fromString(strData.substr(pos+1));
     myUserId = UserId(strData.substr(0, pos-1), ppid);
     return;
   }
@@ -970,7 +949,7 @@ int CRMSClient::Process_STATUS()
   {
     status = string(strData, 0, nPos);
     string param(strData, nPos+1);
-    unsigned long protocolId = getProtocol(param);
+    unsigned long protocolId = Licq::protocolId_fromString(param);
 
     Licq::OwnerListGuard ownerList;
     BOOST_FOREACH(const Licq::Owner* o, **ownerList)

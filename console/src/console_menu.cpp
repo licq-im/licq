@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -615,20 +615,13 @@ bool CLicqConsole::GetContactFromArg(char **p_szArg, Licq::UserId& userId)
   {
     string::size_type s = strArg.find_last_of(" ");
     string strProtocol(strArg, nPos + 1, (s == string::npos) ? strArg.size() : s - nPos - 1);
-
-    Licq::ProtocolPluginsList protocols;
-    gPluginManager.getProtocolPluginsList(protocols);
-    BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
+    nPPID = Licq::protocolId_fromString(strProtocol);
+    if (nPPID != 0)
     {
-      if (strcasecmp(protocol->name().c_str(), strProtocol.c_str()) == 0)
-      {
-        nPPID = protocol->protocolId();
-        szArg[strArg.find_last_of(".")] = '\0';
-        string tmp(strArg, 0, nPos);
-        tmp.append(strArg, s, strArg.size());
-        szArg = (char *)tmp.c_str();
-        break;
-      }
+      szArg[strArg.find_last_of(".")] = '\0';
+      string tmp(strArg, 0, nPos);
+      tmp.append(strArg, s, strArg.size());
+      szArg = (char *)tmp.c_str();
     }
   }
 

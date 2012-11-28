@@ -1586,3 +1586,26 @@ void Licq::User::decNumUserEvents()
   s_nNumUserEvents--;
   pthread_mutex_unlock(&mutex_nNumUserEvents);
 }
+
+unsigned long Licq::protocolId_fromString(const std::string& s)
+{
+  // Known names (case insensitive compare) and raw string versions of protocol id
+  if (boost::iequals(s, "ICQ") || s == "Licq")
+    return LICQ_PPID;
+  if (boost::iequals(s, "MSN") || s == "MSN_")
+    return MSN_PPID;
+  if (boost::iequals(s, "Jabber") || s == "XMPP")
+    return JABBER_PPID;
+
+  // Try the names of all loaded plugins
+  Licq::ProtocolPluginsList plugins;
+  gPluginManager.getProtocolPluginsList(plugins);
+  BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
+  {
+    if (boost::iequals(s, plugin->name()))
+      return plugin->protocolId();
+  }
+
+  // Unknown
+  return 0;
+}

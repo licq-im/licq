@@ -206,14 +206,8 @@ int CLicqForwarder::run()
         return 1;
       }
 
-      unsigned long protocolId;
-      if (protocol == "ICQ")
-        protocolId = LICQ_PPID;
-      else if (protocol == "MSN")
-        protocolId = MSN_PPID;
-      else if (protocol == "Jabber" || protocol == "XMPP")
-        protocolId = JABBER_PPID;
-      else
+      unsigned long protocolId = Licq::protocolId_fromString(protocol);
+      if (protocolId == 0)
       {
         gLog.error("Invalid protocol: %s", protocol.c_str());
         return 1;
