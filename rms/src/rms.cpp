@@ -1388,12 +1388,21 @@ int CRMSClient::Process_SMS_message()
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_AR()
 {
-  ParseUser(data_arg);
-
-  if (!myUserId.isValid())
+  if (data_arg[0] == '\0')
   {
-    fprintf(fs, "%d Invalid User.\n", CODE_INVALIDxUSER);
-    return fflush(fs);
+    // Clear user id to set general auto response
+    myUserId = Licq::UserId();
+  }
+  else
+  {
+    // Parameter is user id to set custom autoresponse for
+    ParseUser(data_arg);
+
+    if (!myUserId.isValid())
+    {
+      fprintf(fs, "%d Invalid User.\n", CODE_INVALIDxUSER);
+      return fflush(fs);
+    }
   }
 
   fprintf(fs, "%d Enter %sauto response, terminate with a . on a line by itself:\n",
@@ -1411,9 +1420,10 @@ int CRMSClient::Process_AR_text()
 
   if (!myUserId.isValid())
   {
-    Licq::OwnerWriteGuard o(LICQ_PPID);
-    if (o.isLocked())
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(Licq::Owner* owner, **ownerList)
     {
+      Licq::OwnerWriteGuard o(owner);
       o->setAutoResponse(textUtf8);
       o->save(Licq::Owner::SaveOwnerInfo);
     }
