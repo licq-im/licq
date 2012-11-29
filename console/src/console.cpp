@@ -22,6 +22,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <boost/foreach.hpp>
 #include <cstring>
 #include <cctype>
 #include <vector>
@@ -360,14 +361,8 @@ int CLicqConsole::run()
   }
   else
   {
-    bool pwdEmpty;
-    {
-      Licq::OwnerReadGuard o(LICQ_PPID);
-      pwdEmpty = o->password().empty();
-    }
-
-    if (pwdEmpty)
-      UserSelect();
+    // Check if any owner is missing a password
+    UserSelect();
   }
 
   //fd_set fdSet;
@@ -3249,18 +3244,38 @@ void CLicqConsole::UserCommand_Secure(const Licq::UserId& userId, char *szStatus
 /*------------------------------------------------------------------------
  * CLicqConsole::UserSelect
  *----------------------------------------------------------------------*/
-void CLicqConsole::UserSelect()
+bool CLicqConsole::UserSelect()
 {
+  // Check if we should prompt for any password
+  Licq::UserId ownerId;
+  string alias;
+  {
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
+    {
+      Licq::OwnerReadGuard o(owner);
+      if (o->password().empty())
+      {
+        ownerId = o->id();
+        alias = o->getAlias();
+        break;
+      }
+    }
+  }
+
+  // If all had passwords, we're done
+  if (!ownerId.isValid())
+    return true;
+
   // Get the input now
   winMain->fProcessInput = &CLicqConsole::InputUserSelect;
   winMain->state = STATE_LE;
+  winMain->data = new DataUserSelect(ownerId);
 
-  //TODO which owner
-  winMain->data = new DataUserSelect(Licq::gUserManager.ownerUserId(LICQ_PPID));
+  winMain->wprintf("%A%CEnter your password for %s (%s):%C%Z", A_BOLD,
+      COLOR_GREEN, alias.c_str(), ownerId.accountId().c_str(), COLOR_WHITE, A_BOLD);
 
-  Licq::OwnerReadGuard o(LICQ_PPID);
-  winMain->wprintf("%A%CEnter your password for %s (%s):%C%Z\n", A_BOLD,
-      COLOR_GREEN, o->getAlias().c_str(), o->accountId().c_str(), COLOR_WHITE, A_BOLD);
+  return false;
 }
 
 /*------------------------------------------------------------------------
@@ -3288,8 +3303,9 @@ void CLicqConsole::InputUserSelect(int cIn)
     
     case STATE_QUERY:
     {
+      winMain->wprintf("\n");
       {
-        Licq::OwnerWriteGuard o(LICQ_PPID);
+        Licq::OwnerWriteGuard o(winMain->data->userId);
         o->SetSavePassword(tolower(cIn) == 'y');
         o->setPassword(data->szPassword);
       }
@@ -3300,7 +3316,11 @@ void CLicqConsole::InputUserSelect(int cIn)
         winMain->data = 0;
       }
 
-      winMain->wprintf("%A\nDone. Awaiting commands.%A\n", A_BOLD, A_BOLD);
+      // There may be another owner without password so check again
+      if (!UserSelect())
+        return;
+
+      winMain->wprintf("%ADone. Awaiting commands.%A\n", A_BOLD, A_BOLD);
       winMain->fProcessInput = &CLicqConsole::InputCommand;
       winMain->state = STATE_COMMAND;
       break;

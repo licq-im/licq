@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -251,7 +251,7 @@ public:
   void FileChatOffer(Licq::UserEvent*, const Licq::UserId& userId);
   void RegistrationWizard();
   void InputRegistrationWizard(int cIn);
-  void UserSelect();
+  bool UserSelect();
   void InputUserSelect(int cIn);
   bool ParseMacro(char *);
   void SaveLastUser(const Licq::UserId& userId);
