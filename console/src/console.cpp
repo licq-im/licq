@@ -2107,11 +2107,15 @@ void CLicqConsole::InputAutoResponse(int cIn)
     else
     {
       *sz = '\0';
+
+      Licq::OwnerListGuard ownerList;
+      BOOST_FOREACH(Licq::Owner* owner, **ownerList)
       {
-        Licq::OwnerWriteGuard o(LICQ_PPID);
+        Licq::OwnerWriteGuard o(owner);
         o->setAutoResponse(Licq::gTranslator.toUtf8(data->szRsp));
         o->save(Licq::Owner::SaveOwnerInfo);
       }
+
       winMain->wprintf("%C%AAuto-response set.\n",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr);
     }
@@ -3042,6 +3046,7 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
             }
 
             winMain->wprintf("Save password? (y/N) ");
+            winMain->data->userId = ownerId;
             winMain->state = STATE_QUERY;
           }
           break;
@@ -3056,7 +3061,7 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
   case STATE_QUERY:
   {
     {
-      Licq::OwnerWriteGuard o(LICQ_PPID);
+      Licq::OwnerWriteGuard o(winMain->data->userId);
       o->SetSavePassword(tolower(cIn) == 'y');
     }
 

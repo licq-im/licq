@@ -161,9 +161,12 @@ void CLicqConsole::PrintStatus()
   unsigned short nNumOwnerEvents = 0;
 
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
-    if (o.isLocked())
-      nNumOwnerEvents = o->NewMessages();
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
+    {
+      Licq::OwnerReadGuard o(owner);
+      nNumOwnerEvents += o->NewMessages();
+    }
   }
 
   unsigned short nNumUserEvents = Licq::User::getNumUserEvents() - nNumOwnerEvents;
@@ -191,17 +194,24 @@ void CLicqConsole::PrintStatus()
   wmove(winStatus->Win(), 1, 0);
   wbkgdset(winStatus->Win(), COLOR_PAIR(32));
 
+  unsigned bestStatus = Licq::User::OfflineStatus;
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
-    if (o.isLocked())
-      winStatus->wprintf("%C%A[ %C%s %C(%C%s%C) - S: %C%s %C- G: %C%s %C- M: %C%s %C- L: %C%s %C]", 29,
-          A_BOLD, 5,  o->getAlias().c_str(), 29,
-        5, o->accountId().c_str(), 29,
-        53, o->statusString().c_str(), 29,
-                       53, CurrentGroupName(), 29,
-                       53, szMsgStr, 29, 53,
-          lastUser.c_str(), 29);
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
+    {
+      Licq::OwnerReadGuard o(owner);
+      unsigned status = o->status();
+      if (status != User::OfflineStatus && status < bestStatus)
+        bestStatus = status;
+    }
   }
+
+  winStatus->wprintf("%C%A[ S: %C%s %C- G: %C%s %C- M: %C%s %C- L: %C%s %C]",
+      29, A_BOLD,
+      53, Licq::User::statusToString(bestStatus).c_str(), 29,
+      53, CurrentGroupName(), 29,
+      53, szMsgStr, 29,
+      53, lastUser.c_str(), 29);
 
   wclrtoeol(winStatus->Win());
   winStatus->RefreshWin();

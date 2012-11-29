@@ -786,18 +786,25 @@ void CLicqConsole::MenuView(char *szArg)
   if (Licq::User::getNumUserEvents() == 0)
     return;
 
-    // Do icq system messages first
-  unsigned short nNumMsg;
+  // Do system messages first
+  Licq::UserId ownerId;
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
-    nNumMsg = o->NewMessages();
-  }
-    if (nNumMsg > 0)
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
     {
-      //TODO which owner?
-    UserCommand_View(Licq::gUserManager.ownerUserId(LICQ_PPID), NULL);
-      return;
+      Licq::OwnerReadGuard o(owner);
+      if (o->NewMessages() > 0)
+      {
+        ownerId = o->id();
+        break;
+      }
     }
+  }
+  if (ownerId.isValid())
+  {
+    UserCommand_View(ownerId, NULL);
+    return;
+  }
 
   {
     time_t t = time(NULL);
