@@ -70,6 +70,7 @@
 #include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/icq/icq.h>
+#include <licq/plugin/protocolplugin.h>
 #include <licq/pluginsignal.h>
 
 #include "config/contactlist.h"
@@ -1024,7 +1025,27 @@ void MainWindow::updateStatus()
 
 void MainWindow::showAwayMsgDlg()
 {
-  AwayMsgDlg::showAwayMsgDlg();
+  // Find an owner that can hold a status message
+  // If multiple exist, get the worst status (e.g. most away)
+  unsigned status = Licq::User::OfflineStatus;
+  {
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
+    {
+      Licq::OwnerReadGuard o(owner);
+      if ((o->protocolCapabilities() & Licq::ProtocolPlugin::CanHoldStatusMsg) == 0)
+        continue;
+
+      if (o->status() > status)
+        status = o->status();
+    }
+  }
+
+  // If no owner supports status message or all are offline, don't bother
+  if (status == Licq::User::OfflineStatus)
+    return;
+
+  AwayMsgDlg::showAwayMsgDlg(status);
 }
 
 void MainWindow::slot_shutdown()

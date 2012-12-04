@@ -41,11 +41,11 @@ public:
   /**
    * Create and show away message dialog or raise it if already exists
    *
-   * @param status Status to prompt for away message to or zero for auto
+   * @param status Status to prompt for away message to
    * @param autoClose True if dialog should close after a timeout
    * @param userId Owner to set status for or invalid to change globaly
    */
-  static void showAwayMsgDlg(unsigned status = 0, bool autoClose = false,
+  static void showAwayMsgDlg(unsigned status, bool autoClose = false,
       const Licq::UserId& userId = Licq::UserId());
 
   static void showAutoResponseHints(QWidget* parent = 0);
@@ -55,7 +55,7 @@ private:
 
   AwayMsgDlg(QWidget* parent = 0);
   ~AwayMsgDlg();
-  void selectAutoResponse(unsigned status = 0, bool autoClose = false,
+  void selectAutoResponse(unsigned status, bool autoClose = false,
       const Licq::UserId& userId = Licq::UserId());
 
   MLEdit* myAwayMsg;
