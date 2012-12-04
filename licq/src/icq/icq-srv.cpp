@@ -1684,14 +1684,16 @@ int IcqProtocol::ConnectToLoginServer()
   if (gDaemon.proxyEnabled())
     InitProxy();
 
+  // Try and get server address from owner, but use default in case we're registering
   string serverHost;
-  int serverPort;
+  int serverPort = 0;
   {
     Licq::OwnerReadGuard o(LICQ_PPID);
-    if (!o.isLocked())
-      return -1;
-    serverHost = o->serverHost();
-    serverPort = o->serverPort();
+    if (o.isLocked())
+    {
+      serverHost = o->serverHost();
+      serverPort = o->serverPort();
+    }
   }
 
   if (serverHost.empty())

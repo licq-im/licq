@@ -164,18 +164,10 @@ private:
   unsigned long myOurClientInfoTimestamp;
   unsigned long myOurClientStatusTimestamp;
 
-  unsigned myPhoneFollowMeStatus;
-  unsigned myIcqPhoneStatus;
-  unsigned mySharedFilesStatus;
   unsigned myDirectFlag;
   bool myDirectMode;
   bool mySupportsUtf8;
   unsigned short mySendLevel;
-
-  Licq::UserCategoryMap myInterests;
-  Licq::UserCategoryMap myBackgrounds;
-  Licq::UserCategoryMap myOrganizations;
-  Licq::ICQUserPhoneBook myPhoneBook;
 
   unsigned myBuddyIconType;
   unsigned myBuddyIconHashType;
