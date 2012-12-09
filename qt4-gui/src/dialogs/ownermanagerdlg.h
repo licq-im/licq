@@ -33,7 +33,6 @@ class UserId;
 
 namespace LicqQtGui
 {
-class RegisterUserDlg;
 
 /**
  * Dialog for managing accounts
@@ -67,14 +66,6 @@ private slots:
    * @param protocolId Id of protocol to register owner with
    */
   void registerOwner(unsigned long protocolId);
-
-  /**
-   * Registration dialog has finished
-   *
-   * @param success True if a new account was created
-   * @param userId Id of new account
-   */
-  void registerDone(bool success, const Licq::UserId& userId);
 
   /**
    * Edit currently selected account
@@ -131,8 +122,6 @@ private:
    * Destructor
    */
   virtual ~OwnerManagerDlg();
-
-  RegisterUserDlg* registerUserDlg;
 
   QTreeWidget* myOwnerView;
   QPushButton* myAddButton;

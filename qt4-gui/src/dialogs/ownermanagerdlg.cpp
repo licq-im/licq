@@ -40,6 +40,7 @@
 #include "contactlist/contactlist.h"
 
 #include "core/gui-defines.h"
+#include "core/licqgui.h"
 #include "core/messagebox.h"
 #include "core/signalmanager.h"
 
@@ -47,7 +48,6 @@
 #include "userdlg/userdlg.h"
 
 #include "ownereditdlg.h"
-#include "registeruser.h"
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::OwnerManagerDlg */
@@ -64,7 +64,6 @@ void OwnerManagerDlg::showOwnerManagerDlg()
 
 OwnerManagerDlg::OwnerManagerDlg(QWidget* parent)
   : QDialog(parent),
-    registerUserDlg(NULL),
     myPendingAdd(false),
     myPendingRegister(false)
 {
@@ -209,13 +208,13 @@ void OwnerManagerDlg::listSelectionChanged()
   {
     case QVariant::String: // data is name of unloaded protocol
       myAddButton->setEnabled(true);
-      myRegisterButton->setEnabled(data.toString() == "icq");
+      myRegisterButton->setEnabled(data.toString() == "icq" || data.toString() == "msn");
       myModifyButton->setEnabled(false);
       myRemoveButton->setEnabled(false);
       break;
     case QVariant::UInt: // data is id of loaded protocol
       myAddButton->setEnabled(!hasChildren);
-      myRegisterButton->setEnabled(!hasChildren && data.toUInt() == LICQ_PPID);
+      myRegisterButton->setEnabled(!hasChildren && (data.toUInt() == LICQ_PPID || data.toUInt() == MSN_PPID));
       myModifyButton->setEnabled(false);
       myRemoveButton->setEnabled(!hasChildren);
       break;
@@ -290,9 +289,9 @@ void OwnerManagerDlg::registerPressed()
   }
 }
 
-void OwnerManagerDlg::registerOwner(unsigned long /* protocolId */)
+void OwnerManagerDlg::registerOwner(unsigned long protocolId)
 {
-  Licq::UserId oldOwnerId = Licq::gUserManager.ownerUserId(LICQ_PPID);
+  Licq::UserId oldOwnerId = Licq::gUserManager.ownerUserId(protocolId);
   if (oldOwnerId.isValid())
   {
     QString buf = tr("You are currently registered as\n"
@@ -305,22 +304,15 @@ void OwnerManagerDlg::registerOwner(unsigned long /* protocolId */)
     return;
   }
 
-  if (registerUserDlg != 0)
-    registerUserDlg->raise();
-  else
+  switch (protocolId)
   {
-    registerUserDlg = new RegisterUserDlg(this);
-    connect(registerUserDlg, SIGNAL(signal_done(bool, const Licq::UserId&)),
-        SLOT(registerDone(bool, const Licq::UserId&)));
+    case LICQ_PPID:
+      gLicqGui->viewUrl("https://www.icq.com/join");
+      break;
+    case MSN_PPID:
+      gLicqGui->viewUrl("https://signup.live.com/signup.aspx");
+      break;
   }
-}
-
-void OwnerManagerDlg::registerDone(bool success, const Licq::UserId& userId)
-{
-  registerUserDlg = 0;
-
-  if (success)
-    UserDlg::showDialog(userId);
 }
 
 void OwnerManagerDlg::modify()
