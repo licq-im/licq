@@ -41,6 +41,7 @@
 #include <cstring>
 #include <ctime>
 #include <cctype>
+#include <list>
 #include <string>
 #include <sys/types.h>
 #include <unistd.h>
@@ -56,6 +57,7 @@
 #include <licq/logging/logservice.h>
 #include <licq/logging/logutils.h>
 #include <licq/plugin/pluginmanager.h>
+#include <licq/plugin/protocolplugin.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 #include <licq/translator.h>
@@ -270,15 +272,20 @@ static int fifo_status(int argc, const char* const* argv)
     return -1;
   }
 
-  gProtocolManager.setStatus(gUserManager.ownerUserId(LICQ_PPID), status);
+  string statusMsg = Licq::ProtocolManager::KeepAutoResponse;
+  if ( argc > 2 )
+    statusMsg = gTranslator.toUtf8(argv[2]);
 
-  // Now set the auto response
-  if( argc > 2 )
+  // Get a list of owners first since we can't call setStatus with list locked
+  std::list<Licq::UserId> owners;
   {
-    Licq::OwnerWriteGuard o(LICQ_PPID);
-    o->setAutoResponse(gTranslator.toUtf8(argv[2]));
-    o->save(Licq::Owner::SaveOwnerInfo);
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(const Licq::Owner* o, **ownerList)
+      owners.push_back(o->id());
   }
+
+  BOOST_FOREACH(const Licq::UserId& ownerId, owners)
+    gProtocolManager.setStatus(ownerId, status, statusMsg);
 
   return 0;
 }
@@ -293,9 +300,16 @@ static int fifo_auto_response(int argc, const char* const* argv)
     return -1;
   }
 
-  Licq::OwnerWriteGuard o(LICQ_PPID);
-  o->setAutoResponse(gTranslator.toUtf8(argv[1]));
-  o->save(Licq::Owner::SaveOwnerInfo);
+  Licq::OwnerListGuard ownerList;
+  BOOST_FOREACH(Licq::Owner* owner, **ownerList)
+  {
+    Licq::OwnerWriteGuard o(owner);
+    if ((o->protocolCapabilities() & Licq::ProtocolPlugin::CanHoldStatusMsg) == 0)
+      continue;
+
+    o->setAutoResponse(gTranslator.toUtf8(argv[1]));
+    o->save(Licq::Owner::SaveOwnerInfo);
+  }
 
   return 0;
 }
@@ -460,11 +474,6 @@ static int fifo_userinfo(int argc, const char* const* argv)
   if (!userId.isValid())
   {
     ReportBadBuddy(argv[0],argv[1]);
-    return -1;
-  }
-  if (userId.protocolId() != LICQ_PPID)
-  {
-     gLog.info(tr("%s `%s': bad protocol. ICQ only allowed\n"), L_FIFOxSTR, argv[0]);
     return -1;
   }
 
