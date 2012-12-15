@@ -176,7 +176,6 @@ private slots:
   void prevGroup();
 
   void slot_logon();
-  void slot_updateContactList();
   void slot_updatedUser(const Licq::UserId& userId, unsigned long subSignal, int argument);
 
   /**

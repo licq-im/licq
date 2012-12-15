@@ -72,9 +72,6 @@ public:
   virtual unsigned long icqRequestICQphone(const Licq::UserId& userId, bool bServer = false) = 0;
 
   // Server functions
-  virtual void icqRegister(const std::string& passwd) = 0;
-  virtual void icqVerifyRegistration() = 0;
-  virtual void icqVerify(const std::string& verification) = 0;
   virtual unsigned long icqSetWorkInfo(const std::string& city, const std::string& state,
       const std::string& phone, const std::string& fax, const std::string& address,
       const std::string& zip, unsigned short companyCountry, const std::string& name,
@@ -99,8 +96,6 @@ public:
   virtual void icqUpdatePhoneBookTimestamp() = 0;
   virtual void icqUpdatePictureTimestamp() = 0;
   virtual void icqSetPhoneFollowMeStatus(unsigned newStatus) = 0;
-  virtual void icqUpdateContactList() = 0;
-  virtual void icqCheckInvisible(const Licq::UserId& userId) = 0;
 
   virtual unsigned long setRandomChatGroup(unsigned chatGroup) = 0;
   virtual unsigned long randomChatSearch(unsigned chatGroup) = 0;

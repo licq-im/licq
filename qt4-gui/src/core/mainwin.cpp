@@ -964,11 +964,6 @@ void MainWindow::slot_logon()
   updateStatus();
 }
 
-void MainWindow::slot_updateContactList()
-{
-  gLicqDaemon->icqUpdateContactList();
-}
-
 void MainWindow::showAboutBox()
 {
   new AboutDlg(this);

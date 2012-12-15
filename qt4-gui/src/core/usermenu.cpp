@@ -163,7 +163,6 @@ UserMenu::UserMenu(QWidget* parent)
   addMenu(mySendMenu);
   addMenu(myMiscModesMenu);
   addMenu(myUtilitiesMenu);
-  //myCheckInvisibleAction = addAction(tr("Check If Invisible"), this, SLOT(checkInvisible()));
   myCheckArAction = addAction(QString::null, this, SLOT(checkAutoResponse()));
   myCustomArAction = addAction(tr("Custom Auto Response..."), this, SLOT(customAutoResponse()));
   myCustomArAction->setCheckable(true);
@@ -322,7 +321,6 @@ void UserMenu::aboutToShowMenu()
   mySendActions[RequestPhoneFollowMeStatus]->setVisible(isIcq);
   mySendActions[RequestIcqphoneStatus]->setVisible(isIcq);
   mySendActions[RequestFileServerStatus]->setVisible(isIcq);
-//  myCheckInvisibleAction->setVisible(isIcq);
   myCheckArAction->setVisible(isIcq);
   myCustomArAction->setVisible(isIcq);
   myMiscModesActions[ModeUseRealIp]->setVisible(isIcq);
@@ -393,12 +391,6 @@ void UserMenu::popup(QPoint pos, const Licq::UserId& userId, bool showShortcuts)
 void UserMenu::viewEvent()
 {
   gLicqGui->showViewEventDialog(myUserId);
-}
-
-void UserMenu::checkInvisible()
-{
-  if (myPpid == LICQ_PPID)
-    gLicqDaemon->icqCheckInvisible(myUserId);
 }
 
 void UserMenu::checkAutoResponse()
