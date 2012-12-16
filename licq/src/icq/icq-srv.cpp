@@ -954,39 +954,32 @@ void IcqProtocol::icqPing()
    SendEvent_Server(p);
 }
 
-//-----icqUpdateInfoTimestamp---------------------------------------------------
-void IcqProtocol::icqUpdateInfoTimestamp(const uint8_t* GUID)
+void IcqProtocol::icqUpdateInfoTimestamp(Licq::IcqProtocol::PluginType type)
 {
-  CPU_UpdateInfoTimestamp *p = new CPU_UpdateInfoTimestamp(GUID);
+  {
+    OwnerWriteGuard o;
+    o->SetClientInfoTimestamp(time(NULL));
+    if (!o->isOnline())
+      return;
+  }
+
+  const uint8_t* guid;
+  switch (type)
+  {
+    case Licq::IcqProtocol::PluginPhoneBook:
+      guid = PLUGIN_PHONExBOOK;
+      break;
+
+    case Licq::IcqProtocol::PluginPicture:
+      guid = PLUGIN_PICTURE;
+      break;
+
+    default:
+      return;
+  }
+
+  CPU_UpdateInfoTimestamp* p = new CPU_UpdateInfoTimestamp(guid);
   SendEvent_Server(p);
-}
-
-//-----icqUpdatePhoneBookTimestamp----------------------------------------------
-void IcqProtocol::icqUpdatePhoneBookTimestamp()
-{
-  bool bOffline;
-  {
-    OwnerWriteGuard o;
-    o->SetClientInfoTimestamp(time(NULL));
-    bOffline = !o->isOnline();
-  }
-
-  if (!bOffline)
-    icqUpdateInfoTimestamp(PLUGIN_PHONExBOOK);
-}
-
-//-----icqUpdatePictureTimestamp------------------------------------------------
-void IcqProtocol::icqUpdatePictureTimestamp()
-{
-  bool bOffline;
-  {
-    OwnerWriteGuard o;
-    o->SetClientInfoTimestamp(time(NULL));
-    bOffline = !o->isOnline();
-  }
-
-  if (!bOffline)
-    icqUpdateInfoTimestamp(PLUGIN_PICTURE);
 }
 
 //-----icqSetPhoneFollowMeStatus------------------------------------------------

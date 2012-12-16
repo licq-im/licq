@@ -1044,15 +1044,9 @@ void UserSendEvent::retrySend(const Licq::Event* e, unsigned flags)
     {
       const Licq::EventChat* ue = dynamic_cast<const Licq::EventChat*>(e->userEvent());
 
-      if (ue->clients().empty())
-        //TODO in the daemon
-        icqEventTag = gLicqDaemon->icqChatRequest(myUsers.front(),
-            ue->reason(), flags);
-      else
-        //TODO in the daemon
-        icqEventTag = gLicqDaemon->icqMultiPartyChatRequest(myUsers.front(),
-            ue->reason(), ue->clients(), ue->Port(), flags);
-
+      //TODO in the daemon
+      icqEventTag = gLicqDaemon->icqChatRequest(myUsers.front(),
+          ue->reason(), flags, ue->clients(), ue->Port());
       break;
     }
 
@@ -1327,19 +1321,10 @@ void UserSendEvent::send()
         break;
 
       case ChatEvent:
-        if (myChatPort == 0)
-          //TODO in daemon
-          icqEventTag = gLicqDaemon->icqChatRequest(
-              myUsers.front(),
-              myMessageEdit->toPlainText().toUtf8().data(),
-              flags);
-        else
-          icqEventTag = gLicqDaemon->icqMultiPartyChatRequest(
-              myUsers.front(),
-              myMessageEdit->toPlainText().toUtf8().data(),
-              myChatClients.toUtf8().data(),
-              myChatPort,
-              flags);
+        //TODO in daemon
+        icqEventTag = gLicqDaemon->icqChatRequest( myUsers.front(),
+            myMessageEdit->toPlainText().toUtf8().data(), flags,
+            myChatClients.toUtf8().data(), myChatPort);
         break;
 
       case FileEvent:

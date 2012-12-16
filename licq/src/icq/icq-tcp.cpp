@@ -448,6 +448,60 @@ unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
   return eventId;
 }
 
+unsigned long IcqProtocol::icqRequestPluginInfo(const Licq::UserId& userId, Licq::IcqProtocol::PluginType type,
+    bool bServer, const Licq::ProtocolSignal* ps)
+{
+  if (Licq::gUserManager.isOwner(userId))
+    return 0;
+
+  UserWriteGuard u(userId);
+  if (!u.isLocked())
+    return 0;
+
+  switch (type)
+  {
+    case Licq::IcqProtocol::PluginInfoList:
+      gLog.info(tr("Requesting info plugin list from %s%s."),
+          u->getAlias().c_str(), bServer ? " through server" : "");
+      return icqRequestInfoPlugin(*u, bServer, PLUGIN_QUERYxINFO, ps);
+
+    case Licq::IcqProtocol::PluginPhoneBook:
+      bServer = (u->infoSocketDesc() < 0);
+      gLog.info(tr("Requesting Phone Book from %s%s."),
+          u->getAlias().c_str(), bServer ? " through server" : "");
+      return icqRequestInfoPlugin(*u, bServer, PLUGIN_PHONExBOOK, ps);
+
+    case Licq::IcqProtocol::PluginPicture:
+      bServer = (u->infoSocketDesc() < 0);
+      gLog.info(tr("Requesting Picture from %s%s."),
+          u->getAlias().c_str(), bServer ? " through server" : "");
+      return icqRequestInfoPlugin(*u, bServer, PLUGIN_PICTURE, ps);
+
+    case Licq::IcqProtocol::PluginStatusList:
+      gLog.info(tr("Requesting status plugin list from %s%s."),
+          u->getAlias().c_str(), bServer ? " through server" : "");
+      return icqRequestStatusPlugin(*u, bServer, PLUGIN_QUERYxSTATUS);
+
+    case Licq::IcqProtocol::PluginSharedFiles:
+      gLog.info(tr("Requesting file server status from %s%s."),
+          u->getAlias().c_str(), bServer ? " through server" : "");
+      return icqRequestStatusPlugin(*u, bServer, PLUGIN_FILExSERVER);
+
+    case Licq::IcqProtocol::PluginPhoneFollowMe:
+      gLog.info(tr("Requesting Phone \"Follow Me\" status from %s%s."),
+          u->getAlias().c_str(), bServer ? " through server" : "");
+      return icqRequestStatusPlugin(*u, bServer, PLUGIN_FOLLOWxME);
+
+    case Licq::IcqProtocol::PluginIcqPhone:
+      gLog.info(tr("Requesting ICQphone status from %s%s."),
+          u->getAlias().c_str(), bServer ? " through server" : "");
+      return icqRequestStatusPlugin(*u, bServer, PLUGIN_FILExSERVER);
+
+    default:
+      return 0;
+  };
+}
+
 //-----CICQDaemon::sendInfoPluginReq--------------------------------------------
 unsigned long IcqProtocol::icqRequestInfoPlugin(User* u, bool bServer,
     const uint8_t* GUID, const Licq::ProtocolSignal* ps)
@@ -467,47 +521,6 @@ unsigned long IcqProtocol::icqRequestInfoPlugin(User* u, bool bServer,
   if (result != NULL)
     return result->EventId();
   return 0;
-}
-
-//-----CICQDaemon::sendInfoPluginListReq----------------------------------------
-unsigned long IcqProtocol::icqRequestInfoPluginList(const Licq::UserId& userId, bool bServer)
-{
-  if (Licq::gUserManager.isOwner(userId))
-    return 0;
-
-  UserWriteGuard u(userId);
-  if (!u.isLocked())
-    return 0;
-
-  if (bServer)
-    gLog.info(tr("Requesting info plugin list from %s through server."), u->getAlias().c_str());
-  else
-    gLog.info(tr("Requesting info plugin list from %s."), u->getAlias().c_str());
-
-  unsigned long result = icqRequestInfoPlugin(*u, bServer, PLUGIN_QUERYxINFO);
-
-  return result;
-}
-
-//-----CICQDaemon::sendPhoneBookReq--------------------------------------------
-unsigned long IcqProtocol::icqRequestPhoneBook(const Licq::UserId& userId)
-{
-  if (Licq::gUserManager.isOwner(userId))
-    return 0;
-
-  UserWriteGuard u(userId);
-  if (!u.isLocked())
-    return 0;
-
-  bool bServer = (u->infoSocketDesc() < 0);
-  if (bServer)
-    gLog.info(tr("Requesting Phone Book from %s through server."), u->getAlias().c_str());
-  else
-    gLog.info(tr("Requesting Phone Book from %s."), u->getAlias().c_str());
-
-  unsigned long result = icqRequestInfoPlugin(*u, bServer, PLUGIN_PHONExBOOK);
-
-  return result;
 }
 
 //-----CICQDaemon::sendPictureReq-----------------------------------------------
@@ -532,20 +545,7 @@ void IcqProtocol::icqRequestPicture(const Licq::ProtocolSignal* ps)
     return m_xBARTService->SendEvent(ps->callerThread(), ps->eventId(), ps->userId(),
         ICQ_SNACxBART_DOWNLOADxREQUEST, true);
 
-  if (Licq::gUserManager.isOwner(ps->userId()))
-     return;
-
-  UserWriteGuard u(ps->userId());
-  if (!u.isLocked())
-    return;
-
-  bool bServer = (u->infoSocketDesc() < 0);
-  if (bServer)
-    gLog.info(tr("Requesting Picture from %s through server."), u->getAlias().c_str());
-  else
-    gLog.info(tr("Requesting Picture from %s."), u->getAlias().c_str());
-
-  icqRequestInfoPlugin(*u, bServer, PLUGIN_PICTURE, ps);
+  icqRequestPluginInfo(ps->userId(), Licq::IcqProtocol::PluginPicture, false, ps);
 }
 
 //-----CICQDaemon::sendStatusPluginReq------------------------------------------
@@ -567,86 +567,6 @@ unsigned long IcqProtocol::icqRequestStatusPlugin(User* u, bool bServer,
   if (result != NULL)
     return result->EventId();
   return 0;
-}
-
-//-----CICQDaemon::sendStatusPluginListReq--------------------------------------
-unsigned long IcqProtocol::icqRequestStatusPluginList(const Licq::UserId& userId, bool bServer)
-{
-  if (Licq::gUserManager.isOwner(userId))
-    return 0;
-
-  UserWriteGuard u(userId);
-  if (!u.isLocked())
-    return 0;
-
-  if (bServer)
-    gLog.info(tr("Requesting status plugin list from %s through server."), u->getAlias().c_str());
-  else
-    gLog.info(tr("Requesting status plugin list from %s."), u->getAlias().c_str());
-
-  unsigned long result = icqRequestStatusPlugin(*u, bServer, PLUGIN_QUERYxSTATUS);
-
-  return result;
-}
-
-//-----CICQDaemon::sendSharedFilesReq--------------------------------------
-unsigned long IcqProtocol::icqRequestSharedFiles(const Licq::UserId& userId, bool bServer)
-{
-  if (Licq::gUserManager.isOwner(userId))
-    return 0;
-
-  UserWriteGuard u(userId);
-  if (!u.isLocked())
-    return 0;
-
-  if (bServer)
-    gLog.info(tr("Requesting file server status from %s through server."), u->getAlias().c_str());
-  else
-    gLog.info(tr("Requesting file server status from %s."), u->getAlias().c_str());
-
-  unsigned long result = icqRequestStatusPlugin(*u, bServer, PLUGIN_FILExSERVER);
-
-  return result;
-}
-
-//-----CICQDaemon::sendPhoneFollowMeReq--------------------------------------
-unsigned long IcqProtocol::icqRequestPhoneFollowMe(const Licq::UserId& userId, bool bServer)
-{
-  if (Licq::gUserManager.isOwner(userId))
-    return 0;
-
-  UserWriteGuard u(userId);
-  if (!u.isLocked())
-    return 0;
-
-  if (bServer)
-    gLog.info(tr("Requesting Phone \"Follow Me\" status from %s through server."), u->getAlias().c_str());
-  else
-    gLog.info(tr("Requesting Phone \"Follow Me\" status from %s."), u->getAlias().c_str());
-
-  unsigned long result = icqRequestStatusPlugin(*u, bServer, PLUGIN_FOLLOWxME);
-
-  return result;
-}
-
-//-----CICQDaemon::sendICQphoneReq--------------------------------------
-unsigned long IcqProtocol::icqRequestICQphone(const Licq::UserId& userId, bool bServer)
-{
-  if (Licq::gUserManager.isOwner(userId))
-    return 0;
-
-  UserWriteGuard u(userId);
-  if (!u.isLocked())
-    return 0;
-
-  if (bServer)
-    gLog.info(tr("Requesting ICQphone status from %s through server."), u->getAlias().c_str());
-  else
-    gLog.info(tr("Requesting ICQphone status from %s."), u->getAlias().c_str());
-
-  unsigned long result = icqRequestStatusPlugin(*u, bServer, PLUGIN_FILExSERVER);
-
-  return result;
 }
 
 void IcqProtocol::icqFileTransferCancel(const Licq::UserId& userId, unsigned short nSequence)
@@ -705,14 +625,7 @@ void IcqProtocol::icqFileTransferRefuse(const Licq::ProtoSendEventReplySignal* p
 }
 
 unsigned long IcqProtocol::icqChatRequest(const Licq::UserId& userId, const string& reason,
-    unsigned flags)
-{
-  return icqMultiPartyChatRequest(userId, reason, "", 0, flags);
-}
-
-unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
-   const string& reason, const string& chatUsers, unsigned short nPort,
-   unsigned flags)
+    unsigned flags, const string& chatUsers, unsigned short nPort)
 {
   if (Licq::gUserManager.isOwner(userId))
     return 0;

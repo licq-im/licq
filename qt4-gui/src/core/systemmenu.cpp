@@ -426,7 +426,7 @@ void SystemMenu::toggleMainInvisibleStatus()
 
 void SystemMenu::updateAllUsers()
 {
-  gLicqDaemon->UpdateAllUsers();
+  gLicqDaemon->updateAllUsersInGroup(0);
 }
 
 void SystemMenu::updateAllUsersInGroup()

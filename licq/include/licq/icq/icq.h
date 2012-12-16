@@ -31,6 +31,7 @@ typedef std::list<std::string> StringList;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
 class Color;
 class UserId;
+class ProtocolSignal;
 
 
 class IcqProtocol : private boost::noncopyable
@@ -49,10 +50,7 @@ public:
   virtual unsigned long icqFetchAutoResponse(const Licq::UserId& userId) = 0;
   // Chat Request
   virtual unsigned long icqChatRequest(const Licq::UserId& userId, const std::string& reason,
-      unsigned flags = 0) = 0;
-  virtual unsigned long icqMultiPartyChatRequest(const Licq::UserId& userId,
-     const std::string& reason, const std::string& chatUsers, unsigned short nPort,
-      unsigned flags = 0) = 0;
+      unsigned flags = 0, const std::string& chatUsers = "", unsigned short port = 0) = 0;
   virtual void icqChatRequestRefuse(const Licq::UserId& userId, const std::string& reason,
       unsigned short nSequence, const unsigned long nMsgID[], bool bDirect) = 0;
   virtual void icqChatRequestAccept(const Licq::UserId& userId, unsigned short nPort,
@@ -60,15 +58,19 @@ public:
       const unsigned long nMsgID[], bool bDirect) = 0;
 
   // Plugins
-  virtual unsigned long icqRequestInfoPluginList(const Licq::UserId& userId,
-     bool bServer = false) = 0;
-  virtual unsigned long icqRequestPhoneBook(const Licq::UserId& userId) = 0;
-  virtual unsigned long icqRequestStatusPluginList(const Licq::UserId& userId,
-     bool bServer = false) = 0;
-  virtual unsigned long icqRequestSharedFiles(const Licq::UserId& userId, bool bServer = false) = 0;
-  virtual unsigned long icqRequestPhoneFollowMe(const Licq::UserId& userId,
-     bool bServer = false) = 0;
-  virtual unsigned long icqRequestICQphone(const Licq::UserId& userId, bool bServer = false) = 0;
+  enum PluginType
+  {
+    PluginInfoList = 1,
+    PluginPhoneBook = 2,
+    PluginPicture = 3,
+    PluginStatusList = 4,
+    PluginSharedFiles = 5,
+    PluginPhoneFollowMe = 6,
+    PluginIcqPhone = 7,
+  };
+  virtual unsigned long icqRequestPluginInfo(const Licq::UserId& userId, PluginType type,
+      bool bServer = false, const Licq::ProtocolSignal* ps = NULL) = 0;
+  virtual void icqUpdateInfoTimestamp(PluginType type) = 0;
 
   // Server functions
   virtual unsigned long icqSetWorkInfo(const std::string& city, const std::string& state,
@@ -92,15 +94,12 @@ public:
       const std::string& coPos, const std::string& keyword, bool onlineOnly) = 0;
   virtual unsigned long icqSearchByUin(unsigned long) = 0;
   virtual void icqAlertUser(const Licq::UserId& userId) = 0;
-  virtual void icqUpdatePhoneBookTimestamp() = 0;
-  virtual void icqUpdatePictureTimestamp() = 0;
   virtual void icqSetPhoneFollowMeStatus(unsigned newStatus) = 0;
 
   virtual unsigned long setRandomChatGroup(unsigned chatGroup) = 0;
   virtual unsigned long randomChatSearch(unsigned chatGroup) = 0;
 
-  virtual void UpdateAllUsers() = 0;
-  virtual void updateAllUsersInGroup(int groupId) = 0;
+  virtual void updateAllUsersInGroup(int groupId = 0) = 0;
 
   // SMS
   virtual unsigned long icqSendSms(const Licq::UserId& userId,

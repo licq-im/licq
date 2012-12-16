@@ -538,7 +538,7 @@ static int fifo_setpicture(int argc, const char* const* argv)
     }
   }
 
-  gLicqDaemon->icqUpdatePictureTimestamp();
+  gLicqDaemon->icqUpdateInfoTimestamp(Licq::IcqProtocol::PluginPicture);
   return 0;
 }
 

@@ -1445,7 +1445,7 @@ unsigned long UserPages::Info::retrieve(UserDlg::UserPage page)
   unsigned long icqEventTag;
   if (page == UserDlg::PhonePage)
   {
-    icqEventTag = gLicqDaemon->icqRequestPhoneBook(myUserId);
+    icqEventTag = gLicqDaemon->icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginPhoneBook);
   }
   else if (page == UserDlg::PicturePage)
   {
@@ -1543,7 +1543,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
         Licq::IcqOwnerWriteGuard o(myUserId);
         savePagePhoneBook(*o);
       }
-      gLicqDaemon->icqUpdatePhoneBookTimestamp();
+      gLicqDaemon->icqUpdateInfoTimestamp(Licq::IcqProtocol::PluginPhoneBook);
       icqEventTag = 0;
       break;
     }
@@ -1553,7 +1553,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
         Licq::OwnerWriteGuard o(myUserId);
         savePagePicture(*o);
       }
-      gLicqDaemon->icqUpdatePictureTimestamp();
+      gLicqDaemon->icqUpdateInfoTimestamp(Licq::IcqProtocol::PluginPicture);
       icqEventTag = 0;
       break;
     }

@@ -464,27 +464,27 @@ void UserMenu::send(QAction* action)
 
     case RequestUpdateInfoPlugin:
       if (myPpid == LICQ_PPID)
-        gLicqDaemon->icqRequestInfoPluginList(myUserId, true);
+        gLicqDaemon->icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginInfoList, true);
       break;
 
     case RequestUpdateStatusPlugin:
       if (myPpid == LICQ_PPID)
-        gLicqDaemon->icqRequestStatusPluginList(myUserId, true);
+        gLicqDaemon->icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginStatusList, true);
       break;
 
     case RequestPhoneFollowMeStatus:
       if (myPpid == LICQ_PPID)
-        gLicqDaemon->icqRequestPhoneFollowMe(myUserId, true);
+        gLicqDaemon->icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginPhoneFollowMe, true);
       break;
 
     case RequestIcqphoneStatus:
       if (myPpid == LICQ_PPID)
-        gLicqDaemon->icqRequestICQphone(myUserId, true);
+        gLicqDaemon->icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginIcqPhone, true);
       break;
 
     case RequestFileServerStatus:
       if (myPpid == LICQ_PPID)
-        gLicqDaemon->icqRequestSharedFiles(myUserId, true);
+        gLicqDaemon->icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginSharedFiles, true);
       break;
 
     default:

@@ -169,23 +169,16 @@ public:
 
   unsigned long icqFetchAutoResponse(const Licq::UserId& userId);
   unsigned long icqChatRequest(const Licq::UserId& userId, const std::string& reason,
-      unsigned flags);
-  unsigned long icqMultiPartyChatRequest(const Licq::UserId& userId,
-     const std::string& reason, const std::string& chatUsers, unsigned short nPort,
-      unsigned flags = 0);
+      unsigned flags = 0, const std::string& chatUsers = "", unsigned short port = 0);
   void icqChatRequestRefuse(const Licq::UserId& userId, const std::string& reason,
       unsigned short nSequence, const unsigned long nMsgID[], bool bDirect);
   void icqChatRequestAccept(const Licq::UserId& userId, unsigned short nPort,
       const std::string& clients, unsigned short nSequence,
       const unsigned long nMsgID[], bool bDirect);
   void icqChatRequestCancel(const Licq::UserId& userId, unsigned short nSequence);
-  unsigned long icqRequestInfoPluginList(const Licq::UserId& userId, bool bServer = false);
-  unsigned long icqRequestPhoneBook(const Licq::UserId& userId);
+  unsigned long icqRequestPluginInfo(const Licq::UserId& userId, Licq::IcqProtocol::PluginType type,
+      bool bServer = false, const Licq::ProtocolSignal* ps = NULL);
   void icqRequestPicture(const Licq::ProtocolSignal* ps);
-  unsigned long icqRequestStatusPluginList(const Licq::UserId& userId, bool bServer = false);
-  unsigned long icqRequestSharedFiles(const Licq::UserId& userId, bool bServer = false);
-  unsigned long icqRequestPhoneFollowMe(const Licq::UserId& userId, bool bServer = false);
-  unsigned long icqRequestICQphone(const Licq::UserId& userId, bool bServer = false);
   void icqRegister(const std::string& passwd);
   void icqVerifyRegistration();
   void icqVerify(const std::string& verification);
@@ -217,8 +210,7 @@ public:
   void icqAuthorizeRefuse(const Licq::ProtoRefuseAuthSignal* ps);
   void icqRequestAuth(const Licq::UserId& userId, const std::string& message);
   void icqAlertUser(const Licq::UserId& userId);
-  void icqUpdatePhoneBookTimestamp();
-  void icqUpdatePictureTimestamp();
+  void icqUpdateInfoTimestamp(Licq::IcqProtocol::PluginType type);
   void icqSetPhoneFollowMeStatus(unsigned newStatus);
   void icqUpdateContactList();
   void icqCheckInvisible(const Licq::UserId& userId);
@@ -279,8 +271,7 @@ public:
      unsigned long nIntIp, Licq::TCPSocket* sock, unsigned short nPort,
      bool bSendIntIp);
 
-  void UpdateAllUsers();
-  void updateAllUsersInGroup(int groupId);
+  void updateAllUsersInGroup(int groupId = 0);
   void CancelEvent(unsigned long );
   void CancelEvent(Licq::Event*);
 

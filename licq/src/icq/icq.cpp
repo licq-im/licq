@@ -1151,23 +1151,18 @@ void IcqProtocol::CancelEvent(Licq::Event* e)
   ProcessDoneEvent(e);
 }
 
-
-//-----updateAllUsers-------------------------------------------------------------------------
-void IcqProtocol::UpdateAllUsers()
-{
-  Licq::UserListGuard userList;
-  BOOST_FOREACH(Licq::User* u, **userList)
-    icqRequestMetaInfo(u->id());
-}
-
 void IcqProtocol::updateAllUsersInGroup(int groupId)
 {
   Licq::UserListGuard userList;
   BOOST_FOREACH(Licq::User* user, **userList)
   {
-    Licq::UserReadGuard pUser(user);
-    if (pUser->isInGroup(groupId))
-      icqRequestMetaInfo(pUser->id());
+    if (groupId != 0)
+    {
+      Licq::UserReadGuard u(user);
+      if (!u->isInGroup(groupId))
+        continue;
+    }
+    icqRequestMetaInfo(user->id());
   }
 }
 
