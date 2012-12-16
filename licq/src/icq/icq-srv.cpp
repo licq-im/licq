@@ -519,7 +519,7 @@ unsigned long IcqProtocol::icqFetchAutoResponseServer(const Licq::UserId& userId
 }
 
 //-----icqSetRandomChatGroup----------------------------------------------------
-unsigned long IcqProtocol::setRandomChatGroup(unsigned chatGroup)
+unsigned long IcqProtocol::setRandomChatGroup(const Licq::UserId& /*ownerId*/, unsigned chatGroup)
 {
   CPU_SetRandomChatGroup *p = new CPU_SetRandomChatGroup(chatGroup);
   gLog.info(tr("Setting random chat group (#%hu)..."), p->Sequence());
@@ -531,7 +531,7 @@ unsigned long IcqProtocol::setRandomChatGroup(unsigned chatGroup)
 }
 
 //-----icqRandomChatSearch------------------------------------------------------
-unsigned long IcqProtocol::randomChatSearch(unsigned chatGroup)
+unsigned long IcqProtocol::randomChatSearch(const Licq::UserId& /*ownerId*/, unsigned chatGroup)
 {
   CPU_RandomChatSearch *p = new CPU_RandomChatSearch(chatGroup);
   gLog.info(tr("Searching for random chat user (#%hu)..."), p->Sequence());
@@ -758,7 +758,8 @@ void IcqProtocol::icqSetGeneralInfo(const Licq::ProtocolSignal* ps)
 }
 
 //-----icqSetEmailInfo---------------------------------------------------------
-unsigned long IcqProtocol::icqSetEmailInfo(const std::string& emailSecondary, const std::string& emailOld)
+unsigned long IcqProtocol::icqSetEmailInfo(const Licq::UserId& /*ownerId*/,
+    const std::string& emailSecondary, const std::string& emailOld)
 {
 return 0;
   CPU_Meta_SetEmailInfo* p = new CPU_Meta_SetEmailInfo(emailSecondary, emailOld);
@@ -772,7 +773,8 @@ return 0;
 }
 
 //-----icqSetMoreInfo----------------------------------------------------
-unsigned long IcqProtocol::icqSetMoreInfo(unsigned short age, char gender,
+unsigned long IcqProtocol::icqSetMoreInfo(const Licq::UserId& /*ownerId*/,
+    unsigned short age, char gender,
     const string& homepage, unsigned short birthYear, char birthMonth,
     char birthDay, char language1, char language2, char language3)
 {
@@ -788,7 +790,8 @@ unsigned long IcqProtocol::icqSetMoreInfo(unsigned short age, char gender,
 }
 
 //-----icqSetInterestsInfo------------------------------------------------------
-unsigned long IcqProtocol::icqSetInterestsInfo(const UserCategoryMap& interests)
+unsigned long IcqProtocol::icqSetInterestsInfo(const Licq::UserId& /*ownerId*/,
+    const UserCategoryMap& interests)
 {
   CPU_Meta_SetInterestsInfo *p = new CPU_Meta_SetInterestsInfo(interests);
   gLog.info(tr("Updating Interests info (#%hu/#%d).."), p->Sequence(), p->SubSequence());
@@ -800,8 +803,8 @@ unsigned long IcqProtocol::icqSetInterestsInfo(const UserCategoryMap& interests)
 }
 
 //-----icqSetOrgBackInfo--------------------------------------------------------
-unsigned long IcqProtocol::icqSetOrgBackInfo(const UserCategoryMap& orgs,
-    const UserCategoryMap& background)
+unsigned long IcqProtocol::icqSetOrgBackInfo(const Licq::UserId& /*ownerId*/,
+    const UserCategoryMap& orgs, const UserCategoryMap& background)
 {
   CPU_Meta_SetOrgBackInfo *p =
     new CPU_Meta_SetOrgBackInfo(orgs, background);
@@ -815,7 +818,8 @@ unsigned long IcqProtocol::icqSetOrgBackInfo(const UserCategoryMap& orgs,
 }
 
 //-----icqSetWorkInfo--------------------------------------------------------
-unsigned long IcqProtocol::icqSetWorkInfo(const string& city, const string& state,
+unsigned long IcqProtocol::icqSetWorkInfo(const Licq::UserId& /*ownerId*/,
+    const string& city, const string& state,
     const string& phone, const string& fax, const string& address, const string& zip,
     unsigned short companyCountry, const string& name, const string& department,
     const string& position, unsigned short companyOccupation, const string& homepage)
@@ -832,7 +836,7 @@ unsigned long IcqProtocol::icqSetWorkInfo(const string& city, const string& stat
 }
 
 //-----icqSetAbout-----------------------------------------------------------
-unsigned long IcqProtocol::icqSetAbout(const string& about)
+unsigned long IcqProtocol::icqSetAbout(const Licq::UserId& /*ownerId*/, const string& about)
 {
   CPU_Meta_SetAbout *p = new CPU_Meta_SetAbout(gTranslator.returnToDos(about));
 
@@ -871,13 +875,13 @@ void IcqProtocol::icqRequestAuth(const Licq::UserId& userId, const string& messa
 }
 
 //-----icqSetSecurityInfo----------------------------------------------------
-unsigned long IcqProtocol::icqSetSecurityInfo(bool bAuthorize, bool bWebAware)
+unsigned long IcqProtocol::icqSetSecurityInfo(const Licq::UserId& ownerId, bool bAuthorize, bool bWebAware)
 {
   // Since ICQ5.1, the status change packet is sent first, which means it is
   // assumed that the set security info packet works.
   unsigned short s;
   {
-    OwnerWriteGuard o;
+    OwnerWriteGuard o(ownerId);
     o->SetEnableSave(false);
     o->SetAuthorization(bAuthorize);
     o->SetWebAware(bWebAware);
@@ -898,7 +902,8 @@ unsigned long IcqProtocol::icqSetSecurityInfo(bool bAuthorize, bool bWebAware)
 }
 
 //-----icqSearchWhitePages--------------------------------------------------
-unsigned long IcqProtocol::icqSearchWhitePages(const string& firstName, const string& lastName,
+unsigned long IcqProtocol::icqSearchWhitePages(const Licq::UserId& /*ownerId*/,
+    const string& firstName, const string& lastName,
     const string& alias, const string& email, unsigned short minAge, unsigned short maxAge,
     char gender, char language, const string& city, const string& state,
     unsigned short countryCode, const string& coName, const string& coDept,
@@ -919,8 +924,9 @@ unsigned long IcqProtocol::icqSearchWhitePages(const string& firstName, const st
 }
 
 //-----icqSearchByUin----------------------------------------------------------
-unsigned long IcqProtocol::icqSearchByUin(unsigned long nUin)
+unsigned long IcqProtocol::icqSearchByUin(const Licq::UserId& userId)
 {
+  unsigned long nUin = strtoul(userId.accountId().c_str(), NULL, 10);
    CPU_SearchByUin *p = new CPU_SearchByUin(nUin);
   gLog.info(tr("Starting search by UIN for user (#%hu/#%d)..."), p->Sequence(), p->SubSequence());
   Licq::Event* e = SendExpectEvent_Server(p, NULL, true);
@@ -954,10 +960,10 @@ void IcqProtocol::icqPing()
    SendEvent_Server(p);
 }
 
-void IcqProtocol::icqUpdateInfoTimestamp(Licq::IcqProtocol::PluginType type)
+void IcqProtocol::icqUpdateInfoTimestamp(const Licq::UserId& ownerId, Licq::IcqProtocol::PluginType type)
 {
   {
-    OwnerWriteGuard o;
+    OwnerWriteGuard o(ownerId);
     o->SetClientInfoTimestamp(time(NULL));
     if (!o->isOnline())
       return;
@@ -983,11 +989,11 @@ void IcqProtocol::icqUpdateInfoTimestamp(Licq::IcqProtocol::PluginType type)
 }
 
 //-----icqSetPhoneFollowMeStatus------------------------------------------------
-void IcqProtocol::icqSetPhoneFollowMeStatus(unsigned newStatus)
+void IcqProtocol::icqSetPhoneFollowMeStatus(const Licq::UserId& ownerId, unsigned newStatus)
 {
   bool bOffline;
   {
-    OwnerWriteGuard o;
+    OwnerWriteGuard o(ownerId);
     o->SetClientStatusTimestamp(time(NULL));
     o->setPhoneFollowMeStatus(newStatus);
     bOffline = !o->isOnline();

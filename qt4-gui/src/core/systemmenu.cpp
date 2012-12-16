@@ -426,16 +426,28 @@ void SystemMenu::toggleMainInvisibleStatus()
 
 void SystemMenu::updateAllUsers()
 {
-  gLicqDaemon->updateAllUsersInGroup(0);
+  Licq::OwnerListGuard ownerList;
+  BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
+  {
+    if (owner->id().protocolId() == LICQ_PPID)
+      gLicqDaemon->updateAllUsersInGroup(owner->id(), 0);
+  }
 }
 
 void SystemMenu::updateAllUsersInGroup()
 {
   int groupId = Config::ContactList::instance()->groupId();
 
-  if (groupId < ContactListModel::SystemGroupOffset)
-    gLicqDaemon->updateAllUsersInGroup(groupId);
   // TODO: Not implemented for system groups
+  if (groupId >= ContactListModel::SystemGroupOffset)
+    return;
+
+  Licq::OwnerListGuard ownerList;
+  BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
+  {
+    if (owner->id().protocolId() == LICQ_PPID)
+      gLicqDaemon->updateAllUsersInGroup(owner->id(), groupId);
+  }
 }
 
 void SystemMenu::saveAllUsers()
@@ -677,5 +689,5 @@ void OwnerData::setIcqFollowMeStatus(QAction* action)
 {
   int id = action->data().toUInt();
 
-  gLicqDaemon->icqSetPhoneFollowMeStatus(id);
+  gLicqDaemon->icqSetPhoneFollowMeStatus(myUserId, id);
 }

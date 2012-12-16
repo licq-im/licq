@@ -214,6 +214,7 @@ QWidget* UserPages::Owner::createPageIcqChatGroup(QWidget* parent)
 void UserPages::Owner::load(const Licq::User* user)
 {
   const Licq::Owner* owner = dynamic_cast<const Licq::Owner*>(user);
+  myUserId = user->id();
 
   myAccountEdit->setText(QString::fromLocal8Bit(owner->accountId().c_str()));
   myPasswordEdit->setText(QString::fromLocal8Bit(owner->password().c_str()));
@@ -277,7 +278,7 @@ unsigned long UserPages::Owner::send(UserDlg::UserPage page)
 {
   if (page == UserDlg::OwnerSecurityPage && myProtocolId == LICQ_PPID)
   {
-    return gLicqDaemon->icqSetSecurityInfo(
+    return gLicqDaemon->icqSetSecurityInfo(myUserId,
         myIcqRequireAuthCheck->isChecked(),
         myIcqWebAwareCheck->isChecked());
   }
@@ -285,7 +286,7 @@ unsigned long UserPages::Owner::send(UserDlg::UserPage page)
   if (page == UserDlg::OwnerChatGroupPage && myProtocolId == LICQ_PPID)
   {
     unsigned chatGroup = myIcqChatGroupList->currentItem()->data(Qt::UserRole).toUInt();
-    return gLicqDaemon->setRandomChatGroup(chatGroup);
+    return gLicqDaemon->setRandomChatGroup(myUserId, chatGroup);
   }
 
   return 0;

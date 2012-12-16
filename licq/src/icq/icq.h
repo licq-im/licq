@@ -171,10 +171,10 @@ public:
   unsigned long icqChatRequest(const Licq::UserId& userId, const std::string& reason,
       unsigned flags = 0, const std::string& chatUsers = "", unsigned short port = 0);
   void icqChatRequestRefuse(const Licq::UserId& userId, const std::string& reason,
-      unsigned short nSequence, const unsigned long nMsgID[], bool bDirect);
+      unsigned short nSequence, unsigned long msgid1, unsigned long msgid2, bool bDirect);
   void icqChatRequestAccept(const Licq::UserId& userId, unsigned short nPort,
       const std::string& clients, unsigned short nSequence,
-      const unsigned long nMsgID[], bool bDirect);
+      unsigned long msgid1, unsigned long msgid2, bool bDirect);
   void icqChatRequestCancel(const Licq::UserId& userId, unsigned short nSequence);
   unsigned long icqRequestPluginInfo(const Licq::UserId& userId, Licq::IcqProtocol::PluginType type,
       bool bServer = false, const Licq::ProtocolSignal* ps = NULL);
@@ -182,36 +182,36 @@ public:
   void icqRegister(const std::string& passwd);
   void icqVerifyRegistration();
   void icqVerify(const std::string& verification);
-  unsigned long icqSetWorkInfo(const std::string& city, const std::string& state,
+  unsigned long icqSetWorkInfo(const Licq::UserId& ownerId, const std::string& city, const std::string& state,
       const std::string& phone, const std::string& fax, const std::string& address,
       const std::string& zip, unsigned short companyCountry, const std::string& name,
       const std::string& department, const std::string& position, unsigned short companyOccupation,
       const std::string& homepage);
   void icqSetGeneralInfo(const Licq::ProtocolSignal* ps);
-  unsigned long icqSetEmailInfo(const std::string& emailSecondary, const std::string& emailOld);
-  unsigned long icqSetMoreInfo(unsigned short age, char gender,
+  unsigned long icqSetEmailInfo(const Licq::UserId& ownerId, const std::string& emailSecondary, const std::string& emailOld);
+  unsigned long icqSetMoreInfo(const Licq::UserId& ownerId, unsigned short age, char gender,
       const std::string& homepage, unsigned short birthYear, char birthMonth,
       char birthDay, char language1, char language2, char language3);
-  unsigned long icqSetSecurityInfo(bool bAuthorize, bool bWebAware);
-  unsigned long icqSetInterestsInfo(const Licq::UserCategoryMap& interests);
-  unsigned long icqSetOrgBackInfo(const Licq::UserCategoryMap& orgs,
+  unsigned long icqSetSecurityInfo(const Licq::UserId& ownerId, bool bAuthorize, bool bWebAware);
+  unsigned long icqSetInterestsInfo(const Licq::UserId& ownerId, const Licq::UserCategoryMap& interests);
+  unsigned long icqSetOrgBackInfo(const Licq::UserId& ownerId, const Licq::UserCategoryMap& orgs,
       const Licq::UserCategoryMap& background);
-  unsigned long icqSetAbout(const std::string& about);
+  unsigned long icqSetAbout(const Licq::UserId& ownerId, const std::string& about);
   unsigned long icqSetPassword(const std::string& password);
-  unsigned long setRandomChatGroup(unsigned chatGroup);
-  unsigned long randomChatSearch(unsigned chatGroup);
-  unsigned long icqSearchWhitePages(const std::string& firstName, const std::string& lastName,
+  unsigned long setRandomChatGroup(const Licq::UserId& ownerId, unsigned chatGroup);
+  unsigned long randomChatSearch(const Licq::UserId& ownerId, unsigned chatGroup);
+  unsigned long icqSearchWhitePages(const Licq::UserId& ownerId, const std::string& firstName, const std::string& lastName,
       const std::string& alias, const std::string& email, unsigned short minAge, unsigned short maxAge,
       char gender, char language, const std::string& city, const std::string& state,
       unsigned short countryCode, const std::string& coName, const std::string& coDept,
       const std::string& coPos, const std::string& keyword, bool onlineOnly);
-  unsigned long icqSearchByUin(unsigned long);
+  unsigned long icqSearchByUin(const Licq::UserId& userId);
   void icqAuthorizeGrant(const Licq::ProtocolSignal* ps);
   void icqAuthorizeRefuse(const Licq::ProtoRefuseAuthSignal* ps);
   void icqRequestAuth(const Licq::UserId& userId, const std::string& message);
   void icqAlertUser(const Licq::UserId& userId);
-  void icqUpdateInfoTimestamp(Licq::IcqProtocol::PluginType type);
-  void icqSetPhoneFollowMeStatus(unsigned newStatus);
+  void icqUpdateInfoTimestamp(const Licq::UserId& ownerId, Licq::IcqProtocol::PluginType type);
+  void icqSetPhoneFollowMeStatus(const Licq::UserId& ownerId, unsigned newStatus);
   void icqUpdateContactList();
   void icqCheckInvisible(const Licq::UserId& userId);
   unsigned long icqSendSms(const Licq::UserId& userId, const std::string& number, const std::string& message);
@@ -271,7 +271,7 @@ public:
      unsigned long nIntIp, Licq::TCPSocket* sock, unsigned short nPort,
      bool bSendIntIp);
 
-  void updateAllUsersInGroup(int groupId = 0);
+  void updateAllUsersInGroup(const Licq::UserId& ownerId, int groupId = 0);
   void CancelEvent(unsigned long );
   void CancelEvent(Licq::Event*);
 

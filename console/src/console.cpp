@@ -2597,8 +2597,9 @@ void CLicqConsole::InputSearch(int cIn)
             winMain->wprintf("%C%ASearching:\n",
                              m_cColorInfo->nColor, m_cColorInfo->nAttr);
 
-            winMain->event = gLicqDaemon->icqSearchByUin(strtoul(data->szId, (char **)NULL, 10));
-            winMain->eventUserId = Licq::UserId(data->szId, LICQ_PPID);
+            Licq::UserId userId(data->szId, LICQ_PPID);
+            winMain->event = gLicqDaemon->icqSearchByUin(userId);
+            winMain->eventUserId = userId;
             winMain->state = STATE_PENDING;
 
             return;
@@ -2872,7 +2873,8 @@ void CLicqConsole::InputSearch(int cIn)
 
           /*winMain->event = gLicqDaemon->icqSearchByInfo(data->szAlias, data->szFirstName,
            data->szLastName, data->szEmail);*/
-          winMain->event = gLicqDaemon->icqSearchWhitePages(data->szFirstName,
+          Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
+          winMain->event = gLicqDaemon->icqSearchWhitePages(ownerId, data->szFirstName,
                            data->szLastName, data->szAlias, data->szEmail,
                            data->nMinAge, data->nMaxAge, data->nGender, data->nLanguage,
                            data->szCity, data->szState, data->nCountryCode,

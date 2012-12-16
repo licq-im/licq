@@ -432,7 +432,7 @@ void UserViewEvent::read2()
           gLicqDaemon->icqChatRequestAccept(
               myUsers.front(),
               0, c->clients(), c->Sequence(),
-              c->MessageID(), c->IsDirect());
+              c->MessageID()[0], c->MessageID()[1], c->IsDirect());
       }
       else  // single party (other side connects to us)
       {
@@ -441,7 +441,7 @@ void UserViewEvent::read2()
           gLicqDaemon->icqChatRequestAccept(
               myUsers.front(),
               chatDlg->LocalPort(), c->clients(), c->Sequence(),
-              c->MessageID(), c->IsDirect());
+              c->MessageID()[0], c->MessageID()[1], c->IsDirect());
       }
       break;
     }
@@ -503,7 +503,7 @@ void UserViewEvent::read3()
         // FIXME: must have been done in CICQDaemon
         gLicqDaemon->icqChatRequestRefuse(myUsers.front(),
             r->RefuseMessage().toUtf8().data(), myCurrentEvent->Sequence(),
-            c->MessageID(), c->IsDirect());
+            c->MessageID()[0], c->MessageID()[1], c->IsDirect());
       }
       delete r;
       break;
@@ -561,7 +561,7 @@ void UserViewEvent::read4()
         if (chatDlg->StartAsClient(c->Port()))
           gLicqDaemon->icqChatRequestAccept(
               myUsers.front(),
-              0, c->clients(), c->Sequence(), c->MessageID(), c->IsDirect());
+              0, c->clients(), c->Sequence(), c->MessageID()[0], c->MessageID()[1], c->IsDirect());
       }
       else  // single party (other side connects to us)
       {
@@ -571,7 +571,7 @@ void UserViewEvent::read4()
         if (j->exec() && (chatDlg = j->JoinedChat()) != NULL)
           gLicqDaemon->icqChatRequestAccept(
               myUsers.front(),
-              chatDlg->LocalPort(), c->clients(), c->Sequence(), c->MessageID(), c->IsDirect());
+              chatDlg->LocalPort(), c->clients(), c->Sequence(), c->MessageID()[0], c->MessageID()[1], c->IsDirect());
         delete j;
       }
       break;

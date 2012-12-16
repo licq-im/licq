@@ -1151,9 +1151,9 @@ void IcqProtocol::CancelEvent(Licq::Event* e)
   ProcessDoneEvent(e);
 }
 
-void IcqProtocol::updateAllUsersInGroup(int groupId)
+void IcqProtocol::updateAllUsersInGroup(const Licq::UserId& ownerId, int groupId)
 {
-  Licq::UserListGuard userList;
+  Licq::UserListGuard userList(ownerId);
   BOOST_FOREACH(Licq::User* user, **userList)
   {
     if (groupId != 0)

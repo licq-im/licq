@@ -705,7 +705,7 @@ void IcqProtocol::icqChatRequestCancel(const Licq::UserId& userId, unsigned shor
 }
 
 void IcqProtocol::icqChatRequestRefuse(const Licq::UserId& userId, const string& reason,
-    unsigned short nSequence, const unsigned long nMsgID[2], bool bDirect)
+    unsigned short nSequence, unsigned long msgid1, unsigned long msgid2, bool bDirect)
 {
   // add to history ??
   UserWriteGuard u(userId);
@@ -721,6 +721,7 @@ void IcqProtocol::icqChatRequestRefuse(const Licq::UserId& userId, const string&
   }
   else
   {
+    unsigned long nMsgID[2] = { msgid1, msgid2 };
     CPU_AckChatRefuse* p = new CPU_AckChatRefuse(*u, nMsgID, nSequence, reasonDos);
 		SendEvent_Server(p);
 	}
@@ -728,7 +729,7 @@ void IcqProtocol::icqChatRequestRefuse(const Licq::UserId& userId, const string&
 
 void IcqProtocol::icqChatRequestAccept(const Licq::UserId& userId, unsigned short nPort,
     const string& clients, unsigned short nSequence,
-    const unsigned long nMsgID[2], bool bDirect)
+    unsigned long msgid1, unsigned long msgid2, bool bDirect)
 {
   // basically a fancy tcp ack packet which is sent late
   // add to history ??
@@ -744,6 +745,7 @@ void IcqProtocol::icqChatRequestAccept(const Licq::UserId& userId, unsigned shor
   }
   else
   {
+    unsigned long nMsgID[2] = { msgid1, msgid2 };
     CPU_AckChatAccept* p = new CPU_AckChatAccept(*u, clients, nMsgID, nSequence, nPort);
 		SendEvent_Server(p);
 	}

@@ -242,9 +242,11 @@ void SearchUserDlg::startSearch()
   btnReset->setText(tr("Cancel"));
   btnDone->setEnabled(false);
 
+  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
+
   if (edtUin->text().trimmed().isEmpty())
   {
-    searchTag = gLicqDaemon->icqSearchWhitePages(
+    searchTag = gLicqDaemon->icqSearchWhitePages(ownerId,
         edtFirst->text().toUtf8().constData(),
         edtLast->text().toUtf8().constData(),
         edtNick->text().toUtf8().constData(),
@@ -263,7 +265,10 @@ void SearchUserDlg::startSearch()
         chkOnlineOnly->isChecked());
   }
   else
-    searchTag = gLicqDaemon->icqSearchByUin(edtUin->text().trimmed().toULong());
+  {
+    Licq::UserId userId(edtUin->text().trimmed().toUtf8().constData(), LICQ_PPID);
+    searchTag = gLicqDaemon->icqSearchByUin(userId);
+  }
 
   lblSearch->setText(tr("Searching (this can take awhile)..."));
 }

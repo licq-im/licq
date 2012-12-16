@@ -495,38 +495,22 @@ static int fifo_setpicture(int argc, const char* const* argv)
     return -1;
   }
 
+  unsigned long protocolId = 0;
   if (argc > 2)
   {
     // Just one plugin, find which one
 
-    unsigned long protocolId = Licq::protocolId_fromString(argv[2]);
+    protocolId = Licq::protocolId_fromString(argv[2]);
     if (protocolId == 0)
     {
       gLog.info(tr("Couldn't find plugin '%s'"), argv[2]);
       return -1;
     }
-
-    {
-      Licq::OwnerWriteGuard o(protocolId);
-      if (!o.isLocked())
-      {
-        gLog.info(tr("No account registered for plugin '%s'"), argv[2]);
-        return -1;
-      }
-      if (strlen(argv[1]) == 0)
-        o->SetPicture(NULL);
-      else
-        o->SetPicture(argv[1]);
-      o->save(Licq::Owner::SavePictureInfo);
-      Licq::gUserManager.notifyUserUpdated(o->id(), Licq::PluginSignal::UserPicture);
-    }
   }
-  else
-  {
-    // All plugins
 
-    Licq::OwnerListGuard ownerList;
-    BOOST_FOREACH(Licq::Owner* owner, **ownerList)
+  Licq::OwnerListGuard ownerList(protocolId);
+  BOOST_FOREACH(Licq::Owner* owner, **ownerList)
+  {
     {
       Licq::OwnerWriteGuard o(owner);
       if (strlen(argv[1]) == 0)
@@ -534,11 +518,12 @@ static int fifo_setpicture(int argc, const char* const* argv)
       else
         o->SetPicture(argv[1]);
       o->save(Licq::Owner::SavePictureInfo);
-      Licq::gUserManager.notifyUserUpdated(o->id(), Licq::PluginSignal::UserPicture);
     }
+    Licq::gUserManager.notifyUserUpdated(owner->id(), Licq::PluginSignal::UserPicture);
+    if (owner->id().protocolId() == LICQ_PPID)
+      gLicqDaemon->icqUpdateInfoTimestamp(owner->id(), Licq::IcqProtocol::PluginPicture);
   }
 
-  gLicqDaemon->icqUpdateInfoTimestamp(Licq::IcqProtocol::PluginPicture);
   return 0;
 }
 

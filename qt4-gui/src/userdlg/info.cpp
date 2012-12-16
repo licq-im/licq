@@ -1488,7 +1488,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
   {
     case UserDlg::GeneralPage:
       if (myPpid == LICQ_PPID)
-        gLicqDaemon->icqSetEmailInfo(
+        gLicqDaemon->icqSetEmailInfo(myUserId,
             nfoEmailSecondary->text().toUtf8().constData(),
             nfoEmailOld->text().toUtf8().constData());
 
@@ -1496,7 +1496,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
       break;
 
     case UserDlg::MorePage:
-    icqEventTag = gLicqDaemon->icqSetMoreInfo(
+    icqEventTag = gLicqDaemon->icqSetMoreInfo(myUserId,
         nfoAge->text().toUShort(),
         cmbGender->currentIndex(),
           nfoHomepage->text().toLocal8Bit().constData(),
@@ -1509,8 +1509,8 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
   break;
 
     case UserDlg::More2Page:
-      gLicqDaemon->icqSetInterestsInfo(myInterests);
-      icqEventTag = gLicqDaemon->icqSetOrgBackInfo(myOrganizations, myBackgrounds);
+      gLicqDaemon->icqSetInterestsInfo(myUserId, myInterests);
+      icqEventTag = gLicqDaemon->icqSetOrgBackInfo(myUserId, myOrganizations, myBackgrounds);
       break;
 
     case UserDlg::WorkPage:
@@ -1518,7 +1518,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
     cc = GetCountryByIndex(i)->nCode;
     i = cmbCompanyOccupation->currentIndex();
     occupation = GetOccupationByIndex(i)->nCode;
-    icqEventTag = gLicqDaemon->icqSetWorkInfo(
+    icqEventTag = gLicqDaemon->icqSetWorkInfo(myUserId,
           nfoCompanyCity->text().toUtf8().constData(),
           nfoCompanyState->text().toUtf8().constData(),
           nfoCompanyPhone->text().toUtf8().constData(),
@@ -1534,7 +1534,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
   break;
 
     case UserDlg::AboutPage:
-    icqEventTag = gLicqDaemon->icqSetAbout(mlvAbout->toPlainText().toUtf8().constData());
+    icqEventTag = gLicqDaemon->icqSetAbout(myUserId, mlvAbout->toPlainText().toUtf8().constData());
     break;
 
     case UserDlg::PhonePage:
@@ -1543,7 +1543,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
         Licq::IcqOwnerWriteGuard o(myUserId);
         savePagePhoneBook(*o);
       }
-      gLicqDaemon->icqUpdateInfoTimestamp(Licq::IcqProtocol::PluginPhoneBook);
+      gLicqDaemon->icqUpdateInfoTimestamp(myUserId, Licq::IcqProtocol::PluginPhoneBook);
       icqEventTag = 0;
       break;
     }
@@ -1553,7 +1553,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
         Licq::OwnerWriteGuard o(myUserId);
         savePagePicture(*o);
       }
-      gLicqDaemon->icqUpdateInfoTimestamp(Licq::IcqProtocol::PluginPicture);
+      gLicqDaemon->icqUpdateInfoTimestamp(myUserId, Licq::IcqProtocol::PluginPicture);
       icqEventTag = 0;
       break;
     }

@@ -110,7 +110,8 @@ void RandomChatDlg::okPressed()
   connect(gGuiSignalManager, SIGNAL(doneUserFcn(const Licq::Event*)),
       SLOT(userEventDone(const Licq::Event*)));
   unsigned chatGroup = myGroupsList->currentItem()->data(Qt::UserRole).toInt();
-  myTag = gLicqDaemon->randomChatSearch(chatGroup);
+  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
+  myTag = gLicqDaemon->randomChatSearch(ownerId, chatGroup);
   setWindowTitle(tr("Searching for Random Chat Partner..."));
 }
 

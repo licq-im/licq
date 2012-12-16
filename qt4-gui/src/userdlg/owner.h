@@ -85,6 +85,7 @@ private:
   QWidget* createPageIcqChatGroup(QWidget* parent);
 
   unsigned long myProtocolId;
+  Licq::UserId myUserId;
 
   // Account Settings
   QLineEdit* myAccountEdit;
