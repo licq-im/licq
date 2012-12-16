@@ -64,6 +64,7 @@ set(licq_SRCS
   icq/owner.cpp
   icq/packet-srv.cpp
   icq/packet-tcp.cpp
+  icq/protocolsignal.cpp
   icq/rtf.cc
   icq/socket.cpp
   icq/threads.cpp

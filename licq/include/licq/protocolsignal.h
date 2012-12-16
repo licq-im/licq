@@ -65,6 +65,7 @@ public:
     SignalRenameGroup   = 30,   // Rename a user group
     SignalRemoveGroup   = 31,   // Remove a user group
     SignalSendUrl       = 32,   // Send an URL to a user
+    SignalProtocolSpecific = 33, // Protocol specific signal
   };
 
   // Flags for send events
