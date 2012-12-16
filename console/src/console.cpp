@@ -2943,59 +2943,15 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
         data->nPos = 0;
         if (data->szOption[0] == '1')
         {
-          winMain->wprintf("Please enter your password: ");
-          data->nState = 1;
-        }
-        else if(data->szOption[0] == '2')
-        {
-          winMain->wprintf("Please enter your UIN: ");
-          data->nState = 10;
+          winMain->wprintf("Please visit the following address to register an ICQ account before continuing:\n"
+              "https://www.icq.com/join\n\n");
         }
 
+          winMain->wprintf("Please enter your UIN: ");
+          data->nState = 10;
         return;
       }
 
-      // The option to register a new UIN or use an existing is in szOption now
-      switch(data->szOption[0])
-      {
-      case '1':
-        {
-          // Register a new UIN
-          if (data->nState == 1)
-          {
-            if ((sz = Input_Line(data->szPassword1, data->nPos, cIn, false)) == NULL)
-              return;
-
-            // Time to go on to the next state
-            data->nState = 2;
-            data->nPos = 0;
-
-            winMain->wprintf("Verify Password: ");
-            break;
-          }
-
-          if(data->nState == 2)
-          {
-            if((sz = Input_Line(data->szPassword2, data->nPos, cIn, false))
-                == NULL)
-              return;
-
-            if(strcasecmp(data->szPassword1, data->szPassword2) != 0)
-            {
-              winMain->wprintf("Passwords do not match!\nPlease enter your password: ");
-              data->nState = 1;
-              data->nPos = 0;
-              return;
-            }
-
-            winMain->state = STATE_QUERY;
-            winMain->wprintf("\nSave password? (y/N) ");
-          }
-          break;
-        }
-
-      case '2':
-        {
           // Use an existing
           if (data->nState == 10)
           {
@@ -3049,12 +3005,7 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
             winMain->data->userId = ownerId;
             winMain->state = STATE_QUERY;
           }
-          break;
-        }
 
-      default:
-        winMain->wprintf("Invalid option: %c\n", data->szOption[0]);
-      }
       break;
     }
 
@@ -3065,19 +3016,10 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
       o->SetSavePassword(tolower(cIn) == 'y');
     }
 
-    if (data->szOption[0] == '1')
-    {
-      winMain->wprintf("\nRegistering you as a new user...\n");
-      gLicqDaemon->icqRegister(data->szPassword1);
-      winMain->state = STATE_PENDING;
-    }
-    else
-    {
       winMain->wprintf("\n%ADone. Awaiting commands.%Z\n", A_BOLD, A_BOLD);
       winMain->state = STATE_COMMAND;
       winMain->fProcessInput = &CLicqConsole::InputCommand;
       PrintStatus();
-    }
   }
   
   default:
