@@ -68,6 +68,22 @@ class COscarService;
 class CPacketTcp;
 class CSrvPacketTcp;
 class DcSocket;
+class ProtoChatAcceptSignal;
+class ProtoChatRefuseSignal;
+class ProtoChatRequestSignal;
+class ProtoSearchRandomSignal;
+class ProtoSearchWhitePagesSignal;
+class ProtoSendContactsSignal;
+class ProtoSendSmsSignal;
+class ProtoUpdateAboutSignal;
+class ProtoUpdateEmailSignal;
+class ProtoUpdateInterestsSignal;
+class ProtoUpdateMoreSignal;
+class ProtoUpdateOrgBackSignal;
+class ProtoUpdateRandomChatSignal;
+class ProtoUpdateSecuritySignal;
+class ProtoUpdateTimestampSignal;
+class ProtoUpdateWorkSignal;
 class User;
 
 // To keep old code working
@@ -141,7 +157,7 @@ public:
 
 enum EDaemonStatus {STATUS_ONLINE, STATUS_OFFLINE_MANUAL, STATUS_OFFLINE_FORCED };
 
-class IcqProtocol : public Licq::IcqProtocol
+class IcqProtocol
 {
 public:
   static const struct PluginList info_plugins[2];
@@ -164,57 +180,40 @@ public:
   bool UseServerSideBuddyIcons() const { return m_bUseBART; }
   void SetUseServerSideBuddyIcons(bool b);
 
-  unsigned long icqSendContactList(const Licq::UserId& userId, const Licq::StringList& users,
-      unsigned flags = 0, const Licq::Color* pColor = NULL);
-
-  unsigned long icqFetchAutoResponse(const Licq::UserId& userId);
-  unsigned long icqChatRequest(const Licq::UserId& userId, const std::string& reason,
-      unsigned flags = 0, const std::string& chatUsers = "", unsigned short port = 0);
-  void icqChatRequestRefuse(const Licq::UserId& userId, const std::string& reason,
-      unsigned short nSequence, unsigned long msgid1, unsigned long msgid2, bool bDirect);
-  void icqChatRequestAccept(const Licq::UserId& userId, unsigned short nPort,
-      const std::string& clients, unsigned short nSequence,
-      unsigned long msgid1, unsigned long msgid2, bool bDirect);
+  void icqSendContactList(const ProtoSendContactsSignal* ps);
+  void icqFetchAutoResponse(const Licq::ProtocolSignal* ps);
+  void icqChatRequest(const ProtoChatRequestSignal* ps);
+  void icqChatRequestRefuse(const ProtoChatRefuseSignal* ps);
+  void icqChatRequestAccept(const ProtoChatAcceptSignal* ps);
   void icqChatRequestCancel(const Licq::UserId& userId, unsigned short nSequence);
-  unsigned long icqRequestPluginInfo(const Licq::UserId& userId, Licq::IcqProtocol::PluginType type,
+  void icqRequestPluginInfo(const Licq::UserId& userId, Licq::IcqProtocol::PluginType type,
       bool bServer = false, const Licq::ProtocolSignal* ps = NULL);
   void icqRequestPicture(const Licq::ProtocolSignal* ps);
   void icqRegister(const std::string& passwd);
   void icqVerifyRegistration();
   void icqVerify(const std::string& verification);
-  unsigned long icqSetWorkInfo(const Licq::UserId& ownerId, const std::string& city, const std::string& state,
-      const std::string& phone, const std::string& fax, const std::string& address,
-      const std::string& zip, unsigned short companyCountry, const std::string& name,
-      const std::string& department, const std::string& position, unsigned short companyOccupation,
-      const std::string& homepage);
+  void icqSetWorkInfo(const ProtoUpdateWorkSignal* ps);
   void icqSetGeneralInfo(const Licq::ProtocolSignal* ps);
-  unsigned long icqSetEmailInfo(const Licq::UserId& ownerId, const std::string& emailSecondary, const std::string& emailOld);
-  unsigned long icqSetMoreInfo(const Licq::UserId& ownerId, unsigned short age, char gender,
-      const std::string& homepage, unsigned short birthYear, char birthMonth,
-      char birthDay, char language1, char language2, char language3);
-  unsigned long icqSetSecurityInfo(const Licq::UserId& ownerId, bool bAuthorize, bool bWebAware);
-  unsigned long icqSetInterestsInfo(const Licq::UserId& ownerId, const Licq::UserCategoryMap& interests);
-  unsigned long icqSetOrgBackInfo(const Licq::UserId& ownerId, const Licq::UserCategoryMap& orgs,
-      const Licq::UserCategoryMap& background);
-  unsigned long icqSetAbout(const Licq::UserId& ownerId, const std::string& about);
+  void icqSetEmailInfo(const ProtoUpdateEmailSignal* ps);
+  void icqSetMoreInfo(const ProtoUpdateMoreSignal* ps);
+  void icqSetSecurityInfo(const ProtoUpdateSecuritySignal* ps);
+  void icqSetInterestsInfo(const ProtoUpdateInterestsSignal* ps);
+  void icqSetOrgBackInfo(const ProtoUpdateOrgBackSignal* ps);
+  void icqSetAbout(const ProtoUpdateAboutSignal* ps);
   unsigned long icqSetPassword(const std::string& password);
-  unsigned long setRandomChatGroup(const Licq::UserId& ownerId, unsigned chatGroup);
-  unsigned long randomChatSearch(const Licq::UserId& ownerId, unsigned chatGroup);
-  unsigned long icqSearchWhitePages(const Licq::UserId& ownerId, const std::string& firstName, const std::string& lastName,
-      const std::string& alias, const std::string& email, unsigned short minAge, unsigned short maxAge,
-      char gender, char language, const std::string& city, const std::string& state,
-      unsigned short countryCode, const std::string& coName, const std::string& coDept,
-      const std::string& coPos, const std::string& keyword, bool onlineOnly);
-  unsigned long icqSearchByUin(const Licq::UserId& userId);
+  void setRandomChatGroup(const ProtoUpdateRandomChatSignal* ps);
+  void randomChatSearch(const ProtoSearchRandomSignal* ps);
+  void icqSearchWhitePages(const ProtoSearchWhitePagesSignal* ps);
+  void icqSearchByUin(const Licq::ProtocolSignal* ps);
   void icqAuthorizeGrant(const Licq::ProtocolSignal* ps);
   void icqAuthorizeRefuse(const Licq::ProtoRefuseAuthSignal* ps);
   void icqRequestAuth(const Licq::UserId& userId, const std::string& message);
   void icqAlertUser(const Licq::UserId& userId);
-  void icqUpdateInfoTimestamp(const Licq::UserId& ownerId, Licq::IcqProtocol::PluginType type);
+  void icqUpdateInfoTimestamp(const ProtoUpdateTimestampSignal* ps);
   void icqSetPhoneFollowMeStatus(const Licq::UserId& ownerId, unsigned newStatus);
   void icqUpdateContactList();
   void icqCheckInvisible(const Licq::UserId& userId);
-  unsigned long icqSendSms(const Licq::UserId& userId, const std::string& number, const std::string& message);
+  void icqSendSms(const ProtoSendSmsSignal* ps);
 
   void icqSendMessage(const Licq::ProtoSendMessageSignal* ps);
   void icqSendUrl(const Licq::ProtoSendUrlSignal* ps);
@@ -225,7 +224,7 @@ public:
   void icqOpenSecureChannel(const Licq::ProtocolSignal* ps);
   void icqCloseSecureChannel(const Licq::ProtocolSignal* ps);
   void icqOpenSecureChannelCancel(const Licq::UserId& userId, unsigned short nSequence);
-  unsigned long icqFetchAutoResponseServer(const Licq::UserId& userId);
+  void icqFetchAutoResponseServer(const Licq::ProtocolSignal* ps);
   unsigned long logon(unsigned logonStatus);
   unsigned long icqRequestLogonSalt();
   unsigned long icqUserBasicInfo(const Licq::UserId& userId);
@@ -313,9 +312,10 @@ public:
   bool ProcessTcpPacket(DcSocket*);
   bool ProcessTcpHandshake(DcSocket*);
 
-  unsigned long icqRequestInfoPlugin(User* user, bool, const uint8_t*,
+  void icqRequestInfoPlugin(User* user, bool, const uint8_t*,
       const Licq::ProtocolSignal* ps = NULL);
-  unsigned long icqRequestStatusPlugin(User* user, bool, const uint8_t*);
+  void icqRequestStatusPlugin(User* user, bool, const uint8_t*,
+      const Licq::ProtocolSignal* ps = NULL);
   void icqUpdateInfoTimestamp(const uint8_t*);
 
   static bool handshake_Send(DcSocket* s, const Licq::UserId& userId, unsigned short,
@@ -389,9 +389,6 @@ private:
 
   Licq::Event* SendExpectEvent_Client(const Licq::ProtocolSignal* ps,
       const User* user, CPacketTcp* packet, Licq::UserEvent* ue);
-
-  Licq::Event* SendExpectEvent_Client(const User* user, CPacketTcp* packet, Licq::UserEvent* ue)
-  { return SendExpectEvent_Client(NULL, user, packet, ue); }
 
   Licq::Event* SendExpectEvent(Licq::Event*, void *(*fcn)(void *));
   unsigned eventCommandFromPacket(Licq::Packet* p);

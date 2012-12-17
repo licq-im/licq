@@ -59,6 +59,7 @@
 #include "oscarservice.h"
 #include "owner.h"
 #include "packet-srv.h"
+#include "protocolsignal.h"
 #include "socket.h"
 #include "user.h"
 
@@ -476,8 +477,9 @@ void IcqProtocol::icqAlertUser(const Licq::UserId& userId)
   SendExpectEvent_Server(userId, p, NULL);
 }
 
-unsigned long IcqProtocol::icqFetchAutoResponseServer(const Licq::UserId& userId)
+void IcqProtocol::icqFetchAutoResponseServer(const Licq::ProtocolSignal* ps)
 {
+  const Licq::UserId& userId(ps->userId());
   CPU_CommonFamily *p = 0;
 
   if (isalpha(userId.accountId()[0]))
@@ -488,7 +490,7 @@ unsigned long IcqProtocol::icqFetchAutoResponseServer(const Licq::UserId& userId
     {
       Licq::UserReadGuard u(userId);
       if (!u.isLocked())
-        return 0;
+        return;
 
       unsigned status = u->status();
       if (status & Licq::User::DoNotDisturbStatus)
@@ -509,37 +511,30 @@ unsigned long IcqProtocol::icqFetchAutoResponseServer(const Licq::UserId& userId
   }
 
   if (p == NULL)
-    return 0;
+    return;
 
   gLog.info(tr("Requesting auto response from %s (%hu)."),
       userId.toString().c_str(), p->Sequence());
 
-  Licq::Event* e = SendExpectEvent_Server(userId, p, NULL);
-  return (e != NULL ? e->EventId() : 0);
+  SendExpectEvent_Server(ps, userId, p, NULL);
 }
 
 //-----icqSetRandomChatGroup----------------------------------------------------
-unsigned long IcqProtocol::setRandomChatGroup(const Licq::UserId& /*ownerId*/, unsigned chatGroup)
+void IcqProtocol::setRandomChatGroup(const ProtoUpdateRandomChatSignal* ps)
 {
-  CPU_SetRandomChatGroup *p = new CPU_SetRandomChatGroup(chatGroup);
+  CPU_SetRandomChatGroup* p = new CPU_SetRandomChatGroup(ps->chatGroup());
   gLog.info(tr("Setting random chat group (#%hu)..."), p->Sequence());
 
-  Licq::Event* e = SendExpectEvent_Server(p, NULL);
-  if (e != NULL)
-    return e->EventId();
-  return 0;
+  SendExpectEvent_Server(ps, p, NULL);
 }
 
 //-----icqRandomChatSearch------------------------------------------------------
-unsigned long IcqProtocol::randomChatSearch(const Licq::UserId& /*ownerId*/, unsigned chatGroup)
+void IcqProtocol::randomChatSearch(const ProtoSearchRandomSignal* ps)
 {
-  CPU_RandomChatSearch *p = new CPU_RandomChatSearch(chatGroup);
+  CPU_RandomChatSearch* p = new CPU_RandomChatSearch(ps->chatGroup());
   gLog.info(tr("Searching for random chat user (#%hu)..."), p->Sequence());
 
-  Licq::Event* e = SendExpectEvent_Server(p, NULL);
-  if (e != NULL)
-    return e->EventId();
-  return 0;
+  SendExpectEvent_Server(ps, p, NULL);
 }
 
 void IcqProtocol::icqRegister(const string& passwd)
@@ -758,94 +753,66 @@ void IcqProtocol::icqSetGeneralInfo(const Licq::ProtocolSignal* ps)
 }
 
 //-----icqSetEmailInfo---------------------------------------------------------
-unsigned long IcqProtocol::icqSetEmailInfo(const Licq::UserId& /*ownerId*/,
-    const std::string& emailSecondary, const std::string& emailOld)
+void IcqProtocol::icqSetEmailInfo(const ProtoUpdateEmailSignal* ps)
 {
-return 0;
-  CPU_Meta_SetEmailInfo* p = new CPU_Meta_SetEmailInfo(emailSecondary, emailOld);
+  CPU_Meta_SetEmailInfo* p = new CPU_Meta_SetEmailInfo(ps->emailSecondary(), ps->emailOld());
 
   gLog.info(tr("Updating additional E-Mail info (#%hu/#%d)..."), p->Sequence(), p->SubSequence());
 
-  Licq::Event* e = SendExpectEvent_Server(p, NULL);
-  if (e != NULL)
-    return e->EventId();
-  return 0;
+  SendExpectEvent_Server(ps, p, NULL);
 }
 
 //-----icqSetMoreInfo----------------------------------------------------
-unsigned long IcqProtocol::icqSetMoreInfo(const Licq::UserId& /*ownerId*/,
-    unsigned short age, char gender,
-    const string& homepage, unsigned short birthYear, char birthMonth,
-    char birthDay, char language1, char language2, char language3)
+void IcqProtocol::icqSetMoreInfo(const ProtoUpdateMoreSignal* ps)
 {
-  CPU_Meta_SetMoreInfo* p = new CPU_Meta_SetMoreInfo(age, gender, homepage,
-      birthYear, birthMonth, birthDay, language1, language2, language3);
+  CPU_Meta_SetMoreInfo* p = new CPU_Meta_SetMoreInfo(ps->age(), ps->gender(),
+      ps->homepage(), ps->birthYear(), ps->birthMonth(), ps->birthDay(),
+      ps->language1(), ps->language2(), ps->language3());
 
   gLog.info(tr("Updating more info (#%hu/#%d)..."), p->Sequence(), p->SubSequence());
 
-  Licq::Event* e = SendExpectEvent_Server(p, NULL);
-  if (e != NULL)
-    return e->EventId();
-  return 0;
+  SendExpectEvent_Server(ps, p, NULL);
 }
 
 //-----icqSetInterestsInfo------------------------------------------------------
-unsigned long IcqProtocol::icqSetInterestsInfo(const Licq::UserId& /*ownerId*/,
-    const UserCategoryMap& interests)
+void IcqProtocol::icqSetInterestsInfo(const ProtoUpdateInterestsSignal* ps)
 {
-  CPU_Meta_SetInterestsInfo *p = new CPU_Meta_SetInterestsInfo(interests);
+  CPU_Meta_SetInterestsInfo* p = new CPU_Meta_SetInterestsInfo(ps->interests());
   gLog.info(tr("Updating Interests info (#%hu/#%d).."), p->Sequence(), p->SubSequence());
 
-  Licq::Event* e = SendExpectEvent_Server(p, NULL);
-  if (e != NULL)
-    return e->EventId();
-  return 0;
+  SendExpectEvent_Server(ps, p, NULL);
 }
 
 //-----icqSetOrgBackInfo--------------------------------------------------------
-unsigned long IcqProtocol::icqSetOrgBackInfo(const Licq::UserId& /*ownerId*/,
-    const UserCategoryMap& orgs, const UserCategoryMap& background)
+void IcqProtocol::icqSetOrgBackInfo(const ProtoUpdateOrgBackSignal* ps)
 {
-  CPU_Meta_SetOrgBackInfo *p =
-    new CPU_Meta_SetOrgBackInfo(orgs, background);
+  CPU_Meta_SetOrgBackInfo* p = new CPU_Meta_SetOrgBackInfo(ps->organisations(), ps->background());
   gLog.info(tr("Updating Organizations/Backgrounds info (#%hu/#%d).."),
       p->Sequence(), p->SubSequence());
 
-  Licq::Event* e = SendExpectEvent_Server(p, NULL);
-  if (e != NULL)
-    return e->EventId();
-  return 0;
+  SendExpectEvent_Server(ps, p, NULL);
 }
 
 //-----icqSetWorkInfo--------------------------------------------------------
-unsigned long IcqProtocol::icqSetWorkInfo(const Licq::UserId& /*ownerId*/,
-    const string& city, const string& state,
-    const string& phone, const string& fax, const string& address, const string& zip,
-    unsigned short companyCountry, const string& name, const string& department,
-    const string& position, unsigned short companyOccupation, const string& homepage)
+void IcqProtocol::icqSetWorkInfo(const ProtoUpdateWorkSignal* ps)
 {
-  CPU_Meta_SetWorkInfo* p = new CPU_Meta_SetWorkInfo(city, state, phone, fax, address,
-      zip, companyCountry, name, department, position, companyOccupation, homepage);
+  CPU_Meta_SetWorkInfo* p = new CPU_Meta_SetWorkInfo(ps->city(), ps->state(), ps->phone(),
+      ps->fax(), ps->address(), ps->zip(), ps->country(), ps->name(), ps->department(),
+      ps->position(), ps->occupation(), ps->homepage());
 
   gLog.info(tr("Updating work info (#%hu/#%d)..."), p->Sequence(), p->SubSequence());
 
-  Licq::Event* e = SendExpectEvent_Server(p, NULL);
-  if (e != NULL)
-    return e->EventId();
-  return 0;
+  SendExpectEvent_Server(ps, p, NULL);
 }
 
 //-----icqSetAbout-----------------------------------------------------------
-unsigned long IcqProtocol::icqSetAbout(const Licq::UserId& /*ownerId*/, const string& about)
+void IcqProtocol::icqSetAbout(const ProtoUpdateAboutSignal* ps)
 {
-  CPU_Meta_SetAbout *p = new CPU_Meta_SetAbout(gTranslator.returnToDos(about));
+  CPU_Meta_SetAbout* p = new CPU_Meta_SetAbout(gTranslator.returnToDos(ps->about()));
 
   gLog.info(tr("Updating about (#%hu/#%d)..."), p->Sequence(), p->SubSequence());
 
-  Licq::Event* e = SendExpectEvent_Server(p, NULL);
-  if (e != NULL)
-    return e->EventId();
-  return 0;
+  SendExpectEvent_Server(ps, p, NULL);
 }
 
 void IcqProtocol::icqAuthorizeGrant(const Licq::ProtocolSignal* ps)
@@ -875,16 +842,16 @@ void IcqProtocol::icqRequestAuth(const Licq::UserId& userId, const string& messa
 }
 
 //-----icqSetSecurityInfo----------------------------------------------------
-unsigned long IcqProtocol::icqSetSecurityInfo(const Licq::UserId& ownerId, bool bAuthorize, bool bWebAware)
+void IcqProtocol::icqSetSecurityInfo(const ProtoUpdateSecuritySignal* ps)
 {
   // Since ICQ5.1, the status change packet is sent first, which means it is
   // assumed that the set security info packet works.
   unsigned short s;
   {
-    OwnerWriteGuard o(ownerId);
+    OwnerWriteGuard o(ps->userId());
     o->SetEnableSave(false);
-    o->SetAuthorization(bAuthorize);
-    o->SetWebAware(bWebAware);
+    o->SetAuthorization(ps->authorize());
+    o->SetWebAware(ps->webAware());
     o->SetEnableSave(true);
     o->save(Licq::User::SaveLicqInfo);
     s = addStatusFlags(icqStatusFromStatus(o->status()), *o);
@@ -893,46 +860,33 @@ unsigned long IcqProtocol::icqSetSecurityInfo(const Licq::UserId& ownerId, bool 
   icqSetStatus(s);
 
   // Now send the set security info packet
-    CPU_Meta_SetSecurityInfo *p = new CPU_Meta_SetSecurityInfo(bAuthorize, bWebAware);
+  CPU_Meta_SetSecurityInfo* p = new CPU_Meta_SetSecurityInfo(ps->authorize(), ps->webAware());
   gLog.info(tr("Updating security info (#%hu/#%d)..."), p->Sequence(), p->SubSequence());
-  Licq::Event* e = SendExpectEvent_Server(p, NULL);
-    if (e != NULL)
-      return e->EventId();
-    return 0;
+  SendExpectEvent_Server(ps, p, NULL);
 }
 
 //-----icqSearchWhitePages--------------------------------------------------
-unsigned long IcqProtocol::icqSearchWhitePages(const Licq::UserId& /*ownerId*/,
-    const string& firstName, const string& lastName,
-    const string& alias, const string& email, unsigned short minAge, unsigned short maxAge,
-    char gender, char language, const string& city, const string& state,
-    unsigned short countryCode, const string& coName, const string& coDept,
-    const string& coPos, const string& keyword, bool onlineOnly)
+void IcqProtocol::icqSearchWhitePages(const ProtoSearchWhitePagesSignal* ps)
 {
   // Yes, there are a lot of extra options that you can search by.. but I
   // don't see a point for the hundreds of items that I can add..  just
   // use their web page for that shit - Jon
-  CPU_SearchWhitePages* p = new CPU_SearchWhitePages(firstName, lastName,
-      alias, email, minAge, maxAge, gender, language, city, state,
-      countryCode, coName, coDept, coPos, keyword, onlineOnly);
+  CPU_SearchWhitePages* p = new CPU_SearchWhitePages(ps->firstName(), ps->lastName(),
+      ps->alias(), ps->email(), ps->minAge(), ps->maxAge(), ps->gender(), ps->language(),
+      ps->city(), ps->state(), ps->country(), ps->coName(), ps->coDept(), ps->coPos(),
+      ps->keyword(), ps->onlineOnly());
   gLog.info(tr("Starting white pages search (#%hu/#%d)..."),
       p->Sequence(), p->SubSequence());
-  Licq::Event* e = SendExpectEvent_Server(p, NULL, true);
-  if (e != NULL)
-    return e->EventId();
-  return 0;
+  SendExpectEvent_Server(ps, p, NULL, true);
 }
 
 //-----icqSearchByUin----------------------------------------------------------
-unsigned long IcqProtocol::icqSearchByUin(const Licq::UserId& userId)
+void IcqProtocol::icqSearchByUin(const Licq::ProtocolSignal* ps)
 {
-  unsigned long nUin = strtoul(userId.accountId().c_str(), NULL, 10);
+  unsigned long nUin = strtoul(ps->userId().accountId().c_str(), NULL, 10);
    CPU_SearchByUin *p = new CPU_SearchByUin(nUin);
   gLog.info(tr("Starting search by UIN for user (#%hu/#%d)..."), p->Sequence(), p->SubSequence());
-  Licq::Event* e = SendExpectEvent_Server(p, NULL, true);
-   if (e != NULL)
-     return e->EventId();
-   return 0;
+  SendExpectEvent_Server(ps, p, NULL, true);
 }
 
 //-----icqGetUserBasicInfo------------------------------------------------------
@@ -960,17 +914,17 @@ void IcqProtocol::icqPing()
    SendEvent_Server(p);
 }
 
-void IcqProtocol::icqUpdateInfoTimestamp(const Licq::UserId& ownerId, Licq::IcqProtocol::PluginType type)
+void IcqProtocol::icqUpdateInfoTimestamp(const ProtoUpdateTimestampSignal* ps)
 {
   {
-    OwnerWriteGuard o(ownerId);
+    OwnerWriteGuard o(ps->userId());
     o->SetClientInfoTimestamp(time(NULL));
     if (!o->isOnline())
       return;
   }
 
   const uint8_t* guid;
-  switch (type)
+  switch (ps->type())
   {
     case Licq::IcqProtocol::PluginPhoneBook:
       guid = PLUGIN_PHONExBOOK;
@@ -1364,17 +1318,13 @@ Licq::Event* IcqProtocol::icqSendThroughServer(pthread_t caller, unsigned long e
   return result;
 }
 
-unsigned long IcqProtocol::icqSendSms(const Licq::UserId& userId,
-    const string& number, const string& message)
+void IcqProtocol::icqSendSms(const ProtoSendSmsSignal* ps)
 {
-  Licq::EventSms* ue = new Licq::EventSms(number, message,
+  Licq::EventSms* ue = new Licq::EventSms(ps->number(), ps->message(),
       Licq::EventSms::TimeNow, LICQ_VERSION | Licq::EventSms::FlagSender);
-  CPU_SendSms* p = new CPU_SendSms(number, message);
+  CPU_SendSms* p = new CPU_SendSms(ps->number(), ps->message());
   gLog.info(tr("Sending SMS through server (#%hu/#%d)..."), p->Sequence(), p->SubSequence());
-  Licq::Event* e = SendExpectEvent_Server(userId, p, ue);
-  if (e != NULL)
-    return e->EventId();
-  return 0;
+  SendExpectEvent_Server(ps, ps->userId(), p, ue);
 }
 
 /*------------------------------------------------------------------------------

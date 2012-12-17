@@ -52,6 +52,7 @@
 #include "owner.h"
 #include "packet-srv.h"
 #include "packet-tcp.h"
+#include "protocolsignal.h"
 #include "socket.h"
 #include "user.h"
 
@@ -90,7 +91,6 @@ pthread_mutex_t IcqProtocol::mutex_reverseconnect = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t IcqProtocol::cond_reverseconnect_done = PTHREAD_COND_INITIALIZER;
 
 
-Licq::IcqProtocol* gLicqDaemon = NULL;
 LicqIcq::IcqProtocol LicqIcq::gIcqProtocol;
 Licq::SocketManager gSocketManager;
 
@@ -102,13 +102,11 @@ IcqProtocol::IcqProtocol()
 
 IcqProtocol::~IcqProtocol()
 {
-  gLicqDaemon = NULL;
+  // Empty
 }
 
 void IcqProtocol::initialize()
 {
-  gLicqDaemon = this;
-
   // Initialise the data values
   m_nTCPSocketDesc = -1;
   m_nTCPSrvSocketDesc = -1;
@@ -327,6 +325,87 @@ void IcqProtocol::processSignal(Licq::ProtocolSignal* s)
     case Licq::ProtocolSignal::SignalSendUrl:
       icqSendUrl(dynamic_cast<Licq::ProtoSendUrlSignal*>(s));
       break;
+    case Licq::ProtocolSignal::SignalProtocolSpecific:
+    {
+      ProtocolSignal* ips = dynamic_cast<ProtocolSignal*>(s);
+      assert(ips != NULL);
+      switch (ips->icqSignal())
+      {
+        case ProtocolSignal::SignalIcqSendContacts:
+          icqSendContactList(dynamic_cast<ProtoSendContactsSignal*>(ips));
+          break;
+        case ProtocolSignal::SignalIcqSendSms:
+          icqSendSms(dynamic_cast<ProtoSendSmsSignal*>(ips));
+          break;
+        case ProtocolSignal::SignalIcqFetchAutoResponse:
+          icqFetchAutoResponse(s);
+          break;
+        case ProtocolSignal::SignalIcqChatRequest:
+          icqChatRequest(dynamic_cast<ProtoChatRequestSignal*>(ips));
+          break;
+        case ProtocolSignal::SignalIcqChatRefuse:
+          icqChatRequestRefuse(dynamic_cast<ProtoChatRefuseSignal*>(ips));
+          break;
+        case ProtocolSignal::SignalIcqChatAccept:
+          icqChatRequestAccept(dynamic_cast<ProtoChatAcceptSignal*>(ips));
+          break;
+        case ProtocolSignal::SignalIcqRequestPlugin:
+        {
+          ProtoRequestPluginSignal* sig = dynamic_cast<ProtoRequestPluginSignal*>(ips);
+          icqRequestPluginInfo(s->userId(), sig->type(), sig->direct(), s);
+          break;
+        }
+        case ProtocolSignal::SignalIcqUpdateWork:
+          icqSetWorkInfo(dynamic_cast<ProtoUpdateWorkSignal*>(ips));
+          break;
+        case ProtocolSignal::SignalIcqUpdateEmail:
+          icqSetEmailInfo(dynamic_cast<ProtoUpdateEmailSignal*>(ips));
+          break;
+        case ProtocolSignal::SignalIcqUpdateMore:
+          icqSetMoreInfo(dynamic_cast<ProtoUpdateMoreSignal*>(ips));
+          break;
+        case ProtocolSignal::SignalIcqUpdateSecurity:
+          icqSetSecurityInfo(dynamic_cast<ProtoUpdateSecuritySignal*>(ips));
+          break;
+        case ProtocolSignal::SignalIcqUpdateInterests:
+          icqSetInterestsInfo(dynamic_cast<ProtoUpdateInterestsSignal*>(ips));
+          break;
+        case ProtocolSignal::SignalIcqUpdateOrgBack:
+          icqSetOrgBackInfo(dynamic_cast<ProtoUpdateOrgBackSignal*>(ips));
+          break;
+        case ProtocolSignal::SignalIcqUpdateAbout:
+          icqSetAbout(dynamic_cast<ProtoUpdateAboutSignal*>(ips));
+          break;
+        case ProtocolSignal::SignalIcqSearchWhitePages:
+          icqSearchWhitePages(dynamic_cast<ProtoSearchWhitePagesSignal*>(ips));
+          break;
+        case ProtocolSignal::SignalIcqSearchUin:
+          icqSearchByUin(dynamic_cast<ProtoSearchUinSignal*>(ips));
+          break;
+        case ProtocolSignal::SignalIcqNotifyAdded:
+          icqAlertUser(s->userId());
+          break;
+        case ProtocolSignal::SignalIcqUpdateTimestamp:
+          icqUpdateInfoTimestamp(dynamic_cast<ProtoUpdateTimestampSignal*>(ips));
+          break;
+        case ProtocolSignal::SignalIcqSetPhoneFollowMe:
+          icqSetPhoneFollowMeStatus(s->userId(), (dynamic_cast<ProtoSetPhoneFollowMeSignal*>(ips))->status());
+          break;
+        case ProtocolSignal::SignalIcqUpdateRandomChat:
+          setRandomChatGroup(dynamic_cast<ProtoUpdateRandomChatSignal*>(ips));
+          break;
+        case ProtocolSignal::SignalIcqSearchRandom:
+          randomChatSearch(dynamic_cast<ProtoSearchRandomSignal*>(ips));
+          break;
+        case ProtocolSignal::SignalIcqUpdateUsers:
+          updateAllUsersInGroup(s->userId(), (dynamic_cast<ProtoUpdateUsersSignal*>(ips))->groupId());
+          break;
+        default:
+          // All of these signals are defined within icq protocol
+          // If we get here something is broken
+          assert(false);
+      }
+    }
     default:
     {
       /* Unsupported action, if it has an eventId, cancel it */

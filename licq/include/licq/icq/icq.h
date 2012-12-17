@@ -31,7 +31,6 @@ typedef std::list<std::string> StringList;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
 class Color;
 class UserId;
-class ProtocolSignal;
 
 
 class IcqProtocol : private boost::noncopyable
@@ -69,7 +68,7 @@ public:
     PluginIcqPhone = 7,
   };
   virtual unsigned long icqRequestPluginInfo(const Licq::UserId& userId, PluginType type,
-      bool bServer = false, const Licq::ProtocolSignal* ps = NULL) = 0;
+      bool bServer = false) = 0;
   virtual void icqUpdateInfoTimestamp(const Licq::UserId& ownerId, PluginType type) = 0;
 
   // Server functions

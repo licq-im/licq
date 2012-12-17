@@ -26,7 +26,7 @@
 namespace LicqIcq
 {
 
-class IcqProtocolPlugin : public Licq::ProtocolPlugin
+class IcqProtocolPlugin : public Licq::ProtocolPlugin, public Licq::IcqProtocol
 {
 public:
   IcqProtocolPlugin(Params& p);
@@ -98,6 +98,7 @@ protected:
 private:
   bool isOwnerOnline(const Licq::UserId& userId);
 
+  ~IcqProtocolPlugin();
 };
 
 extern IcqProtocolPlugin* gIcqProtocolPlugin;
