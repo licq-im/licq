@@ -182,7 +182,7 @@ void MMSendDlg::SendNext()
 
       bool needsSplitting = false;
       // If we send through server (= have message limit), and we've crossed the limit
-      if ((wholeMessageRaw.length() - wholeMessagePos) > CICQDaemon::MaxMessageSize)
+      if ((wholeMessageRaw.length() - wholeMessagePos) > Licq::IcqProtocol::MaxMessageSize)
       {
         needsSplitting = true;
       }
@@ -199,10 +199,11 @@ void MMSendDlg::SendNext()
           // really know how spaces are represented in its encoding), so
           // we take the maximum length, then convert back to a Unicode string
           // and then search for Unicode whitespaces.
-          messageRaw = Licq::gTranslator.returnToUnix(wholeMessageRaw.mid(wholeMessagePos, CICQDaemon::MaxMessageSize).data()).c_str();
+          messageRaw = Licq::gTranslator.returnToUnix(wholeMessageRaw.mid(wholeMessagePos,
+              Licq::IcqProtocol::MaxMessageSize).data()).c_str();
           message = QString::fromUtf8(messageRaw);
 
-          if ((wholeMessageRaw.length() - wholeMessagePos) > CICQDaemon::MaxMessageSize)
+          if ((wholeMessageRaw.length() - wholeMessagePos) > Licq::IcqProtocol::MaxMessageSize)
           {
             // We try to find the optimal place to cut
             // (according to our narrow-minded Latin1 idea of optimal :)

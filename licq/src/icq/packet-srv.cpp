@@ -3717,8 +3717,8 @@ CPU_Meta_SetAbout::CPU_Meta_SetAbout(const string& about)
 {
   m_nMetaCommand = ICQ_CMDxMETA_WPxINFOxSET;
 
-  if (myAbout.size() > size_t(IcqProtocol::MaxMessageSize))
-    myAbout.resize(IcqProtocol::MaxMessageSize);
+  if (myAbout.size() > (size_t)Licq::IcqProtocol::MaxMessageSize)
+    myAbout.resize(Licq::IcqProtocol::MaxMessageSize);
 
   int packetSize = 2+2+2+4+2+2+2 + myAbout.size() + 7;
   m_nSize += packetSize;

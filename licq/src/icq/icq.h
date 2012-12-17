@@ -110,7 +110,6 @@ private:
 
   TlvList tlvs;
 
-friend class CICQDaemon;
   friend class IcqProtocol;
 };
 
@@ -142,7 +141,7 @@ public:
 
 enum EDaemonStatus {STATUS_ONLINE, STATUS_OFFLINE_MANUAL, STATUS_OFFLINE_FORCED };
 
-class IcqProtocol : public CICQDaemon
+class IcqProtocol : public Licq::IcqProtocol
 {
 public:
   static const struct PluginList info_plugins[2];

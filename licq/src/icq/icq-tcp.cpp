@@ -131,7 +131,7 @@ void IcqProtocol::icqSendMessage(const Licq::ProtoSendMessageSignal* ps)
     }
 
     e = new Licq::EventMsg(ps->message(), Licq::EventMsg::TimeNow, f);
-     unsigned short nMaxSize = bUserOffline ? MaxOfflineMessageSize : MaxMessageSize;
+    unsigned short nMaxSize = bUserOffline ? Licq::IcqProtocol::MaxOfflineMessageSize : Licq::IcqProtocol::MaxMessageSize;
     if (m.size() > nMaxSize)
     {
       gLog.warning(tr("Truncating message to %d characters to send through server."), nMaxSize);
@@ -219,8 +219,8 @@ void IcqProtocol::icqSendUrl(const Licq::ProtoSendUrlSignal* ps)
   // make the URL info string
   string m = gTranslator.fromUtf8(gTranslator.returnToDos(ps->message()), userEncoding);
   int n = ps->url().size() + m.size() + 2;
-  if ((flags & Licq::ProtocolSignal::SendDirect) == 0 && n > MaxMessageSize)
-    m.erase(MaxMessageSize - ps->url().size() - 2);
+  if ((flags & Licq::ProtocolSignal::SendDirect) == 0 && n > Licq::IcqProtocol::MaxMessageSize)
+    m.erase(Licq::IcqProtocol::MaxMessageSize - ps->url().size() - 2);
   m += '\xFE';
   m += gTranslator.fromUtf8(ps->url(), userEncoding);
 
@@ -391,7 +391,7 @@ unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
   }
   string m = buf.str();
 
-  if ((flags & Licq::ProtocolSignal::SendDirect) == 0 && (int)m.size() > MaxMessageSize)
+  if ((flags & Licq::ProtocolSignal::SendDirect) == 0 && (int)m.size() > Licq::IcqProtocol::MaxMessageSize)
   {
     gLog.warning(tr("Contact list too large to send through server."));
     return 0;

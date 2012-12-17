@@ -31,10 +31,9 @@ typedef std::list<std::string> StringList;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
 class Color;
 class UserId;
-}
 
 
-class CICQDaemon : private boost::noncopyable
+class IcqProtocol : private boost::noncopyable
 {
 public:
   static const int MaxMessageSize = 6800; // Maybe a little bigger?
@@ -108,10 +107,12 @@ public:
       const std::string& number, const std::string& message) = 0;
 
 protected:
-  virtual ~CICQDaemon() { /* Empty */ }
+  virtual ~IcqProtocol() { /* Empty */ }
 };
 
+} // namespace Licq
+
 // Global pointer
-extern CICQDaemon *gLicqDaemon;
+extern Licq::IcqProtocol* gLicqDaemon;
 
 #endif

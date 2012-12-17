@@ -90,7 +90,7 @@ pthread_mutex_t IcqProtocol::mutex_reverseconnect = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t IcqProtocol::cond_reverseconnect_done = PTHREAD_COND_INITIALIZER;
 
 
-CICQDaemon *gLicqDaemon = NULL;
+Licq::IcqProtocol* gLicqDaemon = NULL;
 LicqIcq::IcqProtocol LicqIcq::gIcqProtocol;
 Licq::SocketManager gSocketManager;
 
@@ -868,7 +868,7 @@ Licq::Event* IcqProtocol::DoneEvent(unsigned long tag, Licq::Event::ResultType _
  * Processes the given event possibly passes the result to the gui.
  *----------------------------------------------------------------------------*/
 #if ICQ_VERSION < 8
-void CICQDaemon::ProcessDoneEvent(Licq::Event* e)
+void IcqProtocol::ProcessDoneEvent(Licq::Event* e)
 {
 #if ICQ_VERSION != 5
   static unsigned short s_nPingTimeOuts = 0;
