@@ -276,17 +276,25 @@ void UserPages::Owner::apply(Licq::User* user)
 
 unsigned long UserPages::Owner::send(UserDlg::UserPage page)
 {
-  if (page == UserDlg::OwnerSecurityPage && myProtocolId == LICQ_PPID)
+  if (myProtocolId == LICQ_PPID)
   {
-    return gLicqDaemon->icqSetSecurityInfo(myUserId,
-        myIcqRequireAuthCheck->isChecked(),
-        myIcqWebAwareCheck->isChecked());
-  }
+    Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+    if (icqProtocol == NULL)
+      return 0;
+    Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
 
-  if (page == UserDlg::OwnerChatGroupPage && myProtocolId == LICQ_PPID)
-  {
-    unsigned chatGroup = myIcqChatGroupList->currentItem()->data(Qt::UserRole).toUInt();
-    return gLicqDaemon->setRandomChatGroup(myUserId, chatGroup);
+    if (page == UserDlg::OwnerSecurityPage)
+    {
+      return icq->icqSetSecurityInfo(myUserId,
+          myIcqRequireAuthCheck->isChecked(),
+          myIcqWebAwareCheck->isChecked());
+    }
+
+    if (page == UserDlg::OwnerChatGroupPage)
+    {
+      unsigned chatGroup = myIcqChatGroupList->currentItem()->data(Qt::UserRole).toUInt();
+      return icq->setRandomChatGroup(myUserId, chatGroup);
+    }
   }
 
   return 0;

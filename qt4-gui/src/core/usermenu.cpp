@@ -448,6 +448,14 @@ void UserMenu::send(QAction* action)
 {
   int index = action->data().toInt();
 
+  Licq::ProtocolPlugin::Ptr icqProtocol;
+  Licq::IcqProtocol* icq = NULL;
+  if (myPpid == LICQ_PPID)
+  {
+    icqProtocol = Licq::gPluginManager.getProtocolPlugin(LICQ_PPID);
+    icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
+  }
+
   switch (index)
   {
     case SendAuthorize:
@@ -463,28 +471,28 @@ void UserMenu::send(QAction* action)
       break;
 
     case RequestUpdateInfoPlugin:
-      if (myPpid == LICQ_PPID)
-        gLicqDaemon->icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginInfoList, true);
+      if (myPpid == LICQ_PPID && icq != NULL)
+        icq->icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginInfoList, true);
       break;
 
     case RequestUpdateStatusPlugin:
-      if (myPpid == LICQ_PPID)
-        gLicqDaemon->icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginStatusList, true);
+      if (myPpid == LICQ_PPID && icq != NULL)
+        icq->icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginStatusList, true);
       break;
 
     case RequestPhoneFollowMeStatus:
-      if (myPpid == LICQ_PPID)
-        gLicqDaemon->icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginPhoneFollowMe, true);
+      if (myPpid == LICQ_PPID && icq != NULL)
+        icq->icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginPhoneFollowMe, true);
       break;
 
     case RequestIcqphoneStatus:
-      if (myPpid == LICQ_PPID)
-        gLicqDaemon->icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginIcqPhone, true);
+      if (myPpid == LICQ_PPID && icq != NULL)
+        icq->icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginIcqPhone, true);
       break;
 
     case RequestFileServerStatus:
-      if (myPpid == LICQ_PPID)
-        gLicqDaemon->icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginSharedFiles, true);
+      if (myPpid == LICQ_PPID && icq != NULL)
+        icq->icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginSharedFiles, true);
       break;
 
     default:

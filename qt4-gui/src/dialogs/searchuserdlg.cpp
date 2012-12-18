@@ -38,6 +38,7 @@
 #include <licq/event.h>
 #include <licq/icq/icq.h>
 #include <licq/icq/codes.h>
+#include <licq/plugin/pluginmanager.h>
 
 #include "contactlist/contactlist.h"
 
@@ -231,6 +232,11 @@ void SearchUserDlg::startSearch()
   unsigned short mins[7] = {0, 18, 23, 30, 40, 50, 60};
   unsigned short maxs[7] = {0, 22, 29, 39, 49, 59, 120};
 
+  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (icqProtocol == NULL)
+    return;
+  Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
+
   foundView->clear();
   for (int i = 0; i < foundView->columnCount(); i++)
     foundView->resizeColumnToContents(i);
@@ -246,7 +252,7 @@ void SearchUserDlg::startSearch()
 
   if (edtUin->text().trimmed().isEmpty())
   {
-    searchTag = gLicqDaemon->icqSearchWhitePages(ownerId,
+    searchTag = icq->icqSearchWhitePages(ownerId,
         edtFirst->text().toUtf8().constData(),
         edtLast->text().toUtf8().constData(),
         edtNick->text().toUtf8().constData(),
@@ -267,7 +273,7 @@ void SearchUserDlg::startSearch()
   else
   {
     Licq::UserId userId(edtUin->text().trimmed().toUtf8().constData(), LICQ_PPID);
-    searchTag = gLicqDaemon->icqSearchByUin(userId);
+    searchTag = icq->icqSearchByUin(userId);
   }
 
   lblSearch->setText(tr("Searching (this can take awhile)..."));

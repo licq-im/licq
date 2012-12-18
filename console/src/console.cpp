@@ -43,6 +43,7 @@
 #include <licq/inifile.h>
 #include <licq/logging/logservice.h>
 #include <licq/logging/logutils.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 #include <licq/protocolsignal.h>
@@ -1672,6 +1673,10 @@ void CLicqConsole::InputRemove(int cIn)
  *-------------------------------------------------------------------------*/
 void CLicqConsole::UserCommand_FetchAutoResponse(const Licq::UserId& userId, char *)
 {
+  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (icqProtocol == NULL)
+    return;
+
   {
     Licq::UserReadGuard u(userId);
     winMain->wprintf("%C%AFetching auto-response for %s (%s)...",
@@ -1680,7 +1685,7 @@ void CLicqConsole::UserCommand_FetchAutoResponse(const Licq::UserId& userId, cha
     winMain->RefreshWin();
   }
 
-  winMain->event = gLicqDaemon->icqFetchAutoResponse(userId);
+  winMain->event = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->icqFetchAutoResponse(userId);
   winMain->eventUserId = userId;
   // InputMessage just to catch the cancel key
   winMain->fProcessInput = &CLicqConsole::InputMessage;
@@ -2303,11 +2308,16 @@ void CLicqConsole::InputSms(int cIn)
       }
       *sz = '\0';
       sz++;
+
+      Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+      if (icqProtocol == NULL)
+        return;
+
       Licq::UserReadGuard u(data->userId);
       winMain->wprintf("%C%ASending SMS to %s ...", m_cColorInfo->nColor,
           m_cColorInfo->nAttr, u->getCellularNumber().c_str());
-      winMain->event = gLicqDaemon->icqSendSms(data->userId,
-          u->getCellularNumber(), data->szMsg);
+      winMain->event = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->icqSendSms(
+          data->userId, u->getCellularNumber(), data->szMsg);
       winMain->eventUserId = data->userId;
       winMain->state = STATE_PENDING;
       break;
@@ -2594,11 +2604,15 @@ void CLicqConsole::InputSearch(int cIn)
 
           if (data->szId != 0)
           {
+            Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+            if (icqProtocol == NULL)
+              return;
+
             winMain->wprintf("%C%ASearching:\n",
                              m_cColorInfo->nColor, m_cColorInfo->nAttr);
 
             Licq::UserId userId(data->szId, LICQ_PPID);
-            winMain->event = gLicqDaemon->icqSearchByUin(userId);
+            winMain->event = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->icqSearchByUin(userId);
             winMain->eventUserId = userId;
             winMain->state = STATE_PENDING;
 
@@ -2868,13 +2882,18 @@ void CLicqConsole::InputSearch(int cIn)
             return;
         }*/
 
+          Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+          if (icqProtocol == NULL)
+            return;
+
           winMain->wprintf("%C%ASearching:\n",
                            m_cColorInfo->nColor, m_cColorInfo->nAttr);
 
-          /*winMain->event = gLicqDaemon->icqSearchByInfo(data->szAlias, data->szFirstName,
-           data->szLastName, data->szEmail);*/
+          /*winMain->event = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->icqSearchByInfo(
+              data->szAlias, data->szFirstName, data->szLastName, data->szEmail);*/
           Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
-          winMain->event = gLicqDaemon->icqSearchWhitePages(ownerId, data->szFirstName,
+          winMain->event = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->icqSearchWhitePages(
+              ownerId, data->szFirstName,
                            data->szLastName, data->szAlias, data->szEmail,
                            data->nMinAge, data->nMaxAge, data->nGender, data->nLanguage,
                            data->szCity, data->szState, data->nCountryCode,

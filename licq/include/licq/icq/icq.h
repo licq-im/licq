@@ -113,7 +113,4 @@ protected:
 
 } // namespace Licq
 
-// Global pointer
-extern Licq::IcqProtocol* gLicqDaemon;
-
 #endif

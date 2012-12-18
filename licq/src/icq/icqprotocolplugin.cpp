@@ -33,20 +33,17 @@
 using namespace LicqIcq;
 using Licq::gLog;
 
-Licq::IcqProtocol* gLicqDaemon = NULL;
-
 IcqProtocolPlugin* LicqIcq::gIcqProtocolPlugin(NULL);
 
 IcqProtocolPlugin::IcqProtocolPlugin(Params& p)
   : ProtocolPlugin(p)
 {
   gIcqProtocolPlugin = this;
-  gLicqDaemon = this;
 }
 
 IcqProtocolPlugin::~IcqProtocolPlugin()
 {
-  gLicqDaemon = NULL;
+  // Empty
 }
 
 std::string IcqProtocolPlugin::name() const

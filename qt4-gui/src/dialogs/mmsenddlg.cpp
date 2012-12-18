@@ -37,6 +37,7 @@
 #include <licq/contactlist/user.h>
 #include <licq/event.h>
 #include <licq/icq/icq.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/protocolmanager.h>
 #include <licq/protocolsignal.h>
 #include <licq/translator.h>
@@ -249,6 +250,10 @@ void MMSendDlg::SendNext()
     }
     case Licq::UserEvent::TypeContactList:
     {
+      Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+      if (icqProtocol == NULL)
+        return;
+
       {
         Licq::UserReadGuard u(userId);
         if (!u.isLocked())
@@ -257,7 +262,7 @@ void MMSendDlg::SendNext()
             .arg(QString::fromUtf8(u->getAlias().c_str())));
       }
 
-      icqEventTag = gLicqDaemon->icqSendContactList(userId, *myUsers);
+      icqEventTag = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->icqSendContactList(userId, *myUsers);
       break;
     }
   }

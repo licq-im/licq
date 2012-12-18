@@ -49,6 +49,7 @@
 #include <licq/icq/codes.h>
 #include <licq/icq/owner.h>
 #include <licq/icq/user.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 #include <licq/logging/log.h>
@@ -1445,7 +1446,11 @@ unsigned long UserPages::Info::retrieve(UserDlg::UserPage page)
   unsigned long icqEventTag;
   if (page == UserDlg::PhonePage)
   {
-    icqEventTag = gLicqDaemon->icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginPhoneBook);
+    Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+    if (myPpid == LICQ_PPID)
+      return 0;
+    icqEventTag = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->
+        icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginPhoneBook);
   }
   else if (page == UserDlg::PicturePage)
   {
@@ -1484,11 +1489,21 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
   unsigned short cc, i, occupation;
   unsigned long icqEventTag = 0;
 
+  Licq::ProtocolPlugin::Ptr icqProtocol;
+  Licq::IcqProtocol* icq = NULL;
+  if (myPpid == LICQ_PPID)
+  {
+    icqProtocol = Licq::gPluginManager.getProtocolPlugin(LICQ_PPID);
+    if (icqProtocol == NULL)
+      return 0;
+    icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
+  }
+
   switch (page)
   {
     case UserDlg::GeneralPage:
       if (myPpid == LICQ_PPID)
-        gLicqDaemon->icqSetEmailInfo(myUserId,
+        icq->icqSetEmailInfo(myUserId,
             nfoEmailSecondary->text().toUtf8().constData(),
             nfoEmailOld->text().toUtf8().constData());
 
@@ -1496,7 +1511,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
       break;
 
     case UserDlg::MorePage:
-    icqEventTag = gLicqDaemon->icqSetMoreInfo(myUserId,
+    icqEventTag = icq->icqSetMoreInfo(myUserId,
         nfoAge->text().toUShort(),
         cmbGender->currentIndex(),
           nfoHomepage->text().toLocal8Bit().constData(),
@@ -1509,8 +1524,8 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
   break;
 
     case UserDlg::More2Page:
-      gLicqDaemon->icqSetInterestsInfo(myUserId, myInterests);
-      icqEventTag = gLicqDaemon->icqSetOrgBackInfo(myUserId, myOrganizations, myBackgrounds);
+      icq->icqSetInterestsInfo(myUserId, myInterests);
+      icqEventTag = icq->icqSetOrgBackInfo(myUserId, myOrganizations, myBackgrounds);
       break;
 
     case UserDlg::WorkPage:
@@ -1518,7 +1533,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
     cc = GetCountryByIndex(i)->nCode;
     i = cmbCompanyOccupation->currentIndex();
     occupation = GetOccupationByIndex(i)->nCode;
-    icqEventTag = gLicqDaemon->icqSetWorkInfo(myUserId,
+    icqEventTag = icq->icqSetWorkInfo(myUserId,
           nfoCompanyCity->text().toUtf8().constData(),
           nfoCompanyState->text().toUtf8().constData(),
           nfoCompanyPhone->text().toUtf8().constData(),
@@ -1534,7 +1549,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
   break;
 
     case UserDlg::AboutPage:
-    icqEventTag = gLicqDaemon->icqSetAbout(myUserId, mlvAbout->toPlainText().toUtf8().constData());
+    icqEventTag = icq->icqSetAbout(myUserId, mlvAbout->toPlainText().toUtf8().constData());
     break;
 
     case UserDlg::PhonePage:
@@ -1543,7 +1558,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
         Licq::IcqOwnerWriteGuard o(myUserId);
         savePagePhoneBook(*o);
       }
-      gLicqDaemon->icqUpdateInfoTimestamp(myUserId, Licq::IcqProtocol::PluginPhoneBook);
+      icq->icqUpdateInfoTimestamp(myUserId, Licq::IcqProtocol::PluginPhoneBook);
       icqEventTag = 0;
       break;
     }
@@ -1553,7 +1568,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
         Licq::OwnerWriteGuard o(myUserId);
         savePagePicture(*o);
       }
-      gLicqDaemon->icqUpdateInfoTimestamp(myUserId, Licq::IcqProtocol::PluginPicture);
+      icq->icqUpdateInfoTimestamp(myUserId, Licq::IcqProtocol::PluginPicture);
       icqEventTag = 0;
       break;
     }

@@ -426,11 +426,16 @@ void SystemMenu::toggleMainInvisibleStatus()
 
 void SystemMenu::updateAllUsers()
 {
+  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (icqProtocol == NULL)
+    return;
+  Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
+
   Licq::OwnerListGuard ownerList;
   BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
   {
     if (owner->id().protocolId() == LICQ_PPID)
-      gLicqDaemon->updateAllUsersInGroup(owner->id(), 0);
+      icq->updateAllUsersInGroup(owner->id(), 0);
   }
 }
 
@@ -442,11 +447,16 @@ void SystemMenu::updateAllUsersInGroup()
   if (groupId >= ContactListModel::SystemGroupOffset)
     return;
 
+  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (icqProtocol == NULL)
+    return;
+  Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
+
   Licq::OwnerListGuard ownerList;
   BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
   {
     if (owner->id().protocolId() == LICQ_PPID)
-      gLicqDaemon->updateAllUsersInGroup(owner->id(), groupId);
+      icq->updateAllUsersInGroup(owner->id(), groupId);
   }
 }
 
@@ -689,5 +699,9 @@ void OwnerData::setIcqFollowMeStatus(QAction* action)
 {
   int id = action->data().toUInt();
 
-  gLicqDaemon->icqSetPhoneFollowMeStatus(myUserId, id);
+  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (icqProtocol == NULL)
+    return;
+  dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->
+      icqSetPhoneFollowMeStatus(myUserId, id);
 }

@@ -1361,8 +1361,12 @@ int CRMSClient::Process_SMS_number()
 
 int CRMSClient::Process_SMS_message()
 {
-  unsigned long tag = gLicqDaemon->icqSendSms(myUserId, myLine,
-      Licq::gTranslator.toUtf8(myText));
+  Licq::ProtocolPlugin::Ptr icqProtocol(gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (icqProtocol == NULL)
+    return fflush(fs);
+
+  unsigned long tag = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->icqSendSms(
+      myUserId, myLine, Licq::gTranslator.toUtf8(myText));
 
   fprintf(fs, "%d [%lu] Sending SMS to %s (%s).\n", CODE_COMMANDxSTART,
      tag, myUserId.accountId().c_str(), myLine.c_str());

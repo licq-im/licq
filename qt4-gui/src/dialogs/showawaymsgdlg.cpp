@@ -35,6 +35,7 @@
 #include <licq/contactlist/user.h>
 #include <licq/event.h>
 #include <licq/icq/icq.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/protocolmanager.h>
 
 #include "core/signalmanager.h"
@@ -92,7 +93,13 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(const Licq::UserId& userId, bool fetch, QWidget* 
     mleAwayMsg->setEnabled(false);
     connect(gGuiSignalManager, SIGNAL(doneUserFcn(const Licq::Event*)),
         SLOT(doneEvent(const Licq::Event*)));
-    icqEventTag = gLicqDaemon->icqFetchAutoResponse(myUserId);
+
+    if (myUserId.protocolId() == LICQ_PPID)
+    {
+      Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+      if (icqProtocol != NULL)
+        icqEventTag = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->icqFetchAutoResponse(myUserId);
+    }
   }
 
   show();

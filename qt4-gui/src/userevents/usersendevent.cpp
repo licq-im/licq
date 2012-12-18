@@ -59,6 +59,7 @@
 #include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/icq/icq.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/plugin/protocolplugin.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
@@ -940,6 +941,15 @@ void UserSendEvent::retrySend(const Licq::Event* e, unsigned flags)
   mySendServerCheck->setChecked((flags & Licq::ProtocolSignal::SendDirect) == 0);
   myUrgentCheck->setChecked(flags & Licq::ProtocolSignal::SendUrgent);
 
+  Licq::ProtocolPlugin::Ptr icqProtocol;
+  Licq::IcqProtocol* icq = NULL;
+  if (myUsers.front().protocolId() == LICQ_PPID)
+  {
+    icqProtocol = Licq::gPluginManager.getProtocolPlugin(LICQ_PPID);
+    if (icqProtocol != NULL)
+      icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
+  }
+
   switch (e->userEvent()->eventType())
   {
     case Licq::UserEvent::TypeMessage:
@@ -1023,6 +1033,9 @@ void UserSendEvent::retrySend(const Licq::Event* e, unsigned flags)
 
     case Licq::UserEvent::TypeContactList:
     {
+      if (icq == NULL)
+        break;
+
       const Licq::EventContactList* ue = dynamic_cast<const Licq::EventContactList*>(e->userEvent());
       const Licq::EventContactList::ContactList& clist = ue->Contacts();
       StringList users;
@@ -1034,18 +1047,17 @@ void UserSendEvent::retrySend(const Licq::Event* e, unsigned flags)
       if (users.empty())
         break;
 
-      icqEventTag = gLicqDaemon->icqSendContactList(myUsers.front(),
-          users, flags, &myIcqColor);
-
+      icqEventTag = icq->icqSendContactList(myUsers.front(), users, flags, &myIcqColor);
       break;
     }
 
     case Licq::UserEvent::TypeChat:
     {
-      const Licq::EventChat* ue = dynamic_cast<const Licq::EventChat*>(e->userEvent());
+      if (icq == NULL)
+        break;
 
-      //TODO in the daemon
-      icqEventTag = gLicqDaemon->icqChatRequest(myUsers.front(),
+      const Licq::EventChat* ue = dynamic_cast<const Licq::EventChat*>(e->userEvent());
+      icqEventTag = icq->icqChatRequest(myUsers.front(),
           ue->reason(), flags, ue->clients(), ue->Port());
       break;
     }
@@ -1064,11 +1076,11 @@ void UserSendEvent::retrySend(const Licq::Event* e, unsigned flags)
 
     case Licq::UserEvent::TypeSms:
     {
-      const Licq::EventSms* ue = dynamic_cast<const Licq::EventSms*>(e->userEvent());
+      if (icq == NULL)
+        break;
 
-      //TODO in the daemon
-      icqEventTag = gLicqDaemon->icqSendSms(myUsers.front(),
-          ue->number(), ue->message());
+      const Licq::EventSms* ue = dynamic_cast<const Licq::EventSms*>(e->userEvent());
+      icqEventTag = icq->icqSendSms(myUsers.front(), ue->number(), ue->message());
       break;
     }
 
@@ -1300,6 +1312,15 @@ void UserSendEvent::send()
   {
     unsigned long icqEventTag = 0;
 
+    Licq::ProtocolPlugin::Ptr icqProtocol;
+    Licq::IcqProtocol* icq = NULL;
+    if (myUsers.front().protocolId() == LICQ_PPID)
+    {
+      icqProtocol = Licq::gPluginManager.getProtocolPlugin(LICQ_PPID);
+      if (icqProtocol != NULL)
+        icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
+    }
+
     switch (myType)
     {
       case UrlEvent:
@@ -1312,8 +1333,9 @@ void UserSendEvent::send()
         break;
 
       case ContactEvent:
-        //TODO Fix this for new protocol plugin
-        icqEventTag = gLicqDaemon->icqSendContactList(
+        if (icq == NULL)
+          return;
+        icqEventTag = icq->icqSendContactList(
             myUsers.front(),
             contacts,
             flags,
@@ -1321,8 +1343,9 @@ void UserSendEvent::send()
         break;
 
       case ChatEvent:
-        //TODO in daemon
-        icqEventTag = gLicqDaemon->icqChatRequest( myUsers.front(),
+        if (icq == NULL)
+          return;
+        icqEventTag = icq->icqChatRequest( myUsers.front(),
             myMessageEdit->toPlainText().toUtf8().data(), flags,
             myChatClients.toUtf8().data(), myChatPort);
         break;
@@ -1338,7 +1361,9 @@ void UserSendEvent::send()
         break;
 
       case SmsEvent:
-        icqEventTag = gLicqDaemon->icqSendSms(myUsers.front(),
+        if (icq == NULL)
+          return;
+        icqEventTag = icq->icqSendSms(myUsers.front(),
             mySmsPhoneEdit->text().toUtf8().constData(),
             myMessageEdit->toPlainText().toUtf8().data());
         break;

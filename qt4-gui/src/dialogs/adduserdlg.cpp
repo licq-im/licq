@@ -110,7 +110,7 @@ AddUserDlg::AddUserDlg(const Licq::UserId& userId, QWidget* parent)
 void AddUserDlg::ownerChanged()
 {
   unsigned long ppid = myOwnerCombo->currentOwnerId().protocolId();
-  Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(ppid);
+  Licq::ProtocolPlugin::Ptr protocol(Licq::gPluginManager.getProtocolPlugin(ppid));
   myReqAuthCheck->setEnabled(protocol.get() != NULL &&
     (protocol->capabilities() & Licq::ProtocolPlugin::CanSendAuthReq));
 }
@@ -127,8 +127,12 @@ void AddUserDlg::ok()
   if (userId.isValid())
     added = Licq::gUserManager.addUser(userId, true, true, group);
 
-  if (added && notify)
-    gLicqDaemon->icqAlertUser(userId);
+  if (added && notify && userId.protocolId() == LICQ_PPID)
+  {
+    Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+    if (icqProtocol != NULL)
+      dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->icqAlertUser(userId);
+  }
 
   if (added && reqAuth)
     new AuthDlg(AuthDlg::RequestAuth, userId);

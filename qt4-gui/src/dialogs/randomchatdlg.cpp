@@ -30,6 +30,7 @@
 #include <licq/event.h>
 #include <licq/icq/icq.h>
 #include <licq/icq/user.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/protocolmanager.h>
 
 #include "core/gui-defines.h"
@@ -106,12 +107,16 @@ RandomChatDlg::~RandomChatDlg()
 
 void RandomChatDlg::okPressed()
 {
+  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (icqProtocol == NULL)
+    return;
+
   myOkButton->setEnabled(false);
   connect(gGuiSignalManager, SIGNAL(doneUserFcn(const Licq::Event*)),
       SLOT(userEventDone(const Licq::Event*)));
   unsigned chatGroup = myGroupsList->currentItem()->data(Qt::UserRole).toInt();
   Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
-  myTag = gLicqDaemon->randomChatSearch(ownerId, chatGroup);
+  myTag = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->randomChatSearch(ownerId, chatGroup);
   setWindowTitle(tr("Searching for Random Chat Partner..."));
 }
 

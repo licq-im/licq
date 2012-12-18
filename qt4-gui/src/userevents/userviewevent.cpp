@@ -41,6 +41,7 @@
 #include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/icq/icq.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 #include <licq/userevents.h>
@@ -420,6 +421,11 @@ void UserViewEvent::read2()
 
     case Licq::UserEvent::TypeChat:  // accept a chat request
     {
+      Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+      if (icqProtocol == NULL)
+        return;
+      Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
+
       myCurrentEvent->SetPending(false);
       myRead2Button->setEnabled(false);
       myRead3Button->setEnabled(false);
@@ -429,7 +435,7 @@ void UserViewEvent::read2()
       {
         // FIXME: must have been done in CICQDaemon
         if (chatDlg->StartAsClient(c->Port()))
-          gLicqDaemon->icqChatRequestAccept(
+          icq->icqChatRequestAccept(
               myUsers.front(),
               0, c->clients(), c->Sequence(),
               c->MessageID()[0], c->MessageID()[1], c->IsDirect());
@@ -438,7 +444,7 @@ void UserViewEvent::read2()
       {
         // FIXME: must have been done in CICQDaemon
         if (chatDlg->StartAsServer())
-          gLicqDaemon->icqChatRequestAccept(
+          icq->icqChatRequestAccept(
               myUsers.front(),
               chatDlg->LocalPort(), c->clients(), c->Sequence(),
               c->MessageID()[0], c->MessageID()[1], c->IsDirect());
@@ -495,13 +501,18 @@ void UserViewEvent::read3()
 
       if (r->exec())
       {
+        Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+        if (icqProtocol == NULL)
+          return;
+        Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
+
         myCurrentEvent->SetPending(false);
         Licq::EventChat* c = dynamic_cast<Licq::EventChat*>(myCurrentEvent);
         myRead2Button->setEnabled(false);
         myRead3Button->setEnabled(false);
 
         // FIXME: must have been done in CICQDaemon
-        gLicqDaemon->icqChatRequestRefuse(myUsers.front(),
+        icq->icqChatRequestRefuse(myUsers.front(),
             r->RefuseMessage().toUtf8().data(), myCurrentEvent->Sequence(),
             c->MessageID()[0], c->MessageID()[1], c->IsDirect());
       }
@@ -553,13 +564,18 @@ void UserViewEvent::read4()
 
     case Licq::UserEvent::TypeChat:  // join to current chat
     {
+      Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+      if (icqProtocol == NULL)
+        return;
+      Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
+
       Licq::EventChat* c = dynamic_cast<Licq::EventChat*>(myCurrentEvent);
       if (c->Port() != 0)  // Joining a multiparty chat (we connect to them)
       {
         ChatDlg* chatDlg = new ChatDlg(myUsers.front());
         // FIXME: must have been done in CICQDaemon
         if (chatDlg->StartAsClient(c->Port()))
-          gLicqDaemon->icqChatRequestAccept(
+          icq->icqChatRequestAccept(
               myUsers.front(),
               0, c->clients(), c->Sequence(), c->MessageID()[0], c->MessageID()[1], c->IsDirect());
       }
@@ -569,7 +585,7 @@ void UserViewEvent::read4()
         JoinChatDlg* j = new JoinChatDlg(this);
         // FIXME: must have been done in CICQDaemon
         if (j->exec() && (chatDlg = j->JoinedChat()) != NULL)
-          gLicqDaemon->icqChatRequestAccept(
+          icq->icqChatRequestAccept(
               myUsers.front(),
               chatDlg->LocalPort(), c->clients(), c->Sequence(), c->MessageID()[0], c->MessageID()[1], c->IsDirect());
         delete j;

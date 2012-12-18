@@ -483,9 +483,13 @@ void CLicqConsole::MenuAdd(char *szArg)
 
   if (bAlert)
   {
-    gLicqDaemon->icqAlertUser(userId);
-    winMain->wprintf("%C%AAlerted user %s they were added.\n",
-        m_cColorInfo->nColor, m_cColorInfo->nAttr, userId.toString().c_str());
+    Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+    if (icqProtocol != NULL)
+    {
+      dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->icqAlertUser(userId);
+      winMain->wprintf("%C%AAlerted user %s they were added.\n",
+          m_cColorInfo->nColor, m_cColorInfo->nAttr, userId.toString().c_str());
+    }
   }
 
 }
