@@ -68,7 +68,7 @@ CPChat_Color::CPChat_Color(const string& localName, unsigned short _nLocalPort,
    int nColorBackBlue, int nColorBackGreen)
 {
   m_nPort = _nLocalPort;
-  Licq::UserId userId(Licq::gUserManager.ownerUserId(LICQ_PPID));
+  Licq::UserId userId(gIcqProtocol.ownerId());
   myUin = atol(userId.accountId().c_str());
   m_nColorForeRed = nColorForeRed;
   m_nColorForeGreen = nColorForeGreen;
@@ -287,7 +287,7 @@ CPChat_ColorFont::CPChat_ColorFont(const string& localName, unsigned short nLoca
    unsigned char nFontStyle, ChatClientPList &clientList)
 {
   m_nPort = nLocalPort;
-  Licq::UserId userId(Licq::gUserManager.ownerUserId(LICQ_PPID));
+  Licq::UserId userId(gIcqProtocol.ownerId());
   myUin = atol(userId.accountId().c_str());
   m_nColorForeRed = nColorForeRed;
   m_nColorForeGreen = nColorForeGreen;
@@ -653,7 +653,7 @@ CChatManager::CChatManager(unsigned long nUin,
 //  m_nSession = rand();
 
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
+    Licq::OwnerReadGuard o(gIcqProtocol.ownerId());
     myName = o->getAlias();
     m_nSession = o->Port();
   }
@@ -783,7 +783,7 @@ bool CChatManager::ConnectToChat(CChatClient *c)
   {
     unsigned long nIp;
     {
-      Licq::OwnerReadGuard o(LICQ_PPID);
+      Licq::OwnerReadGuard o(gIcqProtocol.ownerId());
       nIp = bSendIntIp ? o->IntIp() : o->Ip();
     }
 

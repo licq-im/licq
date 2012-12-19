@@ -438,7 +438,7 @@ void* LicqIcq::ProcessRunningEvent_Client_tep(void *p)
     unsigned long nIP;
     unsigned short nLocalPort;
     {
-      Licq::OwnerReadGuard o(LICQ_PPID);
+      Licq::OwnerReadGuard o(gIcqProtocol.ownerId());
       nIP = bSendIntIp ? o->IntIp() : o->Ip();
       nLocalPort = o->Port();
     }
@@ -749,7 +749,7 @@ void* LicqIcq::MonitorSockets_func()
 
       Licq::INetSocket *s = gSocketManager.FetchSocket(nCurrentSocket);
       if (s != NULL && s->userId().isValid() &&
-          s->userId() == Licq::gUserManager.ownerUserId(LICQ_PPID) &&
+          s->userId() == gIcqProtocol.ownerId() &&
           gIcqProtocol.m_nTCPSrvSocketDesc == -1)
       {
         /* This is the server socket and it is about to be destoryed
@@ -950,7 +950,7 @@ void* LicqIcq::UpdateUsers_tep(void* /* p */)
       bool useBart;
       bool autoInfo, autoInfoPlugins, autoStatusPlugins;
       {
-        OwnerReadGuard o;
+        OwnerReadGuard o(gIcqProtocol.ownerId());
         useBart = o->useBart();
         autoInfo = o->autoUpdateInfo();
         autoInfoPlugins = o->autoUpdateInfoPlugins();
@@ -958,7 +958,7 @@ void* LicqIcq::UpdateUsers_tep(void* /* p */)
       }
 
       pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-      Licq::UserListGuard userList(LICQ_PPID);
+      Licq::UserListGuard userList(gIcqProtocol.ownerId());
       BOOST_FOREACH(Licq::User* user, **userList)
       {
         UserWriteGuard pUser(dynamic_cast<User*>(user));

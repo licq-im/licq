@@ -103,8 +103,6 @@ void IcqProtocol::icqAddUser(const Licq::UserId& userId, bool _bAuthRequired)
 void IcqProtocol::icqAddUserServer(const Licq::UserId& userId, bool _bAuthRequired,
     unsigned short groupId)
 {
-  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
-
   CSrvPacketTcp *pStart = 0;
 
   // Skip the authorization needed step
@@ -123,7 +121,7 @@ void IcqProtocol::icqAddUserServer(const Licq::UserId& userId, bool _bAuthRequir
     Licq::GroupReadGuard group(groupId);
     if (group.isLocked())
     {
-      serverGroupExists = (group->serverId(ownerId) != 0);
+      serverGroupExists = (group->serverId(myOwnerId) != 0);
       groupName = group->name();
     }
   }
@@ -150,8 +148,6 @@ void IcqProtocol::icqAddUserServer(const Licq::UserId& userId, bool _bAuthRequir
 //-----CheckExport-------------------------------------------------------------
 void IcqProtocol::CheckExport()
 {
-  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
-
   // Export groups
   GroupNameMap groups;
   {
@@ -159,7 +155,7 @@ void IcqProtocol::CheckExport()
     BOOST_FOREACH(const Licq::Group* group, **groupList)
     {
       Licq::GroupReadGuard g(group);
-      if (g->serverId(ownerId) == 0)
+      if (g->serverId(myOwnerId) == 0)
         groups[g->id()] = g->name();
     }
   }
@@ -170,7 +166,7 @@ void IcqProtocol::CheckExport()
   // Just upload all of the users now
   list<Licq::UserId> users;
   {
-    Licq::UserListGuard userList(ownerId);
+    Licq::UserListGuard userList(myOwnerId);
     BOOST_FOREACH(const Licq::User* user, **userList)
     {
       UserReadGuard u(dynamic_cast<const User*>(user));
@@ -190,7 +186,7 @@ void IcqProtocol::CheckExport()
   // Export visible/invisible/ignore list
   list<Licq::UserId> visibleUsers, invisibleUsers, ignoredUsers;
   {
-    Licq::UserListGuard userList(ownerId);
+    Licq::UserListGuard userList(myOwnerId);
     BOOST_FOREACH(const Licq::User* user, **userList)
     {
       UserReadGuard pUser(dynamic_cast<const User*>(user));
@@ -243,8 +239,6 @@ void IcqProtocol::icqUpdateServerGroups()
   if (!UseServerContactList())  return;
   CSrvPacketTcp *pReply;
 
-  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
-
   pReply = new CPU_UpdateToServerList("", 0);
   addToModifyUsers(pReply->SubSequence(), "");
   gLog.info(tr("Updating top level group."));
@@ -254,7 +248,7 @@ void IcqProtocol::icqUpdateServerGroups()
   BOOST_FOREACH(const Licq::Group* group, **groupList)
   {
     Licq::GroupReadGuard pGroup(group);
-    unsigned int gid = pGroup->serverId(ownerId);
+    unsigned int gid = pGroup->serverId(myOwnerId);
     if (gid != 0)
     {
       pReply = new CPU_UpdateToServerList(pGroup->name(), gid);
@@ -463,12 +457,9 @@ void IcqProtocol::icqRenameUser(const Licq::UserId& userId)
 
 void IcqProtocol::icqAlertUser(const Licq::UserId& userId)
 {
-  if (userId.protocolId() != LICQ_PPID)
-    return;
-
   string s;
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
+    Licq::OwnerReadGuard o(myOwnerId);
     s = o->getAlias() + '\xFE' + o->getFirstName() + '\xFE' + o->getLastName() +
         '\xFE' + o->getEmail() + '\xFE' + (o->GetAuthorization() ? '0' : '1') + '\xFE';
   }
@@ -539,6 +530,7 @@ void IcqProtocol::randomChatSearch(const ProtoSearchRandomSignal* ps)
 
 void IcqProtocol::icqRegister(const string& passwd)
 {
+  myOwnerId = Licq::UserId();
   myRegisterPasswd = passwd;
   m_bRegistering = true;
   m_nRegisterThreadId = pthread_self();
@@ -564,6 +556,7 @@ void IcqProtocol::icqRegisterFinish()
 //-----ICQ::icqVerifyRegistration
 void IcqProtocol::icqVerifyRegistration()
 {
+  myOwnerId = Licq::UserId();
   CPU_RegisterFirst *pFirst = new CPU_RegisterFirst();
   SendEvent_Server(pFirst);
     
@@ -590,7 +583,7 @@ void IcqProtocol::icqRelogon()
 
   if (m_eStatus == STATUS_ONLINE)
   {
-    OwnerReadGuard o;
+    OwnerReadGuard o(myOwnerId);
     status = addStatusFlags(icqStatusFromStatus(o->status()), *o);
   }
   else
@@ -653,7 +646,7 @@ unsigned long IcqProtocol::icqSetStatus(unsigned short newStatus)
   bool isLogon;
   int nPDINFO;
   {
-    OwnerReadGuard o;
+    OwnerReadGuard o(myOwnerId);
     s = addStatusFlags(newStatus, *o);
     pfm = o->phoneFollowMeStatus();
     Invisible = o->isInvisible();
@@ -666,7 +659,7 @@ unsigned long IcqProtocol::icqSetStatus(unsigned short newStatus)
   {
     icqCreatePDINFO();
 
-    OwnerReadGuard o;
+    OwnerReadGuard o(myOwnerId);
     nPDINFO = o->GetPDINFO();
   }
 
@@ -724,7 +717,7 @@ void IcqProtocol::icqSetGeneralInfo(const Licq::ProtocolSignal* ps)
   bool hideEmail;
 
   {
-    OwnerReadGuard owner(ps->userId());
+    OwnerReadGuard owner(myOwnerId);
     if (!owner.isLocked())
       return;
 
@@ -848,7 +841,7 @@ void IcqProtocol::icqSetSecurityInfo(const ProtoUpdateSecuritySignal* ps)
   // assumed that the set security info packet works.
   unsigned short s;
   {
-    OwnerWriteGuard o(ps->userId());
+    OwnerWriteGuard o(myOwnerId);
     o->SetEnableSave(false);
     o->SetAuthorization(ps->authorize());
     o->SetWebAware(ps->webAware());
@@ -917,7 +910,7 @@ void IcqProtocol::icqPing()
 void IcqProtocol::icqUpdateInfoTimestamp(const ProtoUpdateTimestampSignal* ps)
 {
   {
-    OwnerWriteGuard o(ps->userId());
+    OwnerWriteGuard o(myOwnerId);
     o->SetClientInfoTimestamp(time(NULL));
     if (!o->isOnline())
       return;
@@ -943,11 +936,11 @@ void IcqProtocol::icqUpdateInfoTimestamp(const ProtoUpdateTimestampSignal* ps)
 }
 
 //-----icqSetPhoneFollowMeStatus------------------------------------------------
-void IcqProtocol::icqSetPhoneFollowMeStatus(const Licq::UserId& ownerId, unsigned newStatus)
+void IcqProtocol::icqSetPhoneFollowMeStatus(unsigned newStatus)
 {
   bool bOffline;
   {
-    OwnerWriteGuard o(ownerId);
+    OwnerWriteGuard o(myOwnerId);
     o->SetClientStatusTimestamp(time(NULL));
     o->setPhoneFollowMeStatus(newStatus);
     bOffline = !o->isOnline();
@@ -975,7 +968,7 @@ void IcqProtocol::icqUpdateContactList()
   StringList users;
 
   {
-    Licq::UserListGuard userList(LICQ_PPID);
+    Licq::UserListGuard userList(myOwnerId);
     BOOST_FOREACH(Licq::User* user, **userList)
     {
       Licq::UserWriteGuard u(user);
@@ -1026,7 +1019,7 @@ void IcqProtocol::icqSendVisibleList()
   // the visible list
   StringList users;
   {
-    Licq::UserListGuard userList(LICQ_PPID);
+    Licq::UserListGuard userList(myOwnerId);
     BOOST_FOREACH(const Licq::User* user, **userList)
     {
       Licq::UserReadGuard u(user);
@@ -1045,7 +1038,7 @@ void IcqProtocol::icqSendInvisibleList()
 {
   StringList users;
   {
-    Licq::UserListGuard userList(LICQ_PPID);
+    Licq::UserListGuard userList(myOwnerId);
     BOOST_FOREACH(const Licq::User* user, **userList)
     {
       Licq::UserReadGuard u(user);
@@ -1180,7 +1173,7 @@ void IcqProtocol::icqClearServerList()
 
   // Delete all the users in groups
   {
-    Licq::UserListGuard userList(LICQ_PPID);
+    Licq::UserListGuard userList(myOwnerId);
     BOOST_FOREACH(const Licq::User* u, **userList)
     {
       n++;
@@ -1211,7 +1204,7 @@ void IcqProtocol::icqClearServerList()
   users.clear();
 
   {
-    Licq::UserListGuard userList(LICQ_PPID);
+    Licq::UserListGuard userList(myOwnerId);
     BOOST_FOREACH(const Licq::User* user, **userList)
     {
       {
@@ -1246,7 +1239,7 @@ void IcqProtocol::icqClearServerList()
   users.clear();
 
   {
-    Licq::UserListGuard userList(LICQ_PPID);
+    Licq::UserListGuard userList(myOwnerId);
     BOOST_FOREACH(const Licq::User* user, **userList)
     {
       {
@@ -1419,30 +1412,31 @@ void IcqProtocol::ProcessDoneEvent(Licq::Event* e)
   }
 }
 
-unsigned long IcqProtocol::logon(unsigned logonStatus)
+void IcqProtocol::logon(const Licq::UserId& ownerId, unsigned logonStatus)
 {
   if (m_bLoggingOn)
   {
     gLog.warning(tr("Attempt to logon while already logged or logging on, logoff and try again."));
-    return 0;
+    return;
   }
   {
-    OwnerReadGuard o;
+    OwnerReadGuard o(ownerId);
     if (!o.isLocked())
     {
       gLog.error(tr("No registered user, unable to process logon attempt."));
-      return 0;
+      return;
     }
     if (o->password().empty())
     {
       gLog.error(tr("No password set.  Edit ~/.licq/owner.Licq and fill in the password field."));
-      return 0;
+      return;
     }
 
     m_nDesiredStatus = addStatusFlags(icqStatusFromStatus(logonStatus), *o);
   }
 
-  return icqLogon();
+  myOwnerId = ownerId;
+  icqLogon();
 }
 
 unsigned long IcqProtocol::icqLogon()
@@ -1465,7 +1459,7 @@ unsigned long IcqProtocol::icqRequestLogonSalt()
   {
     CPU_RequestLogonSalt* p;
     {
-      Licq::OwnerReadGuard o(LICQ_PPID);
+      Licq::OwnerReadGuard o(myOwnerId);
       p =  new CPU_RequestLogonSalt(o->accountId());
     }
     gLog.info(tr("Requesting logon salt (#%hu)..."), p->Sequence());
@@ -1601,8 +1595,11 @@ void IcqProtocol::postLogoff(int nSD, Licq::Event* cancelledEvent)
   pthread_mutex_unlock(&mutex_extendedevents);
 #endif
 
+  if (!myOwnerId.isValid())
+    return;
+
   {
-    Licq::OwnerWriteGuard o(LICQ_PPID);
+    Licq::OwnerWriteGuard o(myOwnerId);
     if (o.isLocked())
       o->statusChanged(Licq::User::OfflineStatus);
   }
@@ -1611,11 +1608,11 @@ void IcqProtocol::postLogoff(int nSD, Licq::Event* cancelledEvent)
 
   gPluginManager.pushPluginSignal(new Licq::PluginSignal(
       Licq::PluginSignal::SignalLogoff,
-      Licq::PluginSignal::LogoffRequested, Licq::gUserManager.ownerUserId(LICQ_PPID)));
+      Licq::PluginSignal::LogoffRequested, myOwnerId));
 
   // Mark all users as offline, this also updates the last seen
   // online field
-  Licq::UserListGuard userList(LICQ_PPID);
+  Licq::UserListGuard userList(myOwnerId);
   BOOST_FOREACH(Licq::User* user, **userList)
   {
     Licq::UserWriteGuard pUser(user);
@@ -1637,7 +1634,7 @@ int IcqProtocol::ConnectToLoginServer()
   string serverHost;
   int serverPort = 0;
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
+    Licq::OwnerReadGuard o(myOwnerId);
     if (o.isLocked())
     {
       serverHost = o->serverHost();
@@ -1660,7 +1657,7 @@ int IcqProtocol::ConnectToLoginServer()
 
 int IcqProtocol::ConnectToServer(const string& server, unsigned short port)
 {
-  SrvSocket* s = new SrvSocket(Licq::gUserManager.ownerUserId(LICQ_PPID));
+  SrvSocket* s = new SrvSocket(myOwnerId);
 
   if (gDaemon.proxyEnabled())
   {
@@ -1697,7 +1694,7 @@ int IcqProtocol::ConnectToServer(const string& server, unsigned short port)
     // Now get the internal ip from this socket
     CPacket::SetLocalIp(LE_32(s->getLocalIpInt()));
     {
-      Licq::OwnerWriteGuard o(LICQ_PPID);
+      Licq::OwnerWriteGuard o(myOwnerId);
       if (o.isLocked())
         o->SetIntIp(s->getLocalIpInt());
     }
@@ -1726,7 +1723,7 @@ string IcqProtocol::findUserByCellular(const string& cellular)
 {
   string parsedCellular = parseDigits(cellular);
 
-  Licq::UserListGuard userList;
+  Licq::UserListGuard userList(myOwnerId);
   BOOST_FOREACH(const Licq::User* user, **userList)
   {
     Licq::UserReadGuard u(user);
@@ -1879,7 +1876,7 @@ void IcqProtocol::ProcessServiceFam(Buffer& packet, unsigned short nSubtype)
       }
       else
       {
-        Licq::OwnerReadGuard o(LICQ_PPID);
+        Licq::OwnerReadGuard o(myOwnerId);
         nPort = o->serverPort();
       }
 
@@ -1908,7 +1905,7 @@ void IcqProtocol::ProcessServiceFam(Buffer& packet, unsigned short nSubtype)
     {
       // unsigned long nListTime;
       // {
-      //   Licq::OwnerReadGuard o(LICQ_PPID);
+      //   Licq::OwnerReadGuard o(myOwnerId);
       //   nListTime = o->GetSSTime();
       // }
 
@@ -1999,7 +1996,7 @@ void IcqProtocol::ProcessServiceFam(Buffer& packet, unsigned short nSubtype)
       realIP = BE_32(packet.UnpackUnsignedLongTLV(0x000a));
       CPacket::SetRealIp(LE_32(realIP));
         {
-          OwnerWriteGuard o;
+          OwnerWriteGuard o(myOwnerId);
           o->SetIp(realIP);
         }
 
@@ -2010,7 +2007,7 @@ void IcqProtocol::ProcessServiceFam(Buffer& packet, unsigned short nSubtype)
     if (packet.getTLVLen(0x0003) == 4)
       nOnlineSince = packet.UnpackUnsignedLongTLV(0x0003);
 
-      OwnerWriteGuard o;
+      OwnerWriteGuard o(myOwnerId);
       unsigned pfm = o->phoneFollowMeStatus();
     // Workaround for the ICQ4.0 problem of it not liking the PFM flags
     m_nDesiredStatus &= ~(ICQ_STATUS_FxPFM | ICQ_STATUS_FxPFMxAVAILABLE);
@@ -2073,7 +2070,7 @@ void IcqProtocol::ProcessServiceFam(Buffer& packet, unsigned short nSubtype)
     }
     case ICQ_SNACxSRV_EXTSTATUS:
     {
-      OwnerWriteGuard o;
+      OwnerWriteGuard o(myOwnerId);
       processIconHash(*o, packet);
       break;
     }
@@ -3294,8 +3291,6 @@ void IcqProtocol::processStatsFam(Buffer& packet, int subType)
 //--------ProcessListFam--------------------------------------------
 void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
 {
-  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
-
   unsigned short nFlags = packet.UnpackUnsignedShortBE();
   unsigned long nSubSequence = packet.UnpackUnsignedLongBE();
 
@@ -3416,7 +3411,7 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
               if (groupId != 0)
               {
                 // Group exist, make sure it has the correct name
-                Licq::gUserManager.RenameGroup(groupId, id, ownerId);
+                Licq::gUserManager.RenameGroup(groupId, id, myOwnerId);
                 break;
               }
 
@@ -3424,7 +3419,7 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
               if (groupId != 0)
               {
                 // A local group has same name, save the server id for it
-                Licq::gUserManager.setGroupServerId(groupId, ownerId, nTag);
+                Licq::gUserManager.setGroupServerId(groupId, myOwnerId, nTag);
                 break;
               }
 
@@ -3432,7 +3427,7 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
               if (groupId != 0)
               {
                 // Local group created, save the server id for it
-                Licq::gUserManager.setGroupServerId(groupId, ownerId, nTag);
+                Licq::gUserManager.setGroupServerId(groupId, myOwnerId, nTag);
                 gLog.info(tr("Added group %s (%u) to list from server"), id.c_str(), nTag);
               }
             }
@@ -3448,7 +3443,7 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
           {
             unsigned char cPrivacySettings = packet.UnpackCharTLV(0x00CA);
 
-            OwnerWriteGuard o;
+            OwnerWriteGuard o(myOwnerId);
             gLog.info(tr("Got Privacy Setting."));
             o->SetPDINFO(nID);
             if (cPrivacySettings == ICQ_PRIVACY_ALLOW_FOLLOWING)
@@ -3468,7 +3463,7 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
       // Update local info about contact list
       unsigned long nTime = packet.UnpackUnsignedLongBE();
       {
-        OwnerWriteGuard o;
+        OwnerWriteGuard o(myOwnerId);
         o->SetSSTime(nTime);
         o->SetSSCount(nCount);
       }
@@ -3573,7 +3568,7 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
 
       unsigned long nListTime;
       {
-        OwnerWriteGuard o;
+        OwnerWriteGuard o(myOwnerId);
         nListTime = o->GetSSTime();
         o->SetSSTime(time(0));
       }
@@ -3740,7 +3735,7 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
       Licq::EventAuthRequest* e = new Licq::EventAuthRequest(userId, "", "", "", "", msg,
           time(0), 0);
 
-      Licq::OwnerWriteGuard o(LICQ_PPID);
+      Licq::OwnerWriteGuard o(myOwnerId);
       if (gDaemon.addUserEvent(*o, e))
       {
         e->AddToHistory(*o, true);
@@ -3778,7 +3773,7 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
         eEvent = new Licq::EventAuthRefused(userId, msg, time(0), 0);
       }
 
-      Licq::OwnerWriteGuard o(LICQ_PPID);
+      Licq::OwnerWriteGuard o(myOwnerId);
       if (gDaemon.addUserEvent(*o, eEvent))
       {
         eEvent->AddToHistory(*o, true);
@@ -3796,7 +3791,7 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
       Licq::EventAdded* e = new Licq::EventAdded(userId, "", "", "", "",
           time(0), 0);
       {
-        Licq::OwnerWriteGuard o(LICQ_PPID);
+        Licq::OwnerWriteGuard o(myOwnerId);
         if (gDaemon.addUserEvent(*o, e))
         {
           e->AddToHistory(*o, true);
@@ -3845,7 +3840,7 @@ void IcqProtocol::ProcessBOSFam(Buffer& /* packet */, unsigned short nSubtype)
       Licq::Event* e = DoneExtendedServerEvent(0, Licq::Event::ResultSuccess);
     if (e != NULL) ProcessDoneEvent(e);
       gPluginManager.pushPluginSignal(new Licq::PluginSignal(
-          Licq::PluginSignal::SignalLogon, 0, Licq::gUserManager.ownerUserId(LICQ_PPID)));
+          Licq::PluginSignal::SignalLogon, 0, myOwnerId));
 
     //icqSetStatus(m_nDesiredStatus);
       break;
@@ -3916,7 +3911,7 @@ void IcqProtocol::ProcessVariousFam(Buffer& packet, unsigned short nSubtype)
       sendTM.tm_isdst = -1;
 
           {
-            Licq::OwnerReadGuard o(LICQ_PPID);
+            Licq::OwnerReadGuard o(myOwnerId);
             nTimeSent = mktime(&sendTM) - o->systemTimezone();
           }
 
@@ -3956,7 +3951,7 @@ void IcqProtocol::ProcessVariousFam(Buffer& packet, unsigned short nSubtype)
                 nResult == META_SUCCESS ? Licq::Event::ResultSuccess : Licq::Event::ResultFailed);
         if (pEvent != NULL && nResult == META_SUCCESS)
         {
-              Licq::OwnerWriteGuard o(LICQ_PPID);
+              Licq::OwnerWriteGuard o(myOwnerId);
           o->SetEnableSave(false);
               o->setPassword(((CPU_SetPassword *)pEvent->m_pPacket)->myPassword);
           o->SetEnableSave(true);
@@ -3979,7 +3974,7 @@ void IcqProtocol::ProcessVariousFam(Buffer& packet, unsigned short nSubtype)
         {
           CPU_Meta_SetGeneralInfo *p = (CPU_Meta_SetGeneralInfo *)pEvent->m_pPacket;
 
-              OwnerWriteGuard o;
+              OwnerWriteGuard o(myOwnerId);
               o->SetEnableSave(false);
               o->setAlias(p->myAlias);
               o->setUserInfoString("FirstName", p->myFirstName);
@@ -4011,7 +4006,7 @@ void IcqProtocol::ProcessVariousFam(Buffer& packet, unsigned short nSubtype)
         {
           CPU_Meta_SetEmailInfo *p = (CPU_Meta_SetEmailInfo *)pEvent->m_pPacket;
 
-              Licq::OwnerWriteGuard o(LICQ_PPID);
+              Licq::OwnerWriteGuard o(myOwnerId);
 
           o->SetEnableSave(false);
               o->setUserInfoString("Email2", p->myEmailSecondary);
@@ -4032,7 +4027,7 @@ void IcqProtocol::ProcessVariousFam(Buffer& packet, unsigned short nSubtype)
         {
           CPU_Meta_SetMoreInfo *p = (CPU_Meta_SetMoreInfo *)pEvent->m_pPacket;
 
-              Licq::OwnerWriteGuard o(LICQ_PPID);
+              Licq::OwnerWriteGuard o(myOwnerId);
           o->SetEnableSave(false);
               o->setUserInfoUint("Age", p->m_nAge);
               o->setUserInfoUint("Gender", p->m_nGender);
@@ -4059,7 +4054,7 @@ void IcqProtocol::ProcessVariousFam(Buffer& packet, unsigned short nSubtype)
         {
           CPU_Meta_SetInterestsInfo *p =
                            (CPU_Meta_SetInterestsInfo *)pEvent->m_pPacket;
-              OwnerWriteGuard o;
+              OwnerWriteGuard o(myOwnerId);
           o->SetEnableSave(false);
               o->getInterests().clear();
               UserCategoryMap::iterator i;
@@ -4080,7 +4075,7 @@ void IcqProtocol::ProcessVariousFam(Buffer& packet, unsigned short nSubtype)
         {
           CPU_Meta_SetWorkInfo *p = (CPU_Meta_SetWorkInfo *)pEvent->m_pPacket;
 
-              Licq::OwnerWriteGuard o(LICQ_PPID);
+              Licq::OwnerWriteGuard o(myOwnerId);
           o->SetEnableSave(false);
               o->setUserInfoString("CompanyCity", p->myCity);
               o->setUserInfoString("CompanyState", p->myState);
@@ -4109,7 +4104,7 @@ void IcqProtocol::ProcessVariousFam(Buffer& packet, unsigned short nSubtype)
         if (pEvent != NULL && nResult == META_SUCCESS)
         {
           CPU_Meta_SetAbout *p = (CPU_Meta_SetAbout *)pEvent->m_pPacket;
-              Licq::OwnerWriteGuard o(LICQ_PPID);
+              Licq::OwnerWriteGuard o(myOwnerId);
           o->SetEnableSave(false);
               o->setUserInfoString("About", gTranslator.returnToUnix(p->myAbout));
 
@@ -4133,7 +4128,7 @@ void IcqProtocol::ProcessVariousFam(Buffer& packet, unsigned short nSubtype)
           {
             CPU_Meta_SetOrgBackInfo *p =
                              (CPU_Meta_SetOrgBackInfo *)pEvent->m_pPacket;
-                OwnerWriteGuard o;
+                OwnerWriteGuard o(myOwnerId);
             o->SetEnableSave(false);
                 o->getOrganizations().clear();
                 UserCategoryMap::iterator i;
@@ -4238,7 +4233,7 @@ void IcqProtocol::ProcessVariousFam(Buffer& packet, unsigned short nSubtype)
 
         if (pEvent != NULL && nResult == META_SUCCESS)
         {
-              OwnerWriteGuard o;
+              OwnerWriteGuard o(myOwnerId);
               o->setRandomChatGroup(((CPU_SetRandomChatGroup *)pEvent->m_pPacket)->Group());
             }
           }
@@ -4434,7 +4429,7 @@ void IcqProtocol::ProcessVariousFam(Buffer& packet, unsigned short nSubtype)
           u->SetEnableSave(false);
                 string alias = msg.unpackShortStringLE();
           // Skip the alias if user wants to keep his own.
-          if (!u->m_bKeepAliasOnUpdate || userId == Licq::gUserManager.ownerUserId(LICQ_PPID))
+          if (!u->m_bKeepAliasOnUpdate || userId == myOwnerId)
           {
                   u->setAlias(alias);
                 }
@@ -4834,7 +4829,7 @@ void IcqProtocol::ProcessAuthFam(Buffer& packet, unsigned short nSubtype)
       Licq::gUserManager.addOwner(ownerId);
 
       {
-        Licq::OwnerWriteGuard o(LICQ_PPID);
+        Licq::OwnerWriteGuard o(ownerId);
         if (o.isLocked())
         {
           o->setPassword(myRegisterPasswd);
@@ -4854,7 +4849,7 @@ void IcqProtocol::ProcessAuthFam(Buffer& packet, unsigned short nSubtype)
       m_bLoggingOn = false; 
       gSocketManager.CloseSocket(nSD);
       postLogoff(nSD, NULL);
-      logon(Licq::User::OnlineStatus);
+      logon(ownerId, Licq::User::OnlineStatus);
       break;
     }
 
@@ -4863,7 +4858,7 @@ void IcqProtocol::ProcessAuthFam(Buffer& packet, unsigned short nSubtype)
       string md5Salt = packet.unpackShortStringBE();
       CPU_NewLogon* p;
       {
-        Licq::OwnerReadGuard o(LICQ_PPID);
+        Licq::OwnerReadGuard o(myOwnerId);
         p = new CPU_NewLogon(o->password(), o->accountId(), md5Salt);
       }
       gLog.info(tr("Sending md5 hashed password."));
@@ -5082,7 +5077,7 @@ bool IcqProtocol::ProcessCloseChannel(Buffer& packet)
       gLog.error(tr("Rate limit exceeded."));
       gPluginManager.pushPluginSignal(new Licq::PluginSignal(
           Licq::PluginSignal::SignalLogoff,
-          Licq::PluginSignal::LogoffRate, Licq::gUserManager.ownerUserId(LICQ_PPID)));
+          Licq::PluginSignal::LogoffRate, myOwnerId));
       break;
 
     case 0x04:
@@ -5090,7 +5085,7 @@ bool IcqProtocol::ProcessCloseChannel(Buffer& packet)
       gLog.error(tr("Invalid UIN and password combination."));
       gPluginManager.pushPluginSignal(new Licq::PluginSignal(
           Licq::PluginSignal::SignalLogoff,
-          Licq::PluginSignal::LogoffPassword, Licq::gUserManager.ownerUserId(LICQ_PPID)));
+          Licq::PluginSignal::LogoffPassword, myOwnerId));
       break;
 
     case 0x0C:
@@ -5124,7 +5119,7 @@ bool IcqProtocol::ProcessCloseChannel(Buffer& packet)
   {
     case 0x0001:
     {
-      OwnerReadGuard o;
+      OwnerReadGuard o(myOwnerId);
       if (o->reconnectAfterUinClash())
       {
         gLog.error(tr("Your ICQ number is used from another location."));

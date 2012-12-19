@@ -75,9 +75,6 @@ public:
   OwnerReadGuard(const Licq::UserId& userId)
     : Licq::OwnerReadGuard(userId)
   { }
-  OwnerReadGuard()
-    : Licq::OwnerReadGuard(LICQ_PPID)
-  { }
   OwnerReadGuard(const Owner* owner, bool locked = false)
     : Licq::OwnerReadGuard(owner, locked)
   { }
@@ -101,9 +98,6 @@ public:
   // Derived costructors
   OwnerWriteGuard(const Licq::UserId& userId)
     : Licq::OwnerWriteGuard(userId)
-  { }
-  OwnerWriteGuard()
-    : Licq::OwnerWriteGuard(LICQ_PPID)
   { }
   OwnerWriteGuard(Owner* owner, bool locked = false)
     : Licq::OwnerWriteGuard(owner, locked)

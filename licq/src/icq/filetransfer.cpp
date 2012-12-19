@@ -210,7 +210,7 @@ CFileTransferManager::CFileTransferManager(const Licq::UserId& userId)
   m_nSession = rand();
 
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
+    Licq::OwnerReadGuard o(gIcqProtocol.ownerId());
     myLocalName = o->getAlias();
   }
 
@@ -365,7 +365,7 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
   {
     unsigned long nIp;
     {
-      Licq::OwnerReadGuard o(LICQ_PPID);
+      Licq::OwnerReadGuard o(gIcqProtocol.ownerId());
       nIp = bSendIntIp ? o->IntIp() : o->Ip();
     }
 

@@ -79,9 +79,6 @@ public:
   IcqOwnerReadGuard(const UserId& userId)
     : OwnerReadGuard(userId)
   { }
-  IcqOwnerReadGuard()
-    : OwnerReadGuard(LICQ_PPID)
-  { }
   IcqOwnerReadGuard(const IcqOwner* owner, bool locked = false)
     : OwnerReadGuard(owner, locked)
   { }
@@ -105,9 +102,6 @@ public:
   // Derived costructors
   IcqOwnerWriteGuard(const UserId& userId)
     : OwnerWriteGuard(userId)
-  { }
-  IcqOwnerWriteGuard()
-    : OwnerWriteGuard(LICQ_PPID)
   { }
   IcqOwnerWriteGuard(IcqOwner* owner, bool locked = false)
     : OwnerWriteGuard(owner, locked)

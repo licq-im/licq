@@ -517,7 +517,7 @@ void IcqProtocol::icqRequestPicture(const Licq::ProtocolSignal* ps)
 {
   bool useBart;
   {
-    OwnerReadGuard o;
+    OwnerReadGuard o(myOwnerId);
     useBart = o->useBart();
   }
 
@@ -1346,7 +1346,7 @@ bool IcqProtocol::ProcessTcpPacket(DcSocket* pSock)
   // Store our status for later use
   unsigned ownerStatus;
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
+    Licq::OwnerReadGuard o(myOwnerId);
     ownerStatus = o->status();
   }
 
@@ -2973,7 +2973,7 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, User* u,
           gLog.info(tr("File server status request from %s."), u->getAlias().c_str());
         unsigned long nStatus;
         {
-          OwnerReadGuard o;
+          OwnerReadGuard o(myOwnerId);
           switch (o->sharedFilesStatus())
           {
             case IcqPluginActive: nStatus = ICQ_PLUGIN_STATUSxACTIVE; break;
@@ -2998,7 +2998,7 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, User* u,
           gLog.info(tr("ICQphone status request from %s."), u->getAlias().c_str());
         unsigned long nStatus;
         {
-          OwnerReadGuard o;
+          OwnerReadGuard o(myOwnerId);
           switch (o->icqPhoneStatus())
           {
             case IcqPluginActive: nStatus = ICQ_PLUGIN_STATUSxACTIVE; break;
@@ -3023,7 +3023,7 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, User* u,
           gLog.info(tr("Phone \"Follow Me\" status request from %s."), u->getAlias().c_str());
         unsigned long nStatus;
         {
-          OwnerReadGuard o;
+          OwnerReadGuard o(myOwnerId);
           switch (o->phoneFollowMeStatus())
           {
             case IcqPluginActive: nStatus = ICQ_PLUGIN_STATUSxACTIVE; break;

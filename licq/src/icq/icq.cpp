@@ -155,7 +155,7 @@ bool IcqProtocol::start()
   gSocketManager.AddSocket(s);
   bool useBart = false;
   {
-    OwnerWriteGuard o;
+    OwnerWriteGuard o(myOwnerId);
     if (o.isLocked())
     {
       o->SetIntIp(s->getLocalIpInt());
@@ -216,13 +216,16 @@ bool IcqProtocol::start()
 
 void IcqProtocol::processSignal(Licq::ProtocolSignal* s)
 {
-  assert(s != NULL);
+  if (s->userId().protocolId() != LICQ_PPID)
+    return;
+  // TODO: Unless signal is Logon also make sure s->userId() belongs to myOwnerId
+
   switch (s->signal())
   {
     case Licq::ProtocolSignal::SignalLogon:
     {
       Licq::ProtoLogonSignal* sig = dynamic_cast<Licq::ProtoLogonSignal*>(s);
-      logon(sig->status());
+      logon(s->userId(), sig->status());
       break;
     }
     case Licq::ProtocolSignal::SignalLogoff:
@@ -389,7 +392,7 @@ void IcqProtocol::processSignal(Licq::ProtocolSignal* s)
           icqUpdateInfoTimestamp(dynamic_cast<ProtoUpdateTimestampSignal*>(ips));
           break;
         case ProtocolSignal::SignalIcqSetPhoneFollowMe:
-          icqSetPhoneFollowMeStatus(s->userId(), (dynamic_cast<ProtoSetPhoneFollowMeSignal*>(ips))->status());
+          icqSetPhoneFollowMeStatus((dynamic_cast<ProtoSetPhoneFollowMeSignal*>(ips))->status());
           break;
         case ProtocolSignal::SignalIcqUpdateRandomChat:
           setRandomChatGroup(dynamic_cast<ProtoUpdateRandomChatSignal*>(ips));
@@ -398,7 +401,7 @@ void IcqProtocol::processSignal(Licq::ProtocolSignal* s)
           randomChatSearch(dynamic_cast<ProtoSearchRandomSignal*>(ips));
           break;
         case ProtocolSignal::SignalIcqUpdateUsers:
-          updateAllUsersInGroup(s->userId(), (dynamic_cast<ProtoUpdateUsersSignal*>(ips))->groupId());
+          updateAllUsersInGroup((dynamic_cast<ProtoUpdateUsersSignal*>(ips))->groupId());
           break;
         default:
           // All of these signals are defined within icq protocol
@@ -466,7 +469,7 @@ void IcqProtocol::SetUseServerSideBuddyIcons(bool b)
     }
   }
 
-  OwnerWriteGuard o;
+  OwnerWriteGuard o(myOwnerId);
   o->setUseBart(b);
 }
 
@@ -1008,7 +1011,7 @@ void IcqProtocol::ProcessDoneEvent(Licq::Event* e)
   case ICQ_CMDxSND_SETxSTATUS:
       if (e->m_eResult == Licq::Event::ResultAcked)
       {
-        Licq::OwnerWriteGuard o(LICQ_PPID);
+        Licq::OwnerWriteGuard o(myOwnerId);
       ChangeUserStatus(o, ((CPU_SetStatus *)e->m_pPacket)->Status() );
       }
       Licq::gPluginManager.pushPluginEvent(e);
@@ -1017,7 +1020,7 @@ void IcqProtocol::ProcessDoneEvent(Licq::Event* e)
   case ICQ_CMDxSND_SETxRANDOMxCHAT:
       if (e->m_eResult == Licq::Event::ResultAcked)
       {
-        Licq::OwnerWriteGuard o(LICQ_PPID);
+        Licq::OwnerWriteGuard o(myOwnerId);
       o->SetRandomChatGroup(((CPU_SetRandomChatGroup *)e->m_pPacket)->Group());
       }
       Licq::gPluginManager.pushPluginEvent(e);
@@ -1230,9 +1233,9 @@ void IcqProtocol::CancelEvent(Licq::Event* e)
   ProcessDoneEvent(e);
 }
 
-void IcqProtocol::updateAllUsersInGroup(const Licq::UserId& ownerId, int groupId)
+void IcqProtocol::updateAllUsersInGroup(int groupId)
 {
-  Licq::UserListGuard userList(ownerId);
+  Licq::UserListGuard userList(myOwnerId);
   BOOST_FOREACH(Licq::User* user, **userList)
   {
     if (groupId != 0)
@@ -1261,7 +1264,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, const string& m
   // Do we accept it if we are in Occ or DND?
   // unsigned short nOwnerStatus;
   // {
-  //   Licq::OwnerReadGuard o(LICQ_PPID);
+  //   Licq::OwnerReadGuard o(myOwnerId);
   //   nOwnerStatus = o->Status();
   // }
 
@@ -1766,7 +1769,7 @@ void IcqProtocol::processServerMessage(int type, Licq::Buffer &packet,
         break;
       }
 
-      Licq::OwnerWriteGuard o(LICQ_PPID);
+      Licq::OwnerWriteGuard o(myOwnerId);
       if (gDaemon.addUserEvent(*o, ue))
       {
         ue->AddToHistory(*o, true);
@@ -1790,7 +1793,7 @@ void IcqProtocol::processServerMessage(int type, Licq::Buffer &packet,
       }
       else
       {
-        Licq::OwnerWriteGuard o(LICQ_PPID);
+        Licq::OwnerWriteGuard o(myOwnerId);
         gLog.info(tr("SMS from %s."), eSms->number().c_str());
         if (gDaemon.addUserEvent(*o, ue))
         {
@@ -1802,7 +1805,7 @@ void IcqProtocol::processServerMessage(int type, Licq::Buffer &packet,
     }
     default:
     {
-      Licq::OwnerWriteGuard o(LICQ_PPID);
+      Licq::OwnerWriteGuard o(myOwnerId);
       gDaemon.addUserEvent(*o, ue);
     }
   }
@@ -1978,27 +1981,25 @@ string IcqProtocol::getUserEncoding(const Licq::UserId& userId)
 
 bool IcqProtocol::UseServerContactList() const
 {
-  OwnerReadGuard o;
+  OwnerReadGuard o(myOwnerId);
   return o->useServerContactList();
 }
 
 int IcqProtocol::getGroupFromId(unsigned short gsid)
 {
-  return Licq::gUserManager.getGroupFromServerId(Licq::gUserManager.ownerUserId(LICQ_PPID), gsid);
+  return Licq::gUserManager.getGroupFromServerId(myOwnerId, gsid);
 }
 
 unsigned long IcqProtocol::icqOwnerUin()
 {
-  return strtoul(Licq::gUserManager.ownerUserId(LICQ_PPID).accountId().c_str(), (char**)NULL, 10);
+  return strtoul(myOwnerId.accountId().c_str(), (char**)NULL, 10);
 }
 
 unsigned short IcqProtocol::generateSid()
 {
-  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
-
   unsigned short ownerPDINFO;
   {
-    OwnerReadGuard o(ownerId);
+    OwnerReadGuard o(myOwnerId);
     ownerPDINFO = o->GetPDINFO();
   }
 
@@ -2021,7 +2022,7 @@ unsigned short IcqProtocol::generateSid()
       sid++;
 
     {
-      Licq::UserListGuard userList(ownerId);
+      Licq::UserListGuard userList(myOwnerId);
       BOOST_FOREACH(const Licq::User* user, **userList)
       {
         UserReadGuard u(dynamic_cast<const User*>(user));
@@ -2048,7 +2049,7 @@ unsigned short IcqProtocol::generateSid()
       {
         Licq::GroupReadGuard g(group);
 
-        unsigned short icqGroupId = g->serverId(ownerId);
+        unsigned short icqGroupId = g->serverId(myOwnerId);
         if (icqGroupId == sid)
         {
           if (sid == 0x7FFF)

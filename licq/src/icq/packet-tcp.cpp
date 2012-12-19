@@ -491,7 +491,7 @@ CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand, int
   : myChannel(channel)
 {
   // Setup the message type and status fields using our online status
-  Licq::OwnerReadGuard o(LICQ_PPID);
+  Licq::OwnerReadGuard o(gIcqProtocol.ownerId());
   unsigned short s;
   if (user->statusToUser() != Licq::User::OfflineStatus)
     s = IcqProtocol::icqStatusFromStatus(user->statusToUser());
@@ -1036,7 +1036,7 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
       "", _bAccept, l ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL, pUser)
 {
   m_nSequence = _nSequence;
-  Licq::OwnerReadGuard o(LICQ_PPID);
+  Licq::OwnerReadGuard o(gIcqProtocol.ownerId());
 
   // don't sent out AutoResponse if we're online
   // it could contain stuff the other site shouldn't be able to read
@@ -1353,7 +1353,7 @@ CPT_InfoPhoneBookResp::CPT_InfoPhoneBookResp(User* _cUser,
   unsigned short nSequence)
   : CPacketTcp(ICQ_CMDxTCP_ACK, 0, DcSocket::ChannelInfo, "\x01", true, ICQ_TCPxMSG_URGENT2, _cUser)
 {
-  OwnerReadGuard o;
+  OwnerReadGuard o(gIcqProtocol.ownerId());
   const Licq::ICQUserPhoneBook& book = o->GetPhoneBook();
 
   unsigned long num_entries;
@@ -1423,7 +1423,7 @@ CPT_InfoPhoneBookResp::CPT_InfoPhoneBookResp(User* _cUser,
 CPT_InfoPictureResp::CPT_InfoPictureResp(User* _cUser, unsigned short nSequence)
   : CPacketTcp(ICQ_CMDxTCP_ACK, 0, DcSocket::ChannelInfo, "\x01", true, ICQ_TCPxMSG_URGENT2, _cUser)
 {
-  OwnerReadGuard o;
+  OwnerReadGuard o(gIcqProtocol.ownerId());
   string filename = o->pictureFileName();
   unsigned long nLen = 0, nFileLen = 0;
   int fd = -1;
@@ -1536,7 +1536,7 @@ CPT_InfoPluginListResp::CPT_InfoPluginListResp(User* _cUser, unsigned short nSeq
   buffer->PackUnsignedShort(0);   //Unknown
   buffer->PackUnsignedShort(1);   //Unknown
   {
-    OwnerReadGuard o;
+    OwnerReadGuard o(gIcqProtocol.ownerId());
     buffer->PackUnsignedLong(o->ClientInfoTimestamp());
   }
   buffer->PackUnsignedLong(nLen);  //Bytes remaining in packet
@@ -1609,7 +1609,7 @@ CPT_StatusPluginListResp::CPT_StatusPluginListResp(User* _cUser, unsigned short 
   buffer->PackUnsignedLong(0);    //Unknown
   buffer->PackChar(1);            //Unknown
   {
-    OwnerReadGuard o;
+    OwnerReadGuard o(gIcqProtocol.ownerId());
     buffer->PackUnsignedLong(o->ClientStatusTimestamp());
   }
   buffer->PackUnsignedLong(nLen);  //Bytes remaining in packet
@@ -1650,7 +1650,7 @@ CPT_StatusPluginResp::CPT_StatusPluginResp(User* _cUser,
   buffer->PackUnsignedShort(1);   //Unknown
   buffer->PackUnsignedLong(nStatus);
   {
-    OwnerReadGuard o;
+    OwnerReadGuard o(gIcqProtocol.ownerId());
     buffer->PackUnsignedLong(o->ClientStatusTimestamp());
   }
   buffer->PackChar(1);            //Unknown

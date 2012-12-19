@@ -874,7 +874,7 @@ CPU_SetPrivacy::CPU_SetPrivacy(unsigned char _cPrivacy)
 
   unsigned short nPDINFO;
   {
-    OwnerReadGuard o;
+    OwnerReadGuard o(gIcqProtocol.ownerId());
     nPDINFO = o->GetPDINFO();
   }
 
@@ -957,7 +957,7 @@ void CPU_SetStatusFamily::InitBuffer()
   
   /* should eventually switch to some other way to identify licq, probably
      use capabilities */
-  OwnerReadGuard o;
+  OwnerReadGuard o(gIcqProtocol.ownerId());
 #ifdef USE_OPENSSL
    buffer->PackUnsignedLongBE(LICQ_WITHSSL | LICQ_VERSION);
 #else
@@ -982,7 +982,7 @@ CPU_UpdateInfoTimestamp::CPU_UpdateInfoTimestamp(const uint8_t* GUID)
 {
   unsigned long timestamp;
   {
-    OwnerReadGuard o;
+    OwnerReadGuard o(gIcqProtocol.ownerId());
     m_nNewStatus = IcqProtocol::addStatusFlags(IcqProtocol::icqStatusFromStatus(o->status()), *o);
     timestamp = o->ClientInfoTimestamp();
   }
@@ -1009,7 +1009,7 @@ CPU_UpdateStatusTimestamp::CPU_UpdateStatusTimestamp(const uint8_t* GUID,
 {
   unsigned long clientTime;
   {
-    OwnerReadGuard o;
+    OwnerReadGuard o(gIcqProtocol.ownerId());
     m_nNewStatus = nStatus != ICQ_STATUS_OFFLINE ? nStatus :
         IcqProtocol::addStatusFlags(IcqProtocol::icqStatusFromStatus(o->status()), *o);
     clientTime = o->ClientStatusTimestamp();
@@ -1037,7 +1037,7 @@ CPU_UpdateStatusTimestamp::CPU_UpdateStatusTimestamp(const uint8_t* GUID,
 CPU_UpdateTimestamp::CPU_UpdateTimestamp()
   : CPU_SetStatusFamily()
 {
-  OwnerReadGuard o;
+  OwnerReadGuard o(gIcqProtocol.ownerId());
   m_nNewStatus = IcqProtocol::addStatusFlags(IcqProtocol::icqStatusFromStatus(o->status()), *o);
 
   m_nSize += 4 + 1 + 4;
@@ -1359,7 +1359,7 @@ void CPU_Type2Message::InitBuffer()
 {
 	CPU_CommonFamily::InitBuffer();
 
-  Licq::OwnerReadGuard o(LICQ_PPID);
+  Licq::OwnerReadGuard o(gIcqProtocol.ownerId());
 
   int nUinLen = m_pUser->accountId().size();
 
@@ -1544,7 +1544,7 @@ CPU_InfoPluginListResp::CPU_InfoPluginListResp(const ICQUser *u,
   buffer->PackUnsignedShort(1);
 
   {
-    OwnerReadGuard o;
+    OwnerReadGuard o(gIcqProtocol.ownerId());
     buffer->PackUnsignedLong(o->ClientInfoTimestamp());
   }
   buffer->PackUnsignedLong(nLen);
@@ -1577,7 +1577,7 @@ CPU_InfoPhoneBookResp::CPU_InfoPhoneBookResp(const ICQUser* u, unsigned long nMs
   : CPU_AckThroughServer(u, nMsgID1, nMsgID2, nSequence, 0, true,
                          ICQ_TCPxMSG_URGENT2, PLUGIN_INFOxMANAGER)
 {
-  OwnerReadGuard o;
+  OwnerReadGuard o(gIcqProtocol.ownerId());
   const Licq::ICQUserPhoneBook& book = o->GetPhoneBook();
 
   unsigned long num_entries;
@@ -1647,7 +1647,7 @@ CPU_InfoPictureResp::CPU_InfoPictureResp(const ICQUser* u, unsigned long nMsgID1
  : CPU_AckThroughServer(u, nMsgID1, nMsgID2, nSequence, 0, true,
                          ICQ_TCPxMSG_URGENT2, PLUGIN_INFOxMANAGER)
 {
-  OwnerReadGuard o;
+  OwnerReadGuard o(gIcqProtocol.ownerId());
   string filename = o->pictureFileName();
   unsigned long nLen = 0, nFileLen = 0;
   int fd = -1;
@@ -1781,7 +1781,7 @@ CPU_StatusPluginListResp::CPU_StatusPluginListResp(const ICQUser* u,
   buffer->PackUnsignedLong(0);    //Unknown
   buffer->PackChar(1);            //Unknown
   {
-    OwnerReadGuard o;
+    OwnerReadGuard o(gIcqProtocol.ownerId());
     buffer->PackUnsignedLong(o->ClientStatusTimestamp());
   }
   buffer->PackUnsignedLong(nLen);  //Bytes remaining in packet
@@ -1825,7 +1825,7 @@ CPU_StatusPluginResp::CPU_StatusPluginResp(const ICQUser* u, unsigned long nMsgI
   buffer->PackUnsignedShort(1);   //Unknown
 
   buffer->PackUnsignedLong(nStatus);
-  OwnerReadGuard o;
+  OwnerReadGuard o(gIcqProtocol.ownerId());
   buffer->PackUnsignedLong(o->ClientStatusTimestamp());
   buffer->PackChar(1);            //Unknown
 }
@@ -1874,7 +1874,7 @@ void CPU_AdvancedMessage::InitBuffer()
 
   unsigned short nStatus;
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
+    Licq::OwnerReadGuard o(gIcqProtocol.ownerId());
     if (m_pUser->statusToUser() != Licq::User::OfflineStatus)
       nStatus = IcqProtocol::icqStatusFromStatus(m_pUser->statusToUser());
     else
@@ -2069,7 +2069,7 @@ CPU_AckThroughServer::CPU_AckThroughServer(const ICQUser* u,
   }
   else
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
+    Licq::OwnerReadGuard o(gIcqProtocol.ownerId());
     unsigned short s;
     if (u->statusToUser() != Licq::User::OfflineStatus)
       s = IcqProtocol::icqStatusFromStatus(u->statusToUser());
@@ -2276,7 +2276,7 @@ CPU_SendSms::CPU_SendSms(const string& number, const string& message)
   string parsedNumber = IcqProtocol::parseDigits(number);
 
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
+    Licq::OwnerReadGuard o(gIcqProtocol.ownerId());
     snprintf(szXmlStr, 460, "<icq_sms_message><destination>%s</destination><text>%.160s</text><codepage>1252</codepage><encoding>utf8</encoding><senders_UIN>%s</senders_UIN><senders_name>%s</senders_name><delivery_receipt>Yes</delivery_receipt><time>%s</time></icq_sms_message>",
         parsedNumber.c_str(), message.c_str(), o->accountId().c_str(), o->getAlias().c_str(), szTime);
     szXmlStr[459] = '\0';
@@ -2371,7 +2371,7 @@ CPU_RequestList::CPU_RequestList()
   m_nSize += 6;
   InitBuffer();
 
-  OwnerReadGuard o;
+  OwnerReadGuard o(gIcqProtocol.ownerId());
   buffer->PackUnsignedLongBE(o->GetSSTime());
   buffer->PackUnsignedShortBE(o->GetSSCount());
 }
@@ -2394,7 +2394,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
   unsigned short m_nSID = 0;
   unsigned short m_nGSID = 0;
   int nSize = 0;
-  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
+  Licq::UserId ownerId(gIcqProtocol.ownerId());
 
   list<UserId>::const_iterator i;
   for (i = users.begin(); i != users.end(); ++i)
@@ -2419,7 +2419,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
     int nLen;
     string unicodeName;
 
-    m_nSID = IcqProtocol::generateSid();
+    m_nSID = gIcqProtocol.generateSid();
 
     // Save the SID
     UserWriteGuard u(*i);
@@ -2476,7 +2476,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
         if (m_nGSID == 0)
           m_nGSID = 1; // Must never actually reach this point
 
-        u->addToGroup(IcqProtocol::getGroupFromId(m_nGSID));
+        u->addToGroup(gIcqProtocol.getGroupFromId(m_nGSID));
       }
 
       u->SetGSID(m_nGSID);
@@ -2512,7 +2512,7 @@ CPU_ExportGroupsToServerList::CPU_ExportGroupsToServerList(const GroupNameMap& g
 {
   int nSize = 0;
   int nGSID = 0;
-  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
+  Licq::UserId ownerId(gIcqProtocol.ownerId());
 
   GroupNameMap::const_iterator g;
   for (g = groups.begin(); g != groups.end(); ++g)
@@ -2530,7 +2530,7 @@ CPU_ExportGroupsToServerList::CPU_ExportGroupsToServerList(const GroupNameMap& g
 
   for (g = groups.begin(); g != groups.end(); g++)
   {
-    nGSID = IcqProtocol::generateSid();
+    nGSID = gIcqProtocol.generateSid();
 
     Licq::gUserManager.setGroupServerId(g->first, ownerId, nGSID);
 
@@ -2550,11 +2550,11 @@ CPU_AddPDINFOToServerList::CPU_AddPDINFOToServerList()
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxADD), m_nSID(0),
     m_nGSID(0)
 {
-  m_nSID = IcqProtocol::generateSid();
+  m_nSID = gIcqProtocol.generateSid();
   m_nSize += 15;
   InitBuffer();
 
-  OwnerWriteGuard o;
+  OwnerWriteGuard o(gIcqProtocol.ownerId());
   o->SetPDINFO(m_nSID);
 
   buffer->PackUnsignedShortBE(0);
@@ -2571,10 +2571,10 @@ CPU_AddToServerList::CPU_AddToServerList(const Licq::UserId& userId,
                                          unsigned short _nType,
                                          unsigned short _nGroup, bool _bAuthReq)
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxADD),
-    m_nSID(IcqProtocol::generateSid()),
+    m_nSID(gIcqProtocol.generateSid()),
     m_nGSID(0)
 {
-  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
+  Licq::UserId ownerId(gIcqProtocol.ownerId());
 
   switch (_nType)
   {
@@ -2645,7 +2645,7 @@ CPU_AddToServerList::CPU_AddToServerList(const Licq::UserId& userId,
 
       SetExtraInfo(m_nGSID);
       u->SetGSID(m_nGSID);
-      u->addToGroup(IcqProtocol::getGroupFromId(m_nGSID));
+      u->addToGroup(gIcqProtocol.getGroupFromId(m_nGSID));
 
       break;
     }
@@ -2679,9 +2679,9 @@ CPU_AddToServerList::CPU_AddToServerList(const std::string& groupName,
     bool _bAuthReq, bool _bTopLevel)
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxADD),
     m_nSID(0),
-    m_nGSID(_bTopLevel ? 0 : IcqProtocol::generateSid())
+    m_nGSID(_bTopLevel ? 0 : gIcqProtocol.generateSid())
 {
-  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
+  Licq::UserId ownerId(gIcqProtocol.ownerId());
   SetExtraInfo(0);
 
   if (!_bTopLevel)
@@ -2713,7 +2713,7 @@ void CPU_AddToServerList::init(const string& name, unsigned short _nType, bool _
   {
     if (_bTopLevel)
     {
-      Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
+      Licq::UserId ownerId(gIcqProtocol.ownerId());
 
       // We are creating our top level group, so attach all the group ids now
       buffer->PackUnsignedShortBE(0x00C8);
@@ -2919,7 +2919,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const string& name, unsigned shor
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxUPD_GROUP)
 {
   unsigned short nExtraLen = 0;
-  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
+  Licq::UserId ownerId(gIcqProtocol.ownerId());
 
   if (nGSID == 0)
   {
@@ -3776,7 +3776,7 @@ CPU_Meta_SetSecurityInfo::CPU_Meta_SetSecurityInfo(
 CPU_Meta_RequestAllInfo::CPU_Meta_RequestAllInfo(const Licq::UserId& userId)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
-  if (userId == gUserManager.ownerUserId(LICQ_PPID))
+  if (userId == gIcqProtocol.ownerId())
     m_nMetaCommand = ICQ_CMDxMETA_REQUESTxALLxINFO;
   else
     m_nMetaCommand = ICQ_CMDxMETA_REQUESTxALLxINFOxOWNER;

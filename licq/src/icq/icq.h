@@ -210,7 +210,7 @@ public:
   void icqRequestAuth(const Licq::UserId& userId, const std::string& message);
   void icqAlertUser(const Licq::UserId& userId);
   void icqUpdateInfoTimestamp(const ProtoUpdateTimestampSignal* ps);
-  void icqSetPhoneFollowMeStatus(const Licq::UserId& ownerId, unsigned newStatus);
+  void icqSetPhoneFollowMeStatus(unsigned newStatus);
   void icqUpdateContactList();
   void icqCheckInvisible(const Licq::UserId& userId);
   void icqSendSms(const ProtoSendSmsSignal* ps);
@@ -225,7 +225,7 @@ public:
   void icqCloseSecureChannel(const Licq::ProtocolSignal* ps);
   void icqOpenSecureChannelCancel(const Licq::UserId& userId, unsigned short nSequence);
   void icqFetchAutoResponseServer(const Licq::ProtocolSignal* ps);
-  unsigned long logon(unsigned logonStatus);
+  void logon(const Licq::UserId& ownerId, unsigned logonStatus);
   unsigned long icqRequestLogonSalt();
   unsigned long icqUserBasicInfo(const Licq::UserId& userId);
   void icqRequestMetaInfo(const Licq::UserId& userId, const Licq::ProtocolSignal* ps = NULL);
@@ -270,7 +270,7 @@ public:
      unsigned long nIntIp, Licq::TCPSocket* sock, unsigned short nPort,
      bool bSendIntIp);
 
-  void updateAllUsersInGroup(const Licq::UserId& ownerId, int groupId = 0);
+  void updateAllUsersInGroup(int groupId = 0);
   void CancelEvent(unsigned long );
   void CancelEvent(Licq::Event*);
 
@@ -353,11 +353,13 @@ public:
   static unsigned statusFromIcqStatus(unsigned short icqStatus);
   static unsigned long addStatusFlags(unsigned long nStatus, const User* u);
 
-  static int getGroupFromId(unsigned short gsid);
+  int getGroupFromId(unsigned short gsid);
 
-  static unsigned short generateSid();
+  unsigned short generateSid();
 
-  static unsigned long icqOwnerUin();
+  unsigned long icqOwnerUin();
+
+  const Licq::UserId& ownerId() const { return myOwnerId; }
 
   static std::string parseDigits(const std::string& number);
   static std::string parseRtf(const std::string& rtf);
@@ -464,6 +466,9 @@ private:
   std::string detectUserClient(const char* caps, int capSize, int userClass,
       int tcpVersion, unsigned ts1, unsigned ts2, unsigned ts3,
       time_t onlineSince, int webPort);
+
+  /// Id of owner this protocol is currently working for
+  Licq::UserId myOwnerId;
 
   Licq::Pipe myNewSocketPipe;
   unsigned long m_nDesiredStatus;
