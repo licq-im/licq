@@ -36,179 +36,12 @@
 using std::string;
 using std::vector;
 using namespace LicqIcq;
-using Licq::ICQUserPhoneBook;
 using Licq::IcqUser;
 using Licq::IniFile;
 using Licq::PhoneBookEntry;
 using Licq::UserCategoryMap;
 using Licq::gLog;
 
-
-ICQUserPhoneBook::ICQUserPhoneBook()
-{
-}
-
-ICQUserPhoneBook::~ICQUserPhoneBook()
-{
-  Clean();
-}
-
-void ICQUserPhoneBook::AddEntry(const struct PhoneBookEntry *entry)
-{
-  struct PhoneBookEntry new_entry = *entry;
-
-  PhoneBookVector.push_back(new_entry);
-}
-
-void ICQUserPhoneBook::SetEntry(const struct PhoneBookEntry *entry,
-                                unsigned long nEntry)
-{
-  if (nEntry >= PhoneBookVector.size())
-  {
-    AddEntry(entry);
-    return;
-  }
-
-  PhoneBookVector[nEntry] = *entry;
-}
-
-void ICQUserPhoneBook::ClearEntry(unsigned long nEntry)
-{
-  if (nEntry >= PhoneBookVector.size())
-    return;
-
-  vector<struct PhoneBookEntry>::iterator i = PhoneBookVector.begin();
-  for (;nEntry > 0; nEntry--, ++i)
-    ;
-
-  PhoneBookVector.erase(i);
-}
-
-void ICQUserPhoneBook::Clean()
-{
-  while (PhoneBookVector.size() > 0)
-    ClearEntry(PhoneBookVector.size() - 1);
-}
-
-void ICQUserPhoneBook::SetActive(long nEntry)
-{
-  vector<struct PhoneBookEntry>::iterator iter;
-  long i;
-  for (i = 0, iter = PhoneBookVector.begin(); iter != PhoneBookVector.end()
-                                                 ; i++, ++iter)
-    (*iter).nActive = (i == nEntry);
-}
-
-bool ICQUserPhoneBook::Get(unsigned long nEntry,
-    const struct PhoneBookEntry **entry) const
-{
-  if (nEntry >= PhoneBookVector.size())
-    return false;
-
-  *entry = &PhoneBookVector[nEntry];
-  return true;
-}
-
-bool ICQUserPhoneBook::SaveToDisk(IniFile& conf)
-{
-  char buff[40];
-
-  conf.set("PhoneEntries", (unsigned long)PhoneBookVector.size());
-
-  for (unsigned long i = 0 ; i < PhoneBookVector.size(); i++)
-  {
-    snprintf(buff, sizeof(buff), "PhoneDescription%lu", i);
-    conf.set(buff, PhoneBookVector[i].description);
-
-    snprintf(buff, sizeof(buff), "PhoneAreaCode%lu", i);
-    conf.set(buff, PhoneBookVector[i].areaCode);
-
-    snprintf(buff, sizeof(buff), "PhoneNumber%lu", i);
-    conf.set(buff, PhoneBookVector[i].phoneNumber);
-
-    snprintf(buff, sizeof(buff), "PhoneExtension%lu", i);
-    conf.set(buff, PhoneBookVector[i].extension);
-
-    snprintf(buff, sizeof(buff), "PhoneCountry%lu", i);
-    conf.set(buff, PhoneBookVector[i].country);
-
-    snprintf(buff, sizeof(buff), "PhoneActive%lu", i);
-    conf.set(buff, PhoneBookVector[i].nActive);
-
-    snprintf(buff, sizeof(buff), "PhoneType%lu", i);
-    conf.set(buff, PhoneBookVector[i].nType);
-
-    snprintf(buff, sizeof(buff), "PhoneGateway%lu", i);
-    conf.set(buff, PhoneBookVector[i].gateway);
-
-    snprintf(buff, sizeof(buff), "PhoneGatewayType%lu", i);
-    conf.set(buff, PhoneBookVector[i].nGatewayType);
-
-    snprintf(buff, sizeof(buff), "PhoneSmsAvailable%lu", i);
-    conf.set(buff, PhoneBookVector[i].nSmsAvailable);
-
-    snprintf(buff, sizeof(buff), "PhoneRemoveLeading0s%lu", i);
-    conf.set(buff, PhoneBookVector[i].nRemoveLeading0s);
-
-    snprintf(buff, sizeof(buff), "PhonePublish%lu", i);
-    conf.set(buff, PhoneBookVector[i].nPublish);
-  }
-
-  return true;
-}
-
-bool ICQUserPhoneBook::LoadFromDisk(IniFile& conf)
-{
-  char buff[40];
-  struct PhoneBookEntry entry;
-
-  Clean();
-
-  unsigned long nNumEntries;
-  conf.get("PhoneEntries", nNumEntries);
-  for (unsigned long i = 0; i < nNumEntries; i++)
-  {
-    snprintf(buff, sizeof(buff), "PhoneDescription%lu", i);
-    conf.get(buff, entry.description, "");
-
-    snprintf(buff, sizeof(buff), "PhoneAreaCode%lu", i);
-    conf.get(buff, entry.areaCode, "");
-
-    snprintf(buff, sizeof(buff), "PhoneNumber%lu", i);
-    conf.get(buff, entry.phoneNumber, "");
-
-    snprintf(buff, sizeof(buff), "PhoneExtension%lu", i);
-    conf.get(buff, entry.extension, "");
-
-    snprintf(buff, sizeof(buff), "PhoneCountry%lu", i);
-    conf.get(buff, entry.country, "");
-
-    snprintf(buff, sizeof(buff), "PhoneActive%lu", i);
-    conf.get(buff, entry.nActive, 0);
-
-    snprintf(buff, sizeof(buff), "PhoneType%lu", i);
-    conf.get(buff, entry.nType, 0);
-
-    snprintf(buff, sizeof(buff), "PhoneGateway%lu", i);
-    conf.get(buff, entry.gateway, "");
-
-    snprintf(buff, sizeof(buff), "PhoneGatewayType%lu", i);
-    conf.get(buff, entry.nGatewayType, 1);
-
-    snprintf(buff, sizeof(buff), "PhoneSmsAvailable%lu", i);
-    conf.get(buff, entry.nSmsAvailable, 0);
-
-    snprintf(buff, sizeof(buff), "PhoneRemoveLeading0s%lu", i);
-    conf.get(buff, entry.nRemoveLeading0s, 1);
-
-    snprintf(buff, sizeof(buff), "PhonePublish%lu", i);
-    conf.get(buff, entry.nPublish, 2);
-
-    AddEntry(&entry);
-  }
-
-  return true;
-}
 
 IcqUser::IcqUser(const Licq::UserId& id, bool temporary, bool isOwner)
   : Licq::User(id, temporary, isOwner)
@@ -277,7 +110,50 @@ User::User(const Licq::UserId& id, bool temporary, bool isOwner)
   loadCategory(myBackgrounds, "Backgrounds");
   loadCategory(myOrganizations, "Organizations");
 
-  myPhoneBook.LoadFromDisk(conf);
+  // Load Phone book
+  unsigned long numPhoneEntries;
+  conf.get("PhoneEntries", numPhoneEntries);
+  myPhoneBook.resize(numPhoneEntries);
+  for (unsigned long i = 0; i < numPhoneEntries; i++)
+  {
+    char buff[40];
+
+    snprintf(buff, sizeof(buff), "PhoneDescription%lu", i);
+    conf.get(buff, myPhoneBook[i].description, "");
+
+    snprintf(buff, sizeof(buff), "PhoneAreaCode%lu", i);
+    conf.get(buff, myPhoneBook[i].areaCode, "");
+
+    snprintf(buff, sizeof(buff), "PhoneNumber%lu", i);
+    conf.get(buff, myPhoneBook[i].phoneNumber, "");
+
+    snprintf(buff, sizeof(buff), "PhoneExtension%lu", i);
+    conf.get(buff, myPhoneBook[i].extension, "");
+
+    snprintf(buff, sizeof(buff), "PhoneCountry%lu", i);
+    conf.get(buff, myPhoneBook[i].country, "");
+
+    snprintf(buff, sizeof(buff), "PhoneActive%lu", i);
+    conf.get(buff, myPhoneBook[i].nActive, 0);
+
+    snprintf(buff, sizeof(buff), "PhoneType%lu", i);
+    conf.get(buff, myPhoneBook[i].nType, 0);
+
+    snprintf(buff, sizeof(buff), "PhoneGateway%lu", i);
+    conf.get(buff, myPhoneBook[i].gateway, "");
+
+    snprintf(buff, sizeof(buff), "PhoneGatewayType%lu", i);
+    conf.get(buff, myPhoneBook[i].nGatewayType, 1);
+
+    snprintf(buff, sizeof(buff), "PhoneSmsAvailable%lu", i);
+    conf.get(buff, myPhoneBook[i].nSmsAvailable, 0);
+
+    snprintf(buff, sizeof(buff), "PhoneRemoveLeading0s%lu", i);
+    conf.get(buff, myPhoneBook[i].nRemoveLeading0s, 1);
+
+    snprintf(buff, sizeof(buff), "PhonePublish%lu", i);
+    conf.get(buff, myPhoneBook[i].nPublish, 2);
+  }
 }
 
 User::~User()
@@ -317,7 +193,49 @@ void User::saveUserInfo()
   saveCategory(myInterests, "Interests");
   saveCategory(myBackgrounds, "Backgrounds");
   saveCategory(myOrganizations, "Organizations");
-  myPhoneBook.SaveToDisk(conf);
+
+  // Save phone book
+  conf.set("PhoneEntries", myPhoneBook.size());
+  for (unsigned long i = 0 ; i < myPhoneBook.size(); i++)
+  {
+    char buff[40];
+    snprintf(buff, sizeof(buff), "PhoneDescription%lu", i);
+    conf.set(buff, myPhoneBook[i].description);
+
+    snprintf(buff, sizeof(buff), "PhoneAreaCode%lu", i);
+    conf.set(buff, myPhoneBook[i].areaCode);
+
+    snprintf(buff, sizeof(buff), "PhoneNumber%lu", i);
+    conf.set(buff, myPhoneBook[i].phoneNumber);
+
+    snprintf(buff, sizeof(buff), "PhoneExtension%lu", i);
+    conf.set(buff, myPhoneBook[i].extension);
+
+    snprintf(buff, sizeof(buff), "PhoneCountry%lu", i);
+    conf.set(buff, myPhoneBook[i].country);
+
+    snprintf(buff, sizeof(buff), "PhoneActive%lu", i);
+    conf.set(buff, myPhoneBook[i].nActive);
+
+    snprintf(buff, sizeof(buff), "PhoneType%lu", i);
+    conf.set(buff, myPhoneBook[i].nType);
+
+    snprintf(buff, sizeof(buff), "PhoneGateway%lu", i);
+    conf.set(buff, myPhoneBook[i].gateway);
+
+    snprintf(buff, sizeof(buff), "PhoneGatewayType%lu", i);
+    conf.set(buff, myPhoneBook[i].nGatewayType);
+
+    snprintf(buff, sizeof(buff), "PhoneSmsAvailable%lu", i);
+    conf.set(buff, myPhoneBook[i].nSmsAvailable);
+
+    snprintf(buff, sizeof(buff), "PhoneRemoveLeading0s%lu", i);
+    conf.set(buff, myPhoneBook[i].nRemoveLeading0s);
+
+    snprintf(buff, sizeof(buff), "PhonePublish%lu", i);
+    conf.set(buff, myPhoneBook[i].nPublish);
+  }
+
 }
 
 void User::savePictureInfo()

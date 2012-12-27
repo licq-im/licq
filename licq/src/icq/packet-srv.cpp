@@ -1578,17 +1578,15 @@ CPU_InfoPhoneBookResp::CPU_InfoPhoneBookResp(const ICQUser* u, unsigned long nMs
                          ICQ_TCPxMSG_URGENT2, PLUGIN_INFOxMANAGER)
 {
   OwnerReadGuard o(gIcqProtocol.ownerId());
-  const Licq::ICQUserPhoneBook& book = o->GetPhoneBook();
+  const Licq::IcqPhoneBookVector& book = o->getPhoneBook();
 
-  unsigned long num_entries;
   unsigned long nLen = 4 + 4;
-  const struct Licq::PhoneBookEntry* entry;
-  for (num_entries = 0; book.Get(num_entries, &entry); num_entries++)
+  BOOST_FOREACH(const struct Licq::PhoneBookEntry& entry, book)
   {
-    nLen += 4 + entry->description.size() + 4 + entry->areaCode.size()
-        + 4 + entry->phoneNumber.size() + 4 + entry->extension.size()
-        + 4 + entry->country.size() + 4 + 4 + 4
-        + 4 + entry->gateway.size() + 4 + 4 + 4 + 4;
+    nLen += 4 + entry.description.size() + 4 + entry.areaCode.size()
+        + 4 + entry.phoneNumber.size() + 4 + entry.extension.size()
+        + 4 + entry.country.size() + 4 + 4 + 4
+        + 4 + entry.gateway.size() + 4 + 4 + 4 + 4;
   }
 
   m_nSize += 2 + 2 + 4 + 4 + nLen;
@@ -1601,42 +1599,27 @@ CPU_InfoPhoneBookResp::CPU_InfoPhoneBookResp(const ICQUser* u, unsigned long nMs
 
   buffer->PackUnsignedLong(ICQ_PLUGIN_RESP_PHONExBOOK); //Response ID
 
-  buffer->PackUnsignedLong(num_entries);
+  buffer->PackUnsignedLong(book.size());
 
-  for (unsigned long i = 0; book.Get(i, &entry); i++)
+  BOOST_FOREACH(const struct Licq::PhoneBookEntry& entry, book)
   {
-    buffer->PackUnsignedLong(entry->description.size());
-    buffer->pack(entry->description);
-
-    buffer->PackUnsignedLong(entry->areaCode.size());
-    buffer->pack(entry->areaCode);
-
-    buffer->PackUnsignedLong(entry->phoneNumber.size());
-    buffer->pack(entry->phoneNumber);
-
-    buffer->PackUnsignedLong(entry->extension.size());
-    buffer->pack(entry->extension);
-
-    buffer->PackUnsignedLong(entry->country.size());
-    buffer->pack(entry->country);
-
-    buffer->PackUnsignedLong(entry->nActive);
+    buffer->packString32LE(entry.description);
+    buffer->packString32LE(entry.areaCode);
+    buffer->packString32LE(entry.phoneNumber);
+    buffer->packString32LE(entry.extension);
+    buffer->packString32LE(entry.country);
+    buffer->packUInt32LE(entry.nActive);
   }
 
-  for (unsigned long i = 0; book.Get(i, &entry); i++)
+  BOOST_FOREACH(const struct Licq::PhoneBookEntry& entry, book)
   {
-    unsigned long sLen = entry->gateway.size();
-    buffer->PackUnsignedLong(4 + 4 + sLen + 4 + 4 + 4 + 4);
-
-    buffer->PackUnsignedLong(entry->nType);
-
-    buffer->PackUnsignedLong(sLen);
-    buffer->pack(entry->gateway);
-
-    buffer->PackUnsignedLong(entry->nGatewayType);
-    buffer->PackUnsignedLong(entry->nSmsAvailable);
-    buffer->PackUnsignedLong(entry->nRemoveLeading0s);
-    buffer->PackUnsignedLong(entry->nPublish);
+    buffer->packUInt32LE(4 + 4 + entry.gateway.size() + 4 + 4 + 4 + 4);
+    buffer->packUInt32LE(entry.nType);
+    buffer->packString32LE(entry.gateway);
+    buffer->packUInt32LE(entry.nGatewayType);
+    buffer->packUInt32LE(entry.nSmsAvailable);
+    buffer->packUInt32LE(entry.nRemoveLeading0s);
+    buffer->packUInt32LE(entry.nPublish);
   }
 }
 

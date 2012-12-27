@@ -21,6 +21,7 @@
 
 #include "config.h"
 
+#include <boost/foreach.hpp>
 #include <cstring>
 
 #include <QCheckBox>
@@ -75,8 +76,6 @@ UserPages::Info::Info(bool isOwner, unsigned long protocolId, UserDlg* parent)
     m_bOwner(isOwner),
     myAliasHasChanged(false)
 {
-  m_PhoneBook = NULL;
-
   parent->addPage(UserDlg::GeneralPage, createPageGeneral(parent),
       tr("Info"));
   if (myPpid == LICQ_PPID)
@@ -1036,14 +1035,7 @@ QWidget* UserPages::Info::createPagePhoneBook(QWidget* parent)
 
 void UserPages::Info::loadPagePhoneBook(const Licq::IcqUser* u)
 {
-  if (m_PhoneBook != NULL)
-    delete m_PhoneBook;
-
-  m_PhoneBook = new Licq::ICQUserPhoneBook();
-  const struct Licq::PhoneBookEntry* entry;
-  for (unsigned long i = 0; u->GetPhoneBook().Get(i, &entry); i++)
-    m_PhoneBook->AddEntry(entry);
-
+  myIcqPhoneBook = u->getPhoneBook();
   updatePhoneBook();
 }
 
@@ -1060,9 +1052,9 @@ void UserPages::Info::updatePhoneBook()
     nfoActive->clear();
 
   QTreeWidgetItem* lsv = NULL;
-  const struct Licq::PhoneBookEntry* entry;
-  for (unsigned long i = 0; m_PhoneBook->Get(i, &entry); i++)
+  for (Licq::IcqPhoneBookVector::size_type i = 0; i < myIcqPhoneBook.size(); ++i)
   {
+    const struct Licq::PhoneBookEntry* entry = &myIcqPhoneBook[i];
     QString description = QString::fromUtf8(entry->description.c_str());
     QString number;
     QString country;
@@ -1166,17 +1158,19 @@ void UserPages::Info::updatePhoneBook()
 
 void UserPages::Info::savePagePhoneBook(Licq::IcqUser* u)
 {
-  u->GetPhoneBook().Clean();
-  const struct Licq::PhoneBookEntry* entry;
-  for (unsigned long i = 0; m_PhoneBook->Get(i, &entry); i++)
-    u->GetPhoneBook().AddEntry(entry);
+  u->getPhoneBook() = myIcqPhoneBook;
 }
 
 void UserPages::Info::clearPhone()
 {
   unsigned long nSelection = lsvPhoneBook->indexOfTopLevelItem(lsvPhoneBook->currentItem());
 
-  m_PhoneBook->ClearEntry(nSelection);
+  Licq::IcqPhoneBookVector::iterator i;
+  for (i = myIcqPhoneBook.begin(); nSelection > 0; --nSelection, ++i)
+    ;
+
+  myIcqPhoneBook.erase(i);
+
   updatePhoneBook();
 }
 
@@ -1379,9 +1373,9 @@ void UserPages::Info::phoneBookUpdated(struct Licq::PhoneBookEntry& pbe, int ent
   pbe.nPublish = Licq::PUBLISH_DISABLE;
 
   if (entryNum == -1)
-    m_PhoneBook->AddEntry(&pbe);
+    myIcqPhoneBook.push_back(pbe);
   else
-    m_PhoneBook->SetEntry(&pbe, entryNum);
+    myIcqPhoneBook[entryNum] = pbe;
 
   updatePhoneBook();
 }
@@ -1390,8 +1384,7 @@ void UserPages::Info::editPhoneEntry(QTreeWidgetItem* selected)
 {
   unsigned long nSelection = lsvPhoneBook->indexOfTopLevelItem(selected);
 
-  const struct Licq::PhoneBookEntry* entry;
-  m_PhoneBook->Get(nSelection, &entry);
+  const struct Licq::PhoneBookEntry* entry = &myIcqPhoneBook[nSelection];
 
   EditPhoneDlg* epd = new EditPhoneDlg(dynamic_cast<UserDlg*>(parent()), entry, nSelection);
   connect(epd, SIGNAL(updated(struct Licq::PhoneBookEntry&, int)),
@@ -1401,7 +1394,8 @@ void UserPages::Info::editPhoneEntry(QTreeWidgetItem* selected)
 
 void UserPages::Info::changeActivePhone(int index)
 {
-  m_PhoneBook->SetActive(index - 1);
+  for (Licq::IcqPhoneBookVector::size_type i = 0; i < myIcqPhoneBook.size(); ++i)
+    myIcqPhoneBook[i].nActive = (index == (int)i);
 
   updatePhoneBook();
 }

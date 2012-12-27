@@ -460,7 +460,7 @@ private:
   InfoField* nfoActive;
   QPushButton* myPhoneAddButton;
   QPushButton* myPhoneClearButton;
-  Licq::ICQUserPhoneBook* m_PhoneBook;
+  Licq::IcqPhoneBookVector myIcqPhoneBook;
 
   // Picture
   QVBoxLayout* myPagePictureLayout;

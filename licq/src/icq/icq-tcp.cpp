@@ -2843,10 +2843,10 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, User* u,
             }
 
             u->SetEnableSave(false);
-                u->GetPhoneBook().Clean();
+                u->getPhoneBook().clear();
             for (unsigned long i = 0; i < nEntries; i++)
             {
-                  u->GetPhoneBook().AddEntry(&pb[i]);
+                  u->getPhoneBook().push_back(pb[i]);
                 }
             u->SetEnableSave(true);
                 u->save(User::SaveUserInfo);

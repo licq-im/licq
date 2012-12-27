@@ -112,27 +112,8 @@ enum EPublish
   PUBLISH_DISABLE = 2,
 };
 
-class ICQUserPhoneBook
-{
-public:
-  ICQUserPhoneBook();
-  ~ICQUserPhoneBook();
-  void AddEntry(const struct PhoneBookEntry* entry);
-  void SetEntry(const struct PhoneBookEntry* entry, unsigned long nEntry);
-  void ClearEntry(unsigned long nEntry);
-  void Clean();
-  void SetActive(long nEntry);
 
-  bool Get(unsigned long nEntry, const struct PhoneBookEntry** entry) const;
-
-private:
-  bool SaveToDisk(IniFile& conf);
-  bool LoadFromDisk(IniFile& conf);
-
-  std::vector<struct PhoneBookEntry> PhoneBookVector;
-
-  friend class LicqIcq::User;
-};
+typedef std::vector<struct PhoneBookEntry> IcqPhoneBookVector;
 
 typedef std::map<unsigned int, std::string> UserCategoryMap;
 
@@ -153,8 +134,8 @@ public:
   const UserCategoryMap& getOrganizations() const { return myOrganizations; }
 
   //!Retrives the user's phone book
-  ICQUserPhoneBook& GetPhoneBook()              { return myPhoneBook; }
-  const ICQUserPhoneBook& GetPhoneBook() const  { return myPhoneBook; }
+  IcqPhoneBookVector& getPhoneBook()              { return myPhoneBook; }
+  const IcqPhoneBookVector& getPhoneBook() const  { return myPhoneBook; }
 
   unsigned phoneFollowMeStatus() const          { return myPhoneFollowMeStatus; }
   unsigned icqPhoneStatus() const               { return myIcqPhoneStatus; }
@@ -174,7 +155,7 @@ protected:
   UserCategoryMap myInterests;
   UserCategoryMap myBackgrounds;
   UserCategoryMap myOrganizations;
-  ICQUserPhoneBook myPhoneBook;
+  IcqPhoneBookVector myPhoneBook;
 };
 
 
