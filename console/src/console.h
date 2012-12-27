@@ -32,11 +32,10 @@
 
 #include "window.h"
 
-class CFileTransferManager;
-
 namespace Licq
 {
 class Event;
+class IcqFileTransferManager;
 class PluginSignal;
 class UserEvent;
 }
@@ -137,7 +136,7 @@ protected:
   unsigned short m_nCon;
   std::list<char*> m_lCmdHistory;
   std::list<char*>::iterator m_lCmdHistoryIter;
-  std::list<CFileTransferManager*> m_lFileStat;
+  std::list<Licq::IcqFileTransferManager*> m_lFileStat;
   MacroList listMacros;
 
   CWindow *winMain, *winStatus, *winPrompt, *winLog, *winCon[MAX_CON + 1],
@@ -156,7 +155,7 @@ public:
   void ProcessDoneSearch(Licq::Event* e);
   void ProcessStdin();
   void ProcessLog();
-  bool ProcessFile(CFileTransferManager *);
+  bool ProcessFile(Licq::IcqFileTransferManager *);
   char *CurrentGroupName();
   void SwitchToCon(unsigned short nCon);
   void CreateUserList();
@@ -192,7 +191,7 @@ public:
   void PrintInfo_More(const Licq::UserId& userId);
   void PrintInfo_Work(const Licq::UserId& userId);
   void PrintInfo_About(const Licq::UserId& userId);
-  void PrintFileStat(CFileTransferManager *);
+  void PrintFileStat(Licq::IcqFileTransferManager*);
   void PrintMacros();
   void PrintContactPopup(const char* alias);
 

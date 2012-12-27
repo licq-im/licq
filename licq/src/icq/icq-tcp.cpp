@@ -39,7 +39,6 @@
 #include <licq/event.h>
 #include <licq/gpghelper.h>
 #include <licq/icq/chat.h>
-#include <licq/icq/filetransfer.h>
 #include <licq/oneventmanager.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
@@ -52,6 +51,7 @@
 #include <licq/version.h>
 
 #include "../gettext.h"
+#include "filetransfer.h"
 #include "oscarservice.h"
 #include "owner.h"
 #include "packet-srv.h"
@@ -1132,7 +1132,7 @@ int IcqProtocol::reverseConnectToUser(const Licq::UserId& userId, unsigned long 
    unsigned short nPort, unsigned short nVersion, unsigned short nFailedPort,
    unsigned long nId, unsigned long nMsgID1, unsigned long nMsgID2)
 {
-  CFileTransferManager *ftm = CFileTransferManager::FindByPort(nFailedPort);
+  FileTransferManager* ftm = FileTransferManager::FindByPort(nFailedPort);
   CChatManager *cm = CChatManager::FindByPort(nFailedPort);
 
   DcSocket* s = new DcSocket(userId);

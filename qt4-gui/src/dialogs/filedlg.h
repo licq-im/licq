@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,11 +28,15 @@
 
 #include <licq/userid.h>
 
-class CFileTransferManager;
 class QLabel;
 class QProgressBar;
 class QPushButton;
 class QSocketNotifier;
+
+namespace Licq
+{
+class IcqFileTransferManager;
+}
 
 namespace LicqQtGui
 {
@@ -88,7 +92,7 @@ private:
    QProgressBar* barTransfer;
    QProgressBar* barBatchTransfer;
 
-   CFileTransferManager* ftman;
+   Licq::IcqFileTransferManager* ftman;
 
   Licq::UserId myUserId;
    QString myId;

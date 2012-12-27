@@ -23,6 +23,7 @@
 #include <licq/protocolmanager.h>
 #include <licq/protocolsignal.h>
 #include <licq/version.h>
+#include "filetransfer.h"
 #include "icq.h"
 #include "owner.h"
 #include "protocolsignal.h"
@@ -370,6 +371,11 @@ unsigned long IcqProtocolPlugin::icqSendSms(const Licq::UserId& userId,
   unsigned long eventId = Licq::gProtocolManager.getNextEventId();
   pushSignal(new ProtoSendSmsSignal(eventId, userId, number, message));
   return eventId;
+}
+
+Licq::IcqFileTransferManager* IcqProtocolPlugin::createFileTransferManager(const Licq::UserId& userId)
+{
+  return new FileTransferManager(userId);
 }
 
 

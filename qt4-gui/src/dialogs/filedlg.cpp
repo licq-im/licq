@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,9 @@
 #include <QSocketNotifier>
 
 #include <licq/icq/filetransfer.h>
+#include <licq/icq/icq.h>
 #include <licq/logging/log.h>
+#include <licq/plugin/pluginmanager.h>
 
 #include "core/messagebox.h"
 
@@ -131,11 +133,24 @@ FileDlg::FileDlg(const Licq::UserId& userId, QWidget* parent)
   connect(btnCancel, SIGNAL(clicked()), SLOT(close()));
   hbox->addWidget(btnCancel);
 
-  //TODO fix this
-  ftman = new CFileTransferManager(myUserId);
-  ftman->SetUpdatesEnabled(2);
-  sn = new QSocketNotifier(ftman->Pipe(), QSocketNotifier::Read);
-  connect(sn, SIGNAL(activated(int)), SLOT(slot_ft()));
+  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (icqProtocol != NULL)
+  {
+    Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
+
+    //TODO fix this
+    ftman = icq->createFileTransferManager(myUserId);
+    ftman->SetUpdatesEnabled(2);
+    sn = new QSocketNotifier(ftman->Pipe(), QSocketNotifier::Read);
+    connect(sn, SIGNAL(activated(int)), SLOT(slot_ft()));
+  }
+  else
+  {
+    // ICQ protocol isn't loaded
+    ftman = NULL;
+    sn = NULL;
+    close();
+  }
 
   #ifdef USE_KDE
     btnOpen = new QPushButton(tr("&Open"));
@@ -273,12 +288,12 @@ void FileDlg::slot_ft()
   char buf[32];
   read(ftman->Pipe(), buf, 32);
 
-  CFileTransferEvent* e = NULL;
+  Licq::IcqFileTransferEvent* e = NULL;
   while ( (e = ftman->PopFileTransferEvent()) != NULL)
   {
     switch(e->Command())
     {
-      case FT_STARTxBATCH:
+      case Licq::FT_STARTxBATCH:
       {
         setWindowTitle(QString(tr("Licq - File Transfer (%1)")).arg(QString::fromUtf8(ftman->remoteName().c_str())));
         nfoTotalFiles->setText(QString("%1 / %2").arg(1).arg(ftman->BatchFiles()));
@@ -288,14 +303,14 @@ void FileDlg::slot_ft()
         break;
       }
 
-      case FT_CONFIRMxFILE:
+      case Licq::FT_CONFIRMxFILE:
       {
         // Use this opportunity to encode the filename
         ftman->startReceivingFile(ftman->fileName());
         break;
       }
 
-      case FT_STARTxFILE:
+      case Licq::FT_STARTxFILE:
       {
         nfoTotalFiles->setText(QString("%1 / %2").arg(ftman->CurrentFile()).arg(ftman->BatchFiles()));
         nfoTransferFileName->setText(QFile::decodeName(ftman->fileName().c_str()));
@@ -309,13 +324,13 @@ void FileDlg::slot_ft()
         break;
       }
 
-      case FT_UPDATE:
+      case Licq::FT_UPDATE:
       {
         slot_update();
         break;
       }
 
-      case FT_DONExFILE:
+      case Licq::FT_DONExFILE:
       {
         slot_update();
         if (ftman->isReceiver())
@@ -329,7 +344,7 @@ void FileDlg::slot_ft()
         break;
       }
 
-      case FT_DONExBATCH:
+      case Licq::FT_DONExBATCH:
       {
         mleStatus->append(tr("File transfer complete."));
         btnCancel->setText(tr("OK"));
@@ -343,7 +358,7 @@ void FileDlg::slot_ft()
         break;
       }
 
-      case FT_ERRORxCLOSED:
+      case Licq::FT_ERRORxCLOSED:
       {
         btnCancel->setText(tr("Close"));
         mleStatus->append(tr("Remote side disconnected."));
@@ -352,7 +367,7 @@ void FileDlg::slot_ft()
         break;
       }
 
-      case FT_ERRORxFILE:
+      case Licq::FT_ERRORxFILE:
       {
         btnCancel->setText(tr("Close"));
         mleStatus->append(tr("File I/O error: %1.").arg(QFile::decodeName(ftman->pathName().c_str())));
@@ -362,7 +377,7 @@ void FileDlg::slot_ft()
         break;
       }
 
-      case FT_ERRORxHANDSHAKE:
+      case Licq::FT_ERRORxHANDSHAKE:
       {
         btnCancel->setText(tr("Close"));
         mleStatus->appendNoNewLine(tr("Handshaking error.\n"));
@@ -371,7 +386,7 @@ void FileDlg::slot_ft()
         break;
       }
 
-      case FT_ERRORxCONNECT:
+      case Licq::FT_ERRORxCONNECT:
       {
         btnCancel->setText(tr("Close"));
         mleStatus->appendNoNewLine(tr("Connection error.\n"));
@@ -381,7 +396,7 @@ void FileDlg::slot_ft()
         break;
       }
 
-      case FT_ERRORxBIND:
+      case Licq::FT_ERRORxBIND:
       {
         btnCancel->setText(tr("Close"));
         mleStatus->appendNoNewLine(tr("Bind error.\n"));
@@ -391,7 +406,7 @@ void FileDlg::slot_ft()
         break;
       }
 
-      case FT_ERRORxRESOURCES:
+      case Licq::FT_ERRORxRESOURCES:
       {
         btnCancel->setText(tr("Close"));
         mleStatus->appendNoNewLine(tr("Not enough resources.\n"));

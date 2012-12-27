@@ -800,7 +800,7 @@ void CLicqConsole::PrintInfo_About(const Licq::UserId& userId)
 /*----------------------------------------------------------------------------
  * CLicqConsole::PrintFileStat
  *--------------------------------------------------------------------------*/
-void CLicqConsole::PrintFileStat(CFileTransferManager *ftman)
+void CLicqConsole::PrintFileStat(Licq::IcqFileTransferManager* ftman)
 {
   // Get the user's name
   string title;

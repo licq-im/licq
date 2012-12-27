@@ -60,7 +60,6 @@ class UserEvent;
 }
 
 class CChatManager;
-class CFileTransferManager;
 
 namespace LicqIcq
 {
@@ -68,6 +67,7 @@ class COscarService;
 class CPacketTcp;
 class CSrvPacketTcp;
 class DcSocket;
+class FileTransferManager;
 class ProtoChatAcceptSignal;
 class ProtoChatRefuseSignal;
 class ProtoChatRequestSignal;
@@ -524,8 +524,8 @@ private:
   friend void *ProcessRunningEvent_Client_tep(void *p);
   friend void *ProcessRunningEvent_Server_tep(void *p);
   friend class COscarService;
+  friend class FileTransferManager;
   friend class ::CChatManager;
-  friend class ::CFileTransferManager;
 };
 
 extern IcqProtocol gIcqProtocol;

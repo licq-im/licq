@@ -382,7 +382,7 @@ int CLicqConsole::run()
     maxFd = std::max(maxFd, myLogSink->getReadPipe());
 
     // Check to see if we want to add in the file xfer manager..
-    list<CFileTransferManager *>::iterator iter;
+    list<Licq::IcqFileTransferManager*>::iterator iter;
     for (iter = m_lFileStat.begin(); iter != m_lFileStat.end(); iter++)
     {
       FD_SET((*iter)->Pipe(), &fdSet);
@@ -416,7 +416,7 @@ int CLicqConsole::run()
         continue;
       }
 
-      list<CFileTransferManager *>::iterator iter;
+      list<Licq::IcqFileTransferManager*>::iterator iter;
       for (iter = m_lFileStat.begin(); iter != m_lFileStat.end(); iter++)
       {
         if (FD_ISSET((*iter)->Pipe(), &fdSet))
@@ -664,67 +664,67 @@ void CLicqConsole::ProcessEvent(Licq::Event* e)
 /*---------------------------------------------------------------------------
  * CLicqConsole::ProcessFile
  *-------------------------------------------------------------------------*/
-bool CLicqConsole::ProcessFile(CFileTransferManager *ftman)
+bool CLicqConsole::ProcessFile(Licq::IcqFileTransferManager* ftman)
 {
   char buf[32];
   bool bCloseFT = false;
   read(ftman->Pipe(), buf, 32);
 
-  CFileTransferEvent *e = NULL;
+  Licq::IcqFileTransferEvent* e = NULL;
 
   while ((e = ftman->PopFileTransferEvent()) != NULL)
   {
     switch(e->Command())
     {
-    case FT_ERRORxCONNECT:
+      case Licq::FT_ERRORxCONNECT:
       winMain->wprintf("%C%AFile transfer could not connect.  See network "
                        "window for details.%C%Z\n",
                        COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
       bCloseFT = true;
       break;
 
-    case FT_ERRORxBIND:
+      case Licq::FT_ERRORxBIND:
       winMain->wprintf("%C%AFile transfer could not bind to a port.  See "
                        "network window for details.%C%Z\n",
                        COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
       bCloseFT = true;
       break;
 
-    case FT_ERRORxRESOURCES:
+      case Licq::FT_ERRORxRESOURCES:
       winMain->wprintf("%C%AFile transfer unable to create new thread.  See "
                        "network window for details.%C%Z\n",
                        COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
       bCloseFT = true;
       break;
-           
-    case FT_DONExFILE:
-      break;
 
-    case FT_DONExBATCH:
+      case Licq::FT_DONExFILE:
+        break;
+
+      case Licq::FT_DONExBATCH:
       winMain->wprintf("%C%AFile transfer successfuly finished.%C%Z\n",
                        COLOR_GREEN, A_BOLD, COLOR_WHITE, A_BOLD);
       bCloseFT = true;
       break;
 
-    case FT_ERRORxCLOSED:
+      case Licq::FT_ERRORxCLOSED:
       winMain->wprintf("%C%AFile transfer closed.%C%Z\n",
                        COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
       bCloseFT = true;
       break;
 
-    case FT_ERRORxFILE:
+      case Licq::FT_ERRORxFILE:
       winMain->wprintf("%C%AFile transfer I/O error.%C%Z\n",
                        COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
       bCloseFT = true;
       break;
 
-    case FT_ERRORxHANDSHAKE:
+      case Licq::FT_ERRORxHANDSHAKE:
       winMain->wprintf("%C%AFile transfer handshake error.%C%Z\n",
                        COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
       bCloseFT = true;
       break;
 
-    case FT_CONFIRMxFILE:
+      case Licq::FT_CONFIRMxFILE:
       ftman->startReceivingFile(ftman->fileName());
       break;
     }
@@ -848,19 +848,25 @@ void CLicqConsole::ProcessDoneEvent(Licq::Event* e)
 
           else
           {
-            // For now don't check for a chat subcommand..
-            // Invoke a file transfer manager here
-            const Licq::EventFile* f = dynamic_cast<const Licq::EventFile*>(ue);
-            CFileTransferManager* ftman = new CFileTransferManager(e->userId());
-            m_lFileStat.push_back(ftman);
+            Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+            if (icqProtocol != NULL)
+            {
+              Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
 
-            // Now watch the file pipe
-            ftman->SetUpdatesEnabled(1);
-            FD_SET(ftman->Pipe(), &fdSet);
+              // For now don't check for a chat subcommand..
+              // Invoke a file transfer manager here
+              const Licq::EventFile* f = dynamic_cast<const Licq::EventFile*>(ue);
+              Licq::IcqFileTransferManager* ftman = icq->createFileTransferManager(e->userId());
+              m_lFileStat.push_back(ftman);
 
-            list<string> fl;
-            fl.push_back(f->filename());
-            ftman->sendFiles(fl, ea->port());
+              // Now watch the file pipe
+              ftman->SetUpdatesEnabled(1);
+              FD_SET(ftman->Pipe(), &fdSet);
+
+              list<string> fl;
+              fl.push_back(f->filename());
+              ftman->sendFiles(fl, ea->port());
+            }
           }
         }
         else
@@ -3084,25 +3090,30 @@ void CLicqConsole::InputFileChatOffer(int cIn)
       {
       case 'y':
         {
-          winMain->wprintf("%C%A\nAccepting file\n", COLOR_GREEN, A_BOLD);
+          Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+          if (icqProtocol != NULL)
+          {
+            Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
 
-          // Make the ftman
-          CFileTransferManager *ftman = new CFileTransferManager(data->userId);
-          ftman->SetUpdatesEnabled(1);
-          m_lFileStat.push_back(ftman);
+            winMain->wprintf("%C%A\nAccepting file\n", COLOR_GREEN, A_BOLD);
 
-          // Now watch the file pipe
-          FD_SET(ftman->Pipe(), &fdSet);
+            // Make the ftman
+            Licq::IcqFileTransferManager* ftman = icq->createFileTransferManager(data->userId);
+            ftman->SetUpdatesEnabled(1);
+            m_lFileStat.push_back(ftman);
 
+            // Now watch the file pipe
+            FD_SET(ftman->Pipe(), &fdSet);
 
-          // Accept the file
-          const char *home = getenv("HOME");
-          ftman->receiveFiles(home);
-          gProtocolManager.fileTransferAccept(data->userId,
-              ftman->LocalPort(), f->Sequence(), f->MessageID()[0],
-              f->MessageID()[1], f->fileDescription(), f->filename(),
-              f->FileSize(), !f->IsDirect());
-          winMain->fProcessInput = &CLicqConsole::InputCommand;
+            // Accept the file
+            const char *home = getenv("HOME");
+            ftman->receiveFiles(home);
+            gProtocolManager.fileTransferAccept(data->userId,
+                ftman->LocalPort(), f->Sequence(), f->MessageID()[0],
+                f->MessageID()[1], f->fileDescription(), f->filename(),
+                f->FileSize(), !f->IsDirect());
+            winMain->fProcessInput = &CLicqConsole::InputCommand;
+          }
 
           if(winMain->data)
             delete winMain->data;

@@ -77,17 +77,15 @@
 #include <list>
 #include <string>
 
-#include <licq/pipe.h>
-#include <licq/socket.h>
-#include <licq/socketmanager.h>
 #include <licq/userid.h>
 
-#include "../macro.h"
+namespace LicqIcq
+{
+class FileTransferManager;
+}
 
 namespace Licq
 {
-class Packet;
-}
 
 // FileTransferEvent codes
 const unsigned char FT_STARTxBATCH   = 1;
@@ -103,55 +101,36 @@ const unsigned char FT_ERRORxCONNECT   = 0xFC;
 const unsigned char FT_ERRORxBIND      = 0xFB;
 const unsigned char FT_ERRORxRESOURCES = 0xFA;
 
-class CFileTransferManager;
 
-struct SFileReverseConnectInfo
-{
-  int nId;
-  bool bTryDirect;
-  CFileTransferManager *m;
-};
-
-//=====FileTransferManager===================================================
-extern "C"
-{
-  void *FileTransferManager_tep(void *);
-  void *FileWaitForSignal_tep(void *);
-  void FileWaitForSignal_cleanup(void *);
-}
-
-class CFileTransferEvent
+class IcqFileTransferEvent
 {
 public:
   unsigned char Command() { return m_nCommand; }
   const std::string& fileName() const { return myFileName; }
 
-  ~CFileTransferEvent();
+  virtual ~IcqFileTransferEvent();
 
 protected:
-  CFileTransferEvent(unsigned char t, const std::string& fileName = std::string());
+  IcqFileTransferEvent(unsigned char t, const std::string& fileName = std::string());
   unsigned char m_nCommand;
   std::string myFileName;
 
-friend class CFileTransferManager;
+friend class LicqIcq::FileTransferManager;
 };
 
-typedef std::list<CFileTransferEvent *> FileTransferEventList;
-typedef std::list<class CFileTransferManager *> FileTransferManagerList;
 
-class CFileTransferManager
+class IcqFileTransferManager
 {
 public:
-  CFileTransferManager(const Licq::UserId& userId);
-  ~CFileTransferManager();
+  virtual ~IcqFileTransferManager();
 
-  bool receiveFiles(const std::string& directory);
-  void sendFiles(const std::list<std::string>& pathNames, unsigned short nPort);
+  virtual bool receiveFiles(const std::string& directory) = 0;
+  virtual void sendFiles(const std::list<std::string>& pathNames, unsigned short nPort) = 0;
 
-  void CloseFileTransfer();
+  virtual void CloseFileTransfer() = 0;
 
   // Available after construction
-  uint16_t LocalPort() const            { return ftServer.getLocalPort(); }
+  virtual unsigned short LocalPort() const = 0;
   const std::string& localName() const { return myLocalName; }
   bool isReceiver() const { return myIsReceiver; }
   const Licq::UserId& userId() const { return myUserId; }
@@ -166,7 +145,7 @@ public:
 
   // You must use this function to start receiving the incoming file, possibly
   // giving it a different name on the local machine.
-  bool startReceivingFile(const std::string& fileName);
+  virtual bool startReceivingFile(const std::string& fileName) = 0;
 
   // Available between FT_STARTxFILE and FT_DONExFILE
   unsigned long FilePos() { return m_nFilePos; }
@@ -181,42 +160,21 @@ public:
   unsigned long BatchBytesTransfered() { return m_nBatchBytesTransfered; }
   unsigned long BatchPos() { return m_nBatchPos; }
 
-  void ChangeSpeed(unsigned short);
+  virtual void ChangeSpeed(unsigned short) = 0;
   void SetUpdatesEnabled(unsigned short n) { m_nUpdatesEnabled = n; }
   unsigned short UpdatesEnabled(void) { return m_nUpdatesEnabled; }
 
-  int Pipe() { return myEventsPipe.getReadFd(); }
-  CFileTransferEvent *PopFileTransferEvent();
+  virtual int Pipe() = 0;
+  virtual IcqFileTransferEvent* PopFileTransferEvent() = 0;
 
-  void AcceptReverseConnection(Licq::TCPSocket*);
-  static CFileTransferManager *FindByPort(unsigned short);
-
-private:
-  LICQ_DECLARE_PRIVATE();
-
-  static FileTransferManagerList ftmList;
-
-  static pthread_mutex_t thread_cancel_mutex;
-  bool m_bThreadRunning;
-  pthread_t m_tThread;
-
-  Licq::Pipe myEventsPipe;
-  Licq::Pipe myThreadPipe;
-  FileTransferEventList ftEvents;
-  pthread_t thread_ft;
-  std::list<std::string> myPathNames;
+protected:
   bool myIsReceiver;
-
-  struct timeval tv_lastupdate;
   unsigned short m_nUpdatesEnabled;
 
-  unsigned char m_nResult;
-  unsigned short m_nSession, m_nSpeed, m_nState;
   Licq::UserId myUserId;
 
   std::string myLocalName;
   std::string myRemoteName;
-  unsigned short m_nPort;
   unsigned long m_nFilePos, m_nBatchPos, m_nBytesTransfered, m_nBatchBytesTransfered;
   unsigned short m_nCurrentFile, m_nBatchFiles;
   unsigned long m_nFileSize, m_nBatchSize;
@@ -224,31 +182,8 @@ private:
   std::string myFileName;
   std::string myPathName;
   std::string myDirectory;
-  int m_nFileDesc;
-  std::list<std::string>::iterator myPathNameIter;
-  bool m_bThreadCreated;
-
-  Licq::TCPSocket ftServer;
-
-  Licq::SocketManager sockman;
-
-  bool StartFileTransferServer();
-  bool ConnectToFileServer(unsigned short nPort);
-  bool SendFileHandshake();
-  bool ProcessPacket();
-  bool SendFilePacket();
-  void PushFileTransferEvent(unsigned char);
-  void PushFileTransferEvent(CFileTransferEvent *);
-  void CloseConnection();
-
-  bool SendBuffer(Licq::Buffer*);
-  bool SendPacket(Licq::Packet*);
-
-friend void *FileTransferManager_tep(void *);
-friend void *FileWaitForSignal_tep(void *);
-friend void FileWaitForSignal_cleanup(void *);
 };
 
-
+} // namespace Licq
 
 #endif

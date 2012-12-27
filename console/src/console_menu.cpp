@@ -864,7 +864,7 @@ void CLicqConsole::MenuFile(char *szArg)
     bool bNum = false;
 
     // Go through the list and print out the info on each file
-    list<CFileTransferManager *>::iterator iter;
+    list<Licq::IcqFileTransferManager *>::iterator iter;
     for(iter = m_lFileStat.begin(); iter != m_lFileStat.end(); iter++)
     {
       bNum = true;
