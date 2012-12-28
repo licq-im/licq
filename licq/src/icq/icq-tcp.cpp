@@ -3679,13 +3679,3 @@ bool IcqProtocol::ProcessTcpHandshake(DcSocket* s)
 
   return true;
 }
-
-void IcqProtocol::StupidChatLinkageFix()
-{
-  CChatManager* chatman = new CChatManager(0);
-  delete chatman;
-  CFileTransferManager* ftman = new CFileTransferManager(Licq::UserId());
-  delete ftman;
-}
-
-

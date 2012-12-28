@@ -87,6 +87,7 @@ public:
   unsigned long icqSendSms(const Licq::UserId& userId,
       const std::string& number, const std::string& message);
   Licq::IcqFileTransferManager* createFileTransferManager(const Licq::UserId& userId);
+  Licq::IcqChatManager* createChatManager(const Licq::UserId& userId);
 
 protected:
   // From Licq::ProtocolPlugin

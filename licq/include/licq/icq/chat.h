@@ -20,25 +20,20 @@
 #ifndef LICQ_ICQCHAT_H
 #define LICQ_ICQCHAT_H
 
-#include <cstdlib>
-#include <list>
 #include <string>
 
-#include <licq/pipe.h>
-#include <licq/socket.h>
-#include <licq/socketmanager.h>
-
-namespace Licq
-{
-class UserId;
-}
+#include "../userid.h"
 
 namespace LicqIcq
 {
-class CChatClient;
-class ChatUser;
-class DcSocket;
+class ChatManager;
+
+void* ChatManager_tep(void*);
+void* ChatWaitForSignal_tep(void*);
 }
+
+namespace Licq
+{
 
 /*----------------------
  * Licq Chat Module
@@ -185,28 +180,8 @@ const unsigned char STYLE_MODERN         = 0x30;
 const unsigned char STYLE_SCRIPT         = 0x40;
 const unsigned char STYLE_DECORATIVE     = 0x50;
 
-struct SVoteInfo
-{
-  unsigned long nUin;
-  unsigned short nNumUsers;
-  unsigned short nYes;
-  unsigned short nNo;
-};
-typedef std::list<SVoteInfo *> VoteInfoList;
 
-class CChatManager;
-
-
-//=====CChatUser=============================================================
-extern "C"
-{
-  void *ChatManager_tep(void *);
-  void *ChatWaitForSignal_tep(void *);
-  void ChatWaitForSignal_cleanup(void *);
-}
-
-
-class CChatUser
+class IcqChatUser
 {
 public:
   const Licq::UserId& userId() const { return myUserId; }
@@ -226,8 +201,8 @@ public:
   bool Sleep()                 { return sleep; }
 
 protected:
-  CChatUser();
-  virtual ~CChatUser();
+  IcqChatUser();
+  virtual ~IcqChatUser();
 
   Licq::UserId myUserId;
   unsigned long nToKick;
@@ -239,61 +214,53 @@ protected:
   unsigned long fontFace;
   bool focus, sleep;
 
-friend class CChatManager;
+friend class LicqIcq::ChatManager;
 };
 
-typedef std::list<LicqIcq::ChatUser*> ChatUserList;
 
-
-//=====ChatEvent=============================================================
-
-class CChatEvent
+class IcqChatEvent
 {
 public:
-  CChatEvent(unsigned char, LicqIcq::ChatUser*, const std::string& data = "");
-  ~CChatEvent();
+  virtual ~IcqChatEvent();
 
   unsigned char Command() { return m_nCommand; }
-  CChatUser* Client();
+  IcqChatUser* Client() { return m_pUser; }
   const std::string& data() const { return myData; }
 
 protected:
+  IcqChatEvent(unsigned char, IcqChatUser*, const std::string& data = "");
+
   unsigned char m_nCommand;
-  LicqIcq::ChatUser* m_pUser;
+  IcqChatUser* m_pUser;
   std::string myData;
   bool m_bLocked;
 
-friend class CChatManager;
+friend class LicqIcq::ChatManager;
+friend void* LicqIcq::ChatManager_tep(void*);
+friend void* LicqIcq::ChatWaitForSignal_tep(void*);
 };
 
-typedef std::list <CChatEvent *> ChatEventList;
 
-
-//=====ChatManager===========================================================
-typedef std::list<class CChatManager *> ChatManagerList;
-typedef std::list<pthread_t> ThreadList;
-
-class CChatManager
+class IcqChatManager
 {
 public:
-  CChatManager(unsigned long nUin,
-      const std::string& fontFamily = "courier",
+  virtual void init(const std::string& fontFamily = "courier",
      unsigned char fontEncoding = ENCODING_DEFAULT,
      unsigned char fontStyle = STYLE_DONTCARE | STYLE_DEFAULTxPITCH,
      unsigned short fontSize = 12, bool fontBold = false,
      bool fontItalic = false, bool fontUnderline = false,
      bool fontStrikeOut = false, int fr = 0xFF, int fg = 0xFF,
-     int fb = 0xFF, int br = 0x00, int bg = 0x00, int bb = 0x00);
-  ~CChatManager();
+     int fb = 0xFF, int br = 0x00, int bg = 0x00, int bb = 0x00) = 0;
+  virtual ~IcqChatManager();
 
-  bool StartAsServer();
-  void StartAsClient(unsigned short nPort);
+  virtual bool StartAsServer() = 0;
+  virtual void StartAsClient(unsigned short nPort) = 0;
 
-  void CloseChat();
-  std::string clientsString() const;
-  unsigned short ConnectedUsers()  { return chatUsers.size(); }
+  virtual void CloseChat() = 0;
+  virtual std::string clientsString() const = 0;
+  virtual unsigned short ConnectedUsers() const = 0;
 
-  uint16_t LocalPort() const            { return chatServer.getLocalPort(); }
+  virtual unsigned short LocalPort() const = 0;
   const std::string& name() const { return myName; }
   const std::string& fontFamily() const { return myFontFamily; }
   unsigned char FontEncoding() { return m_nFontEncoding; }
@@ -306,49 +273,29 @@ public:
   bool Sleep()  { return m_bSleep; }
   bool Focus()  { return m_bFocus; }
 
-  void changeFontFamily(const std::string& fontFamily, unsigned char, unsigned char);
-  void ChangeFontSize(unsigned short);
-  void ChangeFontFace(bool, bool, bool, bool);
-  void ChangeColorFg(int, int, int);
-  void ChangeColorBg(int, int, int);
-  void SendBeep();
-  void SendLaugh();
-  void SendNewline();
-  void SendBackspace();
-  void sendText(const std::string& text);
-  void SendKick(const char* id);
-  void SendKickNoVote(const char* id);
-  void SendVoteYes(unsigned long);
-  void SendVoteNo(unsigned long);
+  virtual void changeFontFamily(const std::string& fontFamily, unsigned char, unsigned char) = 0;
+  virtual void ChangeFontSize(unsigned short) = 0;
+  virtual void ChangeFontFace(bool, bool, bool, bool) = 0;
+  virtual void ChangeColorFg(int, int, int) = 0;
+  virtual void ChangeColorBg(int, int, int) = 0;
+  virtual void SendBeep() = 0;
+  virtual void SendLaugh() = 0;
+  virtual void SendNewline() = 0;
+  virtual void SendBackspace() = 0;
+  virtual void sendText(const std::string& text) = 0;
+  virtual void SendKick(const char* id) = 0;
+  virtual void SendKickNoVote(const char* id) = 0;
+  virtual void SendVoteYes(unsigned long) = 0;
+  virtual void SendVoteNo(unsigned long) = 0;
 
-  void FocusOut();
-  void FocusIn();
-  void Sleep(bool);
+  virtual void FocusOut() = 0;
+  virtual void FocusIn() = 0;
+  virtual void Sleep(bool) = 0;
 
-  int Pipe() { return myEventsPipe.getReadFd(); }
-  CChatEvent *PopChatEvent();
-
-  void AcceptReverseConnection(LicqIcq::DcSocket*);
-  static CChatManager *FindByPort(unsigned short);
+  virtual int Pipe() = 0;
+  virtual IcqChatEvent* PopChatEvent() = 0;
 
 protected:
-  static ChatManagerList cmList;
-  static pthread_mutex_t cmList_mutex;
-  static pthread_mutex_t waiting_thread_cancel_mutex;
-
-  Licq::Pipe myEventsPipe;
-  Licq::Pipe myThreadPipe;
-  Licq::UserId myUserId;
-  unsigned short m_nSession;
-  ChatUserList chatUsers;
-  ChatUserList chatUsersClosed;
-  ChatEventList chatEvents;
-  VoteInfoList voteInfo;
-  ThreadList waitingThreads;
-  pthread_mutex_t thread_list_mutex;
-  pthread_t thread_chat;
-  LicqIcq::CChatClient *m_pChatClient;
-
   int m_nColorFore[3], m_nColorBack[3];
   std::string myName;
   std::string myFontFamily;
@@ -356,38 +303,8 @@ protected:
   unsigned short m_nFontSize;
   unsigned long m_nFontFace;
   bool m_bSleep, m_bFocus;
-
-  Licq::TCPSocket chatServer;
-
-  Licq::SocketManager sockman;
-  bool m_bThreadCreated;
-
-  bool StartChatServer();
-  bool ConnectToChat(LicqIcq::CChatClient *);
-  bool SendChatHandshake(LicqIcq::ChatUser*);
-  LicqIcq::ChatUser* FindChatUser(int);
-  void CloseClient(LicqIcq::ChatUser*);
-  bool ProcessPacket(LicqIcq::ChatUser*);
-  bool ProcessRaw(LicqIcq::ChatUser*);
-  bool ProcessRaw_v2(LicqIcq::ChatUser*);
-  bool ProcessRaw_v6(LicqIcq::ChatUser*);
-  void PushChatEvent(CChatEvent *);
-  void FinishKickVote(VoteInfoList::iterator, bool);
-
-  void SendBuffer(Licq::Buffer*, unsigned char,
-      const char* id = NULL, bool bNotIter = true);
-  bool SendBufferToClient(Licq::Buffer*, unsigned char, LicqIcq::ChatUser*);
-  void SendBuffer_Raw(Licq::Buffer*);
-  //void SendPacket(Licq::Packet*);
-
-  std::string getEncoding(int chatEncoding);
-  std::string userEncoding(const LicqIcq::ChatUser* u);
-
-friend void *ChatManager_tep(void *);
-friend void *ChatWaitForSignal_tep(void *);
-friend void ChatWaitForSignal_cleanup(void *);
 };
 
-
+} // namespace Licq
 
 #endif

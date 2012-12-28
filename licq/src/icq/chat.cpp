@@ -44,6 +44,38 @@ using Licq::gDaemon;
 using Licq::gLog;
 using Licq::gTranslator;
 
+using Licq::CHAT_BACKSPACE;
+using Licq::CHAT_BEEP;
+using Licq::CHAT_CHARACTER;
+using Licq::CHAT_COLORxBG;
+using Licq::CHAT_COLORxFG;
+using Licq::CHAT_CONNECTION;
+using Licq::CHAT_DISCONNECTION;
+using Licq::CHAT_DISCONNECTIONxKICKED;
+using Licq::CHAT_ERRORxBIND;
+using Licq::CHAT_ERRORxCONNECT;
+using Licq::CHAT_ERRORxRESOURCES;
+using Licq::CHAT_FOCUSxIN;
+using Licq::CHAT_FOCUSxOUT;
+using Licq::CHAT_FONTxFACE;
+using Licq::CHAT_FONTxFAMILY;
+using Licq::CHAT_FONTxSIZE;
+using Licq::CHAT_KICK;
+using Licq::CHAT_KICKxFAIL;
+using Licq::CHAT_KICKxNO;
+using Licq::CHAT_KICKxPASS;
+using Licq::CHAT_KICKxYES;
+using Licq::CHAT_KICKxYOU;
+using Licq::CHAT_LAUGH;
+using Licq::CHAT_NEWLINE;
+using Licq::CHAT_SLEEPxOFF;
+using Licq::CHAT_SLEEPxON;
+using Licq::FONT_BOLD;
+using Licq::FONT_ITALIC;
+using Licq::FONT_PLAIN;
+using Licq::FONT_STRIKEOUT;
+using Licq::FONT_UNDERLINE;
+
 #define MAX_CONNECTS  256
 #define DEBUG_THREADS(x)
 
@@ -123,14 +155,14 @@ CPChat_Color::~CPChat_Color()
 
 
 //-----ChatColorFont----------------------------------------------------------------
-CChatClient::CChatClient()
+ChatClient::ChatClient()
 {
   m_nVersion = m_nIp = m_nIntIp = m_nPort = m_nMode
      = m_nSession = m_nHandshake = 0;
 }
 
 
-CChatClient::CChatClient(const User* u)
+ChatClient::ChatClient(const User* u)
 {
   m_nVersion = u->Version();
   myUin = atol(u->id().accountId().c_str());
@@ -146,12 +178,12 @@ CChatClient::CChatClient(const User* u)
 }
 
 
-CChatClient::CChatClient(CBuffer &b)
+ChatClient::ChatClient(CBuffer &b)
 {
   LoadFromBuffer(b);
 }
 
-CChatClient::CChatClient(const CChatClient &p)
+ChatClient::ChatClient(const CChatClient &p)
 {
   *this = p;
 }
@@ -581,12 +613,12 @@ CPChat_Beep::CPChat_Beep()
 
 
 //=====ChatUser==============================================================
-CChatUser::CChatUser()
+Licq::IcqChatUser::IcqChatUser()
 {
   // Empty
 }
 
-CChatUser::~CChatUser()
+Licq::IcqChatUser::~IcqChatUser()
 {
   // Empty
 }
@@ -598,8 +630,8 @@ ChatUser::ChatUser()
   colorFore[0] = colorFore[1] = colorFore[2] = 0x00;
   colorBack[0] = colorBack[1] = colorBack[2] = 0xFF;
   myFontFamily = "courier";
-  fontEncoding = ENCODING_DEFAULT;
-  fontStyle = STYLE_MODERN | STYLE_FIXEDxPITCH; // style of courier
+  fontEncoding = Licq::ENCODING_DEFAULT;
+  fontStyle = Licq::STYLE_MODERN | Licq::STYLE_FIXEDxPITCH; // style of courier
   fontSize = 12;
   fontFace = FONT_PLAIN;
   focus = true;
@@ -614,7 +646,7 @@ ChatUser::~ChatUser()
   // Empty
 }
 
-CChatEvent::CChatEvent(unsigned char nCommand, ChatUser* u, const string& data)
+Licq::IcqChatEvent::IcqChatEvent(unsigned char nCommand, Licq::IcqChatUser* u, const string& data)
   : myData(data)
 {
   m_nCommand = nCommand;
@@ -626,12 +658,7 @@ CChatEvent::CChatEvent(unsigned char nCommand, ChatUser* u, const string& data)
 CChatEvent::~CChatEvent()
 {
   if (m_bLocked)
-    pthread_mutex_unlock(&m_pUser->mutex);
-}
-
-CChatUser* CChatEvent::Client()
-{
-  return m_pUser;
+    pthread_mutex_unlock(&(dynamic_cast<ChatUser*>(m_pUser)->mutex));
 }
 
 //=====ChatManager===========================================================
@@ -640,24 +667,34 @@ pthread_mutex_t CChatManager::cmList_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t CChatManager::waiting_thread_cancel_mutex
                                                   = PTHREAD_MUTEX_INITIALIZER;
 
-
-CChatManager::CChatManager(unsigned long nUin,
-  const string& fontFamily, unsigned char fontEncoding, unsigned char fontStyle,
-  unsigned short fontSize, bool fontBold, bool fontItalic, bool fontUnderline,
-  bool fontStrikeOut, int fr, int fg, int fb, int br, int bg, int bb)
+Licq::IcqChatManager::~IcqChatManager()
 {
-  char szUin[24];
-  sprintf(szUin, "%lu", nUin);
-  myUserId = Licq::UserId(szUin, LICQ_PPID);
+  // Empty
+}
 
-//  m_nSession = rand();
-
+ChatManager::ChatManager(const Licq::UserId& userId)
+  : myUserId(userId)
+{
   {
     Licq::OwnerReadGuard o(gIcqProtocol.ownerId());
     myName = o->getAlias();
     m_nSession = o->Port();
   }
 
+  m_pChatClient = NULL;
+  m_bThreadCreated = false;
+
+  pthread_mutex_init(&thread_list_mutex, NULL);
+
+  pthread_mutex_lock(&cmList_mutex);
+  cmList.push_back(this);
+  pthread_mutex_unlock(&cmList_mutex);
+}
+
+void CChatManager::init(const string& fontFamily, unsigned char fontEncoding,
+    unsigned char fontStyle, unsigned short fontSize, bool fontBold, bool fontItalic,
+    bool fontUnderline, bool fontStrikeOut, int fr, int fg, int fb, int br, int bg, int bb)
+{
   m_nFontFace = FONT_PLAIN;
   if (fontBold) m_nFontFace |= FONT_BOLD;
   if (fontItalic) m_nFontFace |= FONT_ITALIC;
@@ -675,14 +712,6 @@ CChatManager::CChatManager(unsigned long nUin,
   m_nColorBack[2] = bb;
   m_bFocus = true;
   m_bSleep = false;
-  m_pChatClient = NULL;
-  m_bThreadCreated = false;
-
-  pthread_mutex_init(&thread_list_mutex, NULL);
-
-  pthread_mutex_lock(&cmList_mutex);
-  cmList.push_back(this);
-  pthread_mutex_unlock(&cmList_mutex);
 }
 
 
@@ -1145,7 +1174,7 @@ CChatEvent *CChatManager::PopChatEvent()
   // Lock the user, will be unlocked in the event destructor
   if (e->m_pUser)
   {
-    pthread_mutex_lock(&e->m_pUser->mutex);
+    pthread_mutex_lock(&dynamic_cast<ChatUser*>(e->m_pUser)->mutex);
     e->m_bLocked = true;
   }
 
@@ -1160,6 +1189,20 @@ void CChatManager::PushChatEvent(CChatEvent *e)
   myEventsPipe.putChar('*');
 }
 
+unsigned short ChatManager::ConnectedUsers() const
+{
+  return chatUsers.size();
+}
+
+unsigned short ChatManager::LocalPort() const
+{
+  return chatServer.getLocalPort();
+}
+
+int ChatManager::Pipe()
+{
+  return myEventsPipe.getReadFd();
+}
 
 //-----CChatManager::ProcessRaw----------------------------------------------
 bool CChatManager::ProcessRaw(ChatUser* u)
@@ -2287,18 +2330,18 @@ string CChatManager::clientsString() const
 string CChatManager::getEncoding(int chatEncoding)
 {
   switch (chatEncoding) {
-    case ENCODING_ANSI: return "CP 1252";
-    case ENCODING_SHIFTJIS: return "Shift-JIS";
-    case ENCODING_GB2312: return "GBK";
-    case ENCODING_CHINESEBIG5: return "Big5";
-    case ENCODING_GREEK: return "CP 1253";
-    case ENCODING_TURKISH: return "CP 1254";
-    case ENCODING_HEBREW: return "CP 1255";
-    case ENCODING_ARABIC: return "CP 1256";
-    case ENCODING_BALTIC: return "CP 1257";
-    case ENCODING_RUSSIAN: return "CP 1251";
-    case ENCODING_THAI: return "TIS-620";
-    case ENCODING_EASTEUROPE: return "CP 1250";
+    case Licq::ENCODING_ANSI: return "CP 1252";
+    case Licq::ENCODING_SHIFTJIS: return "Shift-JIS";
+    case Licq::ENCODING_GB2312: return "GBK";
+    case Licq::ENCODING_CHINESEBIG5: return "Big5";
+    case Licq::ENCODING_GREEK: return "CP 1253";
+    case Licq::ENCODING_TURKISH: return "CP 1254";
+    case Licq::ENCODING_HEBREW: return "CP 1255";
+    case Licq::ENCODING_ARABIC: return "CP 1256";
+    case Licq::ENCODING_BALTIC: return "CP 1257";
+    case Licq::ENCODING_RUSSIAN: return "CP 1251";
+    case Licq::ENCODING_THAI: return "TIS-620";
+    case Licq::ENCODING_EASTEUROPE: return "CP 1250";
     default: return "UTF-8";
   }
 }
@@ -2308,7 +2351,7 @@ string CChatManager::userEncoding(const ChatUser* u)
   return getEncoding(u->fontEncoding);
 }
 
-void *ChatManager_tep(void *arg)
+void* LicqIcq::ChatManager_tep(void* arg)
 {
   CChatManager *chatman = (CChatManager *)arg;
 
@@ -2425,7 +2468,7 @@ void *ChatManager_tep(void *arg)
   return NULL;
 }
 
-void *ChatWaitForSignal_tep(void *arg)
+void* LicqIcq::ChatWaitForSignal_tep(void* arg)
 {
   pthread_detach(pthread_self());
 
@@ -2560,7 +2603,7 @@ void *ChatWaitForSignal_tep(void *arg)
   pthread_exit(NULL);
 }
 
-void ChatWaitForSignal_cleanup(void *arg)
+void LicqIcq::ChatWaitForSignal_cleanup(void* arg)
 {
   struct SChatReverseConnectInfo *rc = (struct SChatReverseConnectInfo *)arg;
 

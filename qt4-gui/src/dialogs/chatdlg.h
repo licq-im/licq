@@ -37,11 +37,10 @@ class QPixmap;
 class QSocketNotifier;
 class QToolButton;
 
-class CChatManager;
-class CChatUser;
-
 namespace Licq
 {
+class IcqChatManager;
+class IcqChatUser;
 class UserId;
 }
 
@@ -81,7 +80,7 @@ signals:
 class ChatDlg;
 typedef std::list<ChatDlg*> ChatDlgList;
 typedef struct {
-  CChatUser* u;
+  Licq::IcqChatUser* u;
   ChatWindow* w;
   QLabel* l;
 } UserWindowPair;
@@ -119,7 +118,7 @@ public:
   static ChatDlgList chatDlgs;
 
 private:
-  CChatManager* chatman;
+  Licq::IcqChatManager* chatman;
 
   ChatWindow* mlePaneLocal;
   ChatWindow* mleIRCRemote;
@@ -162,7 +161,7 @@ private:
   int myChatEncoding;
 
   virtual void closeEvent(QCloseEvent*);
-  ChatWindow* GetWindow(CChatUser* u);
+  ChatWindow* GetWindow(Licq::IcqChatUser* u);
   void UpdateRemotePane();
 
   friend class JoinChatDlg;
@@ -170,7 +169,7 @@ private:
 private slots:
   void chatSend(QKeyEvent*);
   void chatSendBeep();
-  void chatClose(CChatUser*);
+  void chatClose(Licq::IcqChatUser*);
 
   void slot_chat();
   bool slot_save();

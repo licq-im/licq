@@ -30,6 +30,7 @@ namespace Licq
 typedef std::list<std::string> StringList;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
 class Color;
+class IcqChatManager;
 class IcqFileTransferManager;
 class UserId;
 
@@ -109,6 +110,7 @@ public:
       const std::string& number, const std::string& message) = 0;
 
   virtual IcqFileTransferManager* createFileTransferManager(const UserId& userId) = 0;
+  virtual IcqChatManager* createChatManager(const UserId& userId) = 0;
 
 protected:
   virtual ~IcqProtocol() { /* Empty */ }

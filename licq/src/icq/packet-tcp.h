@@ -28,7 +28,7 @@
 #include <licq/userid.h>
 #include <licq/packet.h>
 
-#include "chat.h" // ChatClientList
+#include "chat.h"
 #include "defines.h"
 
 namespace Licq
@@ -722,10 +722,10 @@ public:
   int ColorBackBlue() { return m_nColorBackBlue; }
   unsigned short Port() { return m_nPort; }
   unsigned long FontSize() { return m_nFontSize; }
-  bool FontBold() { return m_nFontFace & FONT_BOLD; }
-  bool FontItalic() { return m_nFontFace & FONT_ITALIC; }
-  bool FontUnderline() { return m_nFontFace & FONT_UNDERLINE; }
-  bool FontStrikeOut() { return m_nFontFace & FONT_STRIKEOUT; }
+  bool FontBold() { return m_nFontFace & Licq::FONT_BOLD; }
+  bool FontItalic() { return m_nFontFace & Licq::FONT_ITALIC; }
+  bool FontUnderline() { return m_nFontFace & Licq::FONT_UNDERLINE; }
+  bool FontStrikeOut() { return m_nFontFace & Licq::FONT_STRIKEOUT; }
   unsigned long FontFace() { return m_nFontFace; }
   const std::string& fontFamily() const { return myFontFamily; }
   unsigned char FontEncoding() { return m_nFontEncoding; }
@@ -768,10 +768,10 @@ public:
   unsigned short Port() { return m_nPort; }
   unsigned short Session() { return m_nSession; }
   unsigned long FontSize() { return m_nFontSize; }
-  bool FontBold() { return m_nFontFace & FONT_BOLD; }
-  bool FontItalic() { return m_nFontFace & FONT_ITALIC; }
-  bool FontUnderline() { return m_nFontFace & FONT_UNDERLINE; }
-  bool FontStrikeOut() { return m_nFontFace & FONT_STRIKEOUT; }
+  bool FontBold() { return m_nFontFace & Licq::FONT_BOLD; }
+  bool FontItalic() { return m_nFontFace & Licq::FONT_ITALIC; }
+  bool FontUnderline() { return m_nFontFace & Licq::FONT_UNDERLINE; }
+  bool FontStrikeOut() { return m_nFontFace & Licq::FONT_STRIKEOUT; }
   unsigned long FontFace() { return m_nFontFace; }
   const std::string& fontFamily() const { return myFontFamily; }
   unsigned char FontEncoding() { return m_nFontEncoding; }
@@ -822,9 +822,9 @@ public:
   CPChat_ChangeFontFace(bool bBold, bool bItalic, bool bUnderline);
   CPChat_ChangeFontFace(CBuffer &);
 
-  bool FontBold() { return m_nFontFace & FONT_BOLD; }
-  bool FontItalic() { return m_nFontFace & FONT_ITALIC; }
-  bool FontUnderline() { return m_nFontFace & FONT_UNDERLINE; }
+  bool FontBold() { return m_nFontFace & Licq::FONT_BOLD; }
+  bool FontItalic() { return m_nFontFace & Licq::FONT_ITALIC; }
+  bool FontUnderline() { return m_nFontFace & Licq::FONT_UNDERLINE; }
   unsigned long FontFace()  { return m_nFontFace; }
 
 protected:

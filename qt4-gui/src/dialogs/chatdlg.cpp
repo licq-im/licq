@@ -60,7 +60,9 @@
 #endif
 
 #include <licq/icq/chat.h>
+#include <licq/icq/icq.h>
 #include <licq/logging/log.h>
+#include <licq/plugin/pluginmanager.h>
 
 #include "config/chat.h"
 #include "config/general.h"
@@ -287,22 +289,22 @@ ChatDlg::ChatDlg(const Licq::UserId& userId, QWidget* parent)
     a = new QAction(name, encodingsGroup); \
     a->setData(id);
 
-  ADD_ENCODING(ENCODING_DEFAULT,        tr("Default (UTF-8)"))
+  ADD_ENCODING(Licq::ENCODING_DEFAULT,          tr("Default (UTF-8)"))
   a->setChecked(true);
-  ADD_ENCODING(ENCODING_ANSI,           tr("Western Europe (CP 1252)"))
-  ADD_ENCODING(ENCODING_SHIFTJIS,       tr("Shift-JIS"))
-  ADD_ENCODING(ENCODING_GB2312,         tr("Chinese (GBK)"))
-  ADD_ENCODING(ENCODING_CHINESEBIG5,    tr("Chinese Traditional (Big5)"))
-  ADD_ENCODING(ENCODING_GREEK,          tr("Greek (CP 1253)"))
-  ADD_ENCODING(ENCODING_TURKISH,        tr("Turkish (CP 1254)"))
-  ADD_ENCODING(ENCODING_HEBREW,         tr("Hebrew (CP 1255)"))
-  ADD_ENCODING(ENCODING_ARABIC,         tr("Arabic (CP 1256)"))
-  ADD_ENCODING(ENCODING_BALTIC,         tr("Baltic (CP 1257)"))
-  ADD_ENCODING(ENCODING_RUSSIAN,        tr("Russian (CP 1251)"))
-  ADD_ENCODING(ENCODING_THAI,           tr("Thai (TIS-620)"))
-  ADD_ENCODING(ENCODING_EASTEUROPE,     tr("Central European (CP 1250)"))
+  ADD_ENCODING(Licq::ENCODING_ANSI,             tr("Western Europe (CP 1252)"))
+  ADD_ENCODING(Licq::ENCODING_SHIFTJIS,         tr("Shift-JIS"))
+  ADD_ENCODING(Licq::ENCODING_GB2312,           tr("Chinese (GBK)"))
+  ADD_ENCODING(Licq::ENCODING_CHINESEBIG5,      tr("Chinese Traditional (Big5)"))
+  ADD_ENCODING(Licq::ENCODING_GREEK,            tr("Greek (CP 1253)"))
+  ADD_ENCODING(Licq::ENCODING_TURKISH,          tr("Turkish (CP 1254)"))
+  ADD_ENCODING(Licq::ENCODING_HEBREW,           tr("Hebrew (CP 1255)"))
+  ADD_ENCODING(Licq::ENCODING_ARABIC,           tr("Arabic (CP 1256)"))
+  ADD_ENCODING(Licq::ENCODING_BALTIC,           tr("Baltic (CP 1257)"))
+  ADD_ENCODING(Licq::ENCODING_RUSSIAN,          tr("Russian (CP 1251)"))
+  ADD_ENCODING(Licq::ENCODING_THAI,             tr("Thai (TIS-620)"))
+  ADD_ENCODING(Licq::ENCODING_EASTEUROPE,       tr("Central European (CP 1250)"))
 #undef ADD_ENCODING
-  myChatEncoding = ENCODING_DEFAULT;
+  myChatEncoding = Licq::ENCODING_DEFAULT;
 
   tbtEncoding = barChat->addAction(IconManager::instance()->getIcon(IconManager::EncodingIcon), tr("Set Encoding"));
   tbtEncoding->setMenu(popupEncoding);
@@ -327,16 +329,24 @@ ChatDlg::ChatDlg(const Licq::UserId& userId, QWidget* parent)
   // Create the chat manager using our font
   QFontInfo fi(mlePaneLocal->font());
   QFontDatabase fd; //QFontInfo.fixedPitch returns incorrect info???
-  unsigned char style = STYLE_DONTCARE;
+  unsigned char style = Licq::STYLE_DONTCARE;
 
   if (fd.isFixedPitch(fi.family(), fd.styleString(mlePaneLocal->font())))
-    style |= STYLE_FIXEDxPITCH;
+    style |= Licq::STYLE_FIXEDxPITCH;
   else
-    style |= STYLE_VARIABLExPITCH;
+    style |= Licq::STYLE_VARIABLExPITCH;
+
+  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (icqProtocol == NULL)
+  {
+    close();
+    return;
+  }
+  Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
 
   //TODO in daemon
-  chatman = new CChatManager(
-      myId.toULong(), fi.family().toUtf8().constData(), myChatEncoding, style,
+  chatman = icq->createChatManager(userId);
+  chatman->init(fi.family().toUtf8().constData(), myChatEncoding, style,
       fi.pointSize(), fi.bold(), fi.italic(), fi.underline(), fi.strikeOut());
 
   sn = new QSocketNotifier(chatman->Pipe(), QSocketNotifier::Read);
@@ -436,12 +446,12 @@ void ChatDlg::sendFontInfo()
   //FIXME can we get more precise style???
   QFontInfo fi(mlePaneLocal->font());
   QFontDatabase fd; //QFontInfo.fixedPitch returns incorrect info???
-  unsigned char style = STYLE_DONTCARE;
+  unsigned char style = Licq::STYLE_DONTCARE;
 
   if (fd.isFixedPitch(fi.family(), fd.styleString(mlePaneLocal->font())))
-    style |= STYLE_FIXEDxPITCH;
+    style |= Licq::STYLE_FIXEDxPITCH;
   else
-    style |= STYLE_VARIABLExPITCH;
+    style |= Licq::STYLE_VARIABLExPITCH;
 
   chatman->changeFontFamily(fi.family().toUtf8().constData(), myChatEncoding, style);
 }
@@ -546,23 +556,23 @@ void ChatDlg::updateRemoteStyle()
       QColor bg(iter->u->ColorBg()[0], iter->u->ColorBg()[1],
                          iter->u->ColorBg()[2]);
       QFont f(iter->w->font());
-      f.setFixedPitch((iter->u->FontStyle() & 0x0F) == STYLE_FIXEDxPITCH);
+      f.setFixedPitch((iter->u->FontStyle() & 0x0F) == Licq::STYLE_FIXEDxPITCH);
 
       switch (iter->u->FontStyle() & 0xF0)
       {
-      case STYLE_ROMAN:
+        case Licq::STYLE_ROMAN:
         f.setStyleHint(QFont::Serif);
-        break;
-      case STYLE_SWISS:
+          break;
+        case Licq::STYLE_SWISS:
         f.setStyleHint(QFont::SansSerif);
-        break;
-      case STYLE_DECORATIVE:
+          break;
+        case Licq::STYLE_DECORATIVE:
         f.setStyleHint(QFont::Decorative);
-        break;
-      case STYLE_DONTCARE:
-      case STYLE_MODERN:
-      case STYLE_SCRIPT:
-      default:
+          break;
+        case Licq::STYLE_DONTCARE:
+        case Licq::STYLE_MODERN:
+        case Licq::STYLE_SCRIPT:
+        default:
         f.setStyleHint(QFont::AnyStyle);
         break;
       }
@@ -674,14 +684,14 @@ void ChatDlg::slot_chat()
   char buf[32];
   read(chatman->Pipe(), buf, 32);
 
-  CChatEvent* e = NULL;
+  Licq::IcqChatEvent* e = NULL;
   while ( (e = chatman->PopChatEvent()) != NULL)
   {
-    CChatUser* u = e->Client();
+    Licq::IcqChatUser* u = e->Client();
 
     switch(e->Command())
     {
-      case CHAT_ERRORxBIND:
+      case Licq::CHAT_ERRORxBIND:
       {
         WarnUser(this, tr("Unable to bind to a port.\nSee Network Window "
                           "for details."));
@@ -689,7 +699,7 @@ void ChatDlg::slot_chat()
         break;
       }
 
-      case CHAT_ERRORxCONNECT:
+      case Licq::CHAT_ERRORxCONNECT:
       {
         WarnUser(this, tr("Unable to connect to the remote chat.\nSee Network "
                           "Window for details."));
@@ -697,7 +707,7 @@ void ChatDlg::slot_chat()
         break;
       }
 
-      case CHAT_ERRORxRESOURCES:
+      case Licq::CHAT_ERRORxRESOURCES:
       {
         WarnUser(this, tr("Unable to create new thread.\nSee Network Window "
                           "for details."));
@@ -705,7 +715,7 @@ void ChatDlg::slot_chat()
         break;
       }
 
-      case CHAT_DISCONNECTION:
+      case Licq::CHAT_DISCONNECTION:
       {
         QString n = QString::fromUtf8(u->name().c_str());
 
@@ -716,7 +726,7 @@ void ChatDlg::slot_chat()
         break;
       }
 
-      case CHAT_CONNECTION:
+      case Licq::CHAT_CONNECTION:
       {
         QString n = QString::fromUtf8(u->name().c_str());
 
@@ -749,7 +759,7 @@ void ChatDlg::slot_chat()
         break;
       }
 
-      case CHAT_NEWLINE:
+      case Licq::CHAT_NEWLINE:
       {
         QString n = QString::fromUtf8(u->name().c_str());
 
@@ -761,7 +771,7 @@ void ChatDlg::slot_chat()
         break;
       }
 
-      case CHAT_BEEP:  // beep
+      case Licq::CHAT_BEEP:  // beep
       {
         if (myAudio)
           QApplication::beep();
@@ -773,7 +783,7 @@ void ChatDlg::slot_chat()
         break;
       }
 
-      case CHAT_BACKSPACE:   // backspace
+      case Licq::CHAT_BACKSPACE:   // backspace
       {
 
         GetWindow(u)->setReadOnly(false);
@@ -786,7 +796,7 @@ void ChatDlg::slot_chat()
         break;
       }
 
-      case CHAT_COLORxFG: // change foreground color
+      case Licq::CHAT_COLORxFG: // change foreground color
       {
         if (! tbtIgnore->isChecked())
           GetWindow(u)->setForeground(QColor (u->ColorFg()[0],
@@ -794,7 +804,7 @@ void ChatDlg::slot_chat()
         break;
       }
 
-      case CHAT_COLORxBG:  // change background color
+      case Licq::CHAT_COLORxBG:  // change background color
       {
         if (! tbtIgnore->isChecked())
           GetWindow(u)->setBackground(QColor (u->ColorBg()[0],
@@ -803,28 +813,28 @@ void ChatDlg::slot_chat()
         break;
       }
 
-      case CHAT_FONTxFAMILY: // change font type
+      case Licq::CHAT_FONTxFAMILY: // change font type
       {
         if (! tbtIgnore->isChecked())
         {
           QFont f(GetWindow(u)->font());
-          f.setFixedPitch((u->FontStyle() & 0x0F) == STYLE_FIXEDxPITCH);
+          f.setFixedPitch((u->FontStyle() & 0x0F) == Licq::STYLE_FIXEDxPITCH);
 
           switch (u->FontStyle() & 0xF0)
           {
-          case STYLE_ROMAN:
+            case Licq::STYLE_ROMAN:
             f.setStyleHint(QFont::Serif);
-            break;
-          case STYLE_SWISS:
+              break;
+            case Licq::STYLE_SWISS:
             f.setStyleHint(QFont::SansSerif);
-            break;
-          case STYLE_DECORATIVE:
+              break;
+            case Licq::STYLE_DECORATIVE:
             f.setStyleHint(QFont::Decorative);
-            break;
-          case STYLE_DONTCARE:
-          case STYLE_MODERN:
-          case STYLE_SCRIPT:
-          default:
+              break;
+            case Licq::STYLE_DONTCARE:
+            case Licq::STYLE_MODERN:
+            case Licq::STYLE_SCRIPT:
+            default:
             f.setStyleHint(QFont::AnyStyle);
             break;
           }
@@ -836,7 +846,7 @@ void ChatDlg::slot_chat()
         break;
       }
 
-      case CHAT_FONTxFACE: // change font style
+      case Licq::CHAT_FONTxFACE: // change font style
       {
         if (! tbtIgnore->isChecked())
         {
@@ -850,7 +860,7 @@ void ChatDlg::slot_chat()
         break;
       }
 
-      case CHAT_FONTxSIZE: // change font size
+      case Licq::CHAT_FONTxSIZE: // change font size
       {
         if (! tbtIgnore->isChecked())
         {
@@ -861,16 +871,16 @@ void ChatDlg::slot_chat()
         break;
       }
 
-      case CHAT_FOCUSxOUT:
-      case CHAT_FOCUSxIN:
-      case CHAT_SLEEPxON:
-      case CHAT_SLEEPxOFF:
+      case Licq::CHAT_FOCUSxOUT:
+      case Licq::CHAT_FOCUSxIN:
+      case Licq::CHAT_SLEEPxON:
+      case Licq::CHAT_SLEEPxOFF:
       {
         // TODO add some visible indication of these
         break;
       }
 
-      case CHAT_CHARACTER:
+      case Licq::CHAT_CHARACTER:
       {
         GetWindow(u)->appendNoNewLine(QString::fromUtf8(e->data().c_str()));
         break;
@@ -910,7 +920,7 @@ void ChatDlg::SwitchToPaneMode()
 }
 
 
-void ChatDlg::chatClose(CChatUser* u)
+void ChatDlg::chatClose(Licq::IcqChatUser* u)
 {
   if (u == NULL)
   {
@@ -974,7 +984,7 @@ void ChatDlg::closeEvent(QCloseEvent* e)
   chatClose(NULL);
 }
 
-ChatWindow* ChatDlg::GetWindow(CChatUser* u)
+ChatWindow* ChatDlg::GetWindow(Licq::IcqChatUser* u)
 {
   ChatUserWindowsList::iterator iter;
   for (iter = chatUserWindows.begin(); iter != chatUserWindows.end(); iter++)

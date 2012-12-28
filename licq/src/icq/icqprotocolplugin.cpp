@@ -23,6 +23,7 @@
 #include <licq/protocolmanager.h>
 #include <licq/protocolsignal.h>
 #include <licq/version.h>
+#include "chat.h"
 #include "filetransfer.h"
 #include "icq.h"
 #include "owner.h"
@@ -376,6 +377,11 @@ unsigned long IcqProtocolPlugin::icqSendSms(const Licq::UserId& userId,
 Licq::IcqFileTransferManager* IcqProtocolPlugin::createFileTransferManager(const Licq::UserId& userId)
 {
   return new FileTransferManager(userId);
+}
+
+Licq::IcqChatManager* IcqProtocolPlugin::createChatManager(const Licq::UserId& userId)
+{
+  return new ChatManager(userId);
 }
 
 
