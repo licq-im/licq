@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@
 
 #include <QDialog>
 
+#include <licq/userid.h>
+
 class QCheckBox;
 class QComboBox;
 class QGroupBox;
@@ -48,13 +50,13 @@ class SearchUserDlg : public QDialog
   Q_OBJECT
 
 public:
-  SearchUserDlg();
+  SearchUserDlg(const Licq::UserId& ownerId);
 
 public slots:
   void reject();
 
 private:
-  unsigned long ppid;
+  Licq::UserId myOwnerId;
   unsigned long searchTag;
 
   QLabel* lblSearch;

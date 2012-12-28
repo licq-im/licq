@@ -80,11 +80,9 @@ SystemMenu::SystemMenu(QWidget* parent)
   myUserAdmMenu = new QMenu(tr("User &Functions"), this);
   myUserAdmMenu->addAction(tr("&Add User..."), this, SLOT(showAddUserDlg()));
   myAddGroupAction = myUserAdmMenu->addAction(tr("A&dd Group..."), this, SLOT(showAddGroupDlg()));
-  myUserSearchAction = myUserAdmMenu->addAction(tr("S&earch for User..."), this, SLOT(showSearchUserDlg()));
   myUserAutorizeAction = myUserAdmMenu->addAction(tr("A&uthorize User..."), this, SLOT(showAuthUserDlg()));
   myUserReqAutorizeAction = myUserAdmMenu->addAction(tr("Re&quest Authorization..."), this, SLOT(showReqAuthDlg()));
-  myIcqRandomChatAction = myUserAdmMenu->addAction(tr("ICQ Ra&ndom Chat..."), this, SLOT(showRandomChatSearchDlg()));
-  myUserAdmMenu->addSeparator();
+  myUserAdmActionSeparator = myUserAdmMenu->addSeparator();
   myUserPopupAllAction = myUserAdmMenu->addAction(tr("&Popup All Messages..."), gLicqGui, SLOT(showAllEvents()));
   myEditGroupsAction = myUserAdmMenu->addAction(tr("Edit &Groups..."), this, SLOT(showEditGrpDlg()));
   myUserAdmMenu->addSeparator();
@@ -191,9 +189,6 @@ SystemMenu::SystemMenu(QWidget* parent)
   // Sub menus are hidden until we got at least two owners
   myStatusSeparator->setVisible(false);
 
-  // Hide ICQ specific menus until we actually get an ICQ owner
-  myIcqRandomChatAction->setVisible(false);
-
   connect(gGuiSignalManager, SIGNAL(ownerAdded(const Licq::UserId&)),
       SLOT(addOwner(const Licq::UserId&)));
   connect(gGuiSignalManager, SIGNAL(ownerRemoved(const Licq::UserId&)),
@@ -216,7 +211,6 @@ void SystemMenu::updateIcons()
 
   myKeyManagerAction->setIcon(iconman->getIcon(IconManager::GpgKeyIcon));
 
-  myUserSearchAction->setIcon(iconman->getIcon(IconManager::SearchIcon));
   myUserAutorizeAction->setIcon(iconman->getIcon(IconManager::AuthorizeMessageIcon));
   myUserReqAutorizeAction->setIcon(iconman->getIcon(IconManager::ReqAuthorizeMessageIcon));
 
@@ -308,7 +302,11 @@ void SystemMenu::addOwner(const Licq::UserId& userId)
   myOwnerAdmMenu->addMenu(ownerAdmin);
   myStatusMenu->insertMenu(myStatusSeparator, ownerStatus);
   if (ppid == LICQ_PPID)
+  {
     myStatusMenu->insertMenu(myIcqFollowMeSeparator, newOwner->getIcqFollowMeMenu());
+    myUserAdmMenu->insertAction(myUserAdmActionSeparator, newOwner->getIcqUserSearchAction());
+    myUserAdmMenu->insertAction(myUserAdmActionSeparator, newOwner->getIcqRandomChatAction());
+  }
 
   if (myOwnerData.size() < 1)
   {
@@ -333,9 +331,6 @@ void SystemMenu::addOwner(const Licq::UserId& userId)
       myOwnerAdmMenu->removeAction(a);
   }
 
-  if (ppid == LICQ_PPID)
-    myIcqRandomChatAction->setVisible(true);
-
   myOwnerData.insert(userId, newOwner);
 }
 
@@ -346,10 +341,6 @@ void SystemMenu::removeOwner(const Licq::UserId& userId)
     return;
 
   delete data;
-
-  unsigned long ppid = userId.protocolId();
-  if (ppid == LICQ_PPID)
-    myIcqRandomChatAction->setVisible(false);
 
   if (myOwnerData.size() == 1)
   {
@@ -480,11 +471,6 @@ void SystemMenu::showAddGroupDlg()
   new AddGroupDlg();
 }
 
-void SystemMenu::showSearchUserDlg()
-{
-  new SearchUserDlg();
-}
-
 void SystemMenu::showAuthUserDlg()
 {
   new AuthDlg(AuthDlg::GrantAuth);
@@ -498,11 +484,6 @@ void SystemMenu::showReqAuthDlg()
 void SystemMenu::showEditGrpDlg()
 {
   new EditGrpDlg();
-}
-
-void SystemMenu::showRandomChatSearchDlg()
-{
-  new RandomChatDlg();
 }
 
 void SystemMenu::showSettingsDlg()
@@ -585,11 +566,19 @@ OwnerData::OwnerData(const Licq::UserId& userId, const QString& protoName,
 #undef ADD_PFM
 
     connect(myIcqFollowMeMenu, SIGNAL(aboutToShow()), SLOT(aboutToShowIcqFollowMeMenu()));
+
+    myIcqUserSearchAction = new QAction(tr("ICQ User S&earch..."), this);
+    connect(myIcqUserSearchAction, SIGNAL(triggered()), SLOT(showIcqUserSearchDlg()));
+
+    myIcqRandomChatAction = new QAction(tr("ICQ Ra&ndom Chat..."), this);
+    connect(myIcqRandomChatAction, SIGNAL(triggered()), SLOT(showIcqRandomChatSearchDlg()));
   }
   else
   {
     myIcqFollowMeMenu = NULL;
     myIcqFollowMeActions = NULL;
+    myIcqUserSearchAction = NULL;
+    myIcqRandomChatAction = NULL;
   }
 
   connect(myStatusMenu, SIGNAL(aboutToShow()), SLOT(aboutToShowStatusMenu()));
@@ -625,6 +614,9 @@ void OwnerData::updateIcons()
   SET_ICON(myStatusOfflineAction, User::OfflineStatus);
   SET_ICON(myStatusInvisibleAction, User::InvisibleStatus);
 #undef SET_ICON
+
+  if (myIcqUserSearchAction != NULL)
+    myIcqUserSearchAction->setIcon(iconman->getIcon(IconManager::SearchIcon));
 }
 
 void OwnerData::aboutToShowStatusMenu()
@@ -704,4 +696,14 @@ void OwnerData::setIcqFollowMeStatus(QAction* action)
     return;
   dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->
       icqSetPhoneFollowMeStatus(myUserId, id);
+}
+
+void OwnerData::showIcqUserSearchDlg()
+{
+  new SearchUserDlg(myUserId);
+}
+
+void OwnerData::showIcqRandomChatSearchDlg()
+{
+  new RandomChatDlg(myUserId);
 }

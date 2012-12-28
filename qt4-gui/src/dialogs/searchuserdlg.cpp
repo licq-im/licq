@@ -54,8 +54,8 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::SearchUserDlg */
 
-SearchUserDlg::SearchUserDlg()
-  : ppid(LICQ_PPID),
+SearchUserDlg::SearchUserDlg(const Licq::UserId& ownerId)
+  : myOwnerId(ownerId),
     searchTag(0)
 {
   Support::setWidgetProps(this, "SearchUserDialog");
@@ -255,11 +255,9 @@ void SearchUserDlg::startSearch()
   btnReset->setText(tr("Cancel"));
   btnDone->setEnabled(false);
 
-  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
-
   if (edtUin->text().trimmed().isEmpty())
   {
-    searchTag = icq->icqSearchWhitePages(ownerId,
+    searchTag = icq->icqSearchWhitePages(myOwnerId,
         edtFirst->text().toUtf8().constData(),
         edtLast->text().toUtf8().constData(),
         edtNick->text().toUtf8().constData(),

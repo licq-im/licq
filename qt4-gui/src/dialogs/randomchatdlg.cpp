@@ -72,8 +72,9 @@ void RandomChatDlg::fillGroupsList(QListWidget* list, bool addNone, unsigned def
 #undef ADD_RCG
 }
 
-RandomChatDlg::RandomChatDlg(QWidget* parent)
+RandomChatDlg::RandomChatDlg(const Licq::UserId& ownerId, QWidget* parent)
   : QDialog(parent),
+    myOwnerId(ownerId),
     myTag(0)
 {
   Support::setWidgetProps(this, "RandomChatDialog");
@@ -115,8 +116,7 @@ void RandomChatDlg::okPressed()
   connect(gGuiSignalManager, SIGNAL(doneUserFcn(const Licq::Event*)),
       SLOT(userEventDone(const Licq::Event*)));
   unsigned chatGroup = myGroupsList->currentItem()->data(Qt::UserRole).toInt();
-  Licq::UserId ownerId(Licq::gUserManager.ownerUserId(LICQ_PPID));
-  myTag = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->randomChatSearch(ownerId, chatGroup);
+  myTag = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->randomChatSearch(myOwnerId, chatGroup);
   setWindowTitle(tr("Searching for Random Chat Partner..."));
 }
 

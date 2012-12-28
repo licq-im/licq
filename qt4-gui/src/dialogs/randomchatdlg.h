@@ -24,6 +24,8 @@
 
 #include <QDialog>
 
+#include <licq/userid.h>
+
 class QListWidget;
 class QPushButton;
 
@@ -39,7 +41,7 @@ class RandomChatDlg : public QDialog
   Q_OBJECT
 
 public:
-  RandomChatDlg(QWidget* parent = 0);
+  RandomChatDlg(const Licq::UserId& ownerId, QWidget* parent = 0);
   ~RandomChatDlg();
 
   static void fillGroupsList(QListWidget* list, bool addNone, unsigned def);
@@ -48,6 +50,7 @@ private:
   QListWidget* myGroupsList;
   QPushButton* myOkButton;
   QPushButton* myCancelButton;
+  Licq::UserId myOwnerId;
   unsigned long myTag;
 
 private slots:
