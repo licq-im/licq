@@ -1656,8 +1656,8 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
 void UserPages::Info::addPhone()
 {
     EditPhoneDlg* epd = new EditPhoneDlg(dynamic_cast<UserDlg*>(parent()));
-  connect(epd, SIGNAL(updated(struct Licq::PhoneBookEntry, int)),
-      SLOT(phoneBookUpdated(struct Licq::PhoneBookEntry, int)));
+  connect(epd, SIGNAL(updated(struct Licq::PhoneBookEntry&, int)),
+      SLOT(phoneBookUpdated(struct Licq::PhoneBookEntry&, int)));
     epd->show();
 }
 
