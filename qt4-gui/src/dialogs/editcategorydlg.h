@@ -22,12 +22,12 @@
 
 #include <QDialog>
 
+#include <licq/icq/icq.h>
 #include <licq/icq/user.h>
 
 class QComboBox;
 class QLineEdit;
 
-struct SCategory;
 
 namespace LicqQtGui
 {
@@ -47,8 +47,7 @@ private:
   QLineEdit* myDescr[Licq::MAX_CATEGORIES];
   unsigned short myNumCats;
   Licq::UserCat myUserCat;
-
-  const struct SCategory* (*getEntry)(unsigned short index);
+  Licq::IcqCategoryType myIcqCategoryType;
 
 private slots:
   void ok();

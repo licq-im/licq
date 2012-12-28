@@ -38,7 +38,6 @@
 #include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/icq/icq.h>
-#include <licq/icq/codes.h>
 #include <licq/icq/filetransfer.h>
 #include <licq/inifile.h>
 #include <licq/logging/logservice.h>
@@ -2738,26 +2737,33 @@ void CLicqConsole::InputSearch(int cIn)
         {
           if ((sz = Input_Line(data->szQuery, data->nPos, cIn)) == NULL)
             return;
+
+          Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+          if (icqProtocol == NULL)
+            return;
+          Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
+
           data->nPos = 0;
-          const SLanguage *l = NULL;
+          const struct Licq::IcqCategory* l = NULL;
           if (data->szQuery[0] != '?' && data->szQuery[0] != '\0')
           {
             if (isdigit(data->szQuery[0]))
-              l = GetLanguageByCode(atol(data->szQuery));
+              l = icq->getLanguageByCode(atol(data->szQuery));
             else
-              l = GetLanguageByName(data->szQuery);
+              l = icq->getLanguageByName(data->szQuery);
           }
 
           // Print out list of languages
           if (l == NULL && data->szQuery[0] != '\0')
           {
-            for (unsigned short i = 0; i < NUM_LANGUAGES; i++)
+            for (unsigned short i = 0; i < Licq::NUM_LANGUAGES; i++)
             {
+              const struct Licq::IcqCategory* lang = icq->getLanguageByIndex(i);
               winMain->wprintf("%C%s %A(%Z%d%A)%s%Z",
-                               COLOR_WHITE, gLanguages[i].szName,
-                               A_BOLD, A_BOLD, gLanguages[i].nCode,
+                               COLOR_WHITE, lang->szName,
+                               A_BOLD, A_BOLD, lang->nCode,
                                A_BOLD,
-                               i == NUM_LANGUAGES - 1 ? "\n" : ", ",
+                               i == Licq::NUM_LANGUAGES - 1 ? "\n" : ", ",
                                A_BOLD);
             }
             winMain->wprintf("%A%CLanguage [?]: ",
@@ -2765,7 +2771,7 @@ void CLicqConsole::InputSearch(int cIn)
             return;
           }
 
-          data->nLanguage = (l == NULL ? LANGUAGE_UNSPECIFIED : l->nCode);
+          data->nLanguage = (l == NULL ? Licq::LANGUAGE_UNSPECIFIED : l->nCode);
           winMain->wprintf("%A%CCity: ", m_cColorQuery->nAttr, m_cColorQuery->nColor);
           data->nState = 9;
           return;
@@ -2795,27 +2801,33 @@ void CLicqConsole::InputSearch(int cIn)
         {
           if ((sz = Input_Line(data->szQuery, data->nPos, cIn)) == NULL)
             return;
+
+          Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+          if (icqProtocol == NULL)
+            return;
+          Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
+
           data->nPos = 0;
-          const SCountry
-          *c = NULL;
+          const struct Licq::IcqCountry* c = NULL;
           if (data->szQuery[0] != '?' && data->szQuery[0] != '\0')
           {
             if (isdigit(data->szQuery[0]))
-              c = GetCountryByCode(atol(data->szQuery));
+              c = icq->getCountryByCode(atol(data->szQuery));
             else
-              c = GetCountryByName(data->szQuery);
+              c = icq->getCountryByName(data->szQuery);
           }
 
           // Print out list of countries
           if (c == NULL && data->szQuery[0] != '\0')
           {
-            for (unsigned short i = 0; i < NUM_COUNTRIES; i++)
+            for (unsigned short i = 0; i < Licq::NUM_COUNTRIES; i++)
             {
+              const struct Licq::IcqCountry* country = icq->getCountryByIndex(i);
               winMain->wprintf("%C%s %A(%Z%d%A)%s%Z",
-                               COLOR_WHITE, gCountries[i].szName,
-                               A_BOLD, A_BOLD, gCountries[i].nCode,
+                               COLOR_WHITE, country->szName,
+                               A_BOLD, A_BOLD, country->nCode,
                                A_BOLD,
-                               i == NUM_COUNTRIES - 1 ? "\n" : ", ",
+                               i == Licq::NUM_COUNTRIES - 1 ? "\n" : ", ",
                                A_BOLD);
             }
             winMain->wprintf("%A%CCountry [?]: ",
@@ -2823,7 +2835,7 @@ void CLicqConsole::InputSearch(int cIn)
             return;
           }
 
-          data->nCountryCode = (c == NULL ? COUNTRY_UNSPECIFIED : c->nCode);
+          data->nCountryCode = (c == NULL ? Licq::COUNTRY_UNSPECIFIED : c->nCode);
           winMain->wprintf("%A%CCompany Name: ", m_cColorQuery->nAttr, m_cColorQuery->nColor);
           data->nState = 12;
           return;

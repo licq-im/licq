@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,17 +17,18 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "config.h"
-
-#include <licq/icq/codes.h>
+#include "icqprotocolplugin.h"
 
 #include <stdio.h>
 #include <string.h>
 
 #include "../gettext.h"
 
+using namespace LicqIcq;
+using Licq::IcqCategory;
 
-const struct SCategory gBackgrounds[NUM_BACKGROUNDS] =
+
+static const struct IcqCategory gBackgrounds[Licq::NUM_BACKGROUNDS] =
 {
   { tr_NOOP("Elementary School"), 300, 0 },
   { tr_NOOP("High School"), 301, 1 },
@@ -39,38 +40,9 @@ const struct SCategory gBackgrounds[NUM_BACKGROUNDS] =
   { tr_NOOP("Other"), 399, 7 }
 };
 
-
-const struct SCategory *GetBackgroundByCode(unsigned short _nCode)
+static const struct Licq::IcqCountry gCountries[Licq::NUM_COUNTRIES] =
 {
-   // do a simple linear search as there aren't too many interests
-   unsigned short i = 0;
-   while (i < NUM_BACKGROUNDS && gBackgrounds[i].nCode != _nCode) i++;
-   if (i == NUM_BACKGROUNDS) return NULL;
-   return &gBackgrounds[i];
-}
-
-const struct SCategory *GetBackgroundByIndex(unsigned short _nIndex)
-{
-   if (_nIndex >= NUM_BACKGROUNDS) return NULL;
-   return (&gBackgrounds[_nIndex]);
-}
-
-const struct SCategory *GetBackgroundByName(const char *_szName)
-{
-   unsigned short i = 0;
-   while (i < NUM_BACKGROUNDS &&
-          strcasecmp(gBackgrounds[i].szName, _szName))
-   {
-     i++;
-   }
-   if (i == NUM_BACKGROUNDS) return NULL;
-   return &gBackgrounds[i];
-}
-
-
-const struct SCountry gCountries[NUM_COUNTRIES] =
-{
-  { tr_NOOP("Unspecified"), COUNTRY_UNSPECIFIED, 0, 0 },
+  { tr_NOOP("Unspecified"), Licq::COUNTRY_UNSPECIFIED, 0, 0 },
   { tr_NOOP("Afghanistan"), 93, 93, 1 },
   { tr_NOOP("Albania"), 355, 355, 2 },
   { tr_NOOP("Algeria"), 213, 213, 3 },
@@ -316,31 +288,31 @@ const struct SCountry gCountries[NUM_COUNTRIES] =
   { tr_NOOP("Zimbabwe"), 263, 263, 243 }
 };
 
-const struct SCountry *GetCountryByCode(unsigned short _nCountryCode)
+const struct Licq::IcqCountry* IcqProtocolPlugin::getCountryByCode(unsigned short _nCountryCode)
 {
    // do a simple linear search as there aren't too many countries
    unsigned short i = 0;
-   while (i < NUM_COUNTRIES && gCountries[i].nCode != _nCountryCode) i++;
-   if (i == NUM_COUNTRIES) return NULL;
+   while (i < Licq::NUM_COUNTRIES && gCountries[i].nCode != _nCountryCode) i++;
+   if (i == Licq::NUM_COUNTRIES) return NULL;
    return &gCountries[i];
 }
 
-const struct SCountry *GetCountryByIndex(unsigned short _nIndex)
+const struct Licq::IcqCountry* IcqProtocolPlugin::getCountryByIndex(unsigned short _nIndex)
 {
-   if (_nIndex >= NUM_COUNTRIES) return NULL;
+   if (_nIndex >= Licq::NUM_COUNTRIES) return NULL;
    return (&gCountries[_nIndex]);
 }
 
-const struct SCountry *GetCountryByName(const char *_szName)
+const struct Licq::IcqCountry* IcqProtocolPlugin::getCountryByName(const char *_szName)
 {
    unsigned short i = 0;
-   while (i < NUM_COUNTRIES && strcasecmp(gCountries[i].szName, _szName)) i++;
-   if (i == NUM_COUNTRIES) return NULL;
+   while (i < Licq::NUM_COUNTRIES && strcasecmp(gCountries[i].szName, _szName)) i++;
+   if (i == Licq::NUM_COUNTRIES) return NULL;
    return &gCountries[i];
 }
 
 
-const struct SHomepageCat gHomepageCategories[NUM_HOMEPAGECATS] =
+static const struct IcqCategory gHomepageCategories[Licq::NUM_HOMEPAGECATS] =
 {
   { tr_NOOP("Age Groups"), 50, 0 },
   { tr_NOOP("Age Groups/Age Groups"), 13, 1 },
@@ -3329,37 +3301,7 @@ const struct SHomepageCat gHomepageCategories[NUM_HOMEPAGECATS] =
   { tr_NOOP("Women/Women's Rights/Women's Rights in the Family/Women Rights in the Family"), 2686, 2984 }
 };
 
-const struct SHomepageCat *GetHomepageCatByCode(unsigned short _nCode)
-{
-  unsigned short i;
-  for (i = 0; i < NUM_HOMEPAGECATS; i++)
-  {
-    if (gHomepageCategories[i].nCode == _nCode)
-      return (&gHomepageCategories[i]);
-  }
-  return NULL;
-}
-
-const struct SHomepageCat *GetHomepageCatByIndex(unsigned short _nIndex)
-{
-  if (_nIndex >= NUM_HOMEPAGECATS)
-    return NULL;
-  return (&gHomepageCategories[_nIndex]);
-}
-
-const struct SHomepageCat *GetHomepageCatByName(const char *_szName)
-{
-  unsigned short i;
-  for (i = 0; i < NUM_HOMEPAGECATS; i++)
-  {
-    if (!strcasecmp(gHomepageCategories[i].szName, _szName))
-      return (&gHomepageCategories[i]);
-  }
-  return NULL;
-}
-
-
-const struct SCategory gInterests[NUM_INTERESTS] =
+static const struct IcqCategory gInterests[Licq::NUM_INTERESTS] =
 {
   { tr_NOOP("50's"), 137, 0 },
   { tr_NOOP("60's"), 134, 1 },
@@ -3414,33 +3356,9 @@ const struct SCategory gInterests[NUM_INTERESTS] =
   { tr_NOOP("Women"), 132, 50 }
 };
 
-const struct SCategory *GetInterestByCode(unsigned short _nCode)
+static const struct IcqCategory gLanguages[Licq::NUM_LANGUAGES] =
 {
-   // do a simple linear search as there aren't too many interests
-   unsigned short i = 0;
-   while (i < NUM_INTERESTS && gInterests[i].nCode != _nCode) i++;
-   if (i == NUM_INTERESTS) return NULL;
-   return &gInterests[i];
-}
-
-const struct SCategory *GetInterestByIndex(unsigned short _nIndex)
-{
-   if (_nIndex >= NUM_INTERESTS) return NULL;
-   return (&gInterests[_nIndex]);
-}
-
-const struct SCategory *GetInterestByName(const char *_szName)
-{
-   unsigned short i = 0;
-   while (i < NUM_INTERESTS && strcasecmp(gInterests[i].szName, _szName)) i++;
-   if (i == NUM_INTERESTS) return NULL;
-   return &gInterests[i];
-}
-
-
-const struct SLanguage gLanguages[NUM_LANGUAGES] =
-{
-  { tr_NOOP("Unspecified"), LANGUAGE_UNSPECIFIED, 0 },
+  { tr_NOOP("Unspecified"), Licq::LANGUAGE_UNSPECIFIED, 0 },
   { tr_NOOP("Afrikaans"), 55, 1 },
   { tr_NOOP("Albanian"), 58, 2 },
   { tr_NOOP("Arabic"), 1, 3 },
@@ -3515,33 +3433,9 @@ const struct SLanguage gLanguages[NUM_LANGUAGES] =
   { tr_NOOP("Yoruba"), 54, 72 }
 };
 
-const struct SLanguage *GetLanguageByCode(unsigned short _nLanguageCode)
+static const struct IcqCategory gOccupations[Licq::NUM_OCCUPATIONS] =
 {
-   // do a simple linear search as there aren't too many countries
-   unsigned short i = 0;
-   while (i < NUM_LANGUAGES && gLanguages[i].nCode != _nLanguageCode) i++;
-   if (i == NUM_LANGUAGES) return NULL;
-   return &gLanguages[i];
-}
-
-const struct SLanguage *GetLanguageByIndex(unsigned short _nIndex)
-{
-   if (_nIndex >= NUM_LANGUAGES) return NULL;
-   return (&gLanguages[_nIndex]);
-}
-
-const struct SLanguage *GetLanguageByName(const char *_szName)
-{
-   unsigned short i = 0;
-   while (i < NUM_LANGUAGES && strcasecmp(gLanguages[i].szName, _szName)) i++;
-   if (i == NUM_LANGUAGES) return NULL;
-   return &gLanguages[i];
-}
-
-
-const struct SOccupation gOccupations[NUM_OCCUPATIONS] =
-{
-  { tr_NOOP("Unspecified"), OCCUPATION_UNSPECIFIED, 0 },
+  { tr_NOOP("Unspecified"), Licq::OCCUPATION_UNSPECIFIED, 0 },
   { tr_NOOP("Academic"), 1, 1 },
   { tr_NOOP("Administrative"), 2, 2 },
   { tr_NOOP("Art/Entertainment"), 3, 3 },
@@ -3572,31 +3466,7 @@ const struct SOccupation gOccupations[NUM_OCCUPATIONS] =
   { tr_NOOP("Web Building"), 27, 28 }
 };
 
-const struct SOccupation *GetOccupationByCode(unsigned short _nOccupationCode)
-{
-   // do a simple linear search as there aren't too many occupations
-   unsigned short i = 0;
-   while (i < NUM_OCCUPATIONS && gOccupations[i].nCode != _nOccupationCode) i++;
-   if (i == NUM_OCCUPATIONS) return NULL;
-   return &gOccupations[i];
-}
-
-const struct SOccupation *GetOccupationByIndex(unsigned short _nIndex)
-{
-   if (_nIndex >= NUM_OCCUPATIONS) return NULL;
-   return (&gOccupations[_nIndex]);
-}
-
-const struct SOccupation *GetOccupationByName(const char *_szName)
-{
-   unsigned short i = 0;
-   while (i < NUM_OCCUPATIONS && strcasecmp(gOccupations[i].szName, _szName)) i++;
-   if (i == NUM_OCCUPATIONS) return NULL;
-   return &gOccupations[i];
-}
-
-
-const struct SCategory gOrganizations[NUM_ORGANIZATIONS] =
+static const struct IcqCategory gOrganizations[Licq::NUM_ORGANIZATIONS] =
 {
   { tr_NOOP("Alumni Org."), 200, 0 },
   { tr_NOOP("Charity Org."), 201, 1},
@@ -3620,35 +3490,73 @@ const struct SCategory gOrganizations[NUM_ORGANIZATIONS] =
   { tr_NOOP("Other"), 299, 19 }
 };
 
-const struct SCategory *GetOrganizationByCode(unsigned short _nCode)
+
+static const struct IcqCategory* getCategory(unsigned *count, Licq::IcqCategoryType type)
 {
-   // do a simple linear search as there aren't too many countries
-   unsigned short i = 0;
-   while (i < NUM_ORGANIZATIONS && gOrganizations[i].nCode != _nCode) i++;
-   if (i == NUM_ORGANIZATIONS) return NULL;
-   return &gOrganizations[i];
+  switch (type)
+  {
+    case Licq::IcqCatTypeBackground:
+      *count = Licq::NUM_BACKGROUNDS;
+      return gBackgrounds;
+    case Licq::IcqCatTypeHomepage:
+      *count = Licq::NUM_HOMEPAGECATS;
+      return gHomepageCategories;
+    case Licq::IcqCatTypeInterest:
+      *count = Licq::NUM_INTERESTS;
+      return gInterests;
+    case Licq::IcqCatTypeLanguage:
+      *count = Licq::NUM_LANGUAGES;
+      return gLanguages;
+    case Licq::IcqCatTypeOccupation:
+      *count = Licq::NUM_OCCUPATIONS;
+      return gOccupations;
+    case Licq::IcqCatTypeOrganization:
+      *count = Licq::NUM_ORGANIZATIONS;
+      return gOrganizations;
+    default:
+      *count = 0;
+      return NULL;
+  }
 }
 
-const struct SCategory *GetOrganizationByIndex(unsigned short _nIndex)
+const struct IcqCategory* IcqProtocolPlugin::getCategoryByCode(Licq::IcqCategoryType type, unsigned short code)
 {
-   if (_nIndex >= NUM_ORGANIZATIONS) return NULL;
-   return (&gOrganizations[_nIndex]);
-}
+  unsigned count;
+  const struct IcqCategory* catlist = getCategory(&count, type);
 
-const struct SCategory *GetOrganizationByName(const char *_szName)
-{
+   // do a simple linear search as there aren't too many entries
    unsigned short i = 0;
-   while (i < NUM_ORGANIZATIONS &&
-          strcasecmp(gOrganizations[i].szName, _szName))
-   {
+   while (i < count && catlist[i].nCode != code)
      i++;
-   }
-   if (i == NUM_ORGANIZATIONS) return NULL;
-   return &gOrganizations[i];
+   if (i == count)
+     return NULL;
+   return &catlist[i];
+}
+
+const struct IcqCategory* IcqProtocolPlugin::getCategoryByIndex(Licq::IcqCategoryType type, unsigned short index)
+{
+  unsigned count;
+  const struct IcqCategory* catlist = getCategory(&count, type);
+
+   if (index >= count) return NULL;
+   return (&catlist[index]);
+}
+
+const struct IcqCategory* IcqProtocolPlugin::getCategoryByName(Licq::IcqCategoryType type, const char* name)
+{
+  unsigned count;
+  const struct IcqCategory* catlist = getCategory(&count, type);
+
+   unsigned short i = 0;
+   while (i < count && strcasecmp(catlist[i].szName, name))
+     i++;
+   if (i == count)
+     return NULL;
+   return &catlist[i];
 }
 
 
-const struct SProvider gProviders[NUM_PROVIDERS] =
+static const struct Licq::IcqProvider gProviders[Licq::NUM_PROVIDERS] =
 {
   { tr_NOOP("(Brazil) Access"), tr_NOOP("@email.pageacess.com.br"), 0 },
   { tr_NOOP("(Brazil) E-Trim"), tr_NOOP("@etrim.com.br"), 1 },
@@ -3684,25 +3592,25 @@ const struct SProvider gProviders[NUM_PROVIDERS] =
   { tr_NOOP("(USA) WebLink Wireless (PageMart) (Advanced)"), tr_NOOP("@airmessage.net"), 31 }
 };
 
-const struct SProvider *GetProviderByGateway(const char *_szGateway)
+const struct Licq::IcqProvider* IcqProtocolPlugin::getProviderByGateway(const char *_szGateway)
 {
    unsigned short i = 0;
-   while (i < NUM_PROVIDERS && strcasecmp(gProviders[i].szGateway, _szGateway))
+   while (i < Licq::NUM_PROVIDERS && strcasecmp(gProviders[i].szGateway, _szGateway))
      i++;
-   if (i == NUM_PROVIDERS) return NULL;
+   if (i == Licq::NUM_PROVIDERS) return NULL;
    return &gProviders[i];
 }
 
-const struct SProvider *GetProviderByIndex(unsigned short _nIndex)
+const struct Licq::IcqProvider* IcqProtocolPlugin::getProviderByIndex(unsigned short _nIndex)
 {
-   if (_nIndex >= NUM_PROVIDERS) return NULL;
+   if (_nIndex >= Licq::NUM_PROVIDERS) return NULL;
    return (&gProviders[_nIndex]);
 }
 
-const struct SProvider *GetProviderByName(const char *_szName)
+const struct Licq::IcqProvider* IcqProtocolPlugin::getProviderByName(const char *_szName)
 {
    unsigned short i = 0;
-   while (i < NUM_PROVIDERS && strcasecmp(gProviders[i].szName, _szName)) i++;
-   if (i == NUM_PROVIDERS) return NULL;
+   while (i < Licq::NUM_PROVIDERS && strcasecmp(gProviders[i].szName, _szName)) i++;
+   if (i == Licq::NUM_PROVIDERS) return NULL;
    return &gProviders[i];
 }

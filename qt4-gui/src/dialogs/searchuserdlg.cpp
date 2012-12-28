@@ -37,7 +37,6 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
 #include <licq/icq/icq.h>
-#include <licq/icq/codes.h>
 #include <licq/plugin/pluginmanager.h>
 
 #include "contactlist/contactlist.h"
@@ -62,6 +61,14 @@ SearchUserDlg::SearchUserDlg()
   Support::setWidgetProps(this, "SearchUserDialog");
   setAttribute(Qt::WA_DeleteOnClose, true);
   setWindowTitle(tr("Licq - User Search"));
+
+  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (icqProtocol == NULL)
+  {
+    close();
+    return;
+  }
+  Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
 
   connect(gGuiSignalManager, SIGNAL(searchResult(const Licq::Event*)),
       SLOT(searchResult(const Licq::Event*)));
@@ -92,12 +99,12 @@ SearchUserDlg::SearchUserDlg()
     << tr("Male");
 
   QStringList languages;
-  for (int i = 0; i < NUM_LANGUAGES; i++)
-    languages << GetLanguageByIndex(i)->szName;
+  for (unsigned i = 0; i < Licq::NUM_LANGUAGES; i++)
+    languages << icq->getLanguageByIndex(i)->szName;
 
   QStringList countries;
-  for (int i = 0; i < NUM_COUNTRIES; i++)
-    countries << GetCountryByIndex(i)->szName;
+  for (unsigned i = 0; i < Licq::NUM_COUNTRIES; i++)
+    countries << icq->getCountryByIndex(i)->szName;
 
   int row = 0;
   int column = 0;
@@ -260,10 +267,10 @@ void SearchUserDlg::startSearch()
         mins[cmbAge->currentIndex()],
         maxs[cmbAge->currentIndex()],
         cmbGender->currentIndex(),
-        GetLanguageByIndex(cmbLanguage->currentIndex())->nCode,
+        icq->getCategoryByIndex(Licq::IcqCatTypeLanguage, cmbLanguage->currentIndex())->nCode,
         edtCity->text().toUtf8().constData(),
         edtState->text().toUtf8().constData(),
-        GetCountryByIndex(cmbCountry->currentIndex())->nCode,
+        icq->getCountryByIndex(cmbCountry->currentIndex())->nCode,
         edtCoName->text().toUtf8().constData(),
         edtCoDept->text().toUtf8().constData(),
         edtCoPos->text().toUtf8().constData(),

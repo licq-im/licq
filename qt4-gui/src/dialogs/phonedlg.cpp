@@ -30,8 +30,9 @@
 #include <QPixmap>
 #include <QPushButton>
 
-#include <licq/icq/codes.h>
+#include <licq/icq/icq.h>
 #include <licq/icq/user.h>
+#include <licq/plugin/pluginmanager.h>
 
 #include "config/iconmanager.h"
 
@@ -51,6 +52,14 @@ EditPhoneDlg::EditPhoneDlg(QWidget* parent, const struct Licq::PhoneBookEntry* p
   setModal(true);
 
   m_nEntry = nEntry;
+
+  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (icqProtocol == NULL)
+  {
+    close();
+    return;
+  }
+  Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
 
   QGridLayout* top_lay = new QGridLayout(this);
 
@@ -87,8 +96,8 @@ EditPhoneDlg::EditPhoneDlg(QWidget* parent, const struct Licq::PhoneBookEntry* p
   top_lay->addWidget(new QLabel(tr("Country:")), 2, 0);
 
   cmbCountry = new QComboBox();
-  for (unsigned short i = 0; i < NUM_COUNTRIES; i++)
-    cmbCountry->addItem(GetCountryByIndex(i)->szName);
+  for (unsigned short i = 0; i < Licq::NUM_COUNTRIES; i++)
+    cmbCountry->addItem(icq->getCountryByIndex(i)->szName);
   top_lay->addWidget(cmbCountry, 2, 1);
 
   // ROWS 4-5
@@ -118,8 +127,8 @@ EditPhoneDlg::EditPhoneDlg(QWidget* parent, const struct Licq::PhoneBookEntry* p
 
   cmbProvider = new QComboBox();
   cmbProvider->addItem(tr("Custom"));
-  for (unsigned short i = 0; i < NUM_PROVIDERS; i++)
-    cmbProvider->addItem(GetProviderByIndex(i)->szName);
+  for (unsigned short i = 0; i < Licq::NUM_PROVIDERS; i++)
+    cmbProvider->addItem(icq->getProviderByIndex(i)->szName);
   top_lay->addWidget(cmbProvider, 4, 1);
 
   // ROW 7
@@ -153,7 +162,7 @@ EditPhoneDlg::EditPhoneDlg(QWidget* parent, const struct Licq::PhoneBookEntry* p
     cmbDescription->addItem(QString::fromUtf8(pbe->description.c_str()));
     cmbDescription->setCurrentIndex(cmbDescription->count() - 1);
     cmbType->setCurrentIndex(pbe->nType);
-    const struct SCountry* c = GetCountryByName(pbe->country.c_str());
+    const struct Licq::IcqCountry* c = icq->getCountryByName(pbe->country.c_str());
     if (c)
       cmbCountry->setCurrentIndex(c->nIndex);
     leAreaCode->setText(QString::fromUtf8(pbe->areaCode.c_str()));
@@ -165,7 +174,7 @@ EditPhoneDlg::EditPhoneDlg(QWidget* parent, const struct Licq::PhoneBookEntry* p
     }
     if (pbe->nGatewayType == Licq::GATEWAY_BUILTIN)
     {
-      const struct SProvider* p = GetProviderByName(pbe->gateway.c_str());
+      const struct Licq::IcqProvider* p = icq->getProviderByName(pbe->gateway.c_str());
       if (p)
         cmbProvider->setCurrentIndex(p->nIndex + 1);
       else if (!pbe->gateway.empty())

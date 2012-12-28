@@ -89,6 +89,16 @@ public:
   Licq::IcqFileTransferManager* createFileTransferManager(const Licq::UserId& userId);
   Licq::IcqChatManager* createChatManager(const Licq::UserId& userId);
 
+  const struct Licq::IcqCategory* getCategoryByCode(enum Licq::IcqCategoryType type, unsigned short code);
+  const struct Licq::IcqCategory* getCategoryByIndex(enum Licq::IcqCategoryType type, unsigned short index);
+  const struct Licq::IcqCategory* getCategoryByName(enum Licq::IcqCategoryType type, const char* name);
+  const struct Licq::IcqCountry* getCountryByCode(unsigned short countryCode);
+  const struct Licq::IcqCountry* getCountryByIndex(unsigned short index);
+  const struct Licq::IcqCountry* getCountryByName(const char* name);
+  const struct Licq::IcqProvider* getProviderByGateway(const char* gateway);
+  const struct Licq::IcqProvider* getProviderByIndex(unsigned short index);
+  const struct Licq::IcqProvider* getProviderByName(const char* name);
+
 protected:
   // From Licq::ProtocolPlugin
   bool init(int, char**);

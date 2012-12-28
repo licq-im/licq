@@ -54,7 +54,7 @@ set(licq_SRCS
 
   icq/buffer.cpp
   icq/chat.cpp
-  icq/codes.c
+  icq/codes.cpp
   icq/filetransfer.cpp
   icq/icq-srv.cpp
   icq/icq-tcp.cpp

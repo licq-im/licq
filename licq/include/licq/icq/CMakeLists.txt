@@ -1,6 +1,5 @@
 set(licq_HEADERS
   chat.h
-  codes.h
   filetransfer.h
   icq.h
   owner.h

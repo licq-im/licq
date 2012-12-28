@@ -24,8 +24,9 @@
 #include <QGridLayout>
 #include <QLineEdit>
 
-#include <licq/icq/codes.h>
+#include <licq/icq/icq.h>
 #include <licq/icq/user.h>
+#include <licq/plugin/pluginmanager.h>
 
 #include "helpers/support.h"
 
@@ -41,26 +42,34 @@ EditCategoryDlg::EditCategoryDlg(Licq::UserCat cat, const Licq::UserCategoryMap&
 
   QString title = "Licq - Edit @ Category";
 
+  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (icqProtocol == NULL)
+  {
+    close();
+    return;
+  }
+  Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
+
   unsigned short tableSize;
 
   switch (myUserCat)
   {
     case Licq::CAT_INTERESTS:
       myNumCats = Licq::MAX_CATEGORIES;
-      getEntry = GetInterestByIndex;
-      tableSize = NUM_INTERESTS;
+      myIcqCategoryType = Licq::IcqCatTypeInterest;
+      tableSize = Licq::NUM_INTERESTS;
       title.replace("@", tr("Personal Interests"));
       break;
     case Licq::CAT_ORGANIZATION:
       myNumCats = Licq::MAX_CATEGORIES - 1;
-      getEntry = GetOrganizationByIndex;
-      tableSize = NUM_ORGANIZATIONS;
+      myIcqCategoryType = Licq::IcqCatTypeOrganization;
+      tableSize = Licq::NUM_ORGANIZATIONS;
       title.replace("@", tr("Organization, Affiliation, Group"));
       break;
     case Licq::CAT_BACKGROUND:
       myNumCats = Licq::MAX_CATEGORIES - 1;
-      getEntry = GetBackgroundByIndex;
-      tableSize = NUM_BACKGROUNDS;
+      myIcqCategoryType = Licq::IcqCatTypeBackground;
+      tableSize = Licq::NUM_BACKGROUNDS;
       title.replace("@", tr("Past Background"));
       break;
     default:
@@ -96,8 +105,9 @@ EditCategoryDlg::EditCategoryDlg(Licq::UserCat cat, const Licq::UserCategoryMap&
 
     for (int j = 0; j < tableSize ; j++)
     {
-      myCats[i]->addItem(QString::fromUtf8(getEntry(j)->szName));
-      if (getEntry(j)->nCode == selection_id)
+      const struct Licq::IcqCategory* icqcat = icq->getCategoryByIndex(myIcqCategoryType, j);
+      myCats[i]->addItem(QString::fromUtf8(icqcat->szName));
+      if (icqcat->nCode == selection_id)
         selected = j + 1;
     }
 
@@ -128,11 +138,22 @@ EditCategoryDlg::EditCategoryDlg(Licq::UserCat cat, const Licq::UserCategoryMap&
 
 void EditCategoryDlg::ok()
 {
+  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (icqProtocol == NULL)
+  {
+    close();
+    return;
+  }
+  Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
+
   Licq::UserCategoryMap cat;
   for (unsigned short i = 0; i < myNumCats; i++)
   {
     if (myCats[i]->currentIndex() != 0)
-      cat[getEntry(myCats[i]->currentIndex() - 1)->nCode] = myDescr[i]->text().toUtf8().constData();
+    {
+      const struct Licq::IcqCategory* icqcat = icq->getCategoryByIndex(myIcqCategoryType, myCats[i]->currentIndex() - 1);
+      cat[icqcat->nCode] = myDescr[i]->text().toUtf8().constData();
+    }
   }
 
   emit updated(myUserCat, cat);

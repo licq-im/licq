@@ -27,8 +27,9 @@
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
-#include <licq/icq/codes.h>
+#include <licq/icq/icq.h>
 #include <licq/icq/filetransfer.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/socket.h> // For ip_ntoa
 #include <licq/userevents.h>
 
@@ -636,11 +637,14 @@ void CLicqConsole::PrintInfo_General(const Licq::UserId& userId)
   winMain->wprintf("%C%AZipcode: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->getUserInfoString("Zipcode").c_str());
   winMain->wprintf("%C%ACountry: ", COLOR_WHITE, A_BOLD);
   unsigned int countryCode = u->getUserInfoUint("Country");
-  if (countryCode == COUNTRY_UNSPECIFIED)
+  if (countryCode == Licq::COUNTRY_UNSPECIFIED)
     winMain->wprintf("%CUnspecified\n", COLOR_WHITE);
   else
   {
-    const SCountry* c = GetCountryByCode(countryCode);
+    Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+    Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
+
+    const struct Licq::IcqCountry* c = (icq == NULL ? NULL : icq->getCountryByCode(countryCode));
     if (c == NULL)
       winMain->wprintf("%CUnknown (%d)\n", COLOR_WHITE, countryCode);
     else  // known
@@ -678,6 +682,9 @@ void CLicqConsole::PrintInfo_More(const Licq::UserId& userId)
   if (!u.isLocked())
     return;
 
+  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
+
   wattron(winMain->Win(), A_BOLD);
   for (unsigned short i = 0; i < winMain->Cols() - 10; i++)
     waddch(winMain->Win(), ACS_HLINE);
@@ -702,7 +709,7 @@ void CLicqConsole::PrintInfo_More(const Licq::UserId& userId)
     sprintf(langkey, "Language%i", i);
     unsigned int language = u->getUserInfoUint(langkey);
     winMain->wprintf("%C%ALanguage %d: ", COLOR_WHITE, A_BOLD, i + 1);
-    const SLanguage* l = GetLanguageByCode(language);
+    const struct Licq::IcqCategory* l = (icq == NULL ? NULL : icq->getLanguageByCode(language));
     if (l == NULL)
       winMain->wprintf("%CUnknown (%d)\n", COLOR_WHITE, language);
     else  // known
@@ -748,11 +755,14 @@ void CLicqConsole::PrintInfo_Work(const Licq::UserId& userId)
   winMain->wprintf("%C%ACompany Zip Code: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->getUserInfoString("CompanyZip").c_str());
   winMain->wprintf("%C%ACompany Country: ", COLOR_WHITE, A_BOLD);
   unsigned int companyCountry = u->getUserInfoUint("CompanyCountry");
-  if (companyCountry == COUNTRY_UNSPECIFIED)
+  if (companyCountry == Licq::COUNTRY_UNSPECIFIED)
     winMain->wprintf("%CUnspecified\n", COLOR_WHITE);
   else
   {
-    const SCountry* c = GetCountryByCode(companyCountry);
+    Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+    Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
+
+    const struct Licq::IcqCountry* c = (icq == NULL ? NULL : icq->getCountryByCode(companyCountry));
     if (c == NULL)
       winMain->wprintf("%CUnknown (%d)\n", COLOR_WHITE, companyCountry);
     else  // known
