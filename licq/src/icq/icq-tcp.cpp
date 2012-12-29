@@ -2607,7 +2607,7 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, User* u,
     {
       if (error_level != ICQ_PLUGIN_REQUEST)
       {
-          gLog.warning("Info plugin request with unknown level %u from %s.",
+          gLog.warning(tr("Info plugin request with unknown level %u from %s."),
               error_level, u->getAlias().c_str());
         errorOccured = true;
         break;

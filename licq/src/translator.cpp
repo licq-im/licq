@@ -1,8 +1,20 @@
-/* ----------------------------------------------------------------------------
- * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2011 Licq developers
+/*
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
  *
- * This program is licensed under the terms found in the LICENSE file.
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 // Many parts of this source code were 'inspired' by the ircII4.4 translat.c source.
@@ -229,7 +241,7 @@ string Translator::iconvConvert(const string& s, const string& to, const string&
   if (tr == (iconv_t)(-1))
   {
     ok = false;
-    gLog.warning("Unsupported encoding conversion from %s to %s.\n",
+    gLog.warning(tr("Unsupported encoding conversion from %s to %s."),
         from.empty() ? "[LOCALE]" : from.c_str(),
         to.empty() ? "[LOCALE]" : to.c_str());
   }
@@ -242,7 +254,7 @@ string Translator::iconvConvert(const string& s, const string& to, const string&
     if (ret == (size_t)(-1))
     {
       ok = false;
-      gLog.warning("Unable to encode from %s to %s.\n",
+      gLog.warning(tr("Unable to encode from %s to %s."),
           from.empty() ? "[LOCALE]" : from.c_str(),
           to.empty() ? "[LOCALE]" : to.c_str());
     }

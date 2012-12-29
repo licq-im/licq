@@ -136,7 +136,7 @@ void COscarService::ClearQueue()
     mySendQueue.erase(iter);
     if (e != NULL)
     {
-      gLog.info("Event #%hu is still on the service 0x%02X queue!\n", e->Sequence(), myFam);
+      gLog.info(tr("Event #%hu is still on the service 0x%02X queue!"), e->Sequence(), myFam);
       delete e;
     }
   }

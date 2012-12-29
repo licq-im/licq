@@ -22,6 +22,8 @@
 #include <licq/inifile.h>
 #include <licq/logging/log.h>
 
+#include "gettext.h"
+
 using namespace LicqIcq;
 using Licq::IcqOwner;
 using Licq::IniFile;
@@ -79,7 +81,7 @@ Owner::~Owner()
   // Save the current auto response
   if (!conf.loadFile())
   {
-     gLog.error("Error opening '%s' for reading. See log for details.",
+     gLog.error(tr("Error opening '%s' for reading. See log for details."),
          conf.filename().c_str());
      return;
   }
@@ -89,7 +91,7 @@ Owner::~Owner()
   conf.set("PDINFO", myPDINFO);
   if (!conf.writeFile())
   {
-    gLog.error("Error opening '%s' for writing. See log for details.",
+    gLog.error(tr("Error opening '%s' for writing. See log for details."),
         conf.filename().c_str());
     return;
   }

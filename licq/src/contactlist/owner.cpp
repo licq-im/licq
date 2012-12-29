@@ -152,7 +152,7 @@ void Licq::Owner::SetPicture(const char *f)
     SetPicturePresent(false);
     if (remove(filename.c_str()) != 0 && errno != ENOENT)
     {
-      gLog.error("Unable to delete %s's picture file (%s): %s",
+      gLog.error(tr("Unable to delete %s's picture file (%s): %s"),
           myAlias.c_str(), filename.c_str(), strerror(errno));
     }
   }
@@ -166,7 +166,7 @@ void Licq::Owner::SetPicture(const char *f)
     int source = open(f, O_RDONLY);
     if (source == -1)
     {
-      gLog.error("Unable to open source picture file (%s): %s",
+      gLog.error(tr("Unable to open source picture file (%s): %s"),
           f, strerror(errno));
       return;
     }
@@ -174,7 +174,7 @@ void Licq::Owner::SetPicture(const char *f)
     int dest = open(filename.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 00664);
     if (dest == -1)
     {
-      gLog.error("Unable to open picture file (%s): %s",
+      gLog.error(tr("Unable to open picture file (%s): %s"),
           filename.c_str(), strerror(errno));
       close(source);
       return;
@@ -192,14 +192,14 @@ void Licq::Owner::SetPicture(const char *f)
       }
       else if (s == -1)
       {
-        gLog.error("Error reading from %s: %s", f, strerror(errno));
+        gLog.error(tr("Error reading from %s: %s"), f, strerror(errno));
         SetPicturePresent(false);
         break;
       }
 
       if (write(dest, buf, s) != s)
       {
-        gLog.error("Error writing to %s: %s", f, strerror(errno));
+        gLog.error(tr("Error writing to %s: %s"), f, strerror(errno));
         SetPicturePresent(false);
         break;
       }

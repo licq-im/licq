@@ -79,11 +79,12 @@ using Licq::gUserManager;
 using namespace LicqDaemon;
 
 #define ReportMissingParams(cmdname) \
-  (gLog.info("%s `%s': missing arguments. try `help %s'\n",  \
-  L_FIFOxSTR,cmdname,cmdname))
+    (gLog.info("%s `%s': %s `help %s'", \
+    L_FIFOxSTR, cmdname, tr("missing arguments. try"), cmdname))
 
 #define ReportBadBuddy(cmdname,szUin) \
-  (gLog.info("%s `%s': bad buddy string `%s'\n",L_FIFOxSTR,cmdname,szUin))
+    (gLog.info("%s `%s': %s `%s'", L_FIFOxSTR, cmdname, \
+    tr("bad buddy string"), szUin))
 
 static const char L_FIFOxSTR[] = "[FIF] ";
 
@@ -391,7 +392,7 @@ static int fifo_sms(int argc, const char *const *argv)
   if (!number.empty())
     dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->icqSendSms(userId, number, gTranslator.toUtf8(argv[2]));
   else
-    gLog.error("Unable to send SMS to %s, no SMS number found", userId.accountId().c_str());
+    gLog.error(tr("Unable to send SMS to %s, no SMS number found"), userId.accountId().c_str());
 
   return 0;
 }
@@ -627,8 +628,8 @@ static int fifo_plugin_load(int argc, const char* const* argv)
 
   if (gPluginManager.startGeneralPlugin(argv[1], 0, NULL))
     return 0;
-  
-  gLog.info("Couldn't load plugin '%s'\n", argv[1]);
+
+  gLog.info(tr("Couldn't load plugin '%s'"), argv[1]);
   return -1;
 }
 
@@ -651,7 +652,7 @@ static int fifo_plugin_unload(int argc, const char* const* argv)
       return 0;
     }
   }
-  gLog.info("Couldn't find plugin '%s'\n", argv[1]);
+  gLog.info(tr("Couldn't find plugin '%s'"), argv[1]);
   return -1;
 }
 
@@ -677,8 +678,8 @@ static int fifo_proto_plugin_load(int argc, const char* const* argv)
 
   if (gPluginManager.startProtocolPlugin(argv[1]))
     return 0;
-  
-  gLog.info("Couldn't load protocol plugin '%s'\n", argv[1]);
+
+  gLog.info(tr("Couldn't load protocol plugin '%s'"), argv[1]);
   return -1;
 }
 
@@ -701,7 +702,7 @@ static int fifo_proto_plugin_unload(int argc, const char* const* argv)
       return 0;
     }
   }
-  gLog.info("Couldn't find protocol plugin '%s'\n", argv[1]);
+  gLog.info(tr("Couldn't find protocol plugin '%s'"), argv[1]);
   return -1;
 }
 

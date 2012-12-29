@@ -92,7 +92,7 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
   PluginThread::Ptr pluginThread;
   if (myGuiThread && name.find("-gui") != std::string::npos)
   {
-    gLog.debug("Running %s in GUI thread", name.c_str());
+    gLog.debug(tr("Running %s in GUI thread"), name.c_str());
     pluginThread.swap(myGuiThread);
   }
   else

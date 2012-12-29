@@ -1795,7 +1795,7 @@ bool CChatManager::ProcessRaw_v6(ChatUser* u)
 
         default:
         {
-          gLog.unknown("Chat: Unknown chat command (%02X)", chatChar);
+          gLog.unknown(tr("Chat: Unknown chat command (%02X)"), chatChar);
           break;
         }
 

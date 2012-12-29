@@ -23,8 +23,10 @@
 #include <licq/protocolmanager.h>
 #include <licq/protocolsignal.h>
 #include <licq/version.h>
+
 #include "chat.h"
 #include "filetransfer.h"
+#include "gettext.h"
 #include "icq.h"
 #include "owner.h"
 #include "protocolsignal.h"
@@ -129,7 +131,7 @@ void IcqProtocolPlugin::processPipe()
       gIcqProtocol.shutdown();
       break;
     default:
-      gLog.error("Unknown command via plugin pipe: %c", c);
+      gLog.error(tr("Unknown command via plugin pipe: %c"), c);
   }
 }
 

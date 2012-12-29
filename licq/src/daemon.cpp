@@ -140,7 +140,7 @@ void Daemon::initialize()
     if (logSink->isOpen())
       Licq::gLogService.registerLogSink(logSink);
     else
-      gLog.error("Unable to open %s as error log:\n%s",
+      gLog.error(tr("Unable to open %s as error log:\n%s"),
                  errorFile.c_str(), strerror(errno));
   }
 
@@ -321,7 +321,7 @@ bool Daemon::addUserEvent(Licq::User* u, Licq::UserEvent* e)
   if (filteraction == Licq::FilterRule::ActionIgnore)
   {
     // Ignore => Just drop the event
-    gLog.info("Event dropped by filter");
+    gLog.info(tr("Event dropped by filter"));
     delete e;
     return false;
   }

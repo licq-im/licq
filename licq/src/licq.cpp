@@ -504,7 +504,7 @@ bool CLicq::Init(int argc, char **argv)
   Licq::IniFile& licqConf(gDaemon.getLicqConf());
   if (!licqConf.loadFile())
   {
-    gLog.error("Could not load config file '%s'", licqConf.filename().c_str());
+    gLog.error(tr("Could not load config file '%s'"), licqConf.filename().c_str());
     gDaemon.releaseLicqConf();
     return false;
   }
@@ -515,13 +515,13 @@ bool CLicq::Init(int argc, char **argv)
   licqConf.get("Version", nVersion, 0);
   if (nVersion < LICQ_MAKE_VERSION(1, 2, 8))
   {
-    gLog.info("Upgrading config file formats");
+    gLog.info(tr("Upgrading config file formats"));
     if (upgradeLicq128(licqConf))
-      gLog.info("Upgrade completed");
+      gLog.info(tr("Upgrade completed"));
     else
     {
-      gLog.error("Upgrade failed. Please save your licq directory and "
-                 "report this as a bug.");
+      gLog.error(tr("Upgrade failed. Please save your licq directory and "
+          "report this as a bug."));
       gDaemon.releaseLicqConf();
       return false;
     }

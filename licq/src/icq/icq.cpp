@@ -830,10 +830,10 @@ Licq::Event* IcqProtocol::DoneEvent(Licq::Event* e, Licq::Event::ResultType _eRe
 
 #if 0
   if (m_lxRunningEvents.size()) {
-    gLog.info("doneevents: for: %p pending: \n", e);
+    gLog.info(tr("doneevents: for: %p pending:"), e);
     for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); ++iter)
     {
-      gLog.info("%p Command: %d SubCommand: %d Sequence: %hu SubSequence: %d: Uin: %lu\n", *iter,
+      gLog.info(tr("%p Command: %d SubCommand: %d Sequence: %hu SubSequence: %d: Uin: %lu"), *iter,
                 (*iter)->Command(), (*iter)->SubCommand(), (*iter)->Sequence(), (*iter)->SubSequence(),
                 (*iter)->Uin());
     }
@@ -1177,7 +1177,7 @@ void IcqProtocol::PushExtendedEvent(Licq::Event* e)
   pthread_mutex_lock(&mutex_extendedevents);
   m_lxExtendedEvents.push_back(e);
 #if 0
-  gLog.info("%p pushing Command: %d SubCommand: %d Sequence: %hu SubSequence: %d: Uin: %lu\n", e,
+  gLog.info(tr("%p pushing Command: %d SubCommand: %d Sequence: %hu SubSequence: %d: Uin: %lu"), e,
             e->Command(), e->SubCommand(), e->Sequence(), e->SubSequence(), e->Uin());
 #endif
   pthread_mutex_unlock(&mutex_extendedevents);
@@ -1763,7 +1763,7 @@ void IcqProtocol::processServerMessage(int type, Licq::Buffer &packet,
       if (bIgnore)
       {
         delete ue; // Processing stops here, needs to be deleted
-        gLog.info("Ignored!");
+        gLog.info(tr("Ignored!"));
         break;
       }
 

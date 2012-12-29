@@ -53,8 +53,8 @@ bool SrvSocket::receiveFlap(Licq::Buffer& buf)
 {
   if (!buf.Empty())
   {
-    gLog.error("Internal error: SrvSocket::RecvPacket(): Called with full buffer (%lu bytes).",
-        buf.getDataSize());
+    gLog.error(tr("Internal error: %s: Called with full buffer (%lu bytes)."),
+        __func__, buf.getDataSize());
     return true;
   }
 
@@ -86,8 +86,7 @@ bool SrvSocket::receiveFlap(Licq::Buffer& buf)
   // now we start to verify the FLAP header
   if (buffer[0] != 0x2a)
   {
-    gLog.warning("Server send bad packet start code: %d.", buffer[0]);
-    gLog.warning("Sixbyte: %02x %02x %02x %02x %02x %02x",
+    gLog.warning(tr("Server send bad packet start code: %02x %02x %02x %02x %02x %02x"),
         buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5]);
     myErrorType = ErrorErrno;
     delete[] buffer;

@@ -1521,7 +1521,7 @@ void IcqProtocol::postLogoff(int nSD, Licq::Event* cancelledEvent)
   for (iter = m_lxSendQueue_Server.begin(); i > 0; i--)
   {
     Licq::Event* e = *iter;
-    gLog.info("Event #%hu is still on the server queue!\n", e->Sequence());
+    gLog.info(tr("Event #%hu is still on the server queue!"), e->Sequence());
     iter = m_lxSendQueue_Server.erase(iter);
     Licq::Event* cancelled = new Licq::Event(e);
     cancelled->m_bCancelled = true;
@@ -1535,7 +1535,7 @@ void IcqProtocol::postLogoff(int nSD, Licq::Event* cancelledEvent)
     if ((*iter)->m_nSocketDesc == nSD || (srvPacket != NULL && srvPacket->icqChannel() == ICQ_CHNxNEW))
     {
       Licq::Event* e = *iter;
-      gLog.info("Event #%hu is still on the running queue!\n", e->Sequence());
+      gLog.info(tr("Event #%hu is still on the running queue!"), e->Sequence());
       iter = m_lxRunningEvents.erase(iter);
       if (e->thread_running && !pthread_equal(e->thread_send, pthread_self()))
       {
@@ -1745,7 +1745,7 @@ bool IcqProtocol::ProcessSrvPacket(Buffer& packet)
 
   if (startCode != 0x2a)
   {
-    gLog.warning("ProcessSrvPacket bad start code: %d", startCode);
+    gLog.warning(tr("%s bad start code: %d"), __func__, startCode);
     packet.log(Log::Unknown, tr("Unknown server response"));
     return false;
   }
@@ -2358,7 +2358,7 @@ void IcqProtocol::ProcessBuddyFam(Buffer& packet, unsigned short nSubtype)
               u->getAlias().c_str(), u->id().toString().c_str(),
               u->statusString().c_str(), tcpVersion & 0x0F);
         if ( (nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS) )
-          gLog.unknown("Unknown status flag for %s (%s): 0x%08lX",
+          gLog.unknown(tr("Unknown status flag for %s (%s): 0x%08lX"),
                 u->getAlias().c_str(), u->accountId().c_str(),
                        (nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS));
         nNewStatus &= ICQ_STATUS_FxUNKNOWNxFLAGS;
@@ -2385,7 +2385,7 @@ void IcqProtocol::ProcessBuddyFam(Buffer& packet, unsigned short nSubtype)
         ) mode = MODE_INDIRECT;
       if (mode != MODE_DIRECT && mode != MODE_INDIRECT)
       {
-        gLog.unknown("Unknown peer-to-peer mode for %s (%s): %d",
+        gLog.unknown(tr("Unknown peer-to-peer mode for %s (%s): %d"),
               u->getAlias().c_str(), u->accountId().c_str(), mode);
         u->setDirectMode(true);
         u->SetSendServer(false);
@@ -4498,7 +4498,7 @@ void IcqProtocol::ProcessVariousFam(Buffer& packet, unsigned short nSubtype)
           //TODO
 /*
           if (unsigned short tmp = msg.UnpackUnsignedShort()) //??
-            gLog.error("Unknown value %x\n", tmp);
+            gLog.error(tr("Unknown value %x"), tmp);
                 string city = msg.unpackShortStringLE(); //Originally from city
                 string state = msg.unpackShortStringLE(); //Originally from state
           const struct SCountry *sc = GetCountryByCode(msg.UnpackUnsignedShort()); //Originally from country
