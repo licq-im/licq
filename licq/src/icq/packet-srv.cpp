@@ -17,8 +17,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "config.h"
-
 #include "packet-srv.h"
 
 #include <boost/foreach.hpp>
@@ -35,6 +33,7 @@
 #include <licq/byteorder.h>
 #include <licq/contactlist/group.h>
 #include <licq/contactlist/usermanager.h>
+#include <licq/daemon.h>
 #include <licq/md5.h>
 #include <licq/socket.h>
 #include <licq/translator.h>
@@ -826,10 +825,8 @@ CPU_CapabilitySettings::CPU_CapabilitySettings()
   data[3][12] = Licq::extractMajorVersion(LICQ_VERSION);
   data[3][13] = Licq::extractMinorVersion(LICQ_VERSION);
   data[3][14] = Licq::extractReleaseVersion(LICQ_VERSION);
-#ifdef USE_OPENSSL
-  // If we support SSL
-  data[3][15] = 1;
-#endif
+  if (Licq::gDaemon.haveCryptoSupport())
+    data[3][15] = 1;
   buffer->PackTLV(0x05, sizeof(data), (char *)data);  
 }
 
@@ -958,11 +955,10 @@ void CPU_SetStatusFamily::InitBuffer()
   /* should eventually switch to some other way to identify licq, probably
      use capabilities */
   OwnerReadGuard o(gIcqProtocol.ownerId());
-#ifdef USE_OPENSSL
-   buffer->PackUnsignedLongBE(LICQ_WITHSSL | LICQ_VERSION);
-#else
-   buffer->PackUnsignedLongBE(LICQ_WITHOUTSSL | LICQ_VERSION);
-#endif
+  if (Licq::gDaemon.haveCryptoSupport())
+    buffer->PackUnsignedLongBE(LICQ_WITHSSL | LICQ_VERSION);
+  else
+    buffer->PackUnsignedLongBE(LICQ_WITHOUTSSL | LICQ_VERSION);
    // some kind of timestamp ?
   buffer->PackUnsignedLongBE(o->ClientStatusTimestamp());
   buffer->PackUnsignedLongBE(o->ClientInfoTimestamp());

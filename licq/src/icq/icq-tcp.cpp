@@ -17,8 +17,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "config.h"
-
 #include "icq.h"
 
 #include <ctime>
@@ -737,7 +735,13 @@ void IcqProtocol::icqChatRequestAccept(const ProtoChatAcceptSignal* ps)
 
 void IcqProtocol::icqOpenSecureChannel(const Licq::ProtocolSignal* ps)
 {
-#ifdef USE_OPENSSL
+  if (!Licq::gDaemon.haveCryptoSupport())
+  {
+    gLog.warning(tr("icqOpenSecureChannel() to %s called when we do not support OpenSSL."),
+        ps->userId().toString().c_str());
+    return;
+  }
+
   UserWriteGuard u(ps->userId());
   if (!u.isLocked())
     return;
@@ -748,16 +752,17 @@ void IcqProtocol::icqOpenSecureChannel(const Licq::ProtocolSignal* ps)
   SendExpectEvent_Client(ps, *u, pkt, NULL);
 
   u->SetSendServer(false);
-
-#else // No OpenSSL
-  gLog.warning("icqOpenSecureChannel() to %s called when we do not support OpenSSL.",
-      userId.toString().c_str());
-#endif
 }
 
 void IcqProtocol::icqCloseSecureChannel(const Licq::ProtocolSignal* ps)
 {
-#ifdef USE_OPENSSL
+  if (!Licq::gDaemon.haveCryptoSupport())
+  {
+    gLog.warning(tr("icqCloseSecureChannel() to %s called when we do not support OpenSSL."),
+        ps->userId().toString().c_str());
+    return;
+  }
+
   UserWriteGuard u(ps->userId());
   if (!u.isLocked())
     return;
@@ -768,11 +773,6 @@ void IcqProtocol::icqCloseSecureChannel(const Licq::ProtocolSignal* ps)
   SendExpectEvent_Client(ps, *u, pkt, NULL);
 
   u->SetSendServer(false);
-
-#else // No OpenSSL
-  gLog.warning("icqCloseSecureChannel() to %s called when we do not support OpenSSL.",
-      userId.toString().c_str());
-#endif
 }
 
 void IcqProtocol::icqOpenSecureChannelCancel(const Licq::UserId& userId,
@@ -1988,8 +1988,17 @@ bool IcqProtocol::ProcessTcpPacket(DcSocket* pSock)
 
       // Secure channel request
       case ICQ_CMDxSUB_SECURExOPEN:
-      {
-#ifdef USE_OPENSSL
+        {
+          if (!Licq::gDaemon.haveCryptoSupport())
+          {
+            gLog.info(tr("Received secure channel request from %s (%s) but we do not support OpenSSL."),
+                u->getAlias().c_str(), userId.toString().c_str());
+            // Send the nack back
+            CPT_AckOpenSecureChannel p(theSequence, false, *u);
+            AckTCP(p, pSock);
+            break;
+          }
+
             if (nInVersion < 6)
             {
           if (packet.getDataPosRead() + 4 >
@@ -2038,22 +2047,22 @@ bool IcqProtocol::ProcessTcpPacket(DcSocket* pSock)
               u->getAlias().c_str(), userId.toString().c_str());
 
         break;
-
-#else // We do not support OpenSSL
-          gLog.info(tr("Received secure channel request from %s (%s) but we do not support OpenSSL."),
-              u->getAlias().c_str(), userId.toString().c_str());
-        // Send the nack back
-          CPT_AckOpenSecureChannel p(theSequence, false, *u);
-        AckTCP(p, pSock);
-        break;
-#endif
       }
 
 
       // Secure channel close request
       case ICQ_CMDxSUB_SECURExCLOSE:
-      {
-#ifdef USE_OPENSSL
+        {
+          if (!Licq::gDaemon.haveCryptoSupport())
+          {
+            gLog.info(tr("Received secure channel close from %s (%s) but we do not support OpenSSL."),
+                u->getAlias().c_str(), userId.toString().c_str());
+            // Send the nack back
+            CPT_AckCloseSecureChannel p(theSequence, *u);
+            AckTCP(p, pSock);
+            break;
+          }
+
             if (nInVersion < 6)
             {
           if (packet.getDataPosRead() + 4 >
@@ -2085,15 +2094,6 @@ bool IcqProtocol::ProcessTcpPacket(DcSocket* pSock)
               Licq::PluginSignal::SignalUser,
               Licq::PluginSignal::UserSecurity, u->id(), 0));
           break;
-
-#else // We do not support OpenSSL
-          gLog.info(tr("Received secure channel close from %s (%s) but we do not support OpenSSL."),
-              u->getAlias().c_str(), userId.toString().c_str());
-        // Send the nack back
-          CPT_AckCloseSecureChannel p(theSequence, *u);
-        AckTCP(p, pSock);
-        break;
-#endif
       }
 
         default:
@@ -2269,9 +2269,14 @@ bool IcqProtocol::ProcessTcpPacket(DcSocket* pSock)
             break;
           }
 
-#ifdef USE_OPENSSL
-      case ICQ_CMDxSUB_SECURExOPEN:
-      {
+        case ICQ_CMDxSUB_SECURExOPEN:
+        {
+          if (!Licq::gDaemon.haveCryptoSupport())
+          {
+            errorOccured = true;
+            break;
+          }
+
             if (nInVersion < 6)
             {
           if (packet.getDataPosRead() + 4 >
@@ -2355,7 +2360,12 @@ bool IcqProtocol::ProcessTcpPacket(DcSocket* pSock)
 
 
       case ICQ_CMDxSUB_SECURExCLOSE:
-      {
+        {
+          if (!Licq::gDaemon.haveCryptoSupport())
+          {
+            errorOccured = true;
+            break;
+          }
             if (nInVersion < 6)
             {
           if (packet.getDataPosRead() + 4 >
@@ -2408,7 +2418,6 @@ bool IcqProtocol::ProcessTcpPacket(DcSocket* pSock)
         // get out of here now as we don't want standard ack processing
         return true;
       }
-#endif
 
         default:
           packet.log(Log::Unknown, "Unknown TCP Ack subcommand (%04x)",
