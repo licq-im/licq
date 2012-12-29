@@ -30,11 +30,11 @@
 #include <licq/daemon.h>
 #include <licq/translator.h>
 
+#include "gettext.h"
 #include "icq.h"
 #include "packet-tcp.h"
 #include "socket.h"
 #include "user.h"
-#include "../gettext.h"
 
 using namespace std;
 using namespace LicqIcq;

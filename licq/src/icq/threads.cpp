@@ -32,9 +32,9 @@
 #include <licq/protocolmanager.h>
 #include <licq/logging/log.h>
 
-#include "../gettext.h"
 #include "buffer.h"
 #include "defines.h"
+#include "gettext.h"
 #include "icqprotocolplugin.h"
 #include "oscarservice.h"
 #include "owner.h"

@@ -34,10 +34,10 @@
 #include <licq/contactlist/owner.h>
 #include <licq/daemon.h>
 
+#include "gettext.h"
 #include "icq.h"
 #include "packet-tcp.h"
 #include "user.h"
-#include "../gettext.h"
 
 #define DEBUG_THREADS(x)
 

@@ -40,9 +40,9 @@
 #include <licq/logging/log.h>
 #include <licq/version.h>
 
-#include "../gettext.h"
 #include "buffer.h"
 #include "defines.h"
+#include "gettext.h"
 #include "icq.h"
 #include "owner.h"
 #include "user.h"

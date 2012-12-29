@@ -44,8 +44,8 @@
 #include <licq/userevents.h>
 #include <licq/utility.h>
 
-#include "../gettext.h"
 #include "defines.h"
+#include "gettext.h"
 #include "oscarservice.h"
 #include "owner.h"
 #include "packet-srv.h"

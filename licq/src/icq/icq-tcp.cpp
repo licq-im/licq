@@ -48,8 +48,8 @@
 #include <licq/logging/log.h>
 #include <licq/version.h>
 
-#include "../gettext.h"
 #include "filetransfer.h"
+#include "gettext.h"
 #include "oscarservice.h"
 #include "owner.h"
 #include "packet-srv.h"

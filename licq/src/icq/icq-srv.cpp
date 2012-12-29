@@ -52,7 +52,7 @@
 #include <licq/logging/log.h>
 #include <licq/version.h>
 
-#include "../gettext.h"
+#include "gettext.h"
 #include "icqprotocolplugin.h"
 #include "oscarservice.h"
 #include "owner.h"

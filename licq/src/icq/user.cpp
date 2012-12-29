@@ -28,8 +28,7 @@
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 
-#include "../gettext.h"
-
+#include "gettext.h"
 #include "icq.h"
 #include "socket.h"
 

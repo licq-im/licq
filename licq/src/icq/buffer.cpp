@@ -24,7 +24,7 @@
 #include <licq/byteorder.h>
 #include <licq/logging/log.h>
 
-#include "../gettext.h"
+#include "gettext.h"
 
 using namespace LicqIcq;
 using Licq::gLog;

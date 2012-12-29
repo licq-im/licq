@@ -38,7 +38,7 @@
 #include <licq/proxy.h>
 #include <licq/logging/log.h>
 
-#include "../gettext.h"
+#include "gettext.h"
 #include "icq.h"
 #include "packet-srv.h"
 #include "socket.h"

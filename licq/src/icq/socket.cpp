@@ -27,7 +27,7 @@
 #include <licq/buffer.h>
 #include <licq/logging/log.h>
 
-#include "../gettext.h"
+#include "gettext.h"
 
 using namespace LicqIcq;
 using Licq::Buffer;
