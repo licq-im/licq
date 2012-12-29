@@ -158,7 +158,7 @@ void CMSNPacket::InitBuffer()
     m_nSize += snprintf(buf, 32, "%s %hu ", m_szCommand, m_nSequence) + 2; //don't forget \r\n
   
   m_pBuffer = new CMSNBuffer(m_nSize);
-  m_pBuffer->Pack(buf, strlen(buf));
+  m_pBuffer->packRaw(buf, strlen(buf));
 }
 
 char* CMSNPacket::CreateGUID()
@@ -192,7 +192,7 @@ void CMSNPayloadPacket::InitBuffer()
   m_nSize += m_nPayloadSize;
   
   m_pBuffer = new CMSNBuffer(m_nSize);
-  m_pBuffer->Pack(buf, strlen(buf));
+  m_pBuffer->packRaw(buf, strlen(buf));
 }
 
 CMSNP2PPacket::CMSNP2PPacket(const string& toEmail, unsigned long nSessionId,
@@ -245,8 +245,8 @@ void CMSNP2PPacket::InitBuffer()
   m_nSize += m_nPayloadSize;
 
   m_pBuffer = new CMSNBuffer(m_nSize);
-  m_pBuffer->Pack(buf, strlen(buf));
-  m_pBuffer->Pack(szMsgBuf, strlen(szMsgBuf));
+  m_pBuffer->packRaw(buf, strlen(buf));
+  m_pBuffer->packRaw(szMsgBuf, strlen(szMsgBuf));
 
   // Binary header - 48 bytes
   m_pBuffer->packUInt32LE(m_nSessionId);
@@ -269,9 +269,9 @@ CPS_MSNVersion::CPS_MSNVersion() : CMSNPacket()
   char szParams[] = "MSNP9 MSNP8 CVR0";
   m_nSize += strlen(szParams);
   InitBuffer();
- 
-  m_pBuffer->Pack(szParams, strlen(szParams));
-  m_pBuffer->Pack("\r\n", 2);
+
+  m_pBuffer->packRaw(szParams, strlen(szParams));
+  m_pBuffer->packRaw("\r\n", 2);
 }
 
 CPS_MSNClientVersion::CPS_MSNClientVersion(const string& username) : CMSNPacket()
@@ -282,9 +282,9 @@ CPS_MSNClientVersion::CPS_MSNClientVersion(const string& username) : CMSNPacket(
   m_nSize += strlen(szParams) + username.size();
   InitBuffer();
 
-  m_pBuffer->Pack(szParams, strlen(szParams));
+  m_pBuffer->packRaw(szParams, strlen(szParams));
   m_pBuffer->packRaw(username);
-  m_pBuffer->Pack("\r\n", 2);
+  m_pBuffer->packRaw("\r\n", 2);
 }
 
 CPS_MSNUser::CPS_MSNUser(const string& username) : CMSNPacket()
@@ -294,9 +294,9 @@ CPS_MSNUser::CPS_MSNUser(const string& username) : CMSNPacket()
   m_nSize += strlen(szParams) + username.size();
   InitBuffer();
 
-  m_pBuffer->Pack(szParams, strlen(szParams));
+  m_pBuffer->packRaw(szParams, strlen(szParams));
   m_pBuffer->packRaw(username);
-  m_pBuffer->Pack("\r\n", 2);
+  m_pBuffer->packRaw("\r\n", 2);
 }
 
 CPS_MSNSendTicket::CPS_MSNSendTicket(const string& ticket)
@@ -307,9 +307,9 @@ CPS_MSNSendTicket::CPS_MSNSendTicket(const string& ticket)
   m_nSize += params.size() + ticket.size();
   InitBuffer();
 
-  m_pBuffer->pack(params);
-  m_pBuffer->pack(ticket);
-  m_pBuffer->Pack("\r\n", 2);
+  m_pBuffer->packRaw(params);
+  m_pBuffer->packRaw(ticket);
+  m_pBuffer->packRaw("\r\n", 2);
 }
 
 CPS_MSNChangeStatus::CPS_MSNChangeStatus(string& status) : CMSNPacket()
@@ -318,9 +318,9 @@ CPS_MSNChangeStatus::CPS_MSNChangeStatus(string& status) : CMSNPacket()
   char szParams[] = " 268435500";
   m_nSize += strlen(szParams) + 3;
   InitBuffer();
-  m_pBuffer->Pack(status.c_str(), status.size());
-  m_pBuffer->Pack(szParams, strlen(szParams));
-  m_pBuffer->Pack("\r\n", 2);
+  m_pBuffer->packRaw(status.c_str(), status.size());
+  m_pBuffer->packRaw(szParams, strlen(szParams));
+  m_pBuffer->packRaw("\r\n", 2);
 }
 
 CPS_MSNLogoff::CPS_MSNLogoff() : CMSNPacket(true)
@@ -328,8 +328,8 @@ CPS_MSNLogoff::CPS_MSNLogoff() : CMSNPacket(true)
   m_szCommand = strdup("OUT");
   m_nSize += 0;
   InitBuffer();
-  
-  m_pBuffer->Pack("\r\n", 2);
+
+  m_pBuffer->packRaw("\r\n", 2);
 }
 
 CPS_MSNSync::CPS_MSNSync(unsigned long nVersion) : CMSNPacket()
@@ -339,9 +339,9 @@ CPS_MSNSync::CPS_MSNSync(unsigned long nVersion) : CMSNPacket()
   int nSize = sprintf(szParams, "%lu", nVersion);
   m_nSize += nSize;
   InitBuffer();
-  
-  m_pBuffer->Pack(szParams, nSize);
-  m_pBuffer->Pack("\r\n", 2);
+
+  m_pBuffer->packRaw(szParams, nSize);
+  m_pBuffer->packRaw("\r\n", 2);
 }
 
 CPS_MSNChallenge::CPS_MSNChallenge(const char *szHash) : CMSNPacket()
@@ -362,9 +362,9 @@ CPS_MSNChallenge::CPS_MSNChallenge(const char *szHash) : CMSNPacket()
   {
     sprintf(&szHexOut[i*2], "%02x", szDigest[i]);
   }
-  m_pBuffer->Pack(szParams, strlen(szParams));
-  m_pBuffer->Pack("\r\n", 2);
-  m_pBuffer->Pack(szHexOut, 32);
+  m_pBuffer->packRaw(szParams, strlen(szParams));
+  m_pBuffer->packRaw("\r\n", 2);
+  m_pBuffer->packRaw(szHexOut, 32);
 }
 
 CPS_MSNSetPrivacy::CPS_MSNSetPrivacy() : CMSNPacket()
@@ -374,9 +374,9 @@ CPS_MSNSetPrivacy::CPS_MSNSetPrivacy() : CMSNPacket()
   char szParams[] = "N";
   m_nSize += strlen(szParams);
   InitBuffer();
-  
-  m_pBuffer->Pack(szParams, strlen(szParams));
-  m_pBuffer->Pack("\r\n", 2);
+
+  m_pBuffer->packRaw(szParams, strlen(szParams));
+  m_pBuffer->packRaw("\r\n", 2);
 }
 
 CPS_MSNAddUser::CPS_MSNAddUser(const string& username, const char* list)
@@ -387,11 +387,11 @@ CPS_MSNAddUser::CPS_MSNAddUser(const string& username, const char* list)
   InitBuffer();
 
   m_pBuffer->packRaw(list, strlen(list));
-  m_pBuffer->Pack(" ", 1);
+  m_pBuffer->packRaw(" ", 1);
   m_pBuffer->packRaw(username);
-  m_pBuffer->Pack(" ", 1);
+  m_pBuffer->packRaw(" ", 1);
   m_pBuffer->packRaw(username);
-  m_pBuffer->Pack("\r\n", 2);
+  m_pBuffer->packRaw("\r\n", 2);
 }
 
 CPS_MSNRemoveUser::CPS_MSNRemoveUser(const string& username, const char* list)
@@ -402,9 +402,9 @@ CPS_MSNRemoveUser::CPS_MSNRemoveUser(const string& username, const char* list)
   InitBuffer();
 
   m_pBuffer->packRaw(list, strlen(list));
-  m_pBuffer->Pack(" ", 1);
+  m_pBuffer->packRaw(" ", 1);
   m_pBuffer->packRaw(username);
-  m_pBuffer->Pack("\r\n", 2);
+  m_pBuffer->packRaw("\r\n", 2);
 }
 
 CPS_MSNRenameUser::CPS_MSNRenameUser(const string& username, const string& newNick)
@@ -415,9 +415,9 @@ CPS_MSNRenameUser::CPS_MSNRenameUser(const string& username, const string& newNi
   InitBuffer();
 
   m_pBuffer->packRaw(username);
-  m_pBuffer->Pack(" ", 1);
+  m_pBuffer->packRaw(" ", 1);
   m_pBuffer->packRaw(newNick);
-  m_pBuffer->Pack("\r\n", 2);
+  m_pBuffer->packRaw("\r\n", 2);
 }
 
 CPS_MSN_SBStart::CPS_MSN_SBStart(const string& cookie, const string& username)
@@ -428,9 +428,9 @@ CPS_MSN_SBStart::CPS_MSN_SBStart(const string& cookie, const string& username)
   InitBuffer();
 
   m_pBuffer->packRaw(username);
-  m_pBuffer->Pack(" ", 1);
+  m_pBuffer->packRaw(" ", 1);
   m_pBuffer->packRaw(cookie);
-  m_pBuffer->Pack("\r\n", 2);
+  m_pBuffer->packRaw("\r\n", 2);
 }
 
 CPS_MSN_SBAnswer::CPS_MSN_SBAnswer(const string& session, const string& cookie,
@@ -442,11 +442,11 @@ CPS_MSN_SBAnswer::CPS_MSN_SBAnswer(const string& session, const string& cookie,
   InitBuffer();
 
   m_pBuffer->packRaw(username);
-  m_pBuffer->Pack(" ", 1);
+  m_pBuffer->packRaw(" ", 1);
   m_pBuffer->packRaw(cookie);
-  m_pBuffer->Pack(" ", 1);
+  m_pBuffer->packRaw(" ", 1);
   m_pBuffer->packRaw(session);
-  m_pBuffer->Pack("\r\n", 2);
+  m_pBuffer->packRaw("\r\n", 2);
 }
 
 CPS_MSNMessage::CPS_MSNMessage(const char *szMsg)
@@ -461,9 +461,9 @@ CPS_MSNMessage::CPS_MSNMessage(const char *szMsg)
   CMSNPayloadPacket::InitBuffer();
   
   m_szMsg = strdup(szMsg);
-  
-  m_pBuffer->Pack(szParams, strlen(szParams));
-  m_pBuffer->Pack(m_szMsg, strlen(m_szMsg));
+
+  m_pBuffer->packRaw(szParams, strlen(szParams));
+  m_pBuffer->packRaw(m_szMsg, strlen(m_szMsg));
 }
 
 CPS_MsnClientCaps::CPS_MsnClientCaps()
@@ -476,7 +476,7 @@ CPS_MsnClientCaps::CPS_MsnClientCaps()
   m_nPayloadSize = params.size();
 
   CMSNPayloadPacket::InitBuffer();
-  m_pBuffer->pack(params);
+  m_pBuffer->packRaw(params);
 }
 
 CPS_MSNPing::CPS_MSNPing() : CMSNPacket(true)
@@ -484,8 +484,8 @@ CPS_MSNPing::CPS_MSNPing() : CMSNPacket(true)
   m_szCommand = strdup("PNG");
   m_nSize += 0;
   InitBuffer();
-  
-  m_pBuffer->Pack("\r\n", 2);
+
+  m_pBuffer->packRaw("\r\n", 2);
 }
 
 CPS_MSNXfr::CPS_MSNXfr() : CMSNPacket()
@@ -493,8 +493,8 @@ CPS_MSNXfr::CPS_MSNXfr() : CMSNPacket()
   m_szCommand = strdup("XFR");
   m_nSize += 2;
   InitBuffer();
-  
-  m_pBuffer->Pack("SB\r\n", 4);
+
+  m_pBuffer->packRaw("SB\r\n", 4);
 }
 
 CPS_MSNCall::CPS_MSNCall(const string& username) : CMSNPacket()
@@ -504,7 +504,7 @@ CPS_MSNCall::CPS_MSNCall(const string& username) : CMSNPacket()
   InitBuffer();
 
   m_pBuffer->packRaw(username);
-  m_pBuffer->Pack("\r\n", 2);
+  m_pBuffer->packRaw("\r\n", 2);
 }
 
 CPS_MSNTypingNotification::CPS_MSNTypingNotification(const string& email)
@@ -518,9 +518,9 @@ CPS_MSNTypingNotification::CPS_MSNTypingNotification(const string& email)
   m_nPayloadSize = strlen(szParams1) + strlen(szParams2) + email.size();
   CMSNPayloadPacket::InitBuffer();  
 
-  m_pBuffer->Pack(szParams1, strlen(szParams1));
+  m_pBuffer->packRaw(szParams1, strlen(szParams1));
   m_pBuffer->packRaw(email);
-  m_pBuffer->Pack(szParams2, strlen(szParams2));
+  m_pBuffer->packRaw(szParams2, strlen(szParams2));
 }
 
 CPS_MSNCancelInvite::CPS_MSNCancelInvite(const string& cookie, const string& code)
@@ -541,7 +541,7 @@ CPS_MSNCancelInvite::CPS_MSNCancelInvite(const string& cookie, const string& cod
 
   m_nPayloadSize = strlen(payload);
   CMSNPayloadPacket::InitBuffer();
-  m_pBuffer->Pack(payload, m_nPayloadSize);
+  m_pBuffer->packRaw(payload, m_nPayloadSize);
 }
 
 CPS_MSNInvitation::CPS_MSNInvitation(const string& toEmail, const string& fromEmail, const string& msnObject)
@@ -591,7 +591,7 @@ CPS_MSNInvitation::CPS_MSNInvitation(const string& toEmail, const string& fromEm
   m_nPayloadSize = strMsg.size();
   CMSNP2PPacket::InitBuffer();
 
-  m_pBuffer->pack(strMsg);
+  m_pBuffer->packRaw(strMsg);
 
   // Footer
   m_pBuffer->packUInt32LE(0);
@@ -632,7 +632,7 @@ CPS_MSNP2PBye::CPS_MSNP2PBye(const string& toEmail, const string& fromEmail,
   m_nPayloadSize = strMsg.size();
   CMSNP2PPacket::InitBuffer();
 
-  m_pBuffer->pack(strMsg);
+  m_pBuffer->packRaw(strMsg);
 
   // Footer
   m_pBuffer->packUInt32LE(0);

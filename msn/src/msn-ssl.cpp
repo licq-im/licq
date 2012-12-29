@@ -211,7 +211,7 @@ void CMSN::MSNAuthenticate(const string& server, const string& path)
       "\r\n";
 
   Licq::Buffer buf(request.size());
-  buf.pack(request);
+  buf.packRaw(request);
   sock->send(buf);
   gSocketMan.DropSocket(sock);
 }

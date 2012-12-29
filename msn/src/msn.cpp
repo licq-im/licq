@@ -168,8 +168,7 @@ void CMSN::RemovePacket(const Licq::UserId& userId, int _nSock, int nSize)
 	  pNewBuf = new SBuffer;
 	  pNewBuf->myUserId = userId;
 	  pNewBuf->m_pBuf = new CMSNBuffer(nNewSize);
-	  pNewBuf->m_pBuf->Pack((*it)->m_pBuf->getDataStart()+nSize,
-				nNewSize);
+	  pNewBuf->m_pBuf->packRaw((*it)->m_pBuf->getDataStart()+nSize, nNewSize);
 	  pNewBuf->m_bStored = true;
 	}			   
       }
@@ -276,7 +275,7 @@ void CMSN::HandlePacket(int _nSocket, CMSNBuffer &packet, const Licq::UserId& us
 
             // We have a packet, with part of another one at the end
             pPart = new CMSNBuffer(nFullSize);
-            pPart->Pack(pBuf->m_pBuf->getDataStart(), nFullSize);
+            pPart->packRaw(pBuf->m_pBuf->getDataStart(), nFullSize);
           }
           bProcess = true;
         }
@@ -302,7 +301,7 @@ void CMSN::HandlePacket(int _nSocket, CMSNBuffer &packet, const Licq::UserId& us
 
             // We have a packet, with part of another one at the end
             pPart = new CMSNBuffer(nFullSize);
-            pPart->Pack(pBuf->m_pBuf->getDataStart(), nFullSize);
+            pPart->packRaw(pBuf->m_pBuf->getDataStart(), nFullSize);
           }
           bProcess = true;
         }
