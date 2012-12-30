@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,6 +71,11 @@ QModelIndex SingleContactProxy::parent(const QModelIndex& /* index */) const
 {
   // Only one level so either parent is the root or request is invalid, same response in either case
   return QModelIndex();
+}
+
+bool SingleContactProxy::hasChildren(const QModelIndex& parent) const
+{
+  return !parent.isValid();
 }
 
 int SingleContactProxy::rowCount(const QModelIndex& parent) const

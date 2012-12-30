@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,6 +70,14 @@ public:
    * @return Always an invalid index as the model only has one level
    */
   virtual QModelIndex parent(const QModelIndex& index) const;
+
+  /**
+   * Check if index has any children
+   *
+   * @param parent An index for the contact or an invalid index
+   * @return True if the index invalid (e.g. the root index)
+   */
+  virtual bool hasChildren(const QModelIndex& parent = QModelIndex()) const;
 
   /**
    * Get the number of rows in the view
