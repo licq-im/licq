@@ -1371,6 +1371,7 @@ void User::saveLicqInfo()
 
   if (myServerGroup > -1)
     d->myConf.set("ServerGroup", myServerGroup);
+  d->myConf.unset("GSID");
   d->myConf.unset("Groups.User");
   d->myConf.set("GroupCount", static_cast<unsigned int>(myGroups.size()));
   int i = 1;
