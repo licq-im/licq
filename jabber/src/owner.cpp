@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2012-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,16 +30,7 @@ Owner::Owner(const Licq::UserId& id)
 
   conf.get("JabberResource", myResource, "Licq");
   std::string tlspolicy;
-  if (!conf.get("JabberTlsPolicy", tlspolicy, "optional"))
-  {
-    // Jabber paremeters missing, this could be due to upgrade from Licq 1.7.x or older
-    Licq::IniFile oldConf("licq_jabber.conf");
-    oldConf.loadFile();
-    oldConf.setSection("network");
-    oldConf.get("TlsPolicy", tlspolicy, "optional");
-    oldConf.get("Resource", myResource, "Licq");
-  }
-
+  conf.get("JabberTlsPolicy", tlspolicy, "optional");
   if (tlspolicy == "disabled")
     myTlsPolicy = gloox::TLSDisabled;
   else if (tlspolicy == "required")

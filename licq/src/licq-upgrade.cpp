@@ -324,12 +324,130 @@ static void upgradeLicq18_moveHistoryFiles(const string& baseDir, StringMap& own
   rmdir(historyDir.c_str());
 }
 
+/*-----------------------------------------------------------------------------
+ * Migrate protocol config to owner data
+ *---------------------------------------------------------------------------*/
+static void upgradeLicq18_migrateOwnerConfig(const string& baseDir, StringMap& owners, StringMap& userDirs, IniFile& licqConf)
+{
+  string oldMsnConfFile = baseDir + "licq_msn.conf";
+  string oldJabberConfFile = baseDir + "licq_jabber.conf";
+
+  for (StringMap::const_iterator iter = owners.begin(); iter != owners.end(); ++iter)
+  {
+    // Migrate old protocol config into owner data
+    const string& ppidStr = iter->first;
+    string newOwnerFile = userDirs[ppidStr] + "/" + iter->second + ".conf";
+    IniFile ownerConf(newOwnerFile);
+    ownerConf.loadFile();
+    ownerConf.setSection("user");
+    if (ppidStr == "Licq")
+    {
+      // Old ICQ config is in licq.conf
+      licqConf.setSection("network");
+
+      // Login server (moved by Licq 1.6.0), clear if set to defaults
+      string serverHost;
+      if (!ownerConf.get("ServerHost", serverHost))
+        licqConf.get("ICQServer", serverHost);
+      ownerConf.set("ServerHost", (serverHost == "login.icq.com" ? "" : serverHost));
+      licqConf.unset("ICQServer");
+      int serverPort;
+      if (!ownerConf.get("ServerPort", serverPort))
+        licqConf.get("ICQServerPort", serverPort);
+      ownerConf.set("ServerPort", (serverPort == 5190 ? 0 : serverPort));
+      licqConf.unset("ICQServerPort");
+
+      // ICQ specific parameters (moved by Licq 1.7.0)
+      bool b;
+      if (!ownerConf.get("AutoUpdateInfo", b))
+        licqConf.get("AutoUpdateInfo", b, true);
+      ownerConf.set("AutoUpdateInfo", b);
+      licqConf.unset("AutoUpdateInfo");
+      if (!ownerConf.get("AutoUpdateInfoPlugins", b))
+        licqConf.get("AutoUpdateInfoPlugins", b, true);
+      ownerConf.set("AutoUpdateInfoPlugins", b);
+      licqConf.unset("AutoUpdateInfoPlugins");
+      if (!ownerConf.get("AutoUpdateStatusPlugins", b))
+        licqConf.get("AutoUpdateStatusPlugins", b, true);
+      ownerConf.set("AutoUpdateStatusPlugins", b);
+      licqConf.unset("AutoUpdateStatusPlugins");
+      if (!ownerConf.get("UseSS", b))
+        licqConf.get("UseSS", b, true);
+      ownerConf.set("UseSS", b);
+      licqConf.unset("UseSS");
+      if (!ownerConf.get("UseBART", b))
+        licqConf.get("UseBART", b, true);
+      ownerConf.set("UseBART", b);
+      licqConf.unset("UseBART");
+      if (!ownerConf.get("ReconnectAfterUinClash", b))
+        licqConf.get("ReconnectAfterUinClash", b, true);
+      ownerConf.set("ReconnectAfterUinClash", b);
+      licqConf.unset("ReconnectAfterUinClash");
+    }
+    else if (ppidStr == "MSN_")
+    {
+      // Old MSN config is in separate file
+      IniFile msnConf(oldMsnConfFile);
+      msnConf.loadFile();
+      msnConf.setSection("network");
+
+      // Login server (moved by Licq 1.6.0), clear if set to defaults
+      string serverHost;
+      if (!ownerConf.get("ServerHost", serverHost))
+        msnConf.get("MsnServerAddress", serverHost);
+      ownerConf.set("ServerHost", (serverHost == "messenger.hotmail.com" ? "" : serverHost));
+      int serverPort;
+      if (!ownerConf.get("ServerPort", serverPort))
+        msnConf.get("MsnServerPort", serverPort);
+      ownerConf.set("ServerPort", (serverPort == 1863 ? 0 : serverPort));
+
+      // MSN specific parameters (moved by Licq 1.7.0)
+      unsigned long listVersion;
+      if (!ownerConf.get("ListVersion", listVersion))
+        msnConf.get("ListVersion", listVersion, 0);
+      ownerConf.set("ListVersion", listVersion);
+    }
+    else if (ppidStr == "XMPP")
+    {
+      // Old Jabber config is in separate file
+      IniFile jabberConf(oldJabberConfFile);
+      jabberConf.loadFile();
+      jabberConf.setSection("network");
+
+      // Login server (moved by Licq 1.6.0)
+      string serverHost;
+      if (!ownerConf.get("ServerHost", serverHost))
+        jabberConf.get("Server", serverHost);
+      ownerConf.set("ServerHost", serverHost);
+      int serverPort;
+      if (!ownerConf.get("ServerPort", serverPort))
+        jabberConf.get("Port", serverPort);
+      ownerConf.set("ServerPort", serverPort);
+
+      // Jabber specific parameters (moved by Licq 1.7.0)
+      string str;
+      if (!ownerConf.get("JabberTlsPolicy", str))
+        jabberConf.get("TlsPolicy", str, "optional");
+      ownerConf.set("JabberTlsPolicy", str);
+      if (!ownerConf.get("JabberResource", str))
+        jabberConf.get("Resource", str, "Licq");
+      ownerConf.set("JabberResource", str);
+    }
+    ownerConf.writeFile();
+  }
+
+  // Remove the replaced files (if they exist)
+  unlink(oldMsnConfFile.c_str());
+  unlink(oldJabberConfFile.c_str());
+}
+
 
 /*-----------------------------------------------------------------------------
  * Update file structure for Licq 1.8.0
  *
  * - Add owner as directory level to allow multiple owners per protocol
  * - Move history files together with user data files
+ * - Move parameters from protocol configurations to owner data
  *---------------------------------------------------------------------------*/
 void CLicq::upgradeLicq18(IniFile& licqConf)
 {
@@ -387,6 +505,7 @@ void CLicq::upgradeLicq18(IniFile& licqConf)
   upgradeLicq18_moveUserData(baseDir, owners, userDirs);
   upgradeLicq18_moveOwnerData(baseDir, owners, userDirs);
   upgradeLicq18_moveHistoryFiles(baseDir, owners, userDirs);
+  upgradeLicq18_migrateOwnerConfig(baseDir, owners, userDirs, licqConf);
 
   gLog.info(tr("Upgrade completed"));
 }

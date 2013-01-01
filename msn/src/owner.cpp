@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2012-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,14 +27,7 @@ Owner::Owner(const Licq::UserId& id)
   : Licq::User(id, false, true), Licq::Owner(id), User(id, false, true)
 {
   Licq::IniFile& conf(userConf());
-  if (!conf.get("ListVersion", myListVersion, 0))
-  {
-    // List version is missing, this could be due to upgrade from Licq 1.6.x or older
-    Licq::IniFile oldConf("licq_msn.conf");
-    oldConf.loadFile();
-    oldConf.setSection("network");
-    oldConf.get("ListVersion", myListVersion);
-  }
+  conf.get("ListVersion", myListVersion, 0);
 }
 
 Owner::~Owner()

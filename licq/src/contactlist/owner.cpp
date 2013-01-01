@@ -64,48 +64,8 @@ Owner::Owner(const UserId& id)
   conf.get("StartupStatus", statusStr, "");
   if (!User::stringToStatus(statusStr, myStartupStatus))
     myStartupStatus = User::OfflineStatus;
-
-  bool gotserver = false;
-  if (conf.get("ServerHost", myServerHost))
-    gotserver = true;
-  if (conf.get("ServerPort", myServerPort))
-    gotserver = true;
-
-  if (!gotserver)
-  {
-    // Server parameters are missing, this could be due to upgrade from Licq 1.5.x or older
-    // Try to migrate from protocol specific config file
-    switch (myId.protocolId())
-    {
-      case LICQ_PPID:
-      {
-        Licq::IniFile& oldConf(LicqDaemon::gDaemon.getLicqConf());
-        oldConf.setSection("network");
-        oldConf.get("ICQServer", myServerHost);
-        oldConf.get("ICQServerPort", myServerPort);
-        LicqDaemon::gDaemon.releaseLicqConf();
-        break;
-      }
-      case MSN_PPID:
-      {
-        Licq::IniFile oldConf("licq_msn.conf");
-        oldConf.loadFile();
-        oldConf.setSection("network");
-        oldConf.get("MsnServerAddress", myServerHost);
-        oldConf.get("MsnServerPort", myServerPort);
-        break;
-      }
-      case JABBER_PPID:
-      {
-        Licq::IniFile oldConf("licq_jabber.conf");
-        oldConf.loadFile();
-        oldConf.setSection("network");
-        oldConf.get("Server", myServerHost);
-        oldConf.get("Port", myServerPort);
-        break;
-      }
-    }
-  }
+  conf.get("ServerHost", myServerHost);
+  conf.get("ServerPort", myServerPort);
 
   gLog.info(tr("Loading owner configuration for %s"), myId.toString().c_str());
 
