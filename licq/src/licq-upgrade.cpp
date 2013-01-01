@@ -516,6 +516,33 @@ static void upgradeLicq18_updateUsersList(StringMap& owners)
 }
 
 /*-----------------------------------------------------------------------------
+ * Update group list for ICQ id switch
+ *---------------------------------------------------------------------------*/
+static void upgradeLicq18_updateGroups(StringMap& owners, IniFile& licqConf)
+{
+  if (owners.count("ICQ_") == 0)
+    return;
+  const string& icqOwner(owners["ICQ_"]);
+
+  licqConf.setSection("groups");
+  int numGroups;
+  licqConf.get("NumOfGroups", numGroups);
+  for (int i = 1; i <= numGroups; ++i)
+  {
+    // Change server id keys from "Licq" to "ICQ_"
+    char key[64];
+    sprintf(key, "Group%i.ServerId.Licq%s", i, icqOwner.c_str());
+    string id;
+    if (licqConf.get(key, id))
+    {
+      licqConf.unset(key);
+      sprintf(key, "Group%i.ServerId.ICQ_%s", i, icqOwner.c_str());
+      licqConf.set(key, id);
+    }
+  }
+}
+
+/*-----------------------------------------------------------------------------
  * Migrate onevent configuration
  *---------------------------------------------------------------------------*/
 static void upgradeLicq18_updateOnevent(StringMap& owners, IniFile& licqConf)
@@ -789,6 +816,7 @@ void CLicq::upgradeLicq18(IniFile& licqConf)
   upgradeLicq18_moveHistoryFiles(baseDir, owners, userDirs);
   upgradeLicq18_migrateOwnerConfig(baseDir, owners, userDirs, licqConf);
   upgradeLicq18_updateUsersList(owners);
+  upgradeLicq18_updateGroups(owners, licqConf);
   upgradeLicq18_updateOnevent(owners, licqConf);
   upgradeLicq18_updateFilter();
   upgradeLicq18_autoLoadIcqProtocol(owners, licqConf);
