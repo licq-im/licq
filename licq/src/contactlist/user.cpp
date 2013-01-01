@@ -1514,7 +1514,7 @@ void Licq::User::decNumUserEvents()
 unsigned long Licq::protocolId_fromString(const std::string& s)
 {
   // Known names (case insensitive compare) and raw string versions of protocol id
-  if (boost::iequals(s, "ICQ") || s == "Licq")
+  if (boost::iequals(s, "ICQ") || s == "ICQ_" || s == "Licq")
     return LICQ_PPID;
   if (boost::iequals(s, "MSN") || s == "MSN_")
     return MSN_PPID;

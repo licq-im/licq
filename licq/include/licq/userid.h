@@ -24,9 +24,12 @@
 
 // Known Protocol IDs
 // Should be local per protocol but defined here as they can also be useful for plugins
-#define LICQ_PPID 0x4C696371    // "Licq" (ICQ & AIM)
+#define ICQ_PPID 0x4943515F     // "ICQ_" (ICQ & AIM)
 #define MSN_PPID 0x4D534E5F     // "MSN_" (MSN)
 #define JABBER_PPID 0x584D5050  // "XMPP" (Jabber)
+
+// Old constant, will be removed when no longer used
+#define LICQ_PPID ICQ_PPID
 
 namespace Licq
 {

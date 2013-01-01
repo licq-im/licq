@@ -228,6 +228,9 @@ static void upgradeLicq18_moveUserData(const string& baseDir, StringMap& owners,
     string accountId(res->d_name, namelen-5);
     string ppidStr(res->d_name + namelen-4);
 
+    if (ppidStr == "Licq")
+      ppidStr = "ICQ_";
+
     // Skip if the file doesn't belong to any known owner
     if (owners.count(ppidStr) == 0)
       continue;
@@ -257,7 +260,7 @@ static void upgradeLicq18_moveOwnerData(const string& baseDir, StringMap& owners
   for (StringMap::const_iterator iter = owners.begin(); iter != owners.end(); ++iter)
   {
     const string& ppidStr = iter->first;
-    string oldOwnerFile = baseDir + "owner." + ppidStr;
+    string oldOwnerFile = baseDir + "owner." + (ppidStr == "ICQ_" ? "Licq" : ppidStr);
     string newOwnerFile = userDirs[ppidStr] + "/" + iter->second + ".conf";
     file_rename(oldOwnerFile, newOwnerFile);
 
@@ -306,6 +309,8 @@ static void upgradeLicq18_moveHistoryFiles(const string& baseDir, StringMap& own
       continue;
 
     // Skip if the file doesn't belong to any known owner
+    if (ppidStr == "Licq")
+      ppidStr = "ICQ_";
     if (owners.count(ppidStr) == 0)
       continue;
 
@@ -343,7 +348,7 @@ static void upgradeLicq18_migrateOwnerConfig(const string& baseDir, StringMap& o
     IniFile ownerConf(newOwnerFile);
     ownerConf.loadFile();
     ownerConf.setSection("user");
-    if (ppidStr == "Licq")
+    if (ppidStr == "ICQ_")
     {
       // Old ICQ config is in licq.conf
       licqConf.setSection("network");
@@ -459,6 +464,23 @@ static void upgradeLicq18_updateUsersList(StringMap& owners)
       continue;
 
     list<string> users;
+    if (iter->first == "ICQ_" && usersConf.setSection(iter->second + ".Licq", false))
+    {
+      // Migrate ICQ section to new name
+      int numUsers;
+      usersConf.get("NumUsers", numUsers, 0);
+      for (int i = 1; i <= numUsers; ++i)
+      {
+        char key[20];
+        sprintf(key, "User%i", i);
+        string str;
+        usersConf.get(key, str);
+        if (!str.empty())
+          users.push_back(str);
+      }
+      usersConf.removeSection(iter->second + ".Licq");
+    }
+    else
     {
       // Migrate from old mixed section
       usersConf.setSection("users");
@@ -473,7 +495,7 @@ static void upgradeLicq18_updateUsersList(StringMap& owners)
         if (userIdStr.size() < 6 || userIdStr[userIdStr.size()-5] != '.')
           continue;
         string ppidStr = userIdStr.substr(userIdStr.size()-4);
-        if (ppidStr == iter->first)
+        if (ppidStr == iter->first || (ppidStr == "Licq" && iter->first == "ICQ_"))
           users.push_back(userIdStr.substr(0, userIdStr.size()-5));
       }
     }
@@ -515,6 +537,8 @@ static void upgradeLicq18_updateOnevent(StringMap& owners, IniFile& licqConf)
         continue;
       string accountId = userIdStr.substr(4);
       string ppidStr = userIdStr.substr(0, 4);
+      if (ppidStr == "Licq")
+        ppidStr = "ICQ_";
       if (owners.count(ppidStr) == 0)
         continue;
       onEventConf.set("Protocol", ppidStr);
@@ -560,6 +584,8 @@ static void upgradeLicq18_updateFilter()
     sprintf(key, "Rule%i.protocol", i);
     unsigned long ppid;
     filterConf.get(key, ppid, 0);
+    if (ppid == 0x4C696371)
+      ppid = ICQ_PPID;
     filterConf.set(key, ppid == 0 ? "" : Licq::protocolId_toString(ppid));
   }
 
@@ -589,6 +615,8 @@ static void upgradeLicq18_updateQt4Gui(StringMap& owners)
     if (ppid == 0 || userIdStr.empty())
       continue;
 
+    if (ppid == 0x4C696371)
+      ppid = ICQ_PPID;
     string ppidStr = Licq::protocolId_toString(ppid);
     if (owners.count(ppidStr) == 0)
       continue;
@@ -674,6 +702,7 @@ static void upgradeLicq18_updateForwarder(StringMap& owners)
  *
  * - Add owner as directory level to allow multiple owners per protocol
  * - Move history files together with user data files
+ * - Change ICQ signature from "Licq" to "ICQ_"
  * - Move parameters from protocol configurations to owner data
  * - Add owner account id everywhere user id is saved
  * - Write protocol as text instead of using numeric constants in files
@@ -703,6 +732,10 @@ void CLicq::upgradeLicq18(IniFile& licqConf)
       gLog.error(tr("Missing data for owner %i"), i);
       throw exception();
     }
+
+    // Change PPID for ICQ
+    if (ppidStr == "Licq")
+      ppidStr = "ICQ_";
 
     licqConf.unset(key);
     sprintf(key, "Owner%d.Protocol", i);
