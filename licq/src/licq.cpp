@@ -20,13 +20,11 @@
 #include "config.h"
 
 #include <boost/foreach.hpp>
-#include <boost/scoped_array.hpp>
 #include <cassert>
 #include <cerrno>
 #include <csignal>
 #include <cstdlib>
 #include <cstring>
-#include <dirent.h>
 #include <dlfcn.h>
 #include <fcntl.h>
 #include <getopt.h>
@@ -513,23 +511,26 @@ bool CLicq::Init(int argc, char **argv)
   licqConf.setSection("licq");
   unsigned nVersion;
   licqConf.get("Version", nVersion, 0);
-  if (nVersion < LICQ_MAKE_VERSION(1, 2, 8))
+  if (nVersion < LICQ_VERSION)
   {
-    gLog.info(tr("Upgrading config file formats"));
-    if (upgradeLicq128(licqConf))
-      gLog.info(tr("Upgrade completed"));
-    else
+    try
+    {
+      // Perform upgrades as needed
+      if (nVersion < LICQ_MAKE_VERSION(1, 2, 8))
+        upgradeLicq128(licqConf);
+
+      // Write new version
+      licqConf.setSection("licq");
+      licqConf.set("Version", LICQ_VERSION);
+      licqConf.writeFile();
+    }
+    catch (...)
     {
       gLog.error(tr("Upgrade failed. Please save your licq directory and "
           "report this as a bug."));
       gDaemon.releaseLicqConf();
       return false;
     }
-  }
-  else if (nVersion < LICQ_VERSION)
-  {
-    licqConf.set("Version", LICQ_VERSION);
-    licqConf.writeFile();
   }
 
   // Find and load the protocol plugins before the UI plugins
@@ -658,107 +659,6 @@ const char *CLicq::Version()
   return version;
 }
 
-
-/*-----------------------------------------------------------------------------
- * UpgradeLicq
- *
- * Upgrades the config files to the current version.
- *---------------------------------------------------------------------------*/
-bool CLicq::upgradeLicq128(Licq::IniFile& licqConf)
-{
-  string strBaseDir = gDaemon.baseDir();
-  Licq::IniFile ownerFile("owner.uin");
-  if (!ownerFile.loadFile())
-    return false;
-
-  // Get the UIN
-  unsigned long nUin;
-  ownerFile.setSection("user");
-  ownerFile.get("Uin", nUin, 0);
-
-  // Set the new version number
-  licqConf.setSection("licq");
-  licqConf.set("Version", LICQ_VERSION);
-
-  // Create the owner section and fill it
-  licqConf.setSection("owners");
-  licqConf.set("NumOfOwners", 1);
-  licqConf.set("Owner1.Id", nUin);
-  licqConf.set("Owner1.PPID", "Licq");
-
-  // Add the protocol plugins info
-  licqConf.setSection("plugins");
-  licqConf.set(string("NumProtoPlugins"), 0);
-  licqConf.writeFile();
-
-  // Rename owner.uin to owner.Licq
-  if (rename((strBaseDir + "owner.uin").c_str(), (strBaseDir + "owner.Licq").c_str()))
-    return false;
-
-  // Update all the user files and update users.conf
-  string strUserDir = strBaseDir + "users";
-  DIR* userDir = opendir(strUserDir.c_str());
-  if (userDir != NULL)
-  {
-    Licq::IniFile userConf("users.conf");
-    if (!userConf.loadFile())
-      return false;
-    userConf.setSection("users");
-    int n = 0;
-
-    boost::scoped_array<char> ent(new char[offsetof(struct dirent, d_name) +
-        pathconf(strUserDir.c_str(), _PC_NAME_MAX) + 1]);
-    struct dirent* res;
-
-    while (readdir_r(userDir, (struct dirent*)ent.get(), &res) == 0 && res != NULL)
-    {
-      const char* dot = strrchr(res->d_name, '.');
-      if (dot == NULL || strcmp(dot, ".uin") != 0)
-        continue;
-
-      char szKey[20];
-      snprintf(szKey, sizeof(szKey), "User%d", n+1);
-      string strFileName = strUserDir + "/" + res->d_name;
-      string strNewName = res->d_name;
-      strNewName.replace(strNewName.find(".uin", 0), 4, ".Licq");
-      string strNewFile = strUserDir + "/" + strNewName;
-      if (rename(strFileName.c_str(), strNewFile.c_str()))
-        return false;
-      userConf.set(szKey, strNewName);
-      ++n;
-    }
-    userConf.set("NumOfUsers", n);
-    userConf.writeFile();
-    closedir(userDir);
-  }
-
-
-  // Rename the history files
-  string strHistoryDir = strBaseDir + "history";
-  DIR* historyDir = opendir(strHistoryDir.c_str());
-  if (historyDir != NULL)
-  {
-    boost::scoped_array<char> ent(new char[offsetof(struct dirent, d_name) +
-        pathconf(strHistoryDir.c_str(), _PC_NAME_MAX) + 1]);
-    struct dirent* res;
-
-    while (readdir_r(historyDir, (struct dirent*)ent.get(), &res) == 0 && res != NULL)
-    {
-      const char* dot = strrchr(res->d_name, '.');
-      if (dot == NULL || (strcmp(dot, ".history") != 0 && strcmp(dot, ".history.removed") != 0))
-        continue;
-
-      string strFileName = strHistoryDir + "/" + res->d_name;
-      string strNewFile = strHistoryDir + "/" + res->d_name;
-      strNewFile.replace(strNewFile.find(".history", 0), 8, ".Licq.history");
-      if (rename(strFileName.c_str(), strNewFile.c_str()))
-        return false;
-    }
-    closedir(historyDir);
-  }
-  
-  return true;
-}
 
 /*-----------------------------------------------------------------------------
  * LoadPlugin
