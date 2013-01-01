@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -44,18 +44,13 @@ using Licq::gDaemon;
 using Licq::gLog;
 using std::string;
 
-JClient::JClient(const gloox::JID& jid, const string& password, int port) :
-  gloox::Client(jid, password, port)
+GlooxClient::GlooxClient(const gloox::JID& jid, const string& password) :
+  gloox::Client(jid, password)
 {
-  // EMPTY
+  // Empty
 }
 
-JClient::~JClient()
-{
-  // EMPTY
-}
-
-bool JClient::checkStreamVersion(const string& version)
+bool GlooxClient::checkStreamVersion(const string& version)
 {
   // do not consider absence of the version as an error
   if (version.empty())
@@ -64,8 +59,9 @@ bool JClient::checkStreamVersion(const string& version)
   return gloox::Client::checkStreamVersion(version);
 }
 
-Client::Client(const Licq::UserId& ownerId, const string& username, const string& password,
-    const string& host, int port, const string& resource, gloox::TLSPolicy tlsPolicy) :
+Client::Client(const Licq::UserId& ownerId, const string& username,
+               const string& password, const string& host, int port,
+               const string& resource, gloox::TLSPolicy tlsPolicy) :
   myHandler(ownerId),
   mySessionManager(NULL),
   myJid(username + "/" + resource),
@@ -179,7 +175,8 @@ void Client::setOwnerVCard(const UserToVCard& wrapper)
   myVCardManager.storeVCard(card, this);
 }
 
-void Client::addUser(const string& user, const gloox::StringList& groupNames, bool notify)
+void Client::addUser(const string& user, const gloox::StringList& groupNames,
+                     bool notify)
 {
   if (notify)
     myRosterManager->subscribe(gloox::JID(user), user, groupNames);
