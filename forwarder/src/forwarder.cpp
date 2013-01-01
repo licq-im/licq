@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2000-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -212,7 +212,7 @@ int CLicqForwarder::run()
         gLog.error("Invalid protocol: %s", protocol.c_str());
         return 1;
       }
-      myUserId = UserId(accountId, protocolId);
+      myUserId = UserId(Licq::gUserManager.ownerUserId(protocolId), accountId);
       break;
     }
     default:

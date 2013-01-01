@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2004-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -167,7 +167,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
     {
       // Add user
       string strUser = packet->GetParameter();
-      UserId userId(strUser, MSN_PPID);
+      UserId userId(myOwnerId, strUser);
       string strNick = packet->GetParameter();
       string strLists = packet->GetParameter();
       string strUserLists;
@@ -218,7 +218,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       string strList = packet->GetParameter();
       string strVersion = packet->GetParameter();
       string strUser = packet->GetParameter();
-      UserId userId(strUser, MSN_PPID);
+      UserId userId(myOwnerId, strUser);
       string strNick = packet->GetParameter();
 
       unsigned long newListVersion = atol(strVersion.c_str());
@@ -326,7 +326,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       if (strCmd == "ILN")
         packet->SkipParameter(); // seq
       string strStatus = packet->GetParameter();
-      Licq::UserId userId(packet->GetParameter(), MSN_PPID);
+      Licq::UserId userId(myOwnerId, packet->GetParameter());
       string strNick = packet->GetParameter();
       string strClientId = packet->GetParameter();
       string strMSNObject = packet->GetParameter();
@@ -371,7 +371,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
     }
     else if (strCmd == "FLN")
     {
-      UserId userId(packet->GetParameter(), MSN_PPID);
+      UserId userId(myOwnerId, packet->GetParameter());
 
       {
         Licq::UserWriteGuard u(userId);
@@ -403,7 +403,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       string strServer = packet->GetParameter();
       packet->SkipParameter(); // 'CKI'
       string strCookie = packet->GetParameter();
-      Licq::UserId userId(packet->GetParameter(), MSN_PPID);
+      Licq::UserId userId(myOwnerId, packet->GetParameter());
 
       MSNSBConnectAnswer(strServer, strSessionID, strCookie, userId);
     }

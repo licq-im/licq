@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2012-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -203,9 +203,6 @@ class UserReadGuard : public Licq::UserReadGuard
 {
 public:
   // Derived costructors
-  UserReadGuard(const std::string& accountId, bool addUser = false, bool* retWasAdded = NULL)
-    : Licq::UserReadGuard(Licq::UserId(accountId, LICQ_PPID), addUser, retWasAdded)
-  { }
   UserReadGuard(const Licq::UserId& userId, bool addUser = false, bool* retWasAdded = NULL)
     : Licq::UserReadGuard(userId, addUser, retWasAdded)
   { }
@@ -230,9 +227,6 @@ class UserWriteGuard : public Licq::UserWriteGuard
 {
 public:
   // Derived costructors
-  UserWriteGuard(const std::string& accountId, bool addUser = false, bool* retWasAdded = NULL)
-    : Licq::UserWriteGuard(Licq::UserId(accountId, LICQ_PPID), addUser, retWasAdded)
-  { }
   UserWriteGuard(const Licq::UserId& userId, bool addUser = false, bool* retWasAdded = NULL)
     : Licq::UserWriteGuard(userId, addUser, retWasAdded)
   { }

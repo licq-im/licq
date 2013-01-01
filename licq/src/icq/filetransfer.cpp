@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -470,7 +470,7 @@ bool CFileTransferManager::ProcessPacket()
     {
       CBuffer tmp(b); // we need to save a copy for later
 
-      if (!IcqProtocol::Handshake_Recv(&mySock, LocalPort(), false))
+      if (!gIcqProtocol.Handshake_Recv(&mySock, LocalPort(), false))
         break;
       gLog.info(tr("File Transfer: Received handshake."));
 

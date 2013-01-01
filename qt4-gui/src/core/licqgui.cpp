@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1999-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -342,7 +342,7 @@ void LicqGui::loadFloatiesConfig()
     guiConf.get(key, s, "");
     if (s.empty())
       continue;
-    Licq::UserId userId(s, ppid);
+    Licq::UserId userId(Licq::gUserManager.ownerUserId(ppid), s);
 
     sprintf(key, "Floaty%d.X", i);
     guiConf.get(key, xPosF, 0);
@@ -875,7 +875,7 @@ Licq::UserId LicqGui::userIdFromMimeData(const QMimeData& mimeData)
   {
     unsigned long ppid = owner->protocolId();
     if (text.startsWith(Licq::protocolId_toString(ppid).c_str()))
-      return Licq::UserId(text.mid(4).toLocal8Bit().constData(), ppid);
+      return Licq::UserId(owner->id(), text.mid(4).toLocal8Bit().constData());
   }
 
   return Licq::UserId();

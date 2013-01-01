@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1999-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -118,7 +118,7 @@ void AddUserDlg::ownerChanged()
 void AddUserDlg::ok()
 {
   QString accountId = myId->text().trimmed();
-  Licq::UserId userId(accountId.toUtf8().constData(), myOwnerCombo->currentOwnerId().protocolId());
+  Licq::UserId userId(myOwnerCombo->currentOwnerId(), accountId.toUtf8().constData());
   int group = myGroup->currentGroupId();
   bool notify = myNotify->isChecked();
   bool reqAuth = myReqAuthCheck->isEnabled() && myReqAuthCheck->isChecked();

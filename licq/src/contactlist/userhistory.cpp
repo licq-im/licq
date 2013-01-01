@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -233,7 +233,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory, const string& userEncoding) 
           email = gTranslator.toUtf8(email);
           message = gTranslator.toUtf8(message, userEncoding);
         }
-        e = new Licq::EventAuthRequest(UserId(accountId, myUserId.protocolId()), alias,
+        e = new Licq::EventAuthRequest(UserId(myUserId, accountId), alias,
             firstName, lastName, email, message, tTime, nFlags);
         break;
       }
@@ -244,7 +244,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory, const string& userEncoding) 
         GET_VALID_LINES(message);
         if (convertToUtf8)
           message = gTranslator.toUtf8(message, userEncoding);
-        e = new Licq::EventAuthGranted(UserId(accountId, myUserId.protocolId()), message,
+        e = new Licq::EventAuthGranted(UserId(myUserId, accountId), message,
             tTime, nFlags);
         break;
       }
@@ -255,7 +255,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory, const string& userEncoding) 
         GET_VALID_LINES(message);
         if (convertToUtf8)
           message = gTranslator.toUtf8(message, userEncoding);
-        e = new Licq::EventAuthRefused(UserId(accountId, myUserId.protocolId()), message,
+        e = new Licq::EventAuthRefused(UserId(myUserId, accountId), message,
             tTime, nFlags);
         break;
       }
@@ -274,7 +274,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory, const string& userEncoding) 
           lastName = gTranslator.toUtf8(lastName);
           email = gTranslator.toUtf8(email);
         }
-        e = new Licq::EventAdded(UserId(accountId, myUserId.protocolId()), alias, firstName,
+        e = new Licq::EventAdded(UserId(myUserId, accountId), alias, firstName,
             lastName, email, tTime, nFlags);
         break;
       }
@@ -318,7 +318,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory, const string& userEncoding) 
           GET_VALID_LINE_OR_BREAK(alias);
           if (convertToUtf8)
             alias = gTranslator.toUtf8(alias);
-          vc.push_back(new Licq::EventContactList::Contact(UserId(accountId, myUserId.protocolId()), alias));
+          vc.push_back(new Licq::EventContactList::Contact(UserId(myUserId, accountId), alias));
         }
         e = new Licq::EventContactList(vc, false, tTime, nFlags);
         break;

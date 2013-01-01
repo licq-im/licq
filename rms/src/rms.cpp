@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2000-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -629,7 +629,7 @@ void CRMSClient::ParseUser(const string& strData)
   {
     // Protocol specified, accept any user, even if it isn't currently in list
     ppid = Licq::protocolId_fromString(strData.substr(pos+1));
-    myUserId = UserId(strData.substr(0, pos-1), ppid);
+    myUserId = UserId(Licq::gUserManager.ownerUserId(ppid), strData.substr(0, pos-1));
     return;
   }
   else

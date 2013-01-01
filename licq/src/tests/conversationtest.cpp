@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010,2012 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ namespace LicqTest {
 
 TEST(Conversation, constructor)
 {
-  UserId ownerId("owner", 0x54657374);
+  UserId ownerId(0x54657374, "owner");
   Conversation convo(5, ownerId, 8);
 
   EXPECT_EQ(5, convo.id());
@@ -48,7 +48,7 @@ TEST(Conversation, constructor)
 
 TEST(Conversation, userList)
 {
-  UserId ownerId("owner", 0x54657374);
+  UserId ownerId(0x54657374, "owner");
   Conversation convo(5, ownerId, 8);
   Licq::ConversationUsers users;
 
@@ -58,27 +58,27 @@ TEST(Conversation, userList)
   users.clear();
 
   // Try adding users
-  EXPECT_TRUE(convo.addUser(UserId("uno", 0x54657374)));
-  EXPECT_TRUE(convo.addUser(UserId("second", 0x54657374)));
-  EXPECT_TRUE(convo.addUser(UserId("user3", 0x54657374)));
+  EXPECT_TRUE(convo.addUser(UserId(ownerId, "uno")));
+  EXPECT_TRUE(convo.addUser(UserId(ownerId, "second")));
+  EXPECT_TRUE(convo.addUser(UserId(ownerId, "user3")));
   convo.getUsers(users);
   EXPECT_EQ(3u, users.size());
   users.clear();
 
   // Adding duplicate should fail
-  EXPECT_FALSE(convo.addUser(UserId("second", 0x54657374)));
+  EXPECT_FALSE(convo.addUser(UserId(ownerId, "second")));
   convo.getUsers(users);
   EXPECT_EQ(3u, users.size());
   users.clear();
 
   // Try removing
-  EXPECT_TRUE(convo.removeUser(UserId("uno", 0x54657374)));
+  EXPECT_TRUE(convo.removeUser(UserId(ownerId, "uno")));
   convo.getUsers(users);
   EXPECT_EQ(2u, users.size());
   users.clear();
 
   // Removing non-existent should fail
-  EXPECT_FALSE(convo.removeUser(UserId("missing", 0x54657374)));
+  EXPECT_FALSE(convo.removeUser(UserId(ownerId, "missing")));
   convo.getUsers(users);
   EXPECT_EQ(2u, users.size());
   users.clear();
@@ -86,7 +86,7 @@ TEST(Conversation, userList)
 
 TEST(ConvoManager, convoList)
 {
-  UserId ownerId("owner", 0x54657374);
+  UserId ownerId(0x54657374, "owner");
 
   // Creating two conversations, they should get unique IDs
   Licq::Conversation* convo1 = gConvoManager.add(ownerId, 5);

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2000-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -160,7 +160,7 @@ bool UserManager::Load()
     sprintf(sOwnerPPIDKey, "Owner%d.PPID", i);
     licqConf.get(sOwnerPPIDKey, ppidStr);
     unsigned long protocolId = Licq::protocolId_fromString(ppidStr);
-    myConfiguredOwners.insert(UserId(accountId, protocolId));
+    myConfiguredOwners.insert(UserId(protocolId, accountId));
     oldOwners[protocolId] = accountId;
   }
   myOwnerListMutex.unlockWrite();
@@ -237,7 +237,7 @@ bool UserManager::Load()
       }
 
       if (!accountId.empty())
-        newGroup->setServerId(Licq::UserId(accountId, protocolId), serverId);
+        newGroup->setServerId(Licq::UserId(protocolId, accountId), serverId);
     }
 
     // ServerId per protocol didn't exist in 1.3.x and older.
@@ -290,7 +290,7 @@ void UserManager::loadUserList(const UserId& ownerId)
         gLog.warning(tr("Skipping user %i, invalid key"), i);
         continue;
       }
-      UserId userId(accountId, ownerId.protocolId());
+      UserId userId(ownerId, accountId);
       User* u = createUser(userId);
       u->myPrivate->addToContactList();
       myUsers[userId] = u;
@@ -322,7 +322,7 @@ void UserManager::loadUserList(const UserId& ownerId)
         continue;
 
       string accountId = userFile.substr(0, sz);
-      UserId userId(accountId, ownerId.protocolId());
+      UserId userId(ownerId, accountId);
       User* u = createUser(userId);
       u->myPrivate->addToContactList();
       myUsers[userId] = u;

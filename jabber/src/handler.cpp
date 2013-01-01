@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -115,7 +115,7 @@ void Handler::onUserAdded(
 {
   TRACE();
 
-  UserId userId(id, JABBER_PPID);
+  UserId userId(myOwnerId, id);
   bool wasAdded = false;
   if (!gUserManager.userExists(userId))
   {
@@ -165,7 +165,7 @@ void Handler::onUserRemoved(const string& id)
 {
   TRACE();
 
-  Licq::gUserManager.removeLocalUser(UserId(id, JABBER_PPID));
+  Licq::gUserManager.removeLocalUser(UserId(myOwnerId, id));
 }
 
 void Handler::onUserStatusChange(
@@ -173,7 +173,7 @@ void Handler::onUserStatusChange(
 {
   TRACE();
 
-  Licq::UserWriteGuard user(Licq::UserId(id, JABBER_PPID));
+  Licq::UserWriteGuard user(Licq::UserId(myOwnerId, id));
   if (user.isLocked())
   {
     user->SetSendServer(true);
@@ -187,7 +187,7 @@ void Handler::onUserInfo(const string& id, const VCardToUser& wrapper)
   TRACE();
 
   bool updated = false;
-  Licq::UserId userId(id, JABBER_PPID);
+  Licq::UserId userId(myOwnerId, id);
   if (gUserManager.isOwner(userId))
   {
     Licq::OwnerWriteGuard owner(userId);
@@ -235,7 +235,7 @@ void Handler::onUserAuthorizationRequest(
   TRACE();
 
   Licq::EventAuthRequest* event = new Licq::EventAuthRequest(
-      UserId(id, JABBER_PPID),
+      UserId(myOwnerId, id),
       string(), // alias
       string(), string(), // first and last name
       string(), // email
@@ -259,7 +259,7 @@ void Handler::onMessage(const string& from, const string& message, time_t sent,
       message.c_str(), sent,
       urgent ? unsigned(Licq::UserEvent::FlagUrgent) : 0);
 
-  Licq::UserWriteGuard user(UserId(from, JABBER_PPID), true);
+  Licq::UserWriteGuard user(UserId(myOwnerId, from), true);
 
   if (user.isLocked())
     user->setIsTyping(false);
@@ -271,7 +271,7 @@ void Handler::onNotifyTyping(const string& from, bool active)
 {
   TRACE();
 
-  Licq::UserWriteGuard user(UserId(from, JABBER_PPID));
+  Licq::UserWriteGuard user(UserId(myOwnerId, from));
   if (user.isLocked())
   {
     user->setIsTyping(active);

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -235,7 +235,8 @@ void OnEventManager::initialize()
       continue;
     string accountId = userIdStr.substr(4);
     unsigned long protocolId = Licq::protocolId_fromString(userIdStr.substr(0, 4));
-    UserId userId(accountId, protocolId);
+    UserId ownerId = gUserManager.ownerUserId(protocolId);
+    UserId userId(ownerId, accountId);
     if (!userId.isValid())
       continue;
     OnEventData* data = new OnEventData(section);
@@ -411,7 +412,7 @@ void OnEventManager::performOnEvent(OnEventData::OnEventType event, const Licq::
     if (user->isUser())
     {
       // Get owner for this user
-      Licq::OwnerReadGuard o(user->protocolId());
+      Licq::OwnerReadGuard o(user->id().ownerId());
       ownerStatus = o->status();
     }
     else

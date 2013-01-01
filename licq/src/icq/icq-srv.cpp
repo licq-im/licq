@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2156,7 +2156,7 @@ void IcqProtocol::ProcessLocationFam(Buffer& packet, unsigned short nSubtype)
   case ICQ_SNACxREPLYxUSERxINFO:
   {
       string id = packet.unpackByteString();
-      Licq::UserId userId(id, LICQ_PPID);
+      Licq::UserId userId(myOwnerId, id);
     packet.UnpackUnsignedLongBE(); // Unknown
     
     if (!packet.readTLV())
@@ -2242,7 +2242,7 @@ void IcqProtocol::ProcessBuddyFam(Buffer& packet, unsigned short nSubtype)
 
 //     userIP = packet.UnpackUnsignedLongTLV(0x0a, 1);
 //      userIP = BSWAP_32(userIP);
-      UserWriteGuard u(id);
+      UserWriteGuard u(Licq::UserId(myOwnerId, id));
       if (!u.isLocked())
       {
         gLog.warning(tr("Unknown user (%s) changed status."), id.c_str());
@@ -2610,14 +2610,14 @@ void IcqProtocol::ProcessBuddyFam(Buffer& packet, unsigned short nSubtype)
     // an AIM user
     if (bFake && isdigit(id[0]))
     {
-        Licq::UserReadGuard user(Licq::UserId(id, LICQ_PPID));
+        Licq::UserReadGuard user(Licq::UserId(myOwnerId, id));
       //XXX Debug output
       //gLog.error(tr("Ignoring fake offline: %s (%s)"),
         //    user->getAlias().c_str(), id.c_str());
         break;
       }
 
-      UserWriteGuard u(id);
+        UserWriteGuard u(Licq::UserId(myOwnerId, id));
       if (!u.isLocked())
       {
         gLog.warning(tr("Unknown user (%s) has gone offline."), id.c_str());
@@ -2696,7 +2696,7 @@ void IcqProtocol::ProcessMessageFam(Buffer& packet, unsigned short nSubtype)
         if ((*iter)->nId == nSubSequence)
         {
             {
-              Licq::UserReadGuard u(Licq::UserId((*iter)->myIdString, LICQ_PPID));
+              Licq::UserReadGuard u(Licq::UserId(myOwnerId, (*iter)->myIdString));
               if (!u.isLocked())
                 gLog.warning(tr("Reverse connection from %s failed."), (*iter)->myIdString.c_str());
               else
@@ -2729,7 +2729,7 @@ void IcqProtocol::ProcessMessageFam(Buffer& packet, unsigned short nSubtype)
     nTimeSent   = time(0L);
     mFormat    = packet.UnpackUnsignedShortBE();
       string id = packet.unpackByteString();
-      Licq::UserId userId(id, LICQ_PPID);
+      Licq::UserId userId(myOwnerId, id);
 
     //TODO Check this again with new protocol plugin support
     //if (nUin < 10000 && nUin != ICQ_UINxPAGER && nUin != ICQ_UINxSMS)
@@ -2872,7 +2872,7 @@ void IcqProtocol::ProcessMessageFam(Buffer& packet, unsigned short nSubtype)
         snprintf(id, 15, "%lu", nUin);
 
         {
-          UserWriteGuard u(Licq::UserId(id, LICQ_PPID));
+          UserWriteGuard u(Licq::UserId(myOwnerId, id));
           if (u.isLocked())
             u->SetIpPort(nIp, nPort);
         }
@@ -3078,7 +3078,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
 		packet.UnpackUnsignedShortBE(); // Format
       string id = packet.unpackByteString();
 
-      UserWriteGuard u(id);
+      UserWriteGuard u(Licq::UserId(myOwnerId, id));
       if (!u.isLocked())
       {
         gLog.warning(tr("Unexpected new user in subtype 0x%04x."), nSubtype);
@@ -3240,7 +3240,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
       string id = packet.unpackByteString();
     unsigned short nTyping = packet.UnpackUnsignedShortBE();
 
-      Licq::UserWriteGuard u(Licq::UserId(id, LICQ_PPID));
+      Licq::UserWriteGuard u(Licq::UserId(myOwnerId, id));
       if (!u.isLocked())
       {
         gLog.warning(tr("Typing status received for unknown user (%s)."), id.c_str());
@@ -3513,7 +3513,7 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
         break;
       }
 
-      UserWriteGuard u(id);
+      UserWriteGuard u(Licq::UserId(myOwnerId, id));
       if (u.isLocked())
       {
         // First update their gsid/sid
@@ -3620,7 +3620,7 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
             if (nError == 0x0E && e->SubType() == ICQ_SNACxLIST_ROSTxADD)
             {
               if (pending.length())
-                icqAddUserServer(Licq::UserId(pending, LICQ_PPID), true);
+                icqAddUserServer(Licq::UserId(myOwnerId, pending), true);
               break;
             }
 
@@ -3674,7 +3674,7 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
             // that will send a message out to the server AGAIN
             if (e->SubType() == ICQ_SNACxLIST_ROSTxADD && !bTopLevelUpdated)
             {
-              Licq::UserWriteGuard u(Licq::UserId(pending.c_str(), LICQ_PPID));
+              Licq::UserWriteGuard u(Licq::UserId(myOwnerId, pending));
               if (u.isLocked())
               {
                 u->addToGroup(getGroupFromId(e->ExtraInfo()));
@@ -3696,7 +3696,7 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
                 
               if (nError == 0x0E)
               {
-                pReply = new CPU_UpdateToServerList(Licq::UserId(pending, LICQ_PPID), ICQ_ROSTxNORMAL, true);
+                pReply = new CPU_UpdateToServerList(Licq::UserId(myOwnerId, pending), ICQ_ROSTxNORMAL, true);
                 addToModifyUsers(pReply->SubSequence(), pending);
                 SendExpectEvent_Server(pReply, NULL);
               }
@@ -3716,7 +3716,7 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
     case ICQ_SNACxLIST_AUTHxREQxSRV:
     {
       string id = packet.unpackByteString();
-      Licq::UserId userId(id, LICQ_PPID);
+      Licq::UserId userId(myOwnerId, id);
       string userEncoding = getUserEncoding(userId);
       bool bIgnore;
       {
@@ -3745,7 +3745,7 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
     case ICQ_SNACxLIST_AUTHxRESPONS: // The resonse to our authorization request
     {
       string id = packet.unpackByteString();
-      Licq::UserId userId(id, LICQ_PPID);
+      Licq::UserId userId(myOwnerId, id);
       string userEncoding = getUserEncoding(userId);
       unsigned char granted;
 
@@ -3783,7 +3783,7 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
     case ICQ_SNACxLIST_AUTHxADDED: // You were added to a contact list
     {
       string id = packet.unpackByteString();
-      Licq::UserId userId(id, LICQ_PPID);
+      Licq::UserId userId(myOwnerId, id);
       gLog.info(tr("User %s added you to their contact list."), id.c_str());
 
       Licq::EventAdded* e = new Licq::EventAdded(userId, "", "", "", "",
@@ -3898,7 +3898,7 @@ void IcqProtocol::ProcessVariousFam(Buffer& packet, unsigned short nSubtype)
       nUin = msg.UnpackUnsignedLong();
           char id[16];
           snprintf(id, 16, "%lu", nUin);
-          Licq::UserId userId(id, LICQ_PPID);
+          Licq::UserId userId(myOwnerId, id);
 
       sendTM.tm_year = msg.UnpackUnsignedShort() - 1900;
       sendTM.tm_mon = msg.UnpackChar() - 1;
@@ -4247,7 +4247,7 @@ void IcqProtocol::ProcessVariousFam(Buffer& packet, unsigned short nSubtype)
           msg >> nUin;
           char szUin[14];
           snprintf(szUin, sizeof(szUin), "%lu", nUin);
-              Licq::UserId userId(szUin, LICQ_PPID);
+              Licq::UserId userId(myOwnerId, szUin);
               gLog.info(tr("Random chat user found (%s)."), szUin);
           bool bNewUser = false;
 
@@ -4331,7 +4331,7 @@ void IcqProtocol::ProcessVariousFam(Buffer& packet, unsigned short nSubtype)
         nFoundUin = msg.UnpackUnsignedLong();
         char foundAccount[14];
         snprintf(foundAccount, sizeof(foundAccount), "%lu", nFoundUin);
-            Licq::UserId foundUserId(foundAccount, LICQ_PPID);
+            Licq::UserId foundUserId(myOwnerId, foundAccount);
 
             Licq::SearchData* s = new Licq::SearchData(foundUserId);
 
@@ -4823,7 +4823,7 @@ void IcqProtocol::ProcessAuthFam(Buffer& packet, unsigned short nSubtype)
       gLog.info(tr("Received new uin: %lu"), nNewUin);
       char szUin[14];
       snprintf(szUin, sizeof(szUin), "%lu", nNewUin);
-      Licq::UserId ownerId(szUin, LICQ_PPID);
+      Licq::UserId ownerId(LICQ_PPID, szUin);
       Licq::gUserManager.addOwner(ownerId);
 
       {
@@ -4837,8 +4837,7 @@ void IcqProtocol::ProcessAuthFam(Buffer& packet, unsigned short nSubtype)
       myRegisterPasswd = "";
 
       gPluginManager.pushPluginSignal(new Licq::PluginSignal(
-          Licq::PluginSignal::SignalNewOwner,
-          0, Licq::UserId(), LICQ_PPID));
+          Licq::PluginSignal::SignalNewOwner, 0, ownerId));
 
       // Reconnect now
       int nSD = m_nTCPSrvSocketDesc;
@@ -4921,7 +4920,7 @@ void IcqProtocol::ProcessUserList()
 
   for (iter = receivedUserList.begin(); iter != receivedUserList.end(); iter++)
   {
-    Licq::UserId userId(iter->first, LICQ_PPID);
+    Licq::UserId userId(myOwnerId, iter->first);
     CUserProperties* data = iter->second;
 
     if (!userId.isValid())

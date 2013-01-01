@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2000-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,7 +103,7 @@ RandomChatDlg::RandomChatDlg(const Licq::UserId& ownerId, QWidget* parent)
 RandomChatDlg::~RandomChatDlg()
 {
   if (myTag != 0)
-    Licq::gProtocolManager.cancelEvent(Licq::UserId("0000", LICQ_PPID), myTag);
+    Licq::gProtocolManager.cancelEvent(Licq::UserId(myOwnerId, "0000"), myTag);
 }
 
 void RandomChatDlg::okPressed()

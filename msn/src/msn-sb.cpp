@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2004-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@ void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer *packet,
       packet->SkipParameter(); // Seq
       packet->SkipParameter(); // current user to add
       packet->SkipParameter(); // total users in conversation
-      UserId userId(packet->GetParameter(), MSN_PPID);
+      UserId userId(myOwnerId, packet->GetParameter());
 
       bool newUser;
       {
@@ -107,7 +107,7 @@ void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer *packet,
     }
     else if (strCmd == "MSG")
     {
-      Licq::UserId userId(packet->GetParameter(), MSN_PPID);
+      Licq::UserId userId(myOwnerId, packet->GetParameter());
       packet->SkipParameter(); // Nick
       string strSize = packet->GetParameter(); // Size
       int nSize = atoi(strSize.c_str()) + 1; // Make up for the \n
@@ -286,7 +286,7 @@ void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer *packet,
     }
     else if (strCmd == "JOI")
     {
-      UserId userId(packet->GetParameter(), MSN_PPID);
+      UserId userId(myOwnerId, packet->GetParameter());
       gLog.info("%s joined the conversation", userId.toString().c_str());
 
       SStartMessage *pStart = 0;
@@ -338,7 +338,7 @@ void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer *packet,
     else if (strCmd == "BYE")
     {
       // closed the window and connection
-      UserId userId(packet->GetParameter(), MSN_PPID);
+      UserId userId(myOwnerId, packet->GetParameter());
       gLog.info("Connection with %s closed", userId.toString().c_str());
 
       Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(

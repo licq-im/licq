@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1999-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -131,10 +131,7 @@ void AuthDlg::send()
 {
   Licq::UserId userId = myUserId;
   if (!userId.isValid())
-  {
-    userId = Licq::UserId(myAccountIdEdit->text().toLatin1().constData(),
-        myOwnerCombo->currentOwnerId().protocolId());
-  }
+    userId = Licq::UserId(myOwnerCombo->currentOwnerId(), myAccountIdEdit->text().toUtf8().constData());
 
   if (userId.isValid())
   {

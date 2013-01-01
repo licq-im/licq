@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2007-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -348,7 +348,7 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
     case ICQ_SNACxBART_DOWNLOADxREPLY:
     {
       string id = packet.unpackByteString();
-      UserWriteGuard u(id);
+      UserWriteGuard u(Licq::UserId(gIcqProtocol.ownerId(), id));
       if (!u.isLocked())
       {
         gLog.warning(tr("Buddy icon for unknown user (%s)."), id.c_str());

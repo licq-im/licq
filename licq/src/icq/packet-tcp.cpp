@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 
 #include <licq/byteorder.h>
 #include <licq/color.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/translator.h>
 #include <licq/logging/log.h>
 #include <licq/version.h>
@@ -292,7 +293,7 @@ CPacketTcp_Handshake_v6::CPacketTcp_Handshake_v6(unsigned long nDestinationUin,
 
   char id[16];
   snprintf(id, 16, "%lu", nDestinationUin);
-  UserId userId(id, LICQ_PPID);
+  UserId userId(gIcqProtocol.ownerId(), id);
   UserReadGuard u(userId);
   if (u.isLocked())
   {
@@ -353,7 +354,7 @@ CPacketTcp_Handshake_v7::CPacketTcp_Handshake_v7(unsigned long nDestinationUin,
 
   char id[16];
   snprintf(id, 16, "%lu", nDestinationUin);
-  UserId userId(id, LICQ_PPID);
+  UserId userId(gIcqProtocol.ownerId(), id);
   UserReadGuard u(userId);
   if (u.isLocked())
   {

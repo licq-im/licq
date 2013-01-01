@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -630,7 +630,7 @@ void* LicqIcq::ReverseConnectToUser_tep(void* v)
 
   CReverseConnectToUserData *p = (CReverseConnectToUserData *)v;
 
-  Licq::UserId userId(p->myIdString, LICQ_PPID);
+  Licq::UserId userId(gIcqProtocol.ownerId(), p->myIdString);
   gIcqProtocol.reverseConnectToUser(userId, p->nIp, p->nPort,
       p->nVersion, p->nFailedPort, p->nId, p->nMsgID1, p->nMsgID2);
 

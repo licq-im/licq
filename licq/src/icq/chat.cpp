@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -783,7 +783,7 @@ bool CChatManager::ConnectToChat(CChatClient *c)
 
   char szUin[24];
   sprintf(szUin, "%lu", c->myUin);
-  u->myUserId = Licq::UserId(szUin, LICQ_PPID);
+  u->myUserId = Licq::UserId(myUserId, szUin);
 
   bool bSendIntIp = false;
   bool bTryDirect = true;
@@ -851,7 +851,7 @@ bool CChatManager::SendChatHandshake(ChatUser* u)
   CChatClient *c = u->m_pClient;
   char szUin[24];
   sprintf(szUin, "%lu", c->myUin);
-  Licq::UserId userId(szUin, LICQ_PPID);
+  Licq::UserId userId(myUserId, szUin);
 
   gLog.info(tr("Chat: Shaking hands [v%d]."), IcqProtocol::dcVersionToUse(c->m_nVersion));
 
@@ -943,7 +943,7 @@ bool CChatManager::ProcessPacket(ChatUser* u)
     {
       CBuffer handshake = u->sock.RecvBuffer();
       // get the handshake packet
-      if (!IcqProtocol::Handshake_Recv(&u->sock, LocalPort(), false, true))
+      if (!gIcqProtocol.Handshake_Recv(&u->sock, LocalPort(), false, true))
       {
         gLog.warning(tr("Chat: Bad handshake."));
         return false;
@@ -971,7 +971,7 @@ bool CChatManager::ProcessPacket(ChatUser* u)
           u->m_pClient->myUin, u->sock.Version());
       char szUin[24];
       sprintf(szUin, "%lu", u->m_pClient->myUin);
-      u->myUserId = Licq::UserId(szUin, LICQ_PPID);
+      u->myUserId = Licq::UserId(myUserId, szUin);
 
       bool bFound = false;
       {
@@ -1083,7 +1083,7 @@ bool CChatManager::ProcessPacket(ChatUser* u)
       CPChat_ColorFont pin(u->sock.RecvBuffer());
       char szUin[24];
       sprintf(szUin, "%lu", pin.uin());
-      u->myUserId = Licq::UserId(szUin, LICQ_PPID);
+      u->myUserId = Licq::UserId(myUserId, szUin);
 //      m_nSession = pin.Session();
 
       // just received the color/font packet
@@ -1115,7 +1115,7 @@ bool CChatManager::ProcessPacket(ChatUser* u)
         {
           char szUin[24];
           sprintf(szUin, "%lu", iter->myUin);
-          Licq::UserId userId(szUin, LICQ_PPID);
+          Licq::UserId userId(myUserId, szUin);
 
           ChatUserList::iterator iter2;
           for (iter2 = chatUsers.begin(); iter2 != chatUsers.end(); iter2++)
@@ -1463,7 +1463,7 @@ bool CChatManager::ProcessRaw_v2(ChatUser* u)
           (u->chatQueue[2] << 16) | (u->chatQueue[3] << 24);
         char id[16];
         snprintf(id, 16, "%lu", nUin);
-        Licq::UserId userId(id, LICQ_PPID);
+        Licq::UserId userId(myUserId, id);
 
         // Deque all the characters
         for (unsigned short i = 0; i < 6; i++)
@@ -1750,7 +1750,7 @@ bool CChatManager::ProcessRaw_v6(ChatUser* u)
             (u->chatQueue[2] << 16) | (u->chatQueue[3] << 24);
           char id[16];
           snprintf(id, 16, "%lu", nUin);
-          Licq::UserId userId(id, LICQ_PPID);
+          Licq::UserId userId(myUserId, id);
 
           // Find the user and say bye-bye to him
           ChatUserList::iterator iter;
@@ -1876,7 +1876,7 @@ void CChatManager::SendBuffer(CBuffer *b, unsigned char cmd,
 
   if (id != NULL)
   {
-    Licq::UserId userId(id, LICQ_PPID);
+    Licq::UserId userId(myUserId, id);
     for (u_iter = chatUsers.begin(); u_iter != chatUsers.end(); ++u_iter)
     {
       if ((*u_iter)->userId() == userId)
@@ -2044,7 +2044,7 @@ void CChatManager::SendKick(const char* id)
 
 void CChatManager::SendKickNoVote(const char *id)
 {
-  Licq::UserId userId(id, LICQ_PPID);
+  Licq::UserId userId(myUserId, id);
   unsigned long _nUin = strtoul(id, NULL, 10);
 
   // Tell everyone that this user has been kicked
@@ -2243,7 +2243,7 @@ void CChatManager::FinishKickVote(VoteInfoList::iterator iter, bool bPassed)
 {
   char voteId[16];
   snprintf(voteId, 16, "%lu", (*iter)->nUin);
-  Licq::UserId userId(voteId, LICQ_PPID);
+  Licq::UserId userId(myUserId, voteId);
 
   // Find the person we are kicking in the ChatUserList
   ChatUserList::iterator userIter;

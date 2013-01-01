@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -381,7 +381,7 @@ void IcqProtocol::icqSendContactList(const ProtoSendContactsSignal* ps)
   StringList::const_iterator iter;
   for (iter = users.begin(); iter != users.end(); ++iter)
   {
-    Licq::UserId uId(*iter, LICQ_PPID);
+    Licq::UserId uId(myOwnerId, *iter);
     Licq::UserReadGuard u(uId);
     string alias = (u.isLocked() ? u->getAlias() : "");
     buf << *iter << '\xFE';
@@ -1236,7 +1236,7 @@ bool IcqProtocol::ProcessTcpPacket(DcSocket* pSock)
       ;
       char id[16];
       snprintf(id, 15, "%lu", nUin);
-      userId = Licq::UserId(id, LICQ_PPID);
+      userId = Licq::UserId(myOwnerId, id);
       break;
     }
     case 4:
@@ -1260,7 +1260,7 @@ bool IcqProtocol::ProcessTcpPacket(DcSocket* pSock)
       ;
       char id[16];
       snprintf(id, 15, "%lu", nUin);
-      userId = Licq::UserId(id, LICQ_PPID);
+      userId = Licq::UserId(myOwnerId, id);
       break;
     }
     case 6:
@@ -3296,7 +3296,7 @@ bool IcqProtocol::Handshake_Recv(DcSocket* s, unsigned short nPort, bool bConfir
       CPacketTcp_Handshake_v7 p_in(&b);
       nUin = p_in.SourceUin();
       snprintf(id, 16, "%lu", nUin);
-      userId = Licq::UserId(id, LICQ_PPID);
+      userId = Licq::UserId(myOwnerId, id);
 
       unsigned long nCookie;
       {
@@ -3394,7 +3394,7 @@ bool IcqProtocol::Handshake_Recv(DcSocket* s, unsigned short nPort, bool bConfir
       CPacketTcp_Handshake_v6 p_in(&b);
       nUin = p_in.SourceUin();
       snprintf(id, 16, "%lu", nUin);
-      userId = Licq::UserId(id, LICQ_PPID);
+      userId = Licq::UserId(myOwnerId, id);
 
       unsigned long nCookie;
       {
@@ -3464,7 +3464,7 @@ bool IcqProtocol::Handshake_Recv(DcSocket* s, unsigned short nPort, bool bConfir
       b.UnpackUnsignedLong(); // port number
       nUin = b.UnpackUnsignedLong();
       snprintf(id, 16, "%lu", nUin);
-      userId = Licq::UserId(id, LICQ_PPID);
+      userId = Licq::UserId(myOwnerId, id);
       nVersion = IcqProtocol::dcVersionToUse(nVersionMajor);
 
       unsigned long nIntIp;
@@ -3514,7 +3514,7 @@ bool IcqProtocol::Handshake_Recv(DcSocket* s, unsigned short nPort, bool bConfir
       b.UnpackUnsignedLong(); // port number
       nUin = b.UnpackUnsignedLong();
       snprintf(id, 16, "%lu", nUin);
-      userId = Licq::UserId(id, LICQ_PPID);
+      userId = Licq::UserId(myOwnerId, id);
       nVersion = 2;
 
       unsigned long nIntIp;

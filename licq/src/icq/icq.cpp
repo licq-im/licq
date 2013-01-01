@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1783,7 +1783,7 @@ void IcqProtocol::processServerMessage(int type, Licq::Buffer &packet,
 
       if (!idSms.empty())
       {
-        Licq::UserWriteGuard u(Licq::UserId(idSms.c_str(), LICQ_PPID));
+        Licq::UserWriteGuard u(Licq::UserId(myOwnerId, idSms.c_str()));
         gLog.info(tr("SMS from %s - %s (%s)"), eSms->number().c_str(),
             u->getAlias().c_str(), idSms.c_str());
         if (gDaemon.addUserEvent(*u, ue))
@@ -2111,7 +2111,7 @@ Licq::EventContactList* IcqProtocol::parseContactEvent(const string& s,
   Licq::EventContactList::ContactList vc;
   for (size_t i = 0; i < count; ++i)
   {
-    Licq::UserId userId(parts.at(i*2+1), LICQ_PPID);
+    Licq::UserId userId(myOwnerId, parts.at(i*2+1));
     vc.push_back(new Licq::EventContactList::Contact(userId, parts.at(i*2+2)));
   }
 

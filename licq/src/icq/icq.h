@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -320,7 +320,7 @@ public:
   static bool handshake_Send(DcSocket* s, const Licq::UserId& userId, unsigned short,
                              unsigned short, bool = true, unsigned long = 0);
   static bool Handshake_SendConfirm_v7(DcSocket*);
-  static bool Handshake_Recv(DcSocket*, unsigned short, bool = true, bool = false);
+  bool Handshake_Recv(DcSocket*, unsigned short, bool = true, bool = false);
   static bool Handshake_RecvConfirm_v7(DcSocket*);
 
   int ConnectToServer(const std::string& server, unsigned short port);
@@ -414,7 +414,7 @@ private:
 
   static Licq::EventUrl* parseUrlEvent(const std::string& s, time_t timeSent,
       unsigned long flags, const std::string& userEncoding);
-  static Licq::EventContactList* parseContactEvent(const std::string& s,
+  Licq::EventContactList* parseContactEvent(const std::string& s,
       time_t timeSent, unsigned long flags, const std::string& userEncoding);
 
   // Common message handler
@@ -522,6 +522,7 @@ private:
   friend void *MonitorSockets_func();
   friend void *ProcessRunningEvent_Client_tep(void *p);
   friend void *ProcessRunningEvent_Server_tep(void *p);
+  friend void* ReverseConnectToUser_tep(void* v);
   friend class COscarService;
   friend class ChatManager;
   friend class FileTransferManager;
