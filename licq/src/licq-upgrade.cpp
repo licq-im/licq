@@ -267,11 +267,69 @@ static void upgradeLicq18_moveOwnerData(const string& baseDir, StringMap& owners
   unlink(oldOwnerPicFile.c_str());
 }
 
+/*-----------------------------------------------------------------------------
+ * Move history files into users directory
+ *---------------------------------------------------------------------------*/
+static void upgradeLicq18_moveHistoryFiles(const string& baseDir, StringMap& owners, StringMap& userDirs)
+{
+  string historyDir = baseDir + "history";
+  DIR* historyDirList = opendir(historyDir.c_str());
+  if (historyDirList == NULL)
+    // History dir is created when first entry is logged so it's not an error if it's missing
+    return;
+
+  boost::scoped_array<char> ent(new char[offsetof(struct dirent, d_name) +
+      pathconf(historyDir.c_str(), _PC_NAME_MAX) + 1]);
+  struct dirent* res;
+  while (readdir_r(historyDirList, (struct dirent*)ent.get(), &res) == 0 && res != NULL)
+  {
+    size_t namelen = strlen(res->d_name);
+
+    string accountId;
+    string ppidStr;
+    if (namelen > 13 && strcmp(res->d_name + namelen-8, ".history") == 0)
+    {
+      // Normal history file
+      accountId = string(res->d_name, namelen-13);
+      ppidStr = string(res->d_name + namelen-12, 4);
+    }
+    else if (namelen > 21 && strcmp(res->d_name + namelen-16, ".history.removed") == 0)
+    {
+      // Removed history file, bring those along as well but drop suffix
+      accountId = string(res->d_name, namelen-21);
+      ppidStr = string(res->d_name + namelen-20, 4);
+    }
+    else
+      continue;
+
+    // Skip if the file doesn't belong to any known owner
+    if (owners.count(ppidStr) == 0)
+      continue;
+
+    // Skip if file is named exactly as owner (Owner history is prefixed with "owner.")
+    if (accountId == owners[ppidStr])
+      continue;
+
+    // Drop prefix from owner history
+    if (accountId == "owner." + owners[ppidStr])
+      accountId = owners[ppidStr];
+
+    string oldHistoryFile = historyDir + "/" + res->d_name;
+    string newHistoryFile = userDirs[ppidStr] + "/" + accountId + ".history";
+    file_rename(oldHistoryFile, newHistoryFile);
+  }
+  closedir(historyDirList);
+
+  // If history dir is empty, remove it
+  rmdir(historyDir.c_str());
+}
+
 
 /*-----------------------------------------------------------------------------
  * Update file structure for Licq 1.8.0
  *
  * - Add owner as directory level to allow multiple owners per protocol
+ * - Move history files together with user data files
  *---------------------------------------------------------------------------*/
 void CLicq::upgradeLicq18(IniFile& licqConf)
 {
@@ -328,6 +386,7 @@ void CLicq::upgradeLicq18(IniFile& licqConf)
   // Call each upgrade function
   upgradeLicq18_moveUserData(baseDir, owners, userDirs);
   upgradeLicq18_moveOwnerData(baseDir, owners, userDirs);
+  upgradeLicq18_moveHistoryFiles(baseDir, owners, userDirs);
 
   gLog.info(tr("Upgrade completed"));
 }

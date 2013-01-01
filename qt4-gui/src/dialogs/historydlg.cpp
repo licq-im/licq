@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2007-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -173,11 +173,7 @@ HistoryDlg::HistoryDlg(const Licq::UserId& userId, QWidget* parent)
     // Fetch list of all history entries
     else if (!u->GetHistory(myHistoryList))
     {
-      if (!u->historyFile().empty())
-        myStatusLabel->setText(tr("Error loading history file: %1\nDescription: %2")
-            .arg(u->historyFile().c_str()).arg(u->historyName().c_str()));
-      else
-        myStatusLabel->setText(tr("Sorry, history is disabled for this person"));
+      myStatusLabel->setText(tr("Error loading history file"));
     }
     // No point in doing anything more if history is empty
     else if (myHistoryList.empty())

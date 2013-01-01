@@ -52,10 +52,6 @@ using std::vector;
 using LicqDaemon::UserHistory;
 using namespace Licq;
 
-static const char* const HistoryDir = "history/";
-static const char* const HistoryExt = ".history";
-static const char* const HistoryOldExt = ".removed";
-
 
 unsigned short Licq::User::s_nNumUserEvents = 0;
 pthread_mutex_t Licq::User::mutex_nNumUserEvents = PTHREAD_MUTEX_INITIALIZER;
@@ -93,7 +89,7 @@ User::User(const UserId& id, bool temporary, bool isOwner)
 
   d->Init();
 
-  // Start building filename for user properties
+  // Start building filename for user files
   string filename = "users/" + myId.ownerId().accountId()
       + "." + Licq::protocolId_toString(myId.protocolId());
 
@@ -105,6 +101,7 @@ User::User(const UserId& id, bool temporary, bool isOwner)
   // Add final parts to get filenames
   filename += "/" + myId.accountId();
   d->myConf.setFilename(filename + ".conf");
+  d->myHistory.setFile(gDaemon.baseDir() + filename + ".history");
   myPictureFileName = filename + ".pic";
 
   if (m_bNotInList)
@@ -143,20 +140,6 @@ void User::Private::addToContactList()
   myUser->m_bOnContactList = true;
   myUser->m_bEnableSave = true;
   myUser->m_bNotInList = false;
-
-  // Check for old history file
-  if (access(myHistory.filename().c_str(), F_OK) == -1)
-  {
-    string oldHistory = myHistory.filename() + HistoryOldExt;
-    if (access(oldHistory.c_str(), F_OK) == 0)
-    {
-      if (rename(oldHistory.c_str(), myHistory.filename().c_str()) == -1)
-      {
-        gLog.warning(tr("Failed to rename old history file (%s): %s"),
-            oldHistory.c_str(), strerror(errno));
-      }
-    }
-  }
 }
 
 void User::Private::loadUserInfo()
@@ -253,10 +236,6 @@ void User::Private::loadLicqInfo()
   myConf.get("CustomAutoRsp", myUser->myCustomAutoResponse, "");
   myConf.get("SendIntIp", myUser->m_bSendIntIp, false);
   myConf.get("UserEncoding", myUser->myEncoding, "");
-  myConf.get("History", temp, "default");
-  if (temp.empty())
-    temp = "default";
-  setHistoryFile(temp);
   myConf.get("AwaitingAuth", myUser->m_bAwaitingAuth, false);
   myConf.get("UseGPG", myUser->m_bUseGPG, false );
   myConf.get("GPGKey", myUser->myGpgKey, "");
@@ -344,19 +323,6 @@ User::~User()
 void User::Private::removeFiles()
 {
   remove(myConf.filename().c_str());
-
-  // Check for old history file and back up
-  struct stat buf;
-  if (stat(myHistory.filename().c_str(), &buf) == 0 && buf.st_size > 0)
-  {
-    string oldHistory = myHistory.filename() + HistoryOldExt;
-    if (rename(myHistory.filename().c_str(), oldHistory.c_str()) == -1)
-    {
-      gLog.warning(tr("Failed to rename history file (%s): %s"),
-          oldHistory.c_str(), strerror(errno));
-      remove(myHistory.filename().c_str());
-    }
-  }
 }
 
 void User::Private::Init()
@@ -492,7 +458,6 @@ void User::Private::setPermanent()
 void User::Private::setDefaults()
 {
   myUser->setAlias(myId.accountId());
-  setHistoryFile("default");
   myUser->myOnVisibleList = false;
   myUser->myOnInvisibleList = false;
   myUser->myOnIgnoreList = false;
@@ -742,30 +707,6 @@ void Licq::User::setAlias(const string& alias)
   save(SaveUserInfo);
 }
 
-void User::Private::setHistoryFile(const std::string& file)
-{
-  string realFile;
-
-  if (!myUser->isUser())
-  {
-    realFile = gDaemon.baseDir() + HistoryDir + "owner." + myId.accountId() +
-        "." + protocolId_toString(myId.protocolId()) + HistoryExt;
-  }
-  else if (file == "default")
-  {
-    realFile = gDaemon.baseDir() + HistoryDir + myId.accountId() + '.' +
-        Licq::protocolId_toString(myId.protocolId()) + HistoryExt;
-  }
-  else if (file != "none")
-  {
-    // use given name
-    realFile = file;
-  }
-
-  myHistory.setFile(realFile, file);
-  myUser->save(SaveLicqInfo);
-}
-
 int User::GetHistory(Licq::HistoryList& history) const
 {
   LICQ_D();
@@ -776,20 +717,6 @@ int User::GetHistory(Licq::HistoryList& history) const
 void Licq::User::ClearHistory(HistoryList& h)
 {
   UserHistory::clear(h);
-}
-
-const string& User::historyName() const
-{
-  LICQ_D();
-
-  return d->myHistory.description();
-}
-
-const string& User::historyFile() const
-{
-  LICQ_D();
-
-  return d->myHistory.filename();
 }
 
 bool User::canSendDirect() const
@@ -1317,7 +1244,7 @@ void User::saveLicqInfo()
   LICQ_D();
 
    char buf[64];
-  d->myConf.set("History", historyName());
+  d->myConf.unset("History");
   d->myConf.unset("Groups.System");
   d->myConf.set("OnVisibleList", myOnVisibleList);
   d->myConf.set("OnInvisibleList", myOnInvisibleList);

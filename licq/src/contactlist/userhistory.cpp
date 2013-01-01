@@ -56,12 +56,6 @@ UserHistory::~UserHistory()
 {
 }
 
-void UserHistory::setFile(const string& filename, const string& description)
-{
-  myFilename = filename;
-  myDescription = description;
-}
-
 
 /* szResult[0] != ':' doubles to check if strlen(szResult) < 1 */
 #define GET_VALID_LINE_OR_BREAK(dest) \
@@ -386,18 +380,6 @@ void UserHistory::write(const string& buf, bool append)
 {
   if (myFilename.empty() || buf.empty())
     return;
-
-  // Make sure history dir exists before trying to write a file in it
-  size_t slashPos = myFilename.rfind('/');
-  if (slashPos != string::npos)
-  {
-    string historydir = myFilename.substr(0, slashPos);
-    if (mkdir(historydir.c_str(), 0700) == -1 && errno != EEXIST)
-    {
-      fprintf(stderr, "Couldn't mkdir %s: %s\n", historydir.c_str(), strerror(errno));
-      return;
-    }
-  }
 
   int fd = open(myFilename.c_str(), O_WRONLY | O_CREAT | (append ? O_APPEND : O_TRUNC), 00600);
   if (fd == -1)
