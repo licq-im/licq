@@ -631,6 +631,43 @@ static void upgradeLicq18_updateRms(StringMap& owners)
   }
 }
 
+/*-----------------------------------------------------------------------------
+ * Update Forwarder config to include owner
+ *---------------------------------------------------------------------------*/
+static void upgradeLicq18_updateForwarder(StringMap& owners)
+{
+  IniFile forwConf("licq_forwarder.conf");
+  if (forwConf.loadFile())
+  {
+    string uinStr;
+    if (!forwConf.setSection("Licq", false))
+    {
+      // Licq section is missing (introduced by Licq 1.7.0), try migrating from old ICQ section
+      if (forwConf.setSection("ICQ", false))
+      {
+        forwConf.get("Uin", uinStr, "");
+        if (uinStr == "0")
+          uinStr = "";
+        forwConf.removeSection("ICQ");
+      }
+      forwConf.setSection("Licq");
+    }
+    string protocolStr;
+    if (!forwConf.get("Protocol", protocolStr, "ICQ"))
+      forwConf.set("Protocol", protocolStr);
+    // Forwarder protocol isn't strictly PPID strings, use parser
+    unsigned long protocolId = Licq::protocolId_fromString(protocolStr);
+    string ppidStr = Licq::protocolId_toString(protocolId);
+    string userIdStr;
+    if (!forwConf.get("UserId", userIdStr, uinStr))
+      forwConf.set("UserId", uinStr);
+
+    // Always add owner key, but only set value if UserId/Uin was set
+    forwConf.set("OwnerId", (userIdStr.empty() || owners.count(ppidStr) == 0) ? "" : owners[ppidStr]);
+    forwConf.writeFile();
+  }
+}
+
 
 /*-----------------------------------------------------------------------------
  * Update file structure for Licq 1.8.0
@@ -703,6 +740,7 @@ void CLicq::upgradeLicq18(IniFile& licqConf)
   upgradeLicq18_updateFilter();
   upgradeLicq18_updateQt4Gui(owners);
   upgradeLicq18_updateRms(owners);
+  upgradeLicq18_updateForwarder(owners);
 
   gLog.info(tr("Upgrade completed"));
 }

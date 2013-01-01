@@ -180,39 +180,19 @@ int CLicqForwarder::run()
       conf.setSection("Licq");
       string accountId;
       conf.get("UserId", accountId);
+      string ownerAccountId;
+      conf.get("OwnerId", ownerAccountId);
       string protocol;
       conf.get("Protocol", protocol);
-
-      if (protocol.empty() && conf.setSection("ICQ", false))
-      {
-        // Migrate old ICQ setting
-        conf.get("Uin", accountId);
-        if (accountId.empty() || accountId == "0")
-        {
-          gLog.error("Invalid ICQ forward UIN: %s", accountId.c_str());
-          return 1;
-        }
-        protocol = "ICQ";
-
-        conf.unset("Uin");
-        conf.set("Protocol", protocol);
-        conf.set("UserId", accountId);
-        conf.writeFile();
-      }
-
-      if (accountId.empty())
-      {
-        gLog.error("Missing user id");
-        return 1;
-      }
-
       unsigned long protocolId = Licq::protocolId_fromString(protocol);
-      if (protocolId == 0)
+
+      if (protocolId == 0 || ownerAccountId.empty() || accountId.empty())
       {
-        gLog.error("Invalid protocol: %s", protocol.c_str());
+        gLog.error("Missing or invalid configuration in Licq section");
         return 1;
       }
-      myUserId = UserId(Licq::gUserManager.ownerUserId(protocolId), accountId);
+
+      myUserId = Licq::UserId(Licq::UserId(protocolId, ownerAccountId), accountId);
       break;
     }
     default:
