@@ -70,9 +70,8 @@ User::Private::~Private()
   // Empty
 }
 
-User::User(const UserId& id, bool temporary, bool isOwner)
+User::User(const UserId& id, bool temporary)
   : myId(id),
-    myIsOwner(isOwner),
     m_bNotInList(temporary),
     myPrivate(new Private(this, id))
 {

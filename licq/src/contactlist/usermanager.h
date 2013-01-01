@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -147,7 +147,6 @@ public:
   bool removeOwner(const Licq::UserId& userId);
   bool userExists(const Licq::UserId& userId);
   Licq::UserId ownerUserId(unsigned long ppid);
-  bool isOwner(const Licq::UserId& userId);
   void notifyUserUpdated(const Licq::UserId& userId, unsigned long subSignal);
   bool addUser(const Licq::UserId& userId, bool permanent = true,
       bool addToServer = true, unsigned short groupId = 0);

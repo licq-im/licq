@@ -188,7 +188,7 @@ void Handler::onUserInfo(const string& id, const VCardToUser& wrapper)
 
   bool updated = false;
   Licq::UserId userId(myOwnerId, id);
-  if (gUserManager.isOwner(userId))
+  if (userId.isOwner())
   {
     Licq::OwnerWriteGuard owner(userId);
     if (owner.isLocked())

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1999-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,7 +85,7 @@ void SignalManager::ProcessSignal(Licq::PluginSignal* sig)
     case Licq::PluginSignal::SignalUser:
       emit updatedUser(userId, sig->subSignal(), sig->argument(), sig->cid());
 
-      if (Licq::gUserManager.isOwner(userId) && sig->subSignal() == Licq::PluginSignal::UserStatus)
+      if (userId.isOwner() && sig->subSignal() == Licq::PluginSignal::UserStatus)
         emit updatedStatus(userId);
       break;
 

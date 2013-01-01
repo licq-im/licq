@@ -621,11 +621,11 @@ public:
   bool OfflineOnDisconnect() { return m_bOfflineOnDisconnect; }
 
   bool isUser() const
-  { return !myIsOwner; }
+  { return !myId.isOwner(); }
 
 protected:
   /// Constructor
-  User(const UserId& id, bool temporary = false, bool isOwner = false);
+  User(const UserId& id, bool temporary = false);
 
   /// Destructor
   virtual ~User();
@@ -651,7 +651,6 @@ protected:
   void SetRegisteredTime(time_t t)  { m_nRegisteredTime = t; }
 
   const UserId myId;
-  const bool myIsOwner;
   unsigned long myProtocolCapabilities;
 
   time_t m_nTouched;

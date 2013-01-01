@@ -38,7 +38,7 @@ using namespace Licq;
 
 
 Owner::Owner(const UserId& id)
-  : User(id, false, true)
+  : User(id, false)
 {
   m_bOnContactList = true;
 

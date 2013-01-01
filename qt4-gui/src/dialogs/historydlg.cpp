@@ -59,8 +59,6 @@ HistoryDlg::HistoryDlg(const Licq::UserId& userId, QWidget* parent)
   Support::setWidgetProps(this, "UserHistoryDialog");
   setAttribute(Qt::WA_DeleteOnClose, true);
 
-  myIsOwner = Licq::gUserManager.isOwner(myUserId);
-
   QVBoxLayout* topLayout = new QVBoxLayout(this);
 
   // Main content (everything except dialog buttons)
@@ -146,7 +144,7 @@ HistoryDlg::HistoryDlg(const Licq::UserId& userId, QWidget* parent)
   // Dialog buttons
   QHBoxLayout* buttonsLayout = new QHBoxLayout();
   topLayout->addLayout(buttonsLayout);
-  if (!myIsOwner)
+  if (!myUserId.isOwner())
   {
     QPushButton* menuButton = new QPushButton(tr("&Menu"));
     connect(menuButton, SIGNAL(pressed()), SLOT(showUserMenu()));
@@ -200,7 +198,7 @@ HistoryDlg::HistoryDlg(const Licq::UserId& userId, QWidget* parent)
     myContactName = tr("server");
     myUseHtml = false;
 
-    if (!myIsOwner)
+    if (!myUserId.isOwner())
       myContactName = QString::fromUtf8(u->getAlias().c_str());
     QString myId = u->accountId().c_str();
     for (int x = 0; x < myId.length(); x++)

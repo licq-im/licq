@@ -42,8 +42,8 @@ using Licq::UserCategoryMap;
 using Licq::gLog;
 
 
-IcqUser::IcqUser(const Licq::UserId& id, bool temporary, bool isOwner)
-  : Licq::User(id, temporary, isOwner)
+IcqUser::IcqUser(const Licq::UserId& id, bool temporary)
+  : Licq::User(id, temporary)
 {
   // Empty
 }
@@ -53,8 +53,8 @@ IcqUser::~IcqUser()
   // Empty
 }
 
-User::User(const Licq::UserId& id, bool temporary, bool isOwner)
-  : Licq::User(id, temporary, isOwner), IcqUser(id, temporary, isOwner)
+User::User(const Licq::UserId& id, bool temporary)
+  : Licq::User(id, temporary), IcqUser(id, temporary)
 {
   mySupportsUtf8 = false;
   mySequence = static_cast<unsigned short>(-1); // set all bits 0xFFFF

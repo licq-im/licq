@@ -174,7 +174,7 @@ void IcqProtocol::icqSendMessage(const Licq::ProtoSendMessageSignal* ps)
 void IcqProtocol::icqFetchAutoResponse(const Licq::ProtocolSignal* ps)
 {
   const Licq::UserId& userId(ps->userId());
-  if (Licq::gUserManager.isOwner(userId))
+  if (userId.isOwner())
     return;
 
   if (isalpha(userId.accountId()[0]))
@@ -203,7 +203,7 @@ void IcqProtocol::icqFetchAutoResponse(const Licq::ProtocolSignal* ps)
 
 void IcqProtocol::icqSendUrl(const Licq::ProtoSendUrlSignal* ps)
 {
-  if (Licq::gUserManager.isOwner(ps->userId()))
+  if (ps->userId().isOwner())
     return;
 
   string userEncoding = getUserEncoding(ps->userId());
@@ -281,7 +281,7 @@ void IcqProtocol::icqFileTransfer(const Licq::ProtoSendFileSignal* ps)
   const Licq::UserId& userId(ps->userId());
   unsigned flags(ps->flags());
 
-  if (Licq::gUserManager.isOwner(userId))
+  if (userId.isOwner())
     return;
 
   UserWriteGuard u(userId);
@@ -369,7 +369,7 @@ void IcqProtocol::icqSendContactList(const ProtoSendContactsSignal* ps)
   unsigned flags = ps->flags();
   const Licq::Color* pColor(ps->color());
 
-  if (Licq::gUserManager.isOwner(userId))
+  if (userId.isOwner())
     return;
 
   string userEncoding = getUserEncoding(userId);
@@ -446,7 +446,7 @@ void IcqProtocol::icqSendContactList(const ProtoSendContactsSignal* ps)
 void IcqProtocol::icqRequestPluginInfo(const Licq::UserId& userId, Licq::IcqProtocol::PluginType type,
     bool bServer, const Licq::ProtocolSignal* ps)
 {
-  if (Licq::gUserManager.isOwner(userId))
+  if (userId.isOwner())
     return;
 
   UserWriteGuard u(userId);
@@ -613,7 +613,7 @@ void IcqProtocol::icqChatRequest(const ProtoChatRequestSignal* ps)
   unsigned flags = ps->flags();
   const string& chatUsers(ps->chatUsers());
   unsigned short nPort = ps->port();
-  if (Licq::gUserManager.isOwner(userId))
+  if (userId.isOwner())
     return;
 
   UserWriteGuard u(userId);
@@ -1332,14 +1332,15 @@ bool IcqProtocol::ProcessTcpPacket(DcSocket* pSock)
     return false;
   }
 
-  bool isOwner = Licq::gUserManager.isOwner(userId);
-  if (isOwner || userId != pSock->userId())
+  if (userId.isOwner())
   {
-    if (isOwner)
-      packet.log(Log::Warning, tr("TCP message from self (probable spoof)"));
-    else
-      packet.log(Log::Warning, tr("TCP message from invalid UIN (%s, expect %s)"),
-                 userId.toString().c_str(), pSock->userId().toString().c_str());
+    packet.log(Log::Warning, tr("TCP message from self (probable spoof)"));
+    return false;
+  }
+  if (userId != pSock->userId())
+  {
+    packet.log(Log::Warning, tr("TCP message from invalid UIN (%s, expect %s)"),
+        userId.toString().c_str(), pSock->userId().toString().c_str());
     return false;
   }
 

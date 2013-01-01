@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,14 +65,6 @@ public:
    * @return User id of owner or empty string if no such owner exists
    */
   virtual UserId ownerUserId(unsigned long ppid) = 0;
-
-  /**
-   * Check if user is an owner
-   *
-   * @param userId Id of user to check
-   * @return True if user id is valid and user is an owner
-   */
-  virtual bool isOwner(const UserId& userId) = 0;
 
   /**
    * Notify plugins about changes for a user

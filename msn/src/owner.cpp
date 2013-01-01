@@ -24,7 +24,7 @@
 using namespace LicqMsn;
 
 Owner::Owner(const Licq::UserId& id)
-  : Licq::User(id, false, true), Licq::Owner(id), User(id, false, true)
+  : Licq::User(id, false), Licq::Owner(id), User(id, false)
 {
   Licq::IniFile& conf(userConf());
   conf.get("ListVersion", myListVersion, 0);

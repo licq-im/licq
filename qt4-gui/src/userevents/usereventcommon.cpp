@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2007-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,7 +78,7 @@ UserEventCommon::UserEventCommon(const Licq::UserId& userId, QWidget* parent, co
   if (protocol.get() != NULL)
     mySendFuncs = protocol->capabilities();
 
-  myIsOwner = Licq::gUserManager.isOwner(myUsers.front());
+  myIsOwner = myUsers.front().isOwner();
   myDeleteUser = false;
   myConvoId = 0;
 

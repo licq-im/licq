@@ -519,7 +519,7 @@ void ProcessSignal(Licq::PluginSignal* s)
 		want_osd=false;
 	    if (ignore)
 		want_osd=false;
-      if (gUserManager.isOwner(s->userId())) // no messages for our own actions
+      if (s->userId().isOwner()) // no messages for our own actions
                 want_osd=false;
 
 	    // user checked our auto-response

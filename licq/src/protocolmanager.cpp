@@ -255,7 +255,7 @@ unsigned long ProtocolManager::secureChannelOpen(const UserId& userId)
   if (!isProtocolConnected(userId))
     return 0;
 
-  if (gUserManager.isOwner(userId))
+  if (userId.isOwner())
     return 0;
 
   {

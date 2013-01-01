@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -280,7 +280,7 @@ void CLicqAutoReply::ProcessSignal(Licq::PluginSignal* s)
   switch (s->signal())
   {
     case Licq::PluginSignal::SignalUser:
-      if (s->subSignal() == Licq::PluginSignal::UserEvents && !gUserManager.isOwner(s->userId()) && s->argument() > 0)
+      if (s->subSignal() == Licq::PluginSignal::UserEvents && !s->userId().isOwner() && s->argument() > 0)
         processUserEvent(s->userId(), s->argument());
       break;
     // We should never get any other signal

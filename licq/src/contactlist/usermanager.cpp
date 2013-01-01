@@ -96,6 +96,9 @@ void UserManager::shutdown()
 
 void UserManager::addOwner(const UserId& userId)
 {
+  if (!userId.isOwner())
+    return;
+
   myOwnerListMutex.lockWrite();
 
   // Make sure owner isn't already in configuration
@@ -284,7 +287,7 @@ void UserManager::loadUserList(const UserId& ownerId)
     sprintf(key, "User%i", i);
     string accountId;
     usersConf.get(key, accountId);
-    if (accountId.empty())
+    if (accountId.empty() || accountId == ownerId.accountId())
     {
       gLog.warning(tr("Skipping user %i, invalid key"), i);
       continue;
@@ -481,7 +484,7 @@ bool UserManager::addUser(const UserId& uid,
   if (!uid.isValid())
     return false;
 
-  if (isOwner(uid))
+  if (uid.isOwner())
     return false;
 
   myUserListMutex.lockWrite();
@@ -530,11 +533,7 @@ bool UserManager::addUser(const UserId& uid,
   user->unlockWrite();
 
   if (permanent)
-  {
-    UserId ownerId = ownerUserId(uid.protocolId());
-    if (ownerId.isValid())
-      saveUserList(ownerId);
-  }
+    saveUserList(uid.ownerId());
 
   myUserListMutex.unlockWrite();
 
@@ -667,21 +666,21 @@ Licq::User* UserManager::fetchUser(const UserId& userId,
   if (!userId.isValid())
     return NULL;
 
-  // Check for an owner first
-  myOwnerListMutex.lockRead();
-  OwnerMap::const_iterator iter_o = myOwners.find(userId);
-  if (iter_o != myOwners.end())
+  if (userId.isOwner())
   {
-    user = iter_o->second;
-    if (writeLock)
-      user->lockWrite();
-    else
-      user->lockRead();
-  }
-  myOwnerListMutex.unlockRead();
-
-  if (user != NULL)
+    myOwnerListMutex.lockRead();
+    OwnerMap::const_iterator iter_o = myOwners.find(userId);
+    if (iter_o != myOwners.end())
+    {
+      user = iter_o->second;
+      if (writeLock)
+        user->lockWrite();
+      else
+        user->lockRead();
+    }
+    myOwnerListMutex.unlockRead();
     return user;
+  }
 
   if (addUser)
     myUserListMutex.lockWrite();
@@ -730,19 +729,22 @@ bool UserManager::userExists(const UserId& userId)
 {
   bool exists = false;
 
-  myOwnerListMutex.lockRead();
-  OwnerMap::const_iterator iter_o = myOwners.find(userId);
-  if (iter_o != myOwners.end())
-    exists = true;
-  myOwnerListMutex.unlockRead();
-  if (exists)
-    return true;
-
-  myUserListMutex.lockRead();
-  UserMap::const_iterator iter = myUsers.find(userId);
-  if (iter != myUsers.end())
-    exists = true;
-  myUserListMutex.unlockRead();
+  if (userId.isOwner())
+  {
+    myOwnerListMutex.lockRead();
+    OwnerMap::const_iterator iter_o = myOwners.find(userId);
+    if (iter_o != myOwners.end())
+      exists = true;
+    myOwnerListMutex.unlockRead();
+  }
+  else
+  {
+    myUserListMutex.lockRead();
+    UserMap::const_iterator iter = myUsers.find(userId);
+    if (iter != myUsers.end())
+      exists = true;
+    myUserListMutex.unlockRead();
+  }
   return exists;
 }
 
@@ -762,21 +764,10 @@ UserId UserManager::ownerUserId(unsigned long ppid)
   return UserId();
 }
 
-bool UserManager::isOwner(const UserId& userId)
-{
-  bool exists = false;
-
-  myOwnerListMutex.lockRead();
-  OwnerMap::const_iterator iter_o = myOwners.find(userId);
-  if (iter_o != myOwners.end())
-    exists = true;
-  myOwnerListMutex.unlockRead();
-
-  return exists;
-}
-
 User* UserManager::createUser(const UserId& userId, bool temporary)
 {
+  assert(!userId.isOwner());
+
   User* u = gPluginManager.createProtocolUser(userId, temporary);
 
   if (u == NULL)
@@ -788,6 +779,8 @@ User* UserManager::createUser(const UserId& userId, bool temporary)
 
 Owner* UserManager::createOwner(const UserId& ownerId)
 {
+  assert(ownerId.isOwner());
+
   Owner* o = gPluginManager.createProtocolOwner(ownerId);
 
   if (o == NULL)

@@ -35,7 +35,7 @@ class User : public virtual Licq::IcqUser
 {
 public:
   /// Constructor
-  User(const Licq::UserId& id, bool temporary = false, bool isOwner = false);
+  User(const Licq::UserId& id, bool temporary = false);
 
   /// Destructor
   virtual ~User();

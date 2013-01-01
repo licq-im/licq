@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -219,7 +219,7 @@ void ContactListModel::listUpdated(unsigned long subSignal, int argument, const 
 void ContactListModel::userUpdated(const Licq::UserId& userId, unsigned long subSignal, int argument)
 {
   // Skip events for owners
-  if (Licq::gUserManager.isOwner(userId))
+  if (userId.isOwner())
     return;
 
   ContactUserData* user = findUser(userId);

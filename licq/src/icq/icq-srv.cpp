@@ -5191,7 +5191,7 @@ int IcqProtocol::requestReverseConnection(const Licq::UserId& userId,
                                          unsigned short nLocalPort,
                                          unsigned short nRemotePort)
 {
-  if (Licq::gUserManager.isOwner(userId))
+  if (userId.isOwner())
     return -1;
 
   UserWriteGuard u(userId);
