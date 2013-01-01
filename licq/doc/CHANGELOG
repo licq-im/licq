@@ -1,5 +1,9 @@
 Change log for Licq.
 
+New in 1.8.0
+o ICQ: Moved from daemon and built as separate protocol plugin
+
+
 New in 1.7.1
 o Qt4-Gui: Show authorization request dialog when adding a user
 

@@ -594,6 +594,25 @@ static void upgradeLicq18_updateFilter()
 }
 
 /*-----------------------------------------------------------------------------
+ * Auto load ICQ plugin if needed
+ *---------------------------------------------------------------------------*/
+static void upgradeLicq18_autoLoadIcqProtocol(StringMap& owners, IniFile& licqConf)
+{
+  if (owners.count("ICQ_") > 0)
+  {
+    // There is an ICQ owner in configuration, add protocol to loading list
+    licqConf.setSection("plugins");
+    int numProtos;
+    licqConf.get("NumProtoPlugins", numProtos, 0);
+    numProtos++;
+    char key[16];
+    sprintf(key, "ProtoPlugin%i", numProtos);
+    licqConf.set("NumProtoPlugins", numProtos);
+    licqConf.set(key, gDaemon.libDir() + "protocol_icq.so");
+  }
+}
+
+/*-----------------------------------------------------------------------------
  * Update Qt4-Gui config to include owner for floaties
  *---------------------------------------------------------------------------*/
 static void upgradeLicq18_updateQt4Gui(StringMap& owners)
@@ -706,6 +725,7 @@ static void upgradeLicq18_updateForwarder(StringMap& owners)
  * - Move parameters from protocol configurations to owner data
  * - Add owner account id everywhere user id is saved
  * - Write protocol as text instead of using numeric constants in files
+ * - Add ICQ protocol to be loaded on startup
  *---------------------------------------------------------------------------*/
 void CLicq::upgradeLicq18(IniFile& licqConf)
 {
@@ -771,6 +791,7 @@ void CLicq::upgradeLicq18(IniFile& licqConf)
   upgradeLicq18_updateUsersList(owners);
   upgradeLicq18_updateOnevent(owners, licqConf);
   upgradeLicq18_updateFilter();
+  upgradeLicq18_autoLoadIcqProtocol(owners, licqConf);
   upgradeLicq18_updateQt4Gui(owners);
   upgradeLicq18_updateRms(owners);
   upgradeLicq18_updateForwarder(owners);

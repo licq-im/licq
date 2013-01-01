@@ -228,7 +228,7 @@ fi
 # List of plugins that should be exported. Plugins that no longer are on trunk
 # should be listed in OLD_PLUGINS so that this script can continue to work with
 # older releases (e.g. the stable branches).
-PLUGINS="aosd auto-reply forwarder jabber licqweb msn osd qt4-gui rms"
+PLUGINS="aosd auto-reply forwarder icq jabber licqweb msn osd qt4-gui rms"
 OLD_PLUGINS="email qt-gui"
 
 for plugin in ${PLUGINS} ${OLD_PLUGINS}; do
@@ -274,7 +274,7 @@ if ${TEST_BUILD} && ! has_file "admin"; then
     echo "done"
 
     echo -n "Running licq..."
-    run "${TMPDIR}/install/bin/licq" -d 31 -b "${TMPDIR}/basedir" -l jabber -l msn
+    run "${TMPDIR}/install/bin/licq" -d 31 -b "${TMPDIR}/basedir" -l icq -l jabber -l msn
     echo "done"
 fi
 

@@ -1,0 +1,14 @@
+Licq ICQ Plugin
+_______________
+
+
+QUICK INSTALLATION
+
+To get up and running quickly (assuming you are familiar with loading
+plugins for Licq), simple run
+
+mkdir build && cd build
+cmake ..
+make
+make install
+

@@ -379,10 +379,6 @@ bool CLicq::Init(int argc, char **argv)
   if ( (access(gDaemon.baseDir().c_str(), F_OK) < 0 || bForceInit) && !Install() )
     return false;
 
-  // ICQ-PLUGIN: Remove when ICQ is put into its own plugin. This is just a
-  // dummy plugin. It can't really be stopped.
-  gPluginManager.loadProtocolPlugin("", true, true);
-
   // Load up the plugins
   BOOST_FOREACH(string& pluginName, generalPlugins)
   {
@@ -836,18 +832,13 @@ void CLicq::SaveLoadedPlugins()
   Licq::ProtocolPluginsList protocols;
   gPluginManager.getProtocolPluginsList(protocols);
 
-  // ICQ-PLUGIN: Remove -1
-  licqConf.set("NumProtoPlugins", (protocols.size() - 1));
+  licqConf.set("NumProtoPlugins", protocols.size());
 
   i = 1;
   BOOST_FOREACH(ProtocolPlugin::Ptr plugin, protocols)
   {
-    // ICQ-PLUGIN: Remove if
-    if (!plugin->libraryName().empty())
-    {
-      sprintf(szKey, "ProtoPlugin%d", i++);
-      licqConf.set(szKey, plugin->libraryName());
-    }
+    sprintf(szKey, "ProtoPlugin%d", i++);
+    licqConf.set(szKey, plugin->libraryName());
   }
 
   // Don't leave old higher numbered protocols in config

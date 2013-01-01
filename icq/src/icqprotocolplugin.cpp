@@ -32,8 +32,6 @@
 #include "protocolsignal.h"
 #include "user.h"
 
-#define LicqProtocolPluginData IcqProtocolPluginData
-
 using namespace LicqIcq;
 using Licq::gLog;
 
@@ -392,8 +390,4 @@ Licq::ProtocolPlugin* IcqPluginFactory(Licq::ProtocolPlugin::Params& p)
   return new LicqIcq::IcqProtocolPlugin(p);
 }
 
-struct Licq::ProtocolPluginData IcqProtocolPluginData = {
-    {'L', 'i', 'c', 'q' },      // licqMagic
-    LICQ_VERSION,               // licqVersion
-    &IcqPluginFactory,          // pluginFactory
-};
+LICQ_PROTOCOL_PLUGIN_DATA(&IcqPluginFactory);
