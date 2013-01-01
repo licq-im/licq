@@ -567,6 +567,42 @@ static void upgradeLicq18_updateFilter()
     filterConf.writeFile();
 }
 
+/*-----------------------------------------------------------------------------
+ * Update Qt4-Gui config to include owner for floaties
+ *---------------------------------------------------------------------------*/
+static void upgradeLicq18_updateQt4Gui(StringMap& owners)
+{
+  IniFile guiConf("qt4-gui/config.ini");
+  guiConf.loadFile();
+  guiConf.setSection("floaties");
+  int numFloaties;
+  guiConf.get("Num", numFloaties, 0);
+  for (int i = 0; i < numFloaties; ++i)
+  {
+    char key[16];
+    sprintf(key, "Floaty%i.", i);
+    string keyStr(key);
+    unsigned long ppid;
+    guiConf.get(keyStr + "Ppid", ppid, LICQ_PPID);
+    string userIdStr;
+    guiConf.get(keyStr + "Uin", userIdStr);
+    if (ppid == 0 || userIdStr.empty())
+      continue;
+
+    string ppidStr = Licq::protocolId_toString(ppid);
+    if (owners.count(ppidStr) == 0)
+      continue;
+
+    guiConf.unset(keyStr + "Ppid");
+    guiConf.unset(keyStr + "Uin");
+    guiConf.set(keyStr + "Protocol", ppidStr);
+    guiConf.set(keyStr + "Owner", owners[ppidStr]);
+    guiConf.set(keyStr + "User", userIdStr);
+  }
+  if (numFloaties > 0)
+    guiConf.writeFile();
+}
+
 
 /*-----------------------------------------------------------------------------
  * Update file structure for Licq 1.8.0
@@ -637,6 +673,7 @@ void CLicq::upgradeLicq18(IniFile& licqConf)
   upgradeLicq18_updateUsersList(owners);
   upgradeLicq18_updateOnevent(owners, licqConf);
   upgradeLicq18_updateFilter();
+  upgradeLicq18_updateQt4Gui(owners);
 
   gLog.info(tr("Upgrade completed"));
 }

@@ -328,21 +328,23 @@ void LicqGui::loadFloatiesConfig()
   if (!guiConf.loadFile())
     return;
 
-  std::string s;
   char key[16];
   int nFloaties = 0, xPosF, yPosF, wValF;
   guiConf.setSection("floaties");
   guiConf.get("Num", nFloaties, 0);
   for (int i = 0; i < nFloaties; i++)
   {
-    sprintf(key, "Floaty%d.Ppid", i);
-    unsigned long ppid;
-    guiConf.get(key, ppid, LICQ_PPID);
-    sprintf(key, "Floaty%d.Uin", i);
-    guiConf.get(key, s, "");
-    if (s.empty())
+    std::string ppidStr, ownerIdStr, userIdStr;
+    sprintf(key, "Floaty%d.Protocol", i);
+    guiConf.get(key, ppidStr);
+    sprintf(key, "Floaty%d.Owner", i);
+    guiConf.get(key, ownerIdStr);
+    sprintf(key, "Floaty%d.User", i);
+    guiConf.get(key, userIdStr);
+    unsigned long protocolId = Licq::protocolId_fromString(ppidStr);
+    if (protocolId == 0 || ownerIdStr.empty() || userIdStr.empty())
       continue;
-    Licq::UserId userId(Licq::gUserManager.ownerUserId(ppid), s);
+    Licq::UserId userId(Licq::UserId(protocolId, ownerIdStr), userIdStr);
 
     sprintf(key, "Floaty%d.X", i);
     guiConf.get(key, xPosF, 0);
@@ -351,8 +353,7 @@ void LicqGui::loadFloatiesConfig()
     sprintf(key, "Floaty%d.W", i);
     guiConf.get(key, wValF, 80);
 
-    if (userId.isValid())
-      createFloaty(userId, xPosF, yPosF, wValF);
+    createFloaty(userId, xPosF, yPosF, wValF);
   }
 }
 
@@ -385,9 +386,11 @@ void LicqGui::saveConfig()
   for (int i = 0; i < FloatyView::floaties.size(); i++)
   {
     FloatyView* iter = FloatyView::floaties.at(i);
-    sprintf(key, "Floaty%d.Ppid", i);
-    guiConf.set(key, iter->userId().protocolId());
-    sprintf(key, "Floaty%d.Uin", i);
+    sprintf(key, "Floaty%d.Protocol", i);
+    guiConf.set(key, Licq::protocolId_toString(iter->userId().protocolId()));
+    sprintf(key, "Floaty%d.Owner", i);
+    guiConf.set(key, iter->userId().ownerId().accountId());
+    sprintf(key, "Floaty%d.User", i);
     guiConf.set(key, iter->userId().accountId());
     sprintf(key, "Floaty%d.X", i);
     guiConf.set(key, (iter->x() > 0 ? iter->x() : 0));
