@@ -239,7 +239,9 @@ static Licq::UserId atoid(const char* buff, bool missingok = true)
   unsigned long protocolId;
   string name = buffer_get_ids(buff, &protocolId);
 
-  Licq::UserListGuard userList(protocolId);
+  Licq::UserId ownerId(gUserManager.ownerUserId(protocolId));
+
+  Licq::UserListGuard userList(ownerId);
   BOOST_FOREACH(const Licq::User* user, **userList)
   {
     Licq::UserReadGuard u(user);
@@ -248,7 +250,7 @@ static Licq::UserId atoid(const char* buff, bool missingok = true)
   }
 
   if (missingok && protocolId != 0)
-    return Licq::UserId(gUserManager.ownerUserId(protocolId), name);
+    return Licq::UserId(ownerId, name);
 
   return Licq::UserId();
 }

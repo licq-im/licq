@@ -54,7 +54,7 @@ AddUserDlg::AddUserDlg(const Licq::UserId& userId, QWidget* parent)
   QLabel* ownerLabel = new QLabel(tr("&Account:"));
   myOwnerCombo = new OwnerComboBox();
   if (userId.isValid())
-    myOwnerCombo->setCurrentOwnerId(Licq::gUserManager.ownerUserId(userId.protocolId()));
+    myOwnerCombo->setCurrentOwnerId(userId.ownerId());
   ownerLabel->setBuddy(myOwnerCombo);
 
   unsigned line = 0;

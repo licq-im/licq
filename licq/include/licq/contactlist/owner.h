@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,14 +103,6 @@ public:
    */
   OwnerReadGuard(const UserId& userId);
 
-  /**
-   * Constructor, will fetch and lock an owner based on protocolId
-   * Note: Always check that the owner was actually fetched before using
-   *
-   * @param userId Id of owner to fetch
-   */
-  OwnerReadGuard(unsigned long protocolId);
-
   // Derived constructors
   OwnerReadGuard(const Owner* owner, bool locked = false)
     : ReadMutexGuard<Owner>(owner, locked)
@@ -133,14 +125,6 @@ public:
    * @param userId Id of owner to fetch
    */
   OwnerWriteGuard(const UserId& userId);
-
-  /**
-   * Constructor, will fetch and lock an owner based on protocolId
-   * Note: Always check that the owner was actually fetched before using
-   *
-   * @param userId Id of owner to fetch
-   */
-  OwnerWriteGuard(unsigned long protocolId);
 
   // Derived constructors
   OwnerWriteGuard(Owner* owner, bool locked = false)

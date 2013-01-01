@@ -562,7 +562,7 @@ void UserManager::removeUser(const UserId& userId)
 {
   {
     // Only allow removing a user if the protocol is available
-    OwnerReadGuard owner(userId.protocolId());
+    OwnerReadGuard owner(userId.ownerId());
     if (!owner.isLocked() || !owner->isOnline())
       return;
   }
@@ -592,9 +592,7 @@ void UserManager::removeLocalUser(const UserId& userId)
   {
     u->myPrivate->removeFiles();
 
-    UserId ownerId = ownerUserId(userId.protocolId());
-    if (ownerId.isValid())
-      saveUserList(ownerId);
+    saveUserList(userId.ownerId());
   }
   myUserListMutex.unlockWrite();
   u->unlockWrite();
@@ -1272,7 +1270,7 @@ void UserManager::setUserInGroup(const UserId& userId, int groupId,
   {
     bool ownerIsOnline = false;
     {
-      OwnerReadGuard owner(userId.protocolId());
+      OwnerReadGuard owner(userId.ownerId());
       ownerIsOnline = (owner.isLocked() && owner->isOnline());
     }
 
@@ -1313,20 +1311,8 @@ OwnerReadGuard::OwnerReadGuard(const UserId& userId)
   // Empty
 }
 
-OwnerReadGuard::OwnerReadGuard(unsigned long protocolId)
-  : ReadMutexGuard<Owner>(LicqDaemon::gUserManager.fetchOwner(LicqDaemon::gUserManager.ownerUserId(protocolId), false), true)
-{
-  // Empty
-}
-
 OwnerWriteGuard::OwnerWriteGuard(const UserId& userId)
   : WriteMutexGuard<Owner>(LicqDaemon::gUserManager.fetchOwner(userId, true), true)
-{
-  // Empty
-}
-
-OwnerWriteGuard::OwnerWriteGuard(unsigned long protocolId)
-  : WriteMutexGuard<Owner>(LicqDaemon::gUserManager.fetchOwner(LicqDaemon::gUserManager.ownerUserId(protocolId), true), true)
 {
   // Empty
 }
@@ -1358,7 +1344,7 @@ UserListGuard::UserListGuard(const Licq::UserId& ownerId)
   const UserMap& userMap = LicqDaemon::gUserManager.lockUserList();
 
   for (UserMap::const_iterator i = userMap.begin(); i != userMap.end(); ++i)
-    if (!ownerId.isValid() || i->first.protocolId() == ownerId.protocolId())
+    if (!ownerId.isValid() || i->first.ownerId() == ownerId)
       myUserList.push_back(i->second);
 }
 

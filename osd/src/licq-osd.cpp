@@ -1,7 +1,7 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
  * Copyright (C) 2003-2005 Martin Maurer (martinmaurer@gmx.at)
- * Copyright (C) 2007-2011 Licq developers
+ * Copyright (C) 2007-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -437,7 +437,7 @@ void ProcessSignal(Licq::PluginSignal* s)
 
             if (want_osd)
 	    {
-        Licq::OwnerReadGuard o(LICQ_PPID);
+        Licq::OwnerReadGuard o(s->userId().ownerId());
         if (o.isLocked())
         {
           status = o->status();

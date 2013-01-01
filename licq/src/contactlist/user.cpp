@@ -247,7 +247,7 @@ void User::Private::loadLicqInfo()
     {
       unsigned gsid;
       myConf.get("GSID", gsid, 0);
-      myUser->myServerGroup = gUserManager.getGroupFromServerId(gUserManager.ownerUserId(LICQ_PPID), gsid);
+      myUser->myServerGroup = gUserManager.getGroupFromServerId(myId.ownerId(), gsid);
     }
   }
 

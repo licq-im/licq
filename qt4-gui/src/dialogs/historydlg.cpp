@@ -214,7 +214,7 @@ HistoryDlg::HistoryDlg(const Licq::UserId& userId, QWidget* parent)
   }
 
   {
-    Licq::OwnerReadGuard o(myUserId.protocolId());
+    Licq::OwnerReadGuard o(myUserId.ownerId());
     if (o.isLocked())
       myOwnerName = QString::fromUtf8(o->getAlias().c_str());
   }

@@ -113,7 +113,7 @@ AuthDlg::AuthDlg(enum AuthDlgType type, const Licq::UserId& userId, QWidget* par
 
   if (userId.isValid())
   {
-    myOwnerCombo->setCurrentOwnerId(Licq::gUserManager.ownerUserId(userId.protocolId()));
+    myOwnerCombo->setCurrentOwnerId(userId.ownerId());
     myOwnerCombo->setEnabled(false);
     myAccountIdEdit->setText(userId.accountId().c_str());
     myAccountIdEdit->setEnabled(false);

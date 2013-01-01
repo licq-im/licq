@@ -1103,7 +1103,7 @@ int CRMSClient::Process_HISTORY()
     if (u->isUser())
     {
       userAlias = u->getAlias();
-      Licq::OwnerReadGuard o(u->protocolId());
+      Licq::OwnerReadGuard o(myUserId.ownerId());
       if (o.isLocked())
         ownerAlias = o->getAlias();
     }

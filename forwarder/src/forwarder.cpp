@@ -441,12 +441,11 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
   }
   else
   {
-    unsigned long protocolId = u->protocolId();
     {
-      Licq::OwnerReadGuard o(protocolId);
+      Licq::OwnerReadGuard o(u->id().ownerId());
       headTo = "To: " + o->getAlias() + " <" + mySmtpTo + ">";
     }
-    if (protocolId == LICQ_PPID)
+    if (u->protocolId() == LICQ_PPID)
       headFrom = "From: \"" + u->getAlias() + "\" <" + u->accountId() + "@pager.icq.com>";
     else
       headFrom = "From: \"" + u->getAlias() + "\" <" + u->getEmail() + ">";

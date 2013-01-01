@@ -1294,7 +1294,7 @@ void LicqGui::userUpdated(const Licq::UserId& userId, unsigned long subSignal, i
         unsigned short popCheck = 99;
 
         {
-          Licq::OwnerReadGuard o(ppid);
+          Licq::OwnerReadGuard o(userId.ownerId());
           if (o.isLocked())
           {
             unsigned status = o->status();
