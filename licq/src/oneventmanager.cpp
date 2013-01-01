@@ -61,8 +61,6 @@ void OnEventData::load(Licq::IniFile& conf)
   string soundDir;
   if (myIsGlobal)
     soundDir = gDaemon.shareDir() + "sounds/icq/";
-  else
-    conf.setSection(myIniSection);
 
   conf.get("Enable", myEnabled, myIsGlobal ? EnabledOnline : EnabledDefault);
   conf.get("AlwaysOnlineNotify", myAlwaysOnlineNotify, myIsGlobal ? 1 : -1);
@@ -133,7 +131,11 @@ void OnEventData::save(Licq::IniFile& conf) const
   conf.setSection(myIniSection);
 
   if (myUserId.isValid())
-    conf.set("User", myUserId.toString());
+  {
+    conf.set("Protocol", Licq::protocolId_toString(myUserId.protocolId()));
+    conf.set("Owner", myUserId.ownerId().accountId());
+    conf.set("User", myUserId.accountId());
+  }
   conf.set("Enable", myEnabled);
   conf.set("AlwaysOnlineNotify", myAlwaysOnlineNotify);
   conf.set("Command", myCommand);
@@ -190,22 +192,7 @@ OnEventManager::~OnEventManager()
 void OnEventManager::initialize()
 {
   Licq::IniFile conf("onevent.conf");
-  if (!conf.loadFile())
-  {
-    // Failed to read configuration, try migrating old configuration
-    Licq::IniFile& licqConf(gDaemon.getLicqConf());
-
-    licqConf.setSection("onevent");
-    myGlobalData.load(licqConf);
-    myGlobalData.save(conf);
-    conf.writeFile();
-
-    // Remove old section from licq.conf
-    licqConf.removeSection("onevent");
-    licqConf.writeFile();
-    gDaemon.releaseLicqConf();
-    return;
-  }
+  conf.loadFile();
 
   // Global configuration
   conf.setSection("global");
@@ -216,6 +203,8 @@ void OnEventManager::initialize()
   conf.getSections(sections, "Group.");
   BOOST_FOREACH(const string& section, sections)
   {
+    conf.setSection(section);
+
     int groupId = atoi(section.substr(6).c_str());
     if (groupId <= 0)
       continue;
@@ -229,16 +218,18 @@ void OnEventManager::initialize()
   BOOST_FOREACH(const string& section, sections)
   {
     conf.setSection(section);
-    string userIdStr;
+
+    // User id in section header is not reliable as IniFile drops unallowed characters
+    // Read user id from parameters in section instead
+    string ppidStr, ownerIdStr, userIdStr;
+    conf.get("Protocol", ppidStr);
+    conf.get("Owner", ownerIdStr);
     conf.get("User", userIdStr);
-    if (userIdStr.size() < 5)
+    unsigned long protocolId = Licq::protocolId_fromString(ppidStr);
+    if (protocolId == 0 || ownerIdStr.empty() || userIdStr.empty())
       continue;
-    string accountId = userIdStr.substr(4);
-    unsigned long protocolId = Licq::protocolId_fromString(userIdStr.substr(0, 4));
-    UserId ownerId = gUserManager.ownerUserId(protocolId);
-    UserId userId(ownerId, accountId);
-    if (!userId.isValid())
-      continue;
+    UserId userId(UserId(protocolId, ownerIdStr), userIdStr);
+
     OnEventData* data = new OnEventData(section);
     data->load(conf);
     data->setUserId(userId);
@@ -288,7 +279,7 @@ Licq::OnEventData* OnEventManager::lockUser(const UserId& userId, bool create)
     if (create == false)
       return NULL;
 
-    data = new OnEventData("User." + userId.toString());
+    data = new OnEventData("User." + userId.ownerId().toString() + "." + userId.accountId());
     data->loadDefaults();
     data->setUserId(userId);
     myUserData[userId] = data;

@@ -492,6 +492,57 @@ static void upgradeLicq18_updateUsersList(StringMap& owners)
   usersConf.writeFile();
 }
 
+/*-----------------------------------------------------------------------------
+ * Migrate onevent configuration
+ *---------------------------------------------------------------------------*/
+static void upgradeLicq18_updateOnevent(StringMap& owners, IniFile& licqConf)
+{
+  IniFile onEventConf("onevent.conf");
+  if (onEventConf.loadFile())
+  {
+    // File exists, find all User sections and add owner and protocol to them
+    list<string> sections;
+    onEventConf.getSections(sections, "User.");
+    BOOST_FOREACH(const string& section, sections)
+    {
+      // Migrate user section
+      // Note: Section name isn't updated, but it only needs to be unique and is never parsed
+      onEventConf.setSection(section);
+      string userIdStr;
+      onEventConf.get("User", userIdStr);
+      if (userIdStr.size() < 5)
+        continue;
+      string accountId = userIdStr.substr(4);
+      string ppidStr = userIdStr.substr(0, 4);
+      if (owners.count(ppidStr) == 0)
+        continue;
+      onEventConf.set("Protocol", ppidStr);
+      onEventConf.set("Owner", owners[ppidStr]);
+      onEventConf.set("User", accountId);
+    }
+  }
+  else
+  {
+    // onevent.conf doesn't exist (introduced by Licq 1.5.0), migrate from licq.conf
+    licqConf.setSection("onevent");
+    onEventConf.setSection("global");
+    string str;
+    if (licqConf.get("Enable", str))             onEventConf.set("Enable", str);
+    if (licqConf.get("AlwaysOnlineNotify", str)) onEventConf.set("AlwaysOnlineNotify", str);
+    if (licqConf.get("Command", str))            onEventConf.set("Command", str);
+    if (licqConf.get("Message", str))            onEventConf.set("Message", str);
+    if (licqConf.get("Url", str))                onEventConf.set("Url", str);
+    if (licqConf.get("Chat", str))               onEventConf.set("Chat", str);
+    if (licqConf.get("File", str))               onEventConf.set("File", str);
+    if (licqConf.get("Sms", str))                onEventConf.set("Sms", str);
+    if (licqConf.get("OnlineNotify", str))       onEventConf.set("OnlineNotify", str);
+    if (licqConf.get("SysMsg", str))             onEventConf.set("SysMsg", str);
+    if (licqConf.get("MsgSent", str))            onEventConf.set("MsgSent", str);
+    licqConf.removeSection("onevent");
+  }
+  onEventConf.writeFile();
+}
+
 
 /*-----------------------------------------------------------------------------
  * Update file structure for Licq 1.8.0
@@ -499,6 +550,7 @@ static void upgradeLicq18_updateUsersList(StringMap& owners)
  * - Add owner as directory level to allow multiple owners per protocol
  * - Move history files together with user data files
  * - Move parameters from protocol configurations to owner data
+ * - Add owner account id everywhere user id is saved
  *---------------------------------------------------------------------------*/
 void CLicq::upgradeLicq18(IniFile& licqConf)
 {
@@ -558,6 +610,7 @@ void CLicq::upgradeLicq18(IniFile& licqConf)
   upgradeLicq18_moveHistoryFiles(baseDir, owners, userDirs);
   upgradeLicq18_migrateOwnerConfig(baseDir, owners, userDirs, licqConf);
   upgradeLicq18_updateUsersList(owners);
+  upgradeLicq18_updateOnevent(owners, licqConf);
 
   gLog.info(tr("Upgrade completed"));
 }
