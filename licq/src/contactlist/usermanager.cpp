@@ -273,63 +273,26 @@ void UserManager::loadUserList(const UserId& ownerId)
 
   myUserListMutex.lockWrite();
 
-  if (usersConf.setSection(ownerId.accountId() + "." + ppidStr, false))
+  usersConf.setSection(ownerId.accountId() + "." + ppidStr);
+  int numUsers;
+  usersConf.get("NumUsers", numUsers);
+  gLog.info(tr("Loading %i users for %s"), numUsers, ownerId.toString().c_str());
+
+  for (int i = 1; i <= numUsers; ++i)
   {
-    int numUsers;
-    usersConf.get("NumUsers", numUsers);
-    gLog.info(tr("Loading %i users for %s"), numUsers, ownerId.toString().c_str());
-
-    for (int i = 1; i <= numUsers; ++i)
+    char key[20];
+    sprintf(key, "User%i", i);
+    string accountId;
+    usersConf.get(key, accountId);
+    if (accountId.empty())
     {
-      char key[20];
-      sprintf(key, "User%i", i);
-      string accountId;
-      usersConf.get(key, accountId);
-      if (accountId.empty())
-      {
-        gLog.warning(tr("Skipping user %i, invalid key"), i);
-        continue;
-      }
-      UserId userId(ownerId, accountId);
-      User* u = createUser(userId);
-      u->myPrivate->addToContactList();
-      myUsers[userId] = u;
+      gLog.warning(tr("Skipping user %i, invalid key"), i);
+      continue;
     }
-  }
-  else
-  {
-    // Owner specific section is missing, migrate users from old section (pre Licq 1.7.0)
-    usersConf.setSection("users");
-    int numUsers;
-    usersConf.get("NumOfUsers", numUsers);
-
-    for (int i = 1; i <= numUsers; ++i)
-    {
-      char key[20];
-      sprintf(key, "User%i", i);
-      string userFile;
-      usersConf.get(key, userFile);
-
-      size_t sz = userFile.rfind('.');
-      if (sz == string::npos)
-      {
-        gLog.error(tr("Skipping user %i, invalid key"), i);
-        continue;
-      }
-
-      if (userFile.substr(sz+1) != ppidStr)
-        // Not a user for this protocol
-        continue;
-
-      string accountId = userFile.substr(0, sz);
-      UserId userId(ownerId, accountId);
-      User* u = createUser(userId);
-      u->myPrivate->addToContactList();
-      myUsers[userId] = u;
-    }
-
-    // Write new section so we don't have to migrate more than once
-    saveUserList(ownerId);
+    UserId userId(ownerId, accountId);
+    User* u = createUser(userId);
+    u->myPrivate->addToContactList();
+    myUsers[userId] = u;
   }
   myUserListMutex.unlockWrite();
 }

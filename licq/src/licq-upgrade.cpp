@@ -19,12 +19,14 @@
 
 #include "licq.h"
 
+#include <boost/foreach.hpp>
 #include <boost/scoped_array.hpp>
 #include <cstdio>
 #include <cstring>
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <list>
 #include <map>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -441,6 +443,55 @@ static void upgradeLicq18_migrateOwnerConfig(const string& baseDir, StringMap& o
   unlink(oldJabberConfFile.c_str());
 }
 
+/*-----------------------------------------------------------------------------
+ * Separate users.conf into sections per owner
+ *---------------------------------------------------------------------------*/
+static void upgradeLicq18_updateUsersList(StringMap& owners)
+{
+  IniFile usersConf("users.conf");
+  usersConf.loadFile();
+  for (StringMap::const_iterator iter = owners.begin(); iter != owners.end(); ++iter)
+  {
+    // Check if owner specific section already exists (introduced by Licq 1.7.0)
+    string newSection = iter->second + "." + iter->first;
+    if (usersConf.setSection(newSection, false))
+      continue;
+
+    list<string> users;
+    {
+      // Migrate from old mixed section
+      usersConf.setSection("users");
+      int numUsers;
+      usersConf.get("NumOfUsers", numUsers, 0);
+      for (int i = 1; i <= numUsers; ++i)
+      {
+        char key[20];
+        sprintf(key, "User%i", i);
+        string userIdStr;
+        usersConf.get(key, userIdStr);
+        if (userIdStr.size() < 6 || userIdStr[userIdStr.size()-5] != '.')
+          continue;
+        string ppidStr = userIdStr.substr(userIdStr.size()-4);
+        if (ppidStr == iter->first)
+          users.push_back(userIdStr.substr(0, userIdStr.size()-5));
+      }
+    }
+
+    // Write users to new section
+    usersConf.setSection(newSection);
+    usersConf.set("NumUsers", users.size());
+    int i = 0;
+    BOOST_FOREACH(const string& userIdStr, users)
+    {
+      char key[20];
+      sprintf(key, "User%i", ++i);
+      usersConf.set(key, userIdStr);
+    }
+  }
+  usersConf.removeSection("users");
+  usersConf.writeFile();
+}
+
 
 /*-----------------------------------------------------------------------------
  * Update file structure for Licq 1.8.0
@@ -506,6 +557,7 @@ void CLicq::upgradeLicq18(IniFile& licqConf)
   upgradeLicq18_moveOwnerData(baseDir, owners, userDirs);
   upgradeLicq18_moveHistoryFiles(baseDir, owners, userDirs);
   upgradeLicq18_migrateOwnerConfig(baseDir, owners, userDirs, licqConf);
+  upgradeLicq18_updateUsersList(owners);
 
   gLog.info(tr("Upgrade completed"));
 }
