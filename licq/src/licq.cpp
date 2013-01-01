@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -592,7 +592,7 @@ bool CLicq::Init(int argc, char **argv)
     }
     else  // If no plugins, try some defaults one by one
     {
-      const char* plugins[] = {"qt4-gui", "kde4-gui", "console"};
+      const char* plugins[] = {"qt4-gui", "kde4-gui"};
       unsigned short i = 0, size = sizeof(plugins) / sizeof(char*);
 
       GeneralPlugin::Ptr plugin;
