@@ -603,6 +603,34 @@ static void upgradeLicq18_updateQt4Gui(StringMap& owners)
     guiConf.writeFile();
 }
 
+/*-----------------------------------------------------------------------------
+ * Update RMS config to include owner
+ *---------------------------------------------------------------------------*/
+static void upgradeLicq18_updateRms(StringMap& owners)
+{
+  IniFile rmsConf("licq_rms.conf");
+  if (!rmsConf.loadFile() || !rmsConf.setSection("RMS", false))
+    return;
+
+  string protocolStr;
+  rmsConf.get("AuthProtocol", protocolStr, "ICQ");
+  if (protocolStr != "Config")
+  {
+    // RMS protocol isn't strictly PPID strings, use parser
+    unsigned long protocolId = Licq::protocolId_fromString(protocolStr);
+    if (protocolId != 0)
+    {
+      string ppidStr = Licq::protocolId_toString(protocolId);
+      if (owners.count(ppidStr) != 0)
+      {
+        // RMS uses a protocol we're migrating, add the owner id
+        rmsConf.set("AuthUser", owners[ppidStr]);
+        rmsConf.writeFile();
+      }
+    }
+  }
+}
+
 
 /*-----------------------------------------------------------------------------
  * Update file structure for Licq 1.8.0
@@ -674,6 +702,7 @@ void CLicq::upgradeLicq18(IniFile& licqConf)
   upgradeLicq18_updateOnevent(owners, licqConf);
   upgradeLicq18_updateFilter();
   upgradeLicq18_updateQt4Gui(owners);
+  upgradeLicq18_updateRms(owners);
 
   gLog.info(tr("Upgrade completed"));
 }

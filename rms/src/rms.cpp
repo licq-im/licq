@@ -181,8 +181,7 @@ static const unsigned short NUM_COMMANDS = sizeof(commands)/sizeof(*commands);
 CLicqRMS::CLicqRMS(Licq::GeneralPlugin::Params& p)
   : GeneralPlugin(p),
     m_bEnabled(true),
-    myPort(0),
-    myAuthProtocol(LICQ_PPID)
+    myPort(0)
 {
   licqRMS = this;
   server = NULL;
@@ -290,11 +289,10 @@ int CLicqRMS::run()
 
     string protocolStr;
     conf.get("AuthProtocol", protocolStr, "ICQ");
+    conf.get("AuthUser", myAuthUser);
     if (protocolStr == "Config")
     {
-      // Get user and password from config file
-      myAuthProtocol = 0;
-      conf.get("AuthUser", myAuthUser);
+      // Get password from config file
       conf.get("AuthPassword", myAuthPassword);
 
       // Make sure we got something instead of opening a security problem
@@ -302,22 +300,20 @@ int CLicqRMS::run()
       {
         gLog.warning("Missing value for AuthUser or AuthPassword in configuration, "
             "login will not be possible.");
-
-        // Dummy value that should never match any real protocol
-        myAuthProtocol = 1;
       }
     }
     else
     {
       // Parse protocol id
-      myAuthProtocol = Licq::protocolId_fromString(protocolStr);
-      if (myAuthProtocol == 0)
+      unsigned long protocolId = Licq::protocolId_fromString(protocolStr);
+      if (protocolId == 0 || myAuthUser.empty())
       {
         // Invalid
-        gLog.warning("Invalid value for AuthProtocol in configuration, "
-            "will use ICQ account.");
-        myAuthProtocol = LICQ_PPID;
+        gLog.warning("Invalid value for AuthProtocol or AuthUser in configuration, "
+            "login will not be possible");
       }
+      else
+        myAuthOwnerId = Licq::UserId(protocolId, myAuthUser);
     }
   }
 
@@ -754,23 +750,23 @@ int CRMSClient::StateMachine()
     }
     case STATE_PASSWORD:
     {
-      bool ok;
+      bool ok = false;
       string name;
-      if (licqRMS->myAuthProtocol == 0)
+      if (licqRMS->myAuthOwnerId.isValid())
+      {
+        // Check against protocol owner
+        Licq::OwnerReadGuard o(licqRMS->myAuthOwnerId);
+        if (!o.isLocked())
+          return -1;
+        ok = (myLoginUser == o->accountId() && data_line == o->password());
+        name = o->getAlias();
+      }
+      else if (!licqRMS->myAuthUser.empty() && !licqRMS->myAuthPassword.empty())
       {
         // User and password specified in RMS config
         ok = (myLoginUser == licqRMS->myAuthUser &&
             data_line == licqRMS->myAuthPassword);
         name = myLoginUser;
-      }
-      else
-      {
-        // Check against protocol owner
-        Licq::OwnerReadGuard o(licqRMS->myAuthProtocol);
-        if (!o.isLocked())
-          return -1;
-        ok = (myLoginUser == o->accountId() && data_line == o->password());
-        name = o->getAlias();
       }
 
       if (!ok)
