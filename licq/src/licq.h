@@ -71,6 +71,7 @@ public:
 
 protected:
   void upgradeLicq128(Licq::IniFile& licqConf);
+  void upgradeLicq18(Licq::IniFile& licqConf);
 
   Licq::GeneralPlugin::Ptr LoadPlugin(const std::string& name, int argc,
       char** argv, bool keep = true);

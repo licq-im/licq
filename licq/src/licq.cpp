@@ -518,6 +518,8 @@ bool CLicq::Init(int argc, char **argv)
       // Perform upgrades as needed
       if (nVersion < LICQ_MAKE_VERSION(1, 2, 8))
         upgradeLicq128(licqConf);
+      if (nVersion < LICQ_MAKE_VERSION(1, 8, 0))
+        upgradeLicq18(licqConf);
 
       // Write new version
       licqConf.setSection("licq");

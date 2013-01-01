@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2000-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,7 +52,6 @@ using std::vector;
 using LicqDaemon::UserHistory;
 using namespace Licq;
 
-static const char* const ConfigDir = "users/";
 static const char* const HistoryDir = "history/";
 static const char* const HistoryExt = ".history";
 static const char* const HistoryOldExt = ".removed";
@@ -94,21 +93,19 @@ User::User(const UserId& id, bool temporary, bool isOwner)
 
   d->Init();
 
-  // Build filename for user properties
-  string filename;
-  if (isOwner)
-  {
-    filename = "owner.";
-    filename += Licq::protocolId_toString(myId.protocolId());
-  }
-  else
-  {
-    filename = ConfigDir;
-    filename += myId.accountId();
-    filename += ".";
-    filename += Licq::protocolId_toString(myId.protocolId());
-  }
-  d->myConf.setFilename(filename);
+  // Start building filename for user properties
+  string filename = "users/" + myId.ownerId().accountId()
+      + "." + Licq::protocolId_toString(myId.protocolId());
+
+  // Create owner specific dir if needed
+  string dirname = gDaemon.baseDir() + filename.c_str();
+  if (mkdir(dirname.c_str(), 0700) < 0 && errno != EEXIST)
+    gLog.error(tr("Failed to create directory %s: %s"), dirname.c_str(), strerror(errno));
+
+  // Add final parts to get filenames
+  filename += "/" + myId.accountId();
+  d->myConf.setFilename(filename + ".conf");
+  myPictureFileName = filename + ".pic";
 
   if (m_bNotInList)
   {
@@ -431,7 +428,6 @@ void User::Private::Init()
 
   // Picture
   myUser->m_bPicturePresent = false;
-  myUser->myPictureFileName = gDaemon.baseDir() + ConfigDir + myId.accountId() + ".pic";
 
   // GPG key
   myUser->myGpgKey = "";

@@ -157,7 +157,7 @@ bool UserManager::Load()
     string accountId, ppidStr;
     sprintf(sOwnerIDKey, "Owner%d.Id", i);
     licqConf.get(sOwnerIDKey, accountId);
-    sprintf(sOwnerPPIDKey, "Owner%d.PPID", i);
+    sprintf(sOwnerPPIDKey, "Owner%d.Protocol", i);
     licqConf.get(sOwnerPPIDKey, ppidStr);
     unsigned long protocolId = Licq::protocolId_fromString(ppidStr);
     myConfiguredOwners.insert(UserId(protocolId, accountId));
@@ -430,7 +430,7 @@ void UserManager::saveOwnerList()
       sprintf(key, "Owner%d.Id", count);
       licqConf.set(key, ownerId.accountId());
 
-      sprintf(key, "Owner%d.PPID", count);
+      sprintf(key, "Owner%d.Protocol", count);
       licqConf.set(key, Licq::protocolId_toString(ownerId.protocolId()));
     }
   }
@@ -442,7 +442,7 @@ void UserManager::saveOwnerList()
     ++count;
     sprintf(key, "Owner%d.", count);
   }
-  while (licqConf.unset(string(key) + "Id") | licqConf.unset(string(key) + "PPID"));
+  while (licqConf.unset(string(key) + "Id") | licqConf.unset(string(key) + "Protocol"));
 
   licqConf.writeFile();
   gDaemon.releaseLicqConf();

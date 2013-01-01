@@ -24,6 +24,9 @@
 #include <cstring>
 #include <dirent.h>
 #include <errno.h>
+#include <fcntl.h>
+#include <map>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -38,6 +41,8 @@ using Licq::IniFile;
 using Licq::gDaemon;
 using Licq::gLog;
 
+typedef map<string, string> StringMap;
+
 
 // Helper function to rename a file
 static void file_rename(const string& from, const string& to, bool missingok = false)
@@ -51,6 +56,52 @@ static void file_rename(const string& from, const string& to, bool missingok = f
   gLog.error(tr("Failed to move file from '%s' to '%s': %s"),
       from.c_str(), to.c_str(), strerror(errno));
   throw exception();
+}
+
+// Helper function to copy a file
+// Currently hardcoded for how Picture files are copied, extend only if needed
+static void file_copy(const string& from, const string& to) throw()
+{
+  int fromFd = open(from.c_str(), O_RDONLY);
+  if (fromFd < 0)
+    return; // No fault if owner.pic is missing
+
+  // Same mode bits as in contactlist/owner.cpp
+  int toFd = open(to.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 00664);
+  if (toFd < 0)
+  {
+    gLog.error(tr("Failed to create '%s': %s"), to.c_str(), strerror(errno));
+    throw exception();
+  }
+
+  while (1)
+  {
+    char buf[8192];
+    ssize_t sr = read(fromFd, buf, sizeof(buf));
+    if (sr == 0) // End of file
+      break;
+    else if (sr > 0) // Read ok
+    {
+      ssize_t sw = write(toFd, buf, sr);
+      if (sw  == sr) // Write ok
+        continue;
+      else if (sw < 0) // Write failed
+        gLog.error(tr("Failed to write to '%s': %s"), to.c_str(), strerror(errno));
+      else // Write too short
+        gLog.error(tr("Failed to write %zi bytes to '%s'"), sr, to.c_str());
+    }
+    else if (sr < 0) // Read failed
+      gLog.error(tr("Failed to read from '%s': %s"), from.c_str(), strerror(errno));
+
+    // Copy failed
+    close(toFd);
+    close(fromFd);
+    throw exception();
+  }
+
+  // Copy complete
+  close(toFd);
+  close(fromFd);
 }
 
 
@@ -145,5 +196,138 @@ void CLicq::upgradeLicq128(IniFile& licqConf)
     }
     closedir(historyDir);
   }
+  gLog.info(tr("Upgrade completed"));
+}
+
+/******************************************************************************/
+/* Functions used for upgrade to Licq 1.8.0                                   */
+/******************************************************************************/
+
+/*-----------------------------------------------------------------------------
+ * Move user data files into owner specific directories
+ *---------------------------------------------------------------------------*/
+static void upgradeLicq18_moveUserData(const string& baseDir, StringMap& owners, StringMap& userDirs)
+{
+  string userDir = baseDir + "users";
+  DIR* userDirList = opendir(userDir.c_str());
+  if (userDirList == NULL)
+    throw std::exception(); // Should never happen
+  boost::scoped_array<char> ent(new char[offsetof(struct dirent, d_name) +
+      pathconf(userDir.c_str(), _PC_NAME_MAX) + 1]);
+  struct dirent* res;
+  while (readdir_r(userDirList, (struct dirent*)ent.get(), &res) == 0 && res != NULL)
+  {
+    // Ignore files that doesn't match the naming standard for user files
+    size_t namelen = strlen(res->d_name);
+    if (namelen < 6 || res->d_name[namelen-5] != '.')
+      continue;
+
+    string accountId(res->d_name, namelen-5);
+    string ppidStr(res->d_name + namelen-4);
+
+    // Skip if the file doesn't belong to any known owner
+    if (owners.count(ppidStr) == 0)
+      continue;
+
+    // Don't try and move the owner directory into itself
+    if (accountId == owners[ppidStr])
+      continue;
+
+    string oldUserFile = userDir + "/" + res->d_name;
+    string newUserFile = userDirs[ppidStr] + "/" + accountId + ".conf";
+    file_rename(oldUserFile, newUserFile);
+
+    // If there is a user picture file, move that too
+    string oldPicFile = userDir + "/" + accountId + ".pic";
+    string newPicFile = userDirs[ppidStr] + "/" + accountId + ".pic";
+    file_rename(oldPicFile, newPicFile, true);
+  }
+  closedir(userDirList);
+}
+
+/*-----------------------------------------------------------------------------
+ * Move owner data files into directories
+ *---------------------------------------------------------------------------*/
+static void upgradeLicq18_moveOwnerData(const string& baseDir, StringMap& owners, StringMap& userDirs)
+{
+  string oldOwnerPicFile = baseDir + "owner.pic";
+  for (StringMap::const_iterator iter = owners.begin(); iter != owners.end(); ++iter)
+  {
+    const string& ppidStr = iter->first;
+    string oldOwnerFile = baseDir + "owner." + ppidStr;
+    string newOwnerFile = userDirs[ppidStr] + "/" + iter->second + ".conf";
+    file_rename(oldOwnerFile, newOwnerFile);
+
+    // If there is an owner picture file, copy that too (old file is shared for all owners)
+    string newPicFile = userDirs[ppidStr] + "/" + iter->second + ".pic";
+    file_copy(oldOwnerPicFile, newPicFile);
+  }
+
+  // Remove the old picture file (if it exists)
+  unlink(oldOwnerPicFile.c_str());
+}
+
+
+/*-----------------------------------------------------------------------------
+ * Update file structure for Licq 1.8.0
+ *
+ * - Add owner as directory level to allow multiple owners per protocol
+ *---------------------------------------------------------------------------*/
+void CLicq::upgradeLicq18(IniFile& licqConf)
+{
+  gLog.info(tr("Upgrading config file formats for multiple accounts"));
+
+  const string& baseDir(gDaemon.baseDir());
+
+  // Prepare a list of configured owners and create directories for user data
+  StringMap owners;
+  StringMap userDirs;
+  licqConf.setSection("owners");
+  int numOwners;
+  licqConf.get("NumOfOwners", numOwners, 0);
+  for (int i = 1; i <= numOwners; ++i)
+  {
+    char key[20];
+    string accountId, ppidStr;
+    sprintf(key, "Owner%d.Id", i);
+    licqConf.get(key, accountId);
+    sprintf(key, "Owner%d.PPID", i);
+    licqConf.get(key, ppidStr);
+    if (accountId.empty() || ppidStr.empty())
+    {
+      gLog.error(tr("Missing data for owner %i"), i);
+      throw exception();
+    }
+
+    licqConf.unset(key);
+    sprintf(key, "Owner%d.Protocol", i);
+    licqConf.set(key, ppidStr);
+
+    // Create a users directory for each owner
+    string dirname = baseDir + "users/" + accountId + "." + ppidStr;
+    if (mkdir(dirname.c_str(), 0700) < 0)
+    {
+      gLog.error(tr("Failed to create directory %s: %s"), dirname.c_str(), strerror(errno));
+      throw exception();
+    }
+
+    // Save owners and user directories in map for use during the migration
+    owners[ppidStr] = accountId;
+    userDirs[ppidStr] = dirname;
+  }
+
+  // Clean out old owner entries
+  for (int i = numOwners+1; ; ++i)
+  {
+    char key[14];
+    sprintf(key, "Owner%d.", i);
+    if (!licqConf.unset(string(key) + "Id") & !licqConf.unset(string(key) + "PPID"))
+      break;
+  }
+
+  // Call each upgrade function
+  upgradeLicq18_moveUserData(baseDir, owners, userDirs);
+  upgradeLicq18_moveOwnerData(baseDir, owners, userDirs);
+
   gLog.info(tr("Upgrade completed"));
 }
