@@ -29,17 +29,6 @@ using Licq::IcqOwner;
 using Licq::IniFile;
 using Licq::gLog;
 
-IcqOwner::IcqOwner(const Licq::UserId& id)
-  : Licq::User(id, false), Licq::IcqUser(id, false), Licq::Owner(id)
-{
-  // Empty
-}
-
-IcqOwner::~IcqOwner()
-{
-  // Empty
-}
-
 Owner::Owner(const Licq::UserId& id)
   : Licq::User(id, false), Licq::IcqUser(id, false),
     Licq::IcqOwner(id), User(id, false)

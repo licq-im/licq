@@ -42,17 +42,6 @@ using Licq::UserCategoryMap;
 using Licq::gLog;
 
 
-IcqUser::IcqUser(const Licq::UserId& id, bool temporary)
-  : Licq::User(id, temporary)
-{
-  // Empty
-}
-
-IcqUser::~IcqUser()
-{
-  // Empty
-}
-
 User::User(const Licq::UserId& id, bool temporary)
   : Licq::User(id, temporary), IcqUser(id, temporary)
 {

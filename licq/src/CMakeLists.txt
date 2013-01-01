@@ -29,6 +29,7 @@ set(licq_SRCS
   filter.cpp
   gpghelper.cpp
   hebrev.c
+  icq-public.cpp
   licq.cpp
   licq-upgrade.cpp
   main.cpp
