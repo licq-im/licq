@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2011-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2011-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,7 +103,9 @@ void FilterManager::initialize()
     sprintf(key, "Rule%i.enabled", i);
     conf.get(key, rule.isEnabled);
     sprintf(key, "Rule%i.protocol", i);
-    conf.get(key, rule.protocolId);
+    string ppidStr;
+    conf.get(key, ppidStr);
+    rule.protocolId = Licq::protocolId_fromString(ppidStr);
     sprintf(key, "Rule%i.events", i);
     conf.get(key, rule.eventMask);
     sprintf(key, "Rule%i.expression", i);
@@ -145,7 +147,7 @@ void FilterManager::saveRules()
     sprintf(key, "Rule%i.enabled", i);
     conf.set(key, rule.isEnabled);
     sprintf(key, "Rule%i.protocol", i);
-    conf.set(key, rule.protocolId);
+    conf.set(key, rule.protocolId == 0 ? "" : Licq::protocolId_toString(rule.protocolId));
     sprintf(key, "Rule%i.events", i);
     conf.set(key, rule.eventMask);
     sprintf(key, "Rule%i.expression", i);

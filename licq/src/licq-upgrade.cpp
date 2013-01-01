@@ -35,6 +35,7 @@
 #include <licq/daemon.h>
 #include <licq/inifile.h>
 #include <licq/logging/log.h>
+#include <licq/userid.h>
 
 #include "gettext.h"
 
@@ -543,6 +544,29 @@ static void upgradeLicq18_updateOnevent(StringMap& owners, IniFile& licqConf)
   onEventConf.writeFile();
 }
 
+/*-----------------------------------------------------------------------------
+ * Migrate filter configuration to use protocol name instead of ppid constant
+ *---------------------------------------------------------------------------*/
+static void upgradeLicq18_updateFilter()
+{
+  IniFile filterConf("filter.conf");
+  filterConf.loadFile();
+  filterConf.setSection("eventfilter");
+  int numFilters;
+  filterConf.get("NumRules", numFilters, 0);
+  for (int i = 1; i <= numFilters; ++i)
+  {
+    char key[16];
+    sprintf(key, "Rule%i.protocol", i);
+    unsigned long ppid;
+    filterConf.get(key, ppid, 0);
+    filterConf.set(key, ppid == 0 ? "" : Licq::protocolId_toString(ppid));
+  }
+
+  if (numFilters > 0)
+    filterConf.writeFile();
+}
+
 
 /*-----------------------------------------------------------------------------
  * Update file structure for Licq 1.8.0
@@ -551,6 +575,7 @@ static void upgradeLicq18_updateOnevent(StringMap& owners, IniFile& licqConf)
  * - Move history files together with user data files
  * - Move parameters from protocol configurations to owner data
  * - Add owner account id everywhere user id is saved
+ * - Write protocol as text instead of using numeric constants in files
  *---------------------------------------------------------------------------*/
 void CLicq::upgradeLicq18(IniFile& licqConf)
 {
@@ -611,6 +636,7 @@ void CLicq::upgradeLicq18(IniFile& licqConf)
   upgradeLicq18_migrateOwnerConfig(baseDir, owners, userDirs, licqConf);
   upgradeLicq18_updateUsersList(owners);
   upgradeLicq18_updateOnevent(owners, licqConf);
+  upgradeLicq18_updateFilter();
 
   gLog.info(tr("Upgrade completed"));
 }
