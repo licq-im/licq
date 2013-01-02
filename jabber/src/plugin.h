@@ -23,7 +23,7 @@
 #ifndef LICQJABBER_PLUGIN_H
 #define LICQJABBER_PLUGIN_H
 
-#include <licq/plugin/protocolplugin.h>
+#include <licq/plugin/protocolpluginhelper.h>
 #include <licq/mainloop.h>
 
 #include <gloox/gloox.h>
@@ -53,29 +53,27 @@ namespace LicqJabber
 
 class Client;
 
-class Plugin : public Licq::ProtocolPlugin, public Licq::MainLoopCallback
+class Plugin : public Licq::ProtocolPluginHelper, public Licq::MainLoopCallback
 {
 public:
-  Plugin(Params& p);
+  Plugin();
   ~Plugin();
 
-  // From Licq::ProtocolPlugin
+  // From Licq::PluginInterface
   std::string name() const;
   std::string version() const;
-  unsigned long protocolId() const;
-  unsigned long capabilities() const;
-  int defaultServerPort() const;
-
-private:
-  // From Licq::ProtocolPlugin
-  bool init(int, char**);
   int run();
   void destructor();
+  
+  // From Licq::ProtocolPluginInterface
+  unsigned long protocolId() const;
+  unsigned long capabilities() const;
   Licq::Owner* createOwner(const Licq::UserId& id);
 
   // From Licq::MainLoopCallback
   void rawFileEvent(int fd, int revents);
 
+private:
   void processSignal(Licq::ProtocolSignal* signal);
   void getUserGroups(const Licq::UserId& userId, gloox::StringList& retGroupNames);
 

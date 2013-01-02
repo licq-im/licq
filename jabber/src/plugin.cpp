@@ -47,9 +47,8 @@ using Licq::gOnEventManager;
 using Licq::gLog;
 using std::string;
 
-Plugin::Plugin(Params& p) :
-    Licq::ProtocolPlugin(p),
-  myClient(NULL)
+Plugin::Plugin()
+  : myClient(NULL)
 {
   gLog.debug("Using gloox version %s", gloox::GLOOX_VERSION.c_str());
 }
@@ -69,6 +68,18 @@ string Plugin::version() const
   return PLUGIN_VERSION_STRING;
 }
 
+int Plugin::run()
+{
+  myMainLoop.addRawFile(getReadPipe(), this);
+  myMainLoop.run();
+  return 0;
+}
+
+void Plugin::destructor()
+{
+  delete this;
+}
+
 unsigned long Plugin::protocolId() const
 {
   return JABBER_PPID;
@@ -80,28 +91,6 @@ unsigned long Plugin::capabilities() const
       | Licq::ProtocolPlugin::CanHoldStatusMsg
       | Licq::ProtocolPlugin::CanSendAuth
       | Licq::ProtocolPlugin::CanSendAuthReq;
-}
-
-int Plugin::defaultServerPort() const
-{
-  return 5222;
-}
-
-bool Plugin::init(int, char**)
-{
-  return true;
-}
-
-int Plugin::run()
-{
-  myMainLoop.addRawFile(getReadPipe(), this);
-  myMainLoop.run();
-  return 0;
-}
-
-void Plugin::destructor()
-{
-  delete this;
 }
 
 Licq::Owner* Plugin::createOwner(const Licq::UserId& id)
@@ -116,14 +105,14 @@ void Plugin::rawFileEvent(int fd, int /*revents*/)
 
   switch (ch)
   {
-    case Licq::ProtocolPlugin::PipeSignal:
+    case PipeSignal:
     {
       Licq::ProtocolSignal* signal = popSignal();
       processSignal(signal);
       delete signal;
       break;
     }
-    case Licq::ProtocolPlugin::PipeShutdown:
+    case PipeShutdown:
       doLogoff();
       myMainLoop.quit();
       break;
