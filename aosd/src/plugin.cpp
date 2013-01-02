@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2011 Licq developers
+ * Copyright (C) 2011, 2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,9 +21,9 @@
 
 #include <cstdio>
 #include <cstring>
+#include <unistd.h>
 
 #include <licq/event.h>
-#include <licq/plugin/generalbase.h>
 #include <licq/pluginsignal.h>
 #include <licq/version.h>
 
@@ -32,10 +32,8 @@
 
 using namespace std;
 
-
-AosdPlugin::AosdPlugin(Licq::GeneralPlugin::Params& p)
-  : Licq::GeneralPlugin(p),
-    blocked(false)
+AosdPlugin::AosdPlugin()
+  : myBlocked(false)
 {
   // Empty
 }
@@ -45,43 +43,9 @@ string AosdPlugin::name() const
   return "OSD";
 }
 
-string AosdPlugin::description() const
-{
-  return "OSD plugin based on libaosd";
-}
-
 string AosdPlugin::version() const
 {
   return PLUGIN_VERSION_STRING;
-}
-
-string AosdPlugin::usage() const
-{
-  return "No CLI options exist.";
-}
-
-string AosdPlugin::configFile() const
-{
-  return "licq_aosd.ini";
-}
-
-bool AosdPlugin::isEnabled() const
-{
-  return !blocked;
-}
-
-bool AosdPlugin::init(int argc, char** argv)
-{
-  for (int i = 1; i < argc; i++)
-  {
-    if (strcmp(argv[i], "-h") == 0)
-    {
-      printf("%s\n", usage().c_str());
-      return false;
-    }
-  }
-
-  return true;
 }
 
 int AosdPlugin::run()
@@ -92,48 +56,46 @@ int AosdPlugin::run()
       Licq::PluginSignal::SignalLogon |
       Licq::PluginSignal::SignalLogoff);
   bool finita = false;
-  char msg[3];
 
   Iface* iface = new Iface();
 
   while (!finita)
   {
-    read(pipe, msg, 1);
+    char msg;
+    read(pipe, &msg, 1);
 
-    switch (msg[0])
+    switch (msg)
     {
-      case Licq::GeneralPlugin::PipeSignal:
+      case PipeSignal:
         {
           Licq::PluginSignal* sig = popSignal();
           if (sig != NULL)
           {
-            if (!blocked)
+            if (!myBlocked)
               iface->processSignal(sig);
             delete sig;
-            sig = NULL;
           }
         }
         break;
 
-      case Licq::GeneralPlugin::PipeEvent:
+      case PipeEvent:
         {
           Licq::Event* ev = popEvent();
-          if (ev != NULL)
-            delete ev;
+          delete ev;
         }
         break;
 
-      case Licq::GeneralPlugin::PipeShutdown:
+      case PipeShutdown:
         finita = true;
         break;
 
-      case Licq::GeneralPlugin::PipeDisable:
-        blocked = true;
+      case PipeDisable:
+        myBlocked = true;
         break;
 
-      case Licq::GeneralPlugin::PipeEnable:
+      case PipeEnable:
         iface->updateTextRenderData();
-        blocked = false;
+        myBlocked = false;
         break;
 
       default:
@@ -151,10 +113,29 @@ void AosdPlugin::destructor()
   delete this;
 }
 
-
-Licq::GeneralPlugin* AosdPluginFactory(Licq::GeneralPlugin::Params& p)
+string AosdPlugin::description() const
 {
-  return new AosdPlugin(p);
+  return "OSD plugin based on libaosd";
+}
+
+string AosdPlugin::usage() const
+{
+  return "No CLI options exist.";
+}
+
+string AosdPlugin::configFile() const
+{
+  return "licq_aosd.ini";
+}
+
+bool AosdPlugin::isEnabled() const
+{
+  return !myBlocked;
+}
+
+Licq::GeneralPluginInterface* AosdPluginFactory()
+{
+  return new AosdPlugin;
 }
 
 LICQ_GENERAL_PLUGIN_DATA(&AosdPluginFactory);
