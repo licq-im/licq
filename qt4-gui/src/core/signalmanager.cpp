@@ -185,29 +185,29 @@ void SignalManager::process()
 
   switch (buf[0])
   {
-    case Licq::GeneralPlugin::PipeSignal:
+    case Licq::GeneralPluginHelper::PipeSignal:
     {
       Licq::PluginSignal* s = gQtGuiPlugin->popSignal();
       ProcessSignal(s);
       break;
     }
 
-    case Licq::GeneralPlugin::PipeEvent:
+    case Licq::GeneralPluginHelper::PipeEvent:
     {
       Licq::Event* e = gQtGuiPlugin->popEvent();
       ProcessEvent(e);
       break;
     }
 
-    case Licq::GeneralPlugin::PipeShutdown:
+    case Licq::GeneralPluginHelper::PipeShutdown:
     {
       gLog.info("Exiting main window (qt gui)");
       qApp->quit();
       break;
     }
 
-    case Licq::GeneralPlugin::PipeDisable:
-    case Licq::GeneralPlugin::PipeEnable:
+    case Licq::GeneralPluginHelper::PipeDisable:
+    case Licq::GeneralPluginHelper::PipeEnable:
       break;
 
     default:

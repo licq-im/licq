@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2011 Licq developers
+ * Copyright (C) 2011, 2013 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,35 +22,35 @@
 
 #include "config.h"
 
-#include <licq/plugin/generalplugin.h>
+#include <licq/plugin/generalpluginhelper.h>
 
 
 namespace LicqQtGui
 {
 
-class QtGuiPlugin : public Licq::GeneralPlugin
+class QtGuiPlugin : public Licq::GeneralPluginHelper
 {
 public:
-  QtGuiPlugin(Params& p);
+  QtGuiPlugin();
 
   // Make inherited members public so rest of GUI can use them directly
-  using Licq::GeneralPlugin::getReadPipe;
-  using Licq::GeneralPlugin::popEvent;
-  using Licq::GeneralPlugin::popSignal;
-  using Licq::GeneralPlugin::setSignalMask;
+  using Licq::GeneralPluginHelper::getReadPipe;
+  using Licq::GeneralPluginHelper::popEvent;
+  using Licq::GeneralPluginHelper::popSignal;
+  using Licq::GeneralPluginHelper::setSignalMask;
 
-  // From Licq::GeneralPlugin
+  // From Licq::PluginInterface
   std::string name() const;
-  std::string description() const;
   std::string version() const;
-  std::string usage() const;
-  std::string configFile() const;
-
-protected:
-  // From Licq::GeneralPlugin
   bool init(int argc, char** argv);
   int run();
   void destructor();
+
+  // From Licq::GeneralPluginInterface
+  std::string description() const;
+  std::string usage() const;
+  std::string configFile() const;
+  bool isEnabled() const;
 
 private:
   int myArgc;
