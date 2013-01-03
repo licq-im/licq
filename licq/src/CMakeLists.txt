@@ -33,6 +33,7 @@ set(licq_SRCS
   licq.cpp
   licq-upgrade.cpp
   main.cpp
+  mainloop.cpp
   md5.cpp
   oneventmanager.cpp
   packet.cpp

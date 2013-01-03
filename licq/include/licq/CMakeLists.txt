@@ -11,6 +11,7 @@ set(licq_HEADERS
   gpghelper.h
   inifile.h
   macro.h
+  mainloop.h
   md5.h
   oneventmanager.h
   packet.h
