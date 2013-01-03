@@ -520,26 +520,56 @@ static void upgradeLicq18_updateUsersList(StringMap& owners)
  *---------------------------------------------------------------------------*/
 static void upgradeLicq18_updateGroups(StringMap& owners, IniFile& licqConf)
 {
-  if (owners.count("ICQ_") == 0)
-    return;
-  const string& icqOwner(owners["ICQ_"]);
+  string icqOwner;
+  if (owners.count("ICQ_") > 0)
+    icqOwner = owners["ICQ_"];
 
   licqConf.setSection("groups");
   int numGroups;
   licqConf.get("NumOfGroups", numGroups);
   for (int i = 1; i <= numGroups; ++i)
   {
-    // Change server id keys from "Licq" to "ICQ_"
     char key[64];
-    sprintf(key, "Group%i.ServerId.Licq%s", i, icqOwner.c_str());
-    string id;
-    if (licqConf.get(key, id))
+
+    string icqServerId;
+    if (!icqOwner.empty())
     {
-      licqConf.unset(key);
+      // Support for server id for all protocols but old name for ICQ (only existed in 1.8.0-dev)
+      sprintf(key, "Group%i.ServerId.Licq%s", i, icqOwner.c_str());
+      if (licqConf.get(key, icqServerId))
+        licqConf.unset(key);
+    }
+
+    // ICQ specific parameter for server id (introduced with Licq 1.3.6)
+    sprintf(key, "Group%i.IcqServerId", i);
+    if (icqServerId.empty())
+      if (licqConf.get(key, icqServerId))
+        licqConf.unset(key);
+
+    sprintf(key, "Group%i.Sorting", i);
+    int sortIndex;
+    if (!licqConf.get(key, sortIndex))
+    {
+      // Sort index is missing (Licq 1.3.5 or older)
+      licqConf.set(key, i-1);
+
+      // .id is ICQ server id
+      sprintf(key, "Group%i.id", i);
+      licqConf.get(key, icqServerId);
+      licqConf.set(key, i);
+    }
+
+    // Write ICQ server id with new key
+    if (!icqServerId.empty() && !icqOwner.empty())
+    {
       sprintf(key, "Group%i.ServerId.ICQ_%s", i, icqOwner.c_str());
-      licqConf.set(key, id);
+      licqConf.set(key, icqServerId);
     }
   }
+
+  // Old no longer used keys (Removed by Licq 1.3.6)
+  licqConf.unset("DefaultGroup");
+  licqConf.unset("NewUserGroup");
 }
 
 /*-----------------------------------------------------------------------------

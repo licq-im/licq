@@ -180,32 +180,12 @@ bool UserManager::Load()
     char key[40];
     string groupName;
     int groupId, sortIndex;
-    unsigned icqGroupId = 0;
     sprintf(key, "Group%d.name", i);
     licqConf.get(key, groupName);
-
     sprintf(key, "Group%d.Sorting", i);
-    bool newConfig = licqConf.get(key, sortIndex, i-1);
-    if (!newConfig)
-      licqConf.set(key, sortIndex);
-
+    licqConf.get(key, sortIndex, i-1);
     sprintf(key, "Group%d.id", i);
     licqConf.get(key, groupId, 0);
-    if (!newConfig)
-      licqConf.set(key, i);
-
-    sprintf(key, "Group%d.IcqServerId", i);
-    if (licqConf.get(key, icqGroupId, 0))
-      licqConf.unset(key);
-
-    // Sorting and IcqServerId did not exist in older versions.
-    // If they are missing, assume that we are reading an old configuration
-    // where id parameter is ICQ server side group id.
-    if (!newConfig)
-    {
-      icqGroupId = groupId;
-      groupId = i;
-    }
 
     Group* newGroup = new Group(groupId, groupName);
     newGroup->setSortIndex(sortIndex);
@@ -242,15 +222,6 @@ bool UserManager::Load()
 
       if (!accountId.empty())
         newGroup->setServerId(Licq::UserId(protocolId, accountId), serverId);
-    }
-
-    // ServerId per protocol didn't exist in 1.3.x and older.
-    // This will preserve ICQ group ids when reading old config.
-    if (serverIdKeys.empty() && icqGroupId != 0)
-    {
-      Licq::UserId licqOwnerId(ownerUserId(LICQ_PPID));
-      newGroup->setServerId(licqOwnerId, icqGroupId);
-      licqConf.set(key + licqOwnerId.toString(), icqGroupId);
     }
 
     myGroups[groupId] = newGroup;
