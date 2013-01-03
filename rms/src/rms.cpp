@@ -617,30 +617,43 @@ CRMSClient::~CRMSClient()
 void CRMSClient::ParseUser(const string& strData)
 {
   myUserId = UserId();
-  unsigned long ppid;
+  unsigned long protocolId = 0;
   string accountId;
 
   size_t pos = strData.rfind('.');
   if (pos != string::npos)
   {
-    // Protocol specified, accept any user, even if it isn't currently in list
-    ppid = Licq::protocolId_fromString(strData.substr(pos+1));
-    myUserId = UserId(Licq::gUserManager.ownerUserId(ppid), strData.substr(0, pos-1));
-    return;
+    // Protocol specified
+    protocolId = Licq::protocolId_fromString(strData.substr(pos+1));
+    accountId = strData.substr(0, pos-1);
   }
   else
+    accountId = strData;
+
+  // Try and find an existing user that matches
+  Licq::UserListGuard userList(protocolId);
+  BOOST_FOREACH(const Licq::User* user, **userList)
   {
-    // Protocol not specified, find an existing user that matches
-    Licq::UserListGuard userList;
-    BOOST_FOREACH(const Licq::User* user, **userList)
+    if (user->accountId() == accountId)
     {
-      if (user->accountId() == strData)
-      {
-        myUserId = user->id();
-        return;
-      }
+      myUserId = user->id();
+      return;
     }
   }
+
+  if (protocolId != 0)
+  {
+    // Use first owner for protocol
+    Licq::OwnerListGuard ownerList(protocolId);
+    if (!ownerList->empty())
+    {
+      myUserId = Licq::UserId((*ownerList->begin())->id(), accountId);
+      return;
+    }
+  }
+
+  // Failed
+  myUserId = Licq::UserId();
 }
 
 /*---------------------------------------------------------------------------

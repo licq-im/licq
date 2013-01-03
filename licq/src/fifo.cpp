@@ -239,9 +239,7 @@ static Licq::UserId atoid(const char* buff, bool missingok = true)
   unsigned long protocolId;
   string name = buffer_get_ids(buff, &protocolId);
 
-  Licq::UserId ownerId(gUserManager.ownerUserId(protocolId));
-
-  Licq::UserListGuard userList(ownerId);
+  Licq::UserListGuard userList(protocolId);
   BOOST_FOREACH(const Licq::User* user, **userList)
   {
     Licq::UserReadGuard u(user);
@@ -250,7 +248,12 @@ static Licq::UserId atoid(const char* buff, bool missingok = true)
   }
 
   if (missingok && protocolId != 0)
-    return Licq::UserId(ownerId, name);
+  {
+    // Use first owner with matching protocol id
+    Licq::OwnerListGuard ownerList(protocolId);
+    if (!ownerList->empty())
+      return Licq::UserId((*ownerList->begin())->id(), name);
+  }
 
   return Licq::UserId();
 }
@@ -408,12 +411,20 @@ static int fifo_sms_number(int argc, const char *const *argv)
     return -1;
   }
 
+  Licq::UserId ownerId;
+  {
+    Licq::OwnerListGuard ownerList(LICQ_PPID);
+    if (ownerList->empty())
+      return -1;
+    ownerId = (*ownerList->begin())->id();
+  }
+
   Licq::ProtocolPlugin::Ptr icqProtocol(gPluginManager.getProtocolPlugin(LICQ_PPID));
   if (icqProtocol == NULL)
     return -1;
 
   dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->icqSendSms(
-      gUserManager.ownerUserId(LICQ_PPID), argv[1], gTranslator.toUtf8(argv[2]));
+      ownerId, argv[1], gTranslator.toUtf8(argv[2]));
   return 0;
 }
 

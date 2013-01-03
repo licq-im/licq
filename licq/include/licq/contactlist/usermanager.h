@@ -59,14 +59,6 @@ public:
   virtual bool userExists(const UserId& userId) = 0;
 
   /**
-   * Get user id for an owner
-   *
-   * @param ppid Protocol id
-   * @return User id of owner or empty string if no such owner exists
-   */
-  virtual UserId ownerUserId(unsigned long ppid) = 0;
-
-  /**
    * Notify plugins about changes for a user
    *
    * @param userId User that has changed

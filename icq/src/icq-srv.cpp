@@ -4812,32 +4812,27 @@ void IcqProtocol::ProcessAuthFam(Buffer& packet, unsigned short nSubtype)
 
       unsigned long nNewUin = packet.UnpackUnsignedLong();
 
-      Licq::UserId oldOwnerId = Licq::gUserManager.ownerUserId(LICQ_PPID);
-      if (!oldOwnerId.isValid())
-      {
-        gLog.warning(tr("Received new uin (%lu) when already have a uin (%s)."),
-            nNewUin, oldOwnerId.toString().c_str());
-        return;
-      }
-
       gLog.info(tr("Received new uin: %lu"), nNewUin);
       char szUin[14];
       snprintf(szUin, sizeof(szUin), "%lu", nNewUin);
       Licq::UserId ownerId(LICQ_PPID, szUin);
       Licq::gUserManager.addOwner(ownerId);
 
+      bool added = false;
       {
         Licq::OwnerWriteGuard o(ownerId);
         if (o.isLocked())
         {
+          added = true;
           o->setPassword(myRegisterPasswd);
           o->save(Licq::Owner::SaveOwnerInfo);
         }
       }
       myRegisterPasswd = "";
 
-      gPluginManager.pushPluginSignal(new Licq::PluginSignal(
-          Licq::PluginSignal::SignalNewOwner, 0, ownerId));
+      if (added)
+        gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+            Licq::PluginSignal::SignalNewOwner, 0, ownerId));
 
       // Reconnect now
       int nSD = m_nTCPSrvSocketDesc;
@@ -4846,7 +4841,8 @@ void IcqProtocol::ProcessAuthFam(Buffer& packet, unsigned short nSubtype)
       m_bLoggingOn = false; 
       gSocketManager.CloseSocket(nSD);
       postLogoff(nSD, NULL);
-      logon(ownerId, Licq::User::OnlineStatus);
+      if (added)
+        logon(ownerId, Licq::User::OnlineStatus);
       break;
     }
 

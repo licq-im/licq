@@ -721,22 +721,6 @@ bool UserManager::userExists(const UserId& userId)
   return exists;
 }
 
-UserId UserManager::ownerUserId(unsigned long ppid)
-{
-  myOwnerListMutex.lockRead();
-  for (OwnerMap::const_iterator i = myOwners.begin(); i != myOwners.end(); ++i)
-  {
-    if (i->first.protocolId() != ppid)
-      continue;
-
-    myOwnerListMutex.unlockRead();
-    return i->first;
-  }
-
-  myOwnerListMutex.unlockRead();
-  return UserId();
-}
-
 User* UserManager::createUser(const UserId& userId, bool temporary)
 {
   assert(!userId.isOwner());

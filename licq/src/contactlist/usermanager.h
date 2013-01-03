@@ -146,7 +146,6 @@ public:
   void addOwner(const Licq::UserId& userId);
   bool removeOwner(const Licq::UserId& userId);
   bool userExists(const Licq::UserId& userId);
-  Licq::UserId ownerUserId(unsigned long ppid);
   void notifyUserUpdated(const Licq::UserId& userId, unsigned long subSignal);
   bool addUser(const Licq::UserId& userId, bool permanent = true,
       bool addToServer = true, unsigned short groupId = 0);
