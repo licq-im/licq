@@ -216,9 +216,9 @@ void OwnerManagerDlg::listSelectionChanged()
     {
       unsigned long protocolId = data.toUInt();
       Licq::ProtocolPlugin::Ptr plugin = Licq::gPluginManager.getProtocolPlugin(protocolId);
-      myAddButton->setEnabled(!hasChildren ||
-          (plugin->capabilities() & Licq::ProtocolPlugin::CanMultipleOwners));
-      myRegisterButton->setEnabled(!hasChildren && (protocolId == LICQ_PPID || protocolId == MSN_PPID));
+      bool mayAdd = (!hasChildren || (plugin->capabilities() & Licq::ProtocolPlugin::CanMultipleOwners));
+      myAddButton->setEnabled(mayAdd);
+      myRegisterButton->setEnabled(mayAdd && (protocolId == LICQ_PPID || protocolId == MSN_PPID));
       myModifyButton->setEnabled(false);
       myRemoveButton->setEnabled(!hasChildren);
       break;
@@ -296,19 +296,6 @@ void OwnerManagerDlg::registerPressed()
 
 void OwnerManagerDlg::registerOwner(unsigned long protocolId)
 {
-  Licq::UserId oldOwnerId = Licq::gUserManager.ownerUserId(protocolId);
-  if (oldOwnerId.isValid())
-  {
-    QString buf = tr("You are currently registered as\n"
-        "UIN (User ID): %1\n"
-        "Base Directory: %2\n"
-        "Rerun licq with the -b option to select a new\n"
-        "base directory and then register a new user.")
-        .arg(oldOwnerId.accountId().c_str()).arg(Licq::gDaemon.baseDir().c_str());
-    InformUser(this, buf);
-    return;
-  }
-
   switch (protocolId)
   {
     case LICQ_PPID:
