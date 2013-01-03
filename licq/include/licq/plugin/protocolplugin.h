@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2011-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2011-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,7 @@ public:
     CanHoldStatusMsg     = 1<<10,
     CanVaryEncoding     = 1<<11,
     CanSingleGroup      = 1<<12,    // Contacts have only a single group in server list
+    CanMultipleOwners   = 1<<13,        // Protocol can handle multiple owners
   };
 
   /// A smart pointer to a ProtocolPlugin instance

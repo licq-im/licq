@@ -108,11 +108,12 @@ void UserManager::addOwner(const UserId& userId)
     return;
   }
 
-  // We currently only support one owner per protocol. Enforce this until we're ready
   for (OwnerMap::const_iterator i = myOwners.begin(); i != myOwners.end(); ++i)
   {
-    if (i->first.protocolId() == userId.protocolId())
+    if (i->first.protocolId() == userId.protocolId() &&
+        (i->second->protocolCapabilities() & Licq::ProtocolPlugin::CanMultipleOwners) == 0)
     {
+      // We already have another owner for this protocol, and multiple owners isn't supported
       myOwnerListMutex.unlockWrite();
       return;
     }
@@ -319,8 +320,9 @@ void UserManager::loadProtocol(unsigned long protocolId)
     // Load all users for owner
     loadUserList(ownerId);
 
-    // We currently only support one owner per protocol
-    break;
+    if ((o->protocolCapabilities() & Licq::ProtocolPlugin::CanMultipleOwners) == 0)
+      // This protocol only supports one owner per protocol, don't load any more
+      break;
   }
   myOwnerListMutex.unlockWrite();
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2004-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -213,11 +213,16 @@ void OwnerManagerDlg::listSelectionChanged()
       myRemoveButton->setEnabled(false);
       break;
     case QVariant::UInt: // data is id of loaded protocol
-      myAddButton->setEnabled(!hasChildren);
-      myRegisterButton->setEnabled(!hasChildren && (data.toUInt() == LICQ_PPID || data.toUInt() == MSN_PPID));
+    {
+      unsigned long protocolId = data.toUInt();
+      Licq::ProtocolPlugin::Ptr plugin = Licq::gPluginManager.getProtocolPlugin(protocolId);
+      myAddButton->setEnabled(!hasChildren ||
+          (plugin->capabilities() & Licq::ProtocolPlugin::CanMultipleOwners));
+      myRegisterButton->setEnabled(!hasChildren && (protocolId == LICQ_PPID || protocolId == MSN_PPID));
       myModifyButton->setEnabled(false);
       myRemoveButton->setEnabled(!hasChildren);
       break;
+    }
     default: // data is id of owner
       myAddButton->setEnabled(false);
       myRegisterButton->setEnabled(false);
