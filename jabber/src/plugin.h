@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -24,6 +24,7 @@
 #define LICQJABBER_PLUGIN_H
 
 #include <licq/plugin/protocolplugin.h>
+#include <licq/mainloop.h>
 
 #include <gloox/gloox.h>
 
@@ -52,7 +53,7 @@ namespace LicqJabber
 
 class Client;
 
-class Plugin : public Licq::ProtocolPlugin
+class Plugin : public Licq::ProtocolPlugin, public Licq::MainLoopCallback
 {
 public:
   Plugin(Params& p);
@@ -72,7 +73,9 @@ private:
   void destructor();
   Licq::Owner* createOwner(const Licq::UserId& id);
 
-  void processPipe(int pipe);
+  // From Licq::MainLoopCallback
+  void rawFileEvent(int fd, int revents);
+
   void processSignal(Licq::ProtocolSignal* signal);
   void getUserGroups(const Licq::UserId& userId, gloox::StringList& retGroupNames);
 
@@ -92,8 +95,8 @@ private:
   void doRequestAuth(Licq::ProtoRequestAuthSignal* signal);
   void doRenameGroup(Licq::ProtoRenameGroupSignal* s);
 
-  bool myDoRun;
   Client* myClient;
+  Licq::MainLoop myMainLoop;
 };
 
 } // namespace LicqJabber

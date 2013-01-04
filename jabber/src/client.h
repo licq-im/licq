@@ -32,6 +32,8 @@
 #include <gloox/vcardmanager.h>
 #include <gloox/vcardhandler.h>
 
+#include <licq/mainloop.h>
+
 #include "handler.h"
 
 namespace gloox
@@ -64,17 +66,17 @@ class Client : private boost::noncopyable,
                public gloox::ConnectionListener,
                public gloox::RosterListener,
                public gloox::LogHandler,
-               public gloox::VCardHandler
+               public gloox::VCardHandler,
+               public Licq::MainLoopCallback
 {
 public:
-  Client(const Licq::UserId& ownerId, const std::string& user,
-         const std::string& password, const std::string& host, int port,
-         const std::string& resource, gloox::TLSPolicy tlsPolicy);
+  Client(Licq::MainLoop& mainLoop, const Licq::UserId& ownerId,
+      const std::string& user, const std::string& password,
+      const std::string& host, int port, const std::string& resource,
+      gloox::TLSPolicy tlsPolicy);
   virtual ~Client();
 
   int getSocket();
-  void recv();
-  void ping();
 
   SessionManager* getSessionManager() { return mySessionManager; }
 
@@ -132,6 +134,11 @@ public:
                          gloox::StanzaError error);
 
 private:
+  // Licq::MainLoopCallback
+  void rawFileEvent(int fd, int revents);
+  void timeoutEvent(int id);
+
+  Licq::MainLoop& myMainLoop;
   Handler myHandler;
   SessionManager* mySessionManager;
   gloox::JID myJid;

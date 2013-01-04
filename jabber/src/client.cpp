@@ -44,6 +44,8 @@ using Licq::gDaemon;
 using Licq::gLog;
 using std::string;
 
+static const time_t PING_TIMEOUT = 60;
+
 GlooxClient::GlooxClient(const gloox::JID& jid, const string& password) :
   gloox::Client(jid, password)
 {
@@ -59,9 +61,10 @@ bool GlooxClient::checkStreamVersion(const string& version)
   return gloox::Client::checkStreamVersion(version);
 }
 
-Client::Client(const Licq::UserId& ownerId, const string& username,
-               const string& password, const string& host, int port,
-               const string& resource, gloox::TLSPolicy tlsPolicy) :
+Client::Client(Licq::MainLoop& mainLoop, const Licq::UserId& ownerId,
+    const string& username, const string& password, const string& host,
+    int port, const string& resource, gloox::TLSPolicy tlsPolicy) :
+  myMainLoop(mainLoop),
   myHandler(ownerId),
   mySessionManager(NULL),
   myJid(username + "/" + resource),
@@ -127,12 +130,12 @@ int Client::getSocket()
       myClient.connectionImpl())->socket();
 }
 
-void Client::recv()
+void Client::rawFileEvent(int /*fd*/, int /*revents*/)
 {
   myClient.recv();
 }
 
-void Client::ping()
+void Client::timeoutEvent(int /*id*/)
 {
   myClient.whitespacePing();
 }
@@ -145,7 +148,14 @@ void Client::setPassword(const string& password)
 bool Client::connect(unsigned status)
 {
   changeStatus(status, false);
-  return myClient.connect(false);
+  if (!myClient.connect(false))
+    return false;
+
+  // Register with mainloop for socket monitoring and whitespace ping
+  myMainLoop.addRawFile(getSocket(), this);
+  myMainLoop.addTimeout(PING_TIMEOUT*1000, this, 0, false);
+
+  return true;
 }
 
 bool Client::isConnected()
@@ -241,6 +251,9 @@ bool Client::onTLSConnect(const gloox::CertInfo& /*info*/)
 
 void Client::onDisconnect(gloox::ConnectionError error)
 {
+  // Socket no longer open, stop monitoring it
+  myMainLoop.removeCallback(this);
+
   bool authError = false;
 
   switch (error)

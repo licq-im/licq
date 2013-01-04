@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -40,8 +40,6 @@
 #include <licq/statistics.h>
 #include <licq/userevents.h>
 
-#include <sys/select.h>
-
 using namespace LicqJabber;
 
 using Licq::OnEventData;
@@ -49,11 +47,8 @@ using Licq::gOnEventManager;
 using Licq::gLog;
 using std::string;
 
-const time_t PING_TIMEOUT = 60;
-
 Plugin::Plugin(Params& p) :
     Licq::ProtocolPlugin(p),
-  myDoRun(false),
   myClient(NULL)
 {
   gLog.debug("Using gloox version %s", gloox::GLOOX_VERSION.c_str());
@@ -99,60 +94,8 @@ bool Plugin::init(int, char**)
 
 int Plugin::run()
 {
-  int pipe = getReadPipe();
-
-  fd_set readFds;
-
-  time_t lastPing = 0;
-  struct timeval pingTimeout;
-
-  myDoRun = (pipe != -1);
-  while (myDoRun)
-  {
-    FD_ZERO(&readFds);
-    FD_SET(pipe, &readFds);
-    int nfds = pipe + 1;
-    struct timeval* timeout = NULL;
-
-    const time_t now = ::time(NULL);
-    if (lastPing == 0)
-      lastPing = now;
-
-    int sock = -1;
-    if (myClient != NULL)
-    {
-      sock = myClient->getSocket();
-      if (sock != -1)
-      {
-        FD_SET(sock, &readFds);
-        if (sock > pipe)
-          nfds = sock + 1;
-
-        if (lastPing + PING_TIMEOUT <= now)
-        {
-          myClient->ping();
-          lastPing = now;
-          pingTimeout.tv_sec = PING_TIMEOUT;
-        }
-        else
-          pingTimeout.tv_sec = std::min(PING_TIMEOUT, now - lastPing);
-
-        pingTimeout.tv_usec = 0;
-        timeout = &pingTimeout;
-      }
-    }
-    else
-      lastPing = 0;
-
-    if (::select(nfds, &readFds, NULL, NULL, timeout) > 0)
-    {
-      if (sock != -1 && FD_ISSET(sock, &readFds))
-        myClient->recv();
-      if (FD_ISSET(pipe, &readFds))
-        processPipe(pipe);
-    }
-  }
-
+  myMainLoop.addRawFile(getReadPipe(), this);
+  myMainLoop.run();
   return 0;
 }
 
@@ -166,10 +109,10 @@ Licq::Owner* Plugin::createOwner(const Licq::UserId& id)
   return new Owner(id);
 }
 
-void Plugin::processPipe(int pipe)
+void Plugin::rawFileEvent(int fd, int /*revents*/)
 {
   char ch;
-  ::read(pipe, &ch, sizeof(ch));
+  ::read(fd, &ch, sizeof(ch));
 
   switch (ch)
   {
@@ -182,7 +125,7 @@ void Plugin::processPipe(int pipe)
     }
     case Licq::ProtocolPlugin::PipeShutdown:
       doLogoff();
-      myDoRun = false;
+      myMainLoop.quit();
       break;
     default:
       gLog.error("Unknown command %c", ch);
@@ -280,7 +223,7 @@ void Plugin::doLogon(Licq::ProtoLogonSignal* signal)
   }
 
   if (myClient == NULL)
-    myClient = new Client(signal->userId(), username, password, host, port, resource, tlsPolicy);
+    myClient = new Client(myMainLoop, signal->userId(), username, password, host, port, resource, tlsPolicy);
   else
     myClient->setPassword(password);
 
