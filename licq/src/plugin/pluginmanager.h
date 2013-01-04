@@ -128,6 +128,8 @@ private:
   DynamicLibrary::Ptr loadPlugin(PluginThread::Ptr pluginThread,
                                  const std::string& name,
                                  const std::string& prefix);
+  bool verifyPluginMagic(const std::string& name, char magic[4]);
+  bool verifyPluginVersion(const std::string& name, int version);
 
   void startPlugin(Licq::GeneralPlugin::Ptr plugin);
   void startPlugin(Licq::ProtocolPlugin::Ptr plugin);

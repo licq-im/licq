@@ -66,7 +66,6 @@ LicqDaemon::PluginManager LicqDaemon::gPluginManager;
 // Initialize global Licq::PluginManager to refer to the internal PluginManager
 Licq::PluginManager& Licq::gPluginManager(LicqDaemon::gPluginManager);
 
-
 PluginManager::PluginManager() :
   myNextPluginId(1)
 {
@@ -105,28 +104,19 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
   try
   {
     // Get plugin data from library
-    struct Licq::GeneralPluginData* pluginData;
+    Licq::GeneralPluginData* pluginData;
     lib->getSymbol("LicqGeneralPluginData", &pluginData);
 
     // Verify plugin data
-    if (pluginData == NULL ||
-        pluginData->licqMagic[0] != 'L' || pluginData->licqMagic[1] != 'i' ||
-        pluginData->licqMagic[2] != 'c' || pluginData->licqMagic[3] != 'q')
+    if (pluginData == NULL)
     {
       gLog.error(tr("Library %s does not contain a Licq plugin"), name.c_str());
       return GeneralPlugin::Ptr();
     }
 
-    // Make sure plugin version is supported
-    // We expect plugin API to stay the same between releases of the same major/minor version
-    if (pluginData->licqVersion / 10 != LICQ_VERSION / 10)
-    {
-      gLog.error(tr("Plugin in library %s was built for another Licq version (%i.%i.%i)"),
-          name.c_str(), Licq::extractMajorVersion(pluginData->licqVersion),
-          Licq::extractMinorVersion(pluginData->licqVersion),
-          Licq::extractReleaseVersion(pluginData->licqVersion));
+    if (!verifyPluginMagic(name, pluginData->licqMagic)
+        || !verifyPluginVersion(name, pluginData->licqVersion))
       return GeneralPlugin::Ptr();
-    }
 
     // Generate an ID for the plugin
     int pluginId;
@@ -182,28 +172,19 @@ loadProtocolPlugin(const std::string& name, bool keep)
   try
   {
     // Get plugin data from library
-    struct Licq::ProtocolPluginData* pluginData;
+    Licq::ProtocolPluginData* pluginData;
     lib->getSymbol("LicqProtocolPluginData", &pluginData);
 
     // Verify plugin data
-    if (pluginData == NULL ||
-        pluginData->licqMagic[0] != 'L' || pluginData->licqMagic[1] != 'i' ||
-        pluginData->licqMagic[2] != 'c' || pluginData->licqMagic[3] != 'q')
+    if (pluginData == NULL)
     {
       gLog.error(tr("Library %s does not contain a Licq plugin"), name.c_str());
       return ProtocolPlugin::Ptr();
     }
 
-    // Make sure plugin version is supported
-    // We expect plugin API to stay the same between releases of the same major/minor version
-    if (pluginData->licqVersion / 10 != LICQ_VERSION / 10)
-    {
-      gLog.error(tr("Plugin in library %s was built for another Licq version (%i.%i.%i)"),
-          name.c_str(), Licq::extractMajorVersion(pluginData->licqVersion),
-          Licq::extractMinorVersion(pluginData->licqVersion),
-          Licq::extractReleaseVersion(pluginData->licqVersion));
+    if (!verifyPluginMagic(name, pluginData->licqMagic)
+        || !verifyPluginVersion(name, pluginData->licqVersion))
       return ProtocolPlugin::Ptr();
-    }
 
     // Generate an ID for the plugin
     int pluginId;
@@ -599,6 +580,39 @@ DynamicLibrary::Ptr PluginManager::loadPlugin(
   }
 
   return DynamicLibrary::Ptr();
+}
+
+bool PluginManager::verifyPluginMagic(const std::string& name, char magic[4])
+{
+  const char expected[4] = { 'L', 'i', 'c', 'q' };
+
+  for (size_t i = 0; i < sizeof(expected); ++i)
+  {
+    if (magic[i] != expected[i])
+    {
+      gLog.error(tr("Library %s does not contain a valid Licq plugin"),
+                 name.c_str());
+      return false;
+    }
+  }
+  return true;
+}
+
+bool PluginManager::verifyPluginVersion(const std::string& name, int version)
+{
+  // We expect plugin API to stay the same between releases of the same
+  // major/minor version.
+  const unsigned int major = Licq::extractMajorVersion(version);
+  const unsigned int minor = Licq::extractMinorVersion(version);
+  if (major != LICQ_VERSION_MAJOR || minor != LICQ_VERSION_MINOR)
+  {
+    gLog.error(tr("Plugin in library %s was built for another Licq version "
+                  "(%u.%u.%u)"), name.c_str(),
+               major, minor, Licq::extractReleaseVersion(version));
+    return false;
+  }
+
+  return true;
 }
 
 static void exitPluginCallback(const Plugin& plugin)
