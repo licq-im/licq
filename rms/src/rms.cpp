@@ -25,7 +25,6 @@
 #include <cstdio>
 #include <cstring>
 #include <sstream>
-#include <sys/select.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -43,6 +42,7 @@
 #include <licq/logging/log.h>
 #include <licq/logging/logservice.h>
 #include <licq/logging/logutils.h>
+#include <licq/mainloop.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
@@ -185,7 +185,6 @@ CLicqRMS::CLicqRMS(Licq::GeneralPlugin::Params& p)
 {
   licqRMS = this;
   server = NULL;
-  m_bExit = false;
 }
 
 
@@ -339,76 +338,11 @@ int CLicqRMS::run()
   }
 
   gLog.info("RMS server started on port %d", server->getLocalPort());
-  CRMSClient::sockman.AddSocket(server);
-  CRMSClient::sockman.DropSocket(server);
+  myMainLoop.addSocket(server, this);
+  myMainLoop.addRawFile(getReadPipe(), this);
 
-  fd_set f;
-  int l;
-  int nResult;
+  myMainLoop.run();
 
-  int m_nPipe = getReadPipe();
-
-  while (!m_bExit)
-  {
-    f = CRMSClient::sockman.socketSet();
-    l = CRMSClient::sockman.LargestSocket() + 1;
-
-    // Add the new socket pipe descriptor
-    FD_SET(m_nPipe, &f);
-    if (m_nPipe >= l) l = m_nPipe + 1;
-    if (myLogSink)
-    {
-      int fd = myLogSink->getReadPipe();
-      FD_SET(fd, &f);
-      if (fd >= l)
-        l = fd + 1;
-    }
-
-    nResult = select(l, &f, NULL, NULL, NULL);
-    if (nResult == -1)
-    {
-      gLog.error("Error in select(): %s", strerror(errno));
-      m_bExit = true;
-    }
-    else
-    {
-      while (nResult > 0)
-      {
-        if (FD_ISSET(m_nPipe, &f))
-          ProcessPipe();
-        else if (FD_ISSET(server->Descriptor(), &f))
-          ProcessServer();
-        else if (myLogSink && FD_ISSET(myLogSink->getReadPipe(), &f))
-          ProcessLog();
-        else
-        {
-          ClientList::iterator iter;
-          for (iter = clients.begin(); iter != clients.end(); iter++)
-          {
-            if (FD_ISSET((*iter)->sock.Descriptor(), &f))
-            {
-              if ((*iter)->Activity() == -1)
-              {
-                delete *iter;
-                clients.erase(iter);
-                if (myLogSink)
-                {
-                  unsigned int mask = 0;
-                  BOOST_FOREACH(CRMSClient* client, clients)
-                  {
-                    mask |= client->myLogLevelsBitmask;
-                  }
-                  myLogSink->setLogLevelsFromBitmask(mask);
-                }
-              }
-              break;
-            }
-          }
-        }
-        nResult--;
-      }
-    }
-  }
   Shutdown();
   return 0;
 }
@@ -416,6 +350,44 @@ int CLicqRMS::run()
 void CLicqRMS::destructor()
 {
   delete this;
+}
+
+void CLicqRMS::rawFileEvent(int fd, int /* revents */)
+{
+  if (fd == getReadPipe())
+    ProcessPipe();
+  else if (myLogSink && fd == myLogSink->getReadPipe())
+    ProcessLog();
+}
+
+void CLicqRMS::setupLogSink()
+{
+  if (!myLogSink)
+  {
+    myLogSink.reset(new Licq::PluginLogSink);
+    Licq::gLogService.registerLogSink(myLogSink);
+    myMainLoop.addRawFile(myLogSink->getReadPipe(), this);
+  }
+
+  unsigned int mask = 0;
+  BOOST_FOREACH(CRMSClient* client, clients)
+    mask |= client->myLogLevelsBitmask;
+  myLogSink->setLogLevelsFromBitmask(mask);
+}
+
+void CLicqRMS::deleteClient(CRMSClient* client)
+{
+  delete client;
+
+  for (ClientList::iterator iter = clients.begin(); iter != clients.end(); ++iter)
+    if (*iter == client)
+    {
+      clients.erase(iter);
+      break;
+    }
+
+  if (myLogSink)
+    setupLogSink();
 }
 
 /*---------------------------------------------------------------------------
@@ -448,7 +420,7 @@ void CLicqRMS::ProcessPipe()
 
     case Licq::GeneralPlugin::PipeShutdown:
       gLog.info("Exiting");
-      m_bExit = true;
+      myMainLoop.quit();
       break;
 
     case Licq::GeneralPlugin::PipeDisable:
@@ -561,21 +533,15 @@ void CLicqRMS::ProcessEvent(Licq::Event* e)
   }
 }
 
-
-
-/*---------------------------------------------------------------------------
- * CLicqRMS::ProcessServer
- *-------------------------------------------------------------------------*/
-void CLicqRMS::ProcessServer()
+void CLicqRMS::socketEvent(Licq::INetSocket* inetSocket, int /* revents */)
 {
-  server->Lock();
-  clients.push_back(new CRMSClient(server));
-  server->Unlock();
+  if (inetSocket == server)
+  {
+    server->Lock();
+    clients.push_back(new CRMSClient(server));
+    server->Unlock();
+  }
 }
-
-
-
-Licq::SocketManager CRMSClient::sockman;
 
 /*---------------------------------------------------------------------------
  * CRMSClient::constructor
@@ -584,8 +550,7 @@ CRMSClient::CRMSClient(Licq::TCPSocket* sin)
   : myLogLevelsBitmask(0)
 {
   sin->RecvConnection(sock);
-  sockman.AddSocket(&sock);
-  sockman.DropSocket(&sock);
+  licqRMS->myMainLoop.addSocket(&sock, this);
 
   gLog.info("Client connected from %s", sock.getRemoteIpString().c_str());
   fs = fdopen(sock.Descriptor(), "r+");
@@ -605,10 +570,19 @@ CRMSClient::CRMSClient(Licq::TCPSocket* sin)
  *-------------------------------------------------------------------------*/
 CRMSClient::~CRMSClient()
 {
-  sockman.CloseSocket(sock.Descriptor(), false, false);
-  
+  licqRMS->myMainLoop.removeSocket(&sock);
+  sock.CloseConnection();
+
   if (m_szCheckId)
     free(m_szCheckId);
+}
+
+void CRMSClient::socketEvent(Licq::INetSocket* /*inetSocket*/, int /*revents*/)
+{
+  if (Activity() == -1)
+  {
+    licqRMS->deleteClient(this);
+  }
 }
 
 /*---------------------------------------------------------------------------
@@ -1018,7 +992,8 @@ int CRMSClient::Process_QUIT()
 {
   fprintf(fs, "%d Sayonara.\n", CODE_QUIT);
   fflush(fs);
-  if (strtoul(data_arg, (char**)NULL, 10) > 0) licqRMS->m_bExit = true;
+  if (strtoul(data_arg, (char**)NULL, 10) > 0)
+    licqRMS->myMainLoop.quit();
   return -1;
 }
 
@@ -1466,21 +1441,10 @@ int CRMSClient::Process_AR_text()
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_LOG()
 {
-  if (!licqRMS->myLogSink)
-  {
-    licqRMS->myLogSink.reset(new Licq::PluginLogSink);
-    Licq::gLogService.registerLogSink(licqRMS->myLogSink);
-  }
-
   unsigned short lt = strtoul(data_arg, (char**)NULL, 10);
   myLogLevelsBitmask = Licq::LogUtils::convertOldBitmaskToNew(lt);
 
-  unsigned int mask = 0;
-  BOOST_FOREACH(CRMSClient* client, licqRMS->clients)
-  {
-    mask |= client->myLogLevelsBitmask;
-  }
-  licqRMS->myLogSink->setLogLevelsFromBitmask(mask);
+  licqRMS->setupLogSink();
 
   fprintf(fs, "%d Log type set to %d.\n", CODE_LOGxTYPE, lt);
 

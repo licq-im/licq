@@ -25,8 +25,8 @@
 #include <list>
 
 #include <licq/logging/pluginlogsink.h>
+#include <licq/mainloop.h>
 #include <licq/socket.h>
-#include <licq/socketmanager.h>
 #include <licq/userid.h>
 
 namespace Licq
@@ -42,7 +42,7 @@ const unsigned short MAX_TEXT_LENGTH = 1024 * 8;
 typedef std::list<class CRMSClient*> ClientList;
 typedef std::list<unsigned long> TagList;
 
-class CLicqRMS : public Licq::GeneralPlugin
+class CLicqRMS : public Licq::GeneralPlugin, public Licq::MainLoopCallback
 {
 public:
   CLicqRMS(Params& p);
@@ -58,12 +58,19 @@ public:
   bool isEnabled() const;
 
 protected:
+  // From Licq::MainLoopCallback
+  void rawFileEvent(int fd, int revents);
+  void socketEvent(Licq::INetSocket* inetSocket, int revents);
+
   // From Licq::GeneralPlugin
   bool init(int argc, char** argv);
   int run();
   void destructor();
 
-  bool m_bExit, m_bEnabled;
+  void deleteClient(CRMSClient* client);
+  void setupLogSink();
+
+  bool m_bEnabled;
 
   unsigned int myPort;
   Licq::UserId myAuthOwnerId;
@@ -73,6 +80,7 @@ protected:
   Licq::TCPSocket* server;
   ClientList clients;
   Licq::PluginLogSink::Ptr myLogSink;
+  Licq::MainLoop myMainLoop;
 
 public:
   void ProcessPipe();
@@ -86,15 +94,13 @@ friend class CRMSClient;
 };
 
 
-class CRMSClient
+class CRMSClient : public Licq::MainLoopCallback
 {
 public:
   CRMSClient(Licq::TCPSocket*);
   ~CRMSClient();
 
   int Activity();
-
-  static Licq::SocketManager sockman;
 
   int Process_QUIT();
   int Process_TERM();
@@ -116,6 +122,9 @@ public:
   int Process_NOTIFY();
 
 protected:
+  // From Licq::MainLoopCallback
+  void socketEvent(Licq::INetSocket* inetSocket, int revents);
+
   Licq::TCPSocket sock;
   FILE *fs;
   TagList tags;
