@@ -69,9 +69,8 @@ char *strndup(const char *s, size_t n)
 #endif // HAVE_STRNDUP
 
 
-CMSN::CMSN(Licq::ProtocolPlugin::Params& p)
-  : Licq::ProtocolPlugin(p),
-    myServerSocket(NULL),
+CMSN::CMSN()
+  : myServerSocket(NULL),
     mySslSocket(NULL),
     m_vlPacketBucket(211)
 {
@@ -100,6 +99,11 @@ std::string CMSN::version() const
   return PLUGIN_VERSION_STRING;
 }
 
+void CMSN::destructor()
+{
+  delete this;
+}
+
 unsigned long CMSN::protocolId() const
 {
   return MSN_PPID;
@@ -112,6 +116,16 @@ unsigned long CMSN::capabilities() const
       Licq::ProtocolPlugin::CanSendAuthReq;
 }
 
+Licq::User* CMSN::createUser(const Licq::UserId& id, bool temporary)
+{
+  return new User(id, temporary);
+}
+
+Licq::Owner* CMSN::createOwner(const Licq::UserId& id)
+{
+  return new Owner(id);
+}
+
 std::string CMSN::defaultServerHost() const
 {
   return "messenger.hotmail.com";
@@ -120,11 +134,6 @@ std::string CMSN::defaultServerHost() const
 int CMSN::defaultServerPort() const
 {
   return 1863;
-}
-
-bool CMSN::init(int, char**)
-{
-  return true;
 }
 
 void CMSN::StorePacket(SBuffer *_pBuf, int _nSock)
@@ -386,38 +395,23 @@ int CMSN::run()
   return 0;
 }
 
-void CMSN::destructor()
-{
-  delete this;
-}
-
-Licq::User* CMSN::createUser(const Licq::UserId& id, bool temporary)
-{
-  return new User(id, temporary);
-}
-
-Licq::Owner* CMSN::createOwner(const Licq::UserId& id)
-{
-  return new Owner(id);
-}
-
 void CMSN::rawFileEvent(int fd, int /*revents*/)
 {
   char c;
   read(fd, &c, 1);
   switch (c)
   {
-    case Licq::ProtocolPlugin::PipeSignal:
+    case PipeSignal:
     {
       Licq::ProtocolSignal* s = popSignal();
       ProcessSignal(s);
       break;
     }
 
-    case Licq::ProtocolPlugin::PipeShutdown:
-    gLog.info("Exiting");
-    myMainLoop.quit();
-    break;
+    case PipeShutdown:
+      gLog.info("Exiting");
+      myMainLoop.quit();
+      break;
   }
 }
 
