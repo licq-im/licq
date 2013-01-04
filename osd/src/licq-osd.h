@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2011 Licq developers
+ * Copyright (C) 2011, 2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,27 +20,25 @@
 #ifndef LICQOSD_H
 #define LICQOSD_H
 
-#include <licq/plugin/generalplugin.h>
+#include <licq/plugin/generalpluginhelper.h>
 
-
-class OsdPlugin : public Licq::GeneralPlugin
+class OsdPlugin : public Licq::GeneralPluginHelper
 {
 public:
-  OsdPlugin(Params& p);
+  OsdPlugin();
 
-  // From Licq::GeneralPlugin
+  // From Licq::PluginInterface
   std::string name() const;
-  std::string description() const;
   std::string version() const;
-  std::string usage() const;
-  std::string configFile() const;
-  bool isEnabled() const;
-
-protected:
-  // From Licq::GeneralPlugin
   bool init(int argc, char** argv);
   int run();
   void destructor();
+
+  // From Licq::GeneralPluginInterface
+  std::string description() const;
+  std::string usage() const;
+  std::string configFile() const;
+  bool isEnabled() const;
 };
 
 #endif
