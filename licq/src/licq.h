@@ -25,6 +25,7 @@
 #include <pthread.h>
 #include <list>
 
+#include <licq/mainloop.h>
 #include <licq/plugin/generalplugin.h>
 #include <licq/plugin/protocolplugin.h>
 #include <licq/pipe.h>
@@ -42,7 +43,7 @@ namespace LicqDaemon
 class StreamLogSink;
 }
 
-class CLicq
+class CLicq : public Licq::MainLoopCallback
 {
 public:
   CLicq();
@@ -78,9 +79,14 @@ protected:
   Licq::ProtocolPlugin::Ptr LoadProtoPlugin(const std::string& name, bool keep = true);
 
 private:
+  // From Licq::MainLoopCallback
+  void rawFileEvent(int fd, int revents);
+  void timeoutEvent(int id);
+
   boost::shared_ptr<LicqDaemon::StreamLogSink> myConsoleLog;
   int myConsoleLogLevel;
   Licq::Pipe myPipe;
+  Licq::MainLoop myMainLoop;
 };
 
 #endif

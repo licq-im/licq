@@ -29,7 +29,6 @@
 #include <fcntl.h>
 #include <getopt.h>
 #include <iostream>
-#include <poll.h>
 #include <pwd.h>
 #include <string>
 #include <sys/stat.h>
@@ -689,6 +688,42 @@ ProtocolPlugin::Ptr CLicq::LoadProtoPlugin(const string& name, bool keep)
   return gPluginManager.loadProtocolPlugin(name, keep);
 }
 
+void CLicq::rawFileEvent(int /*fd*/, int /*revents*/)
+{
+  switch (myPipe.getChar())
+  {
+    case NotifyReapPlugin:
+      gPluginManager.reapPlugin();
+
+      // Exit when there are no plugins left running
+      if (gPluginManager.pluginCount() == 0)
+        myMainLoop.quit();
+      break;
+
+    case NotifyShuttingDown:
+      // Time to quit, but wait for plugins to shut down first
+      myMainLoop.addTimeout(PluginManager::MAX_WAIT_PLUGIN * 1000, this, 2);
+      // Stop flushing statistics
+      myMainLoop.removeTimeout(1);
+      break;
+  }
+}
+
+void CLicq::timeoutEvent(int id)
+{
+  switch (id)
+  {
+    case 1:
+      // Flush statistics data regulary
+      gStatistics.flush();
+      break;
+
+    case 2:
+      // Timeout waiting for plugins to shut down
+      myMainLoop.quit();
+      break;
+  }
+}
 
 int CLicq::Main()
 {
@@ -700,17 +735,11 @@ int CLicq::Main()
   }
 
   // Setup file descriptors to manage
-  struct pollfd fds[2];
-  int numfds = 1;
-  fds[0].fd = myPipe.getReadFd();
-  fds[0].events = POLLIN;
+  myMainLoop.addRawFile(myPipe.getReadFd(), this);
 
 #ifdef USE_FIFO
   // Init the fifo
-  gFifo.initialize();
-  struct pollfd *const fds_fifo = &fds[numfds++];
-  fds_fifo->fd = gFifo.fifo_fd;
-  fds_fifo->events = POLLIN;
+  gFifo.initialize(myMainLoop);
 #endif
 
   // Run the plugins
@@ -723,48 +752,11 @@ int CLicq::Main()
   // Logon all protocols according to owner configuration
   gDaemon.autoLogon();
 
-  bool shuttingDown = false;
-  int timeout = 60 * 1000;
-  while (true)
-  {
-    int ret = poll(fds, numfds, timeout);
-    if (ret < 0)
-    {
-      // Interrupted by a signal is ok, anything else is bad
-      assert(errno == EINTR);
-      continue;
-    }
+  // Flush statistics data regulary
+  myMainLoop.addTimeout(60*1000, this, 1, false);
 
-    if (shuttingDown && ret == 0)
-      break;
-
-    // Flush statistics data regulary
-    gStatistics.flush();
-
-    if (fds[0].revents & POLLIN)
-    {
-      char c = myPipe.getChar();
-      if (c == NotifyReapPlugin)
-      {
-        gPluginManager.reapPlugin();
-
-        // Exit when there are no plugins left running
-        if (gPluginManager.pluginCount() == 0)
-          break;
-      }
-
-      if (c == NotifyShuttingDown)
-      {
-        shuttingDown = true;
-        timeout = PluginManager::MAX_WAIT_PLUGIN * 1000;
-      }
-    }
-
-#ifdef USE_FIFO
-    if (fds_fifo->revents & POLLIN)
-      gFifo.process();
-#endif
-  }
+  // Run
+  myMainLoop.run();
 
   gPluginManager.cancelAllPlugins();
 

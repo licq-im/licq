@@ -883,7 +883,7 @@ Fifo::~Fifo()
   // Empty
 }
 
-void Fifo::initialize()
+void Fifo::initialize(Licq::MainLoop& mainLoop)
 {
   string filename = gDaemon.baseDir() + "licq_fifo";
 
@@ -913,6 +913,10 @@ void Fifo::initialize()
       fifo_fd = -1;
     }
   }
+
+  // Register callback from main loop when there is data to read
+  if (fifo_fd != -1)
+    mainLoop.addRawFile(fifo_fd, this);
 }
 
 void Fifo::shutdown()
@@ -921,7 +925,7 @@ void Fifo::shutdown()
     close(fifo_fd);
 }
 
-void Fifo::process()
+void Fifo::rawFileEvent(int /*fd*/, int /*revents*/)
 {
   char szBuf[1024];
   ssize_t readret = read(fifo_fd, szBuf, sizeof(szBuf));

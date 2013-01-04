@@ -24,10 +24,12 @@
 #include <cstdio>
 #include <string>
 
+#include <licq/mainloop.h>
+
 namespace LicqDaemon
 {
 
-class Fifo : private boost::noncopyable
+class Fifo : public Licq::MainLoopCallback, private boost::noncopyable
 {
 public:
   Fifo();
@@ -37,7 +39,7 @@ public:
    * Initialize fifo
    * Only called once at startup
    */
-  void initialize();
+  void initialize(Licq::MainLoop& mainLoop);
 
   /**
    * Shut down fifo
@@ -45,16 +47,11 @@ public:
    */
   void shutdown();
 
-  /**
-   * Process data received on fifo socket
-   * Called by MonitorSockets_tep
-   */
-  void process();
-
-  // These are used directly by MonitorSockets_tep
-  int fifo_fd;
-
 private:
+  // From Licq::MainLoopCallback
+  void rawFileEvent(int fd, int revents);
+
+  int fifo_fd;
   std::string myInputBuffer;
 };
 
