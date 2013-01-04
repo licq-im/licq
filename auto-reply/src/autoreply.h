@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2011, 2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 #ifndef LICQAUTOREPLY_H
 #define LICQAUTOREPLY_H
 
-#include <licq/plugin/generalplugin.h>
+#include <licq/plugin/generalpluginhelper.h>
 
 #include <string>
 
@@ -33,26 +33,26 @@ class UserEvent;
 class UserId;
 }
 
-class CLicqAutoReply : public Licq::GeneralPlugin
+class CLicqAutoReply : public Licq::GeneralPluginHelper
 {
 public:
-  CLicqAutoReply(Params& p);
+  CLicqAutoReply();
   ~CLicqAutoReply();
 
-  // From Licq::GeneralPlugin
+  // From Licq::PluginInterface
   std::string name() const;
   std::string version() const;
+  bool init(int argc, char** argv);
+  int run();
+  void destructor();
+
+  // From Licq::GeneralPluginInterface
   std::string description() const;
   std::string usage() const;
   std::string configFile() const;
   bool isEnabled() const;
 
 protected:
-  // From Licq::GeneralPlugin
-  bool init(int argc, char** argv);
-  int run();
-  void destructor();
-
   int m_nPipe;
   bool m_bExit;
   bool myIsEnabled;
