@@ -874,7 +874,6 @@ static int process_tok(const command_t *table,const char *tok)
 LicqDaemon::Fifo LicqDaemon::gFifo;
 
 Fifo::Fifo()
-  : fifo_fs(NULL)
 {
   // Empty
 }
@@ -902,7 +901,6 @@ void Fifo::initialize()
         gLog.warning(tr("Unable to open fifo: %s"), strerror(errno));
     }
   }
-  fifo_fs = NULL;
   if (fifo_fd != -1)
   {
     struct stat buf;
@@ -914,44 +912,53 @@ void Fifo::initialize()
       close(fifo_fd);
       fifo_fd = -1;
     }
-    else
-      fifo_fs = fdopen(fifo_fd, "r");
   }
 }
 
 void Fifo::shutdown()
 {
-  if (fifo_fs != NULL)
-  {
-    fclose(fifo_fs);
-    fifo_fs = NULL;
-  }
+  if (fifo_fd != -1)
+    close(fifo_fd);
 }
 
 void Fifo::process()
 {
   char szBuf[1024];
-  fgets(szBuf, 1024, fifo_fs);
+  ssize_t readret = read(fifo_fd, szBuf, sizeof(szBuf));
+  if (readret <= 0)
+    return;
+  myInputBuffer.append(szBuf, readret);
 
-  int argc, index;
-  const char* argv[MAX_ARGV];
-
-  gLog.info(tr("%sReceived string: %s"), L_FIFOxSTR, szBuf);
-  line2argv(szBuf, argv, &argc, sizeof(argv) / sizeof(argv[0]) );
-  index = process_tok(fifocmd_table,argv[0]);
-
-  switch( index )
+  // Handle each line in the buffer (and don't assume it's only one at a time)
+  size_t nlpos;
+  while ((nlpos = myInputBuffer.find('\n')) != string::npos)
   {
-    case CL_UNKNOWN:
-      gLog.info(tr("%s: '%s' Unknown fifo command. Try 'help'\n"),
-                L_FIFOxSTR,argv[0]);
-      break;
-    case CL_NONE:
-      break;
-    default:
-      argv[0] = fifocmd_table[index].szName;
-      if( fifocmd_table[index].fnc )
-        fifocmd_table[index].fnc(argc, argv);
-      break;
+    // Extract first line from buffer
+    size_t copylen = (nlpos < sizeof(szBuf) ? nlpos+1 : sizeof(szBuf));
+    myInputBuffer.copy(szBuf, 0, copylen);
+    szBuf[copylen] = '\0';
+    myInputBuffer.erase(0, nlpos+1);
+
+    int argc, index;
+    const char* argv[MAX_ARGV];
+
+    gLog.info(tr("%sReceived string: %s"), L_FIFOxSTR, szBuf);
+    line2argv(szBuf, argv, &argc, sizeof(argv) / sizeof(argv[0]) );
+    index = process_tok(fifocmd_table,argv[0]);
+
+    switch (index)
+    {
+      case CL_UNKNOWN:
+        gLog.info(tr("%s: '%s' Unknown fifo command. Try 'help'\n"),
+            L_FIFOxSTR,argv[0]);
+        break;
+      case CL_NONE:
+        break;
+      default:
+        argv[0] = fifocmd_table[index].szName;
+        if (fifocmd_table[index].fnc)
+          fifocmd_table[index].fnc(argc, argv);
+        break;
+    }
   }
 }

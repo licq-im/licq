@@ -1,6 +1,7 @@
 Change log for Licq.
 
 New in 1.8.0
+o Fifo: Don't hang if data doesn't end with a line break
 o ICQ: Moved from daemon and built as separate protocol plugin
 
 
