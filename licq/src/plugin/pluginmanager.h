@@ -130,6 +130,7 @@ private:
                                  const std::string& prefix);
   bool verifyPluginMagic(const std::string& name, char magic[4]);
   bool verifyPluginVersion(const std::string& name, int version);
+  int getNewPluginId();
 
   void startPlugin(Licq::GeneralPlugin::Ptr plugin);
   void startPlugin(Licq::ProtocolPlugin::Ptr plugin);
@@ -137,7 +138,7 @@ private:
   void getAvailablePlugins(Licq::StringList& plugins,
                            const std::string& prefix) const;
 
-  unsigned short myNextPluginId;
+  int myNextPluginId;
   PluginThread::Ptr myGuiThread;
 
   Licq::GeneralPluginsList myGeneralPlugins;

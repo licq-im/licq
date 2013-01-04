@@ -119,13 +119,7 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
       return GeneralPlugin::Ptr();
 
     // Generate an ID for the plugin
-    int pluginId;
-    {
-      // Lock both plugin mutexes to avoid race for myNextPluginId
-      MutexLocker generalLocker(myGeneralPluginsMutex);
-      MutexLocker protocolLocker(myProtocolPluginsMutex);
-      pluginId = myNextPluginId++;
-    }
+    const int pluginId = getNewPluginId();
 
     // Create main plugin object
     GeneralPlugin::Params pluginParams(pluginId, lib, pluginThread);
@@ -187,13 +181,7 @@ loadProtocolPlugin(const std::string& name, bool keep)
       return ProtocolPlugin::Ptr();
 
     // Generate an ID for the plugin
-    int pluginId;
-    {
-      // Lock both plugin mutexes to avoid race for myNextPluginId
-      MutexLocker generalLocker(myGeneralPluginsMutex);
-      MutexLocker protocolLocker(myProtocolPluginsMutex);
-      pluginId = myNextPluginId++;
-    }
+    const int pluginId = getNewPluginId();
 
     // Create main plugin object
     ProtocolPlugin::Params pluginParams(pluginId, lib, pluginThread);
@@ -613,6 +601,14 @@ bool PluginManager::verifyPluginVersion(const std::string& name, int version)
   }
 
   return true;
+}
+
+int PluginManager::getNewPluginId()
+{
+  // Lock both plugin mutexes to avoid race for myNextPluginId
+  MutexLocker generalLocker(myGeneralPluginsMutex);
+  MutexLocker protocolLocker(myProtocolPluginsMutex);
+  return myNextPluginId++;
 }
 
 static void exitPluginCallback(const Plugin& plugin)
