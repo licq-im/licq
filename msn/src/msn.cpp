@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2004-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,9 +82,9 @@ CMSN::CMSN(Licq::ProtocolPlugin::Params& p)
 {
   m_bExit = false;
   m_bWaitingPingReply = m_bCanPing = false;
-  m_nSSLSocket = m_nServerSocket = m_nNexusSocket = -1;
+  m_nSSLSocket = -1;
+  m_nServerSocket = -1;
   m_pPacketBuf = 0;
-  m_pNexusBuff = 0;
   m_pSSLPacket = 0;
   myStatus = Licq::User::OfflineStatus;
   myPassword = "";
@@ -392,7 +392,6 @@ string CMSN::Encode(const string &strIn)
 int CMSN::run()
 {
   int nNumDesc;
-  int nCurrent; 
   fd_set f;
 
   pthread_mutex_init(&mutex_StartList, 0);
@@ -436,89 +435,65 @@ int CMSN::run()
       tv.tv_sec = 1; tv.tv_usec = 0;
       select(0, NULL, NULL, NULL, &tv);
     }
+    if (nResult <= 0)
+      continue;
 
-    nCurrent = 0;
-    while (nResult > 0 && nCurrent < nNumDesc)
+    for (int curFd = 0; curFd < nNumDesc; ++curFd)
     {
-      if (FD_ISSET(nCurrent, &f))
+      if (!FD_ISSET(curFd, &f))
+        continue;
+
+      // Plugin message pipe
+      if (curFd == m_nPipe)
       {
-        if (nCurrent == m_nPipe)
-        {
-          ProcessPipe();
-        }
-        
-        else if (nCurrent == m_nServerSocket)
-        {
-          Licq::INetSocket* sock = gSocketMan.FetchSocket(m_nServerSocket);
-          CMSNBuffer packet;
-          if (sock->receive(packet))
-          {
-            gSocketMan.DropSocket(sock);
-
-            HandlePacket(m_nServerSocket, packet, myOwnerId);
-          }
-          else
-          {
-            // Time to reconnect
-            gLog.info("Disconnected from server, reconnecting");
-            sleep(1);
-            int nSD = m_nServerSocket;
-            m_nServerSocket = -1;
-            gSocketMan.DropSocket(sock);
-            gSocketMan.CloseSocket(nSD);
-            Logon(myOwnerId, myStatus);
-          }
-        }
-        
-        else if (nCurrent == m_nNexusSocket)
-        {
-          Licq::INetSocket* sock = gSocketMan.FetchSocket(m_nNexusSocket);
-          CMSNBuffer packet;
-          if (sock->receive(packet))
-          {
-            gSocketMan.DropSocket(sock);
-            ProcessNexusPacket(packet);
-          }
-        }
-
-        else if (nCurrent == m_nSSLSocket)
-        {
-          Licq::INetSocket* sock = gSocketMan.FetchSocket(m_nSSLSocket);
-          CMSNBuffer packet;
-          if (sock->receive(packet))
-          {
-            gSocketMan.DropSocket(sock);
-            ProcessSSLServerPacket(packet);
-          }
-        }
-        
-        else
-        {
-          //SB socket
-          Licq::INetSocket* sock = gSocketMan.FetchSocket(nCurrent);
-          CMSNBuffer packet;
-          if (sock && sock->receive(packet))
-          {
-            Licq::UserId userId(sock->userId());
-            gSocketMan.DropSocket(sock);
-
-            HandlePacket(nCurrent, packet, userId);
-	  }
-	  else
-	  {
-            // Sometimes SB just drops connection without sending any BYE for the user(s) first
-            // This seems to happen when other user is offical client
-	    if (sock)
-	      gSocketMan.DropSocket(sock);
-	    gSocketMan.CloseSocket(nCurrent);
-
-            // Clean up any conversations that was associated with the socket
-            killConversation(nCurrent);
-	  }
-	}
+        ProcessPipe();
+        continue;
       }
 
-      nCurrent++;
+      // Anything else is a socket
+      Licq::TCPSocket* sock = dynamic_cast<Licq::TCPSocket*>(gSocketMan.FetchSocket(curFd));
+      assert(sock != NULL);
+
+      CMSNBuffer packet;
+      bool recok = sock->receive(packet);
+      gSocketMan.DropSocket(sock);
+
+      if (curFd == m_nServerSocket)
+      {
+        if (recok)
+          HandlePacket(m_nServerSocket, packet, myOwnerId);
+        else
+        {
+          // Time to reconnect
+          gLog.info("Disconnected from server, reconnecting");
+          sleep(1);
+          m_nServerSocket = -1;
+          gSocketMan.CloseSocket(curFd);
+          Logon(myOwnerId, myStatus);
+        }
+      }
+
+      else if (curFd == m_nSSLSocket)
+      {
+        if (recok)
+          ProcessSSLServerPacket(packet);
+      }
+
+      else
+      {
+        //SB socket
+        if (recok)
+          HandlePacket(curFd, packet, sock->userId());
+        else
+        {
+          // Sometimes SB just drops connection without sending any BYE for the user(s) first
+          // This seems to happen when other user is offical client
+          gSocketMan.CloseSocket(curFd);
+
+          // Clean up any conversations that was associated with the socket
+          killConversation(curFd);
+        }
+      }
     }
   }
   

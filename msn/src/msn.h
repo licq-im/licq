@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2004-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -120,7 +120,6 @@ private:
   void ProcessSignal(Licq::ProtocolSignal* s);
   void ProcessPipe();
   void ProcessServerPacket(CMSNBuffer *);
-  void ProcessNexusPacket(CMSNBuffer &);
   void ProcessSSLServerPacket(CMSNBuffer &);
   void ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer *, int);
 
@@ -175,10 +174,8 @@ private:
   Licq::UserId myOwnerId;
   bool m_bExit;
   int m_nServerSocket;
-  int m_nNexusSocket;
   int m_nSSLSocket;
   CMSNBuffer *m_pPacketBuf,
-             *m_pNexusBuff,
              *m_pSSLPacket;
   std::vector<BufferList> m_vlPacketBucket;
   std::list<Licq::Event*> m_pEvents;

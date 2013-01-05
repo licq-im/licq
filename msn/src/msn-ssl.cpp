@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2004-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -145,38 +145,6 @@ void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
   m_nSSLSocket = -1;
   delete m_pSSLPacket;
   m_pSSLPacket = 0;
-}
-
-void CMSN::ProcessNexusPacket(CMSNBuffer &packet)
-{
-  bool bNew = false;
-  if (m_pNexusBuff == 0)
-  {
-    m_pNexusBuff = new CMSNBuffer(packet);
-    bNew = true;
-  }
-
-  char *ptr = packet.getDataStart() + packet.getDataSize() - 4;
-  int x = memcmp(ptr, "\x0D\x0A\x0D\x0A", 4);
-  if (x) return;
-  else if (!bNew) *m_pNexusBuff += packet;
-
-  char cTmp = 0;
-
-  while (cTmp != '\r')
-    *m_pNexusBuff >> cTmp;
-  *m_pNexusBuff >> cTmp; // skip the \n as well
-
-  m_pNexusBuff->ParseHeaders();
-
-  const char* szLogin = strstr(m_pNexusBuff->GetValue("PassportURLs").c_str(), "DALogin=");
-  szLogin += 8; // skip to the tag
-  //char *szEndURL = strchr(szLogin, '/');
-  //char *szServer = strndup(szLogin, szEndURL - szLogin); // this is all we need
-  //char *szEnd = strchr(szLogin, ',');
-  //char *szURL = strndup(szEndURL, szEnd - szEndURL);
-
-  MSNAuthenticate();
 }
 
 void CMSN::MSNAuthenticate(const string& server, const string& path)

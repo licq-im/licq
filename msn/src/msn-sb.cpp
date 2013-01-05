@@ -349,21 +349,14 @@ void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer *packet,
       if (convo != NULL)
         convo->removeUser(userId);
 
-      int nThisSock = -1;
-
       {
         UserWriteGuard u(userId);
         if (u.isLocked())
-        {
           u->clearNormalSocketDesc();
-          nThisSock = u->normalSocketDesc();
-        }
       }
 
       if (convo == NULL || convo->isEmpty())
       {
-        Licq::INetSocket* s = gSocketMan.FetchSocket(nThisSock);
-        gSocketMan.DropSocket(s);
         gSocketMan.CloseSocket(nSock);
         if (convo != NULL)
           gConvoManager.remove(convo->id());
@@ -410,10 +403,9 @@ void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer *packet,
   //delete packet;
 }
 
-void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket *p, int nSocket, bool bDelete)
+void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket *p, int nSock, bool bDelete)
 {
-  int nSock = nSocket;
-  if (nSocket == -1)
+  if (nSock == -1)
   {
     UserReadGuard u(userId);
     if (!u.isLocked())
@@ -422,8 +414,7 @@ void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket *p, int nSocket, bool
   }
   Licq::INetSocket* s = gSocketMan.FetchSocket(nSock);
   if (!s)
-    s = gSocketMan.FetchSocket(nSocket);
-  if (!s) return;
+    return;
   Licq::TCPSocket* sock = dynamic_cast<Licq::TCPSocket*>(s);
   if (!sock->send(*p->getBuffer()) && userId.isValid())
   {

@@ -97,7 +97,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         }
 
         gSocketMan.CloseSocket(m_nServerSocket, false, true);
-  
+        m_nServerSocket = -1;
+
         // Make the new connection
         Logon(myOwnerId, myStatus, host.c_str(), port);
       }
@@ -531,7 +532,10 @@ void CMSN::SendPacket(CMSNPacket *p)
   Licq::TCPSocket* sock = static_cast<Licq::TCPSocket*>(s);
   assert(sock != NULL);
   if (!sock->send(*p->getBuffer()))
+  {
+    gSocketMan.DropSocket(sock);
     MSNLogoff(true);
+  }
   else
     gSocketMan.DropSocket(sock);
   
