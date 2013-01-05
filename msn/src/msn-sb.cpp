@@ -52,8 +52,10 @@ using Licq::gOnEventManager;
 using Licq::gUserManager;
 
 
-void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer *packet, int nSock)
+void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer* packet,
+    Licq::TCPSocket* sock)
 {
+  int nSock = sock->Descriptor();
   CMSNPacket *pReply;
   bool bSkipPacket;
 
@@ -103,7 +105,7 @@ void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer *packet,
     else if (strCmd == "ANS")
     {
       // Send our capabilities
-      Send_SB_Packet(Licq::UserId(), new CPS_MsnClientCaps(), nSock);
+      Send_SB_Packet(Licq::UserId(), new CPS_MsnClientCaps(), sock);
     }
     else if (strCmd == "MSG")
     {
@@ -188,7 +190,7 @@ void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer *packet,
 	      nAckDataSize[0], nAckDataSize[1]);
 	*/
 
-	CMSNDataEvent *p = FetchDataEvent(userId, nSock);
+	CMSNDataEvent* p = FetchDataEvent(userId, sock);
 	if (p)
 	{
 	  if (p->ProcessPacket(packet) > 0)
@@ -303,7 +305,7 @@ void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer *packet,
       }
 
       // Send our capabilities
-      Send_SB_Packet(userId, new CPS_MsnClientCaps(), nSock);
+      Send_SB_Packet(userId, new CPS_MsnClientCaps(), sock);
 
       if ((pStart && pStart->m_bDataConnection == false) || pStart == 0)
       {
@@ -329,7 +331,7 @@ void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer *packet,
         if (pStart->m_pEvent)
           m_pEvents.push_back(pStart->m_pEvent);
 
-        Send_SB_Packet(pStart->userId, pStart->m_pPacket, nSock, false);
+        Send_SB_Packet(pStart->userId, pStart->m_pPacket, sock, false);
 
         delete pStart;
       }
@@ -395,31 +397,30 @@ void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer *packet,
       packet->SkipPacket();
     
     if (pReply)
-    {
-      Send_SB_Packet(socketUserId, pReply, nSock);
-    }
+      Send_SB_Packet(socketUserId, pReply, sock);
   }
   
   //delete packet;
 }
 
-void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket *p, int nSock, bool bDelete)
+void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket* p, Licq::TCPSocket* sock, bool bDelete)
 {
-  if (nSock == -1)
+  if (sock == NULL)
   {
     UserReadGuard u(userId);
-    if (!u.isLocked())
+    if (u.isLocked())
+      sock = u->normalSocketDesc();
+    if (sock == NULL)
       return;
-    nSock = u->normalSocketDesc();
   }
-  Licq::INetSocket* s = gSocketMan.FetchSocket(nSock);
-  if (!s)
-    return;
-  Licq::TCPSocket* sock = dynamic_cast<Licq::TCPSocket*>(s);
+
+  sock->Lock();
   if (!sock->send(*p->getBuffer()) && userId.isValid())
   {
+    sock->Unlock();
     gLog.info("Connection with %s lost", userId.toString().c_str());
 
+    int nSock = sock->Descriptor();
     Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
         Licq::PluginSignal::SignalConversation,
         Licq::PluginSignal::ConvoLeave, userId, 0, SocketToCID(nSock)));
@@ -436,15 +437,14 @@ void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket *p, int nSock, bool b
 
     if (convo == NULL || convo->isEmpty())
     {
-      gSocketMan.DropSocket(s);
       gSocketMan.CloseSocket(nSock);
       if (convo != NULL)
         gConvoManager.remove(convo->id());
     }
   }
   else
-    gSocketMan.DropSocket(sock);
-  
+    sock->Unlock();
+
   if (bDelete)
     delete p;
 }
@@ -493,10 +493,8 @@ bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
     return false;
   }
 
-  int nSocket = sock->Descriptor();
-
   // This socket was just opened so make sure there isn't any old left over conversation associated with it
-  killConversation(nSocket);
+  killConversation(sock);
 
   gSocketMan.AddSocket(sock);
 
@@ -513,7 +511,7 @@ bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
   gSocketMan.DropSocket(sock);
 
   CMSNPacket* pReply = new CPS_MSN_SBStart(strCookie, myOwnerId.accountId());
-  Send_SB_Packet(pStart->userId, pReply, nSocket);
+  Send_SB_Packet(pStart->userId, pReply, sock);
 
   return true;
 }
@@ -544,10 +542,9 @@ bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionI
     delete sock;
     return false;
   }
-  int nSocket = sock->Descriptor();
 
   // This socket was just opened so make sure there isn't any old left over conversation associated with it
-  killConversation(nSocket);
+  killConversation(sock);
 
   gSocketMan.AddSocket(sock);
   CMSNPacket* pReply = new CPS_MSN_SBAnswer(strSessionId, strCookie, myOwnerId.accountId());
@@ -567,7 +564,7 @@ bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionI
 
   gSocketMan.DropSocket(sock);
 
-  Send_SB_Packet(userId, pReply, nSocket);
+  Send_SB_Packet(userId, pReply, sock);
 
   return true;
 }
@@ -613,7 +610,10 @@ void CMSN::MSNSendMessage(unsigned long eventId, const UserId& userId, const str
   {
     m_pEvents.push_back(e);
 
-    Send_SB_Packet(userId, pSend, nSocket, false);
+    Licq::TCPSocket* sock = dynamic_cast<Licq::TCPSocket*>(gSocketMan.FetchSocket(nSocket));
+    gSocketMan.DropSocket(sock);
+
+    Send_SB_Packet(userId, pSend, sock, false);
   }
   else
   {
@@ -648,14 +648,20 @@ void CMSN::MSNSendTypingNotification(const UserId& userId, unsigned long _nCID)
   }
 
   if (nSockDesc > 0)
-    Send_SB_Packet(userId, pSend, nSockDesc);
+  {
+    Licq::TCPSocket* sock = dynamic_cast<Licq::TCPSocket*>(gSocketMan.FetchSocket(nSockDesc));
+    gSocketMan.DropSocket(sock);
+    Send_SB_Packet(userId, pSend, sock);
+  }
 }
 
-void CMSN::killConversation(int sock)
+void CMSN::killConversation(Licq::TCPSocket* sock)
 {
+  int sockFd = sock->Descriptor();
+
   Conversation* convo;
   // There should never be more than one but loop just in case
-  while ((convo = gConvoManager.getFromSocket(sock)) != NULL)
+  while ((convo = gConvoManager.getFromSocket(sockFd)) != NULL)
   {
     int convoId = convo->id();
 

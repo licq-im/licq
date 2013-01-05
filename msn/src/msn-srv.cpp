@@ -96,8 +96,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
           port = atoi(strServer.substr(sep+1).c_str());
         }
 
-        gSocketMan.CloseSocket(m_nServerSocket, false, true);
-        m_nServerSocket = -1;
+        gSocketMan.CloseSocket(myServerSocket->Descriptor(), false, true);
+        myServerSocket = NULL;
 
         // Make the new connection
         Logon(myOwnerId, myStatus, host.c_str(), port);
@@ -528,17 +528,16 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
 
 void CMSN::SendPacket(CMSNPacket *p)
 {
-  Licq::INetSocket* s = gSocketMan.FetchSocket(m_nServerSocket);
-  Licq::TCPSocket* sock = static_cast<Licq::TCPSocket*>(s);
-  assert(sock != NULL);
-  if (!sock->send(*p->getBuffer()))
+  assert(myServerSocket != NULL);
+  myServerSocket->Lock();
+  if (!myServerSocket->send(*p->getBuffer()))
   {
-    gSocketMan.DropSocket(sock);
+    myServerSocket->Unlock();
     MSNLogoff(true);
   }
   else
-    gSocketMan.DropSocket(sock);
-  
+    myServerSocket->Unlock();
+
   delete p;
 }
 
@@ -568,20 +567,20 @@ void CMSN::Logon(const Licq::UserId& ownerId, unsigned status, string host, int 
   if (port <= 0)
     port = defaultServerPort();
 
-  Licq::TCPSocket* sock = new Licq::TCPSocket(myOwnerId);
+  myServerSocket = new Licq::TCPSocket(myOwnerId);
   gLog.info("Server found at %s:%d", host.c_str(), port);
 
-  if (!sock->connectTo(host, port))
+  if (!myServerSocket->connectTo(host, port))
   {
     gLog.info("Connect failed to %s", host.c_str());
-    delete sock;
+    delete myServerSocket;
+    myServerSocket = NULL;
     return;
   }
-  
-  gSocketMan.AddSocket(sock);
-  m_nServerSocket = sock->Descriptor();
-  gSocketMan.DropSocket(sock);
-  
+
+  gSocketMan.AddSocket(myServerSocket);
+  gSocketMan.DropSocket(myServerSocket);
+
   CMSNPacket *pHello = new CPS_MSNVersion();
   SendPacket(pHello);
   myStatus = status;
@@ -618,7 +617,8 @@ void CMSN::MSNChangeStatus(unsigned status)
 
 void CMSN::MSNLogoff(bool bDisconnected)
 {
-  if (m_nServerSocket == -1) return;
+  if (myServerSocket == NULL)
+    return;
 
   if (!bDisconnected)
   {
@@ -632,22 +632,18 @@ void CMSN::MSNLogoff(bool bDisconnected)
   m_bCanPing = false;
 
   // Close the server socket
-  Licq::INetSocket* s = gSocketMan.FetchSocket(m_nServerSocket);
-  int nSD = m_nServerSocket;
-  m_nServerSocket = -1;
-  gSocketMan.DropSocket(s);
-  gSocketMan.CloseSocket(nSD);
+  gSocketMan.CloseSocket(myServerSocket->Descriptor());
+  myServerSocket = NULL;
 
-  
   // Close user sockets and update the daemon
   {
     Licq::UserListGuard userList(myOwnerId);
     BOOST_FOREACH(Licq::User* user, **userList)
     {
       UserWriteGuard u(dynamic_cast<User*>(user));
-      if (u->normalSocketDesc() != -1)
+      if (u->normalSocketDesc() != NULL)
       {
-        gSocketMan.CloseSocket(u->normalSocketDesc(), false, true);
+        gSocketMan.CloseSocket(u->normalSocketDesc()->Descriptor(), false, true);
         u->clearAllSocketDesc();
       }
       if (u->isOnline())

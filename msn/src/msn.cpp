@@ -78,12 +78,12 @@ void *MSNPing_tep(void *);
 
 CMSN::CMSN(Licq::ProtocolPlugin::Params& p)
   : Licq::ProtocolPlugin(p),
+    myServerSocket(NULL),
+    mySslSocket(NULL),
     m_vlPacketBucket(211)
 {
   m_bExit = false;
   m_bWaitingPingReply = m_bCanPing = false;
-  m_nSSLSocket = -1;
-  m_nServerSocket = -1;
   m_pPacketBuf = 0;
   m_pSSLPacket = 0;
   myStatus = Licq::User::OfflineStatus;
@@ -220,8 +220,9 @@ Licq::Event *CMSN::RetrieveEvent(unsigned long _nTag)
   return e;
 }
 
-void CMSN::HandlePacket(int _nSocket, CMSNBuffer &packet, const Licq::UserId& userId)
+void CMSN::HandlePacket(Licq::TCPSocket* sock, CMSNBuffer& packet, const Licq::UserId& userId)
 {
+  int _nSocket = sock->Descriptor();
   SBuffer* pBuf = RetrievePacket(userId, _nSocket);
   bool bProcess = false;
 
@@ -327,10 +328,10 @@ void CMSN::HandlePacket(int _nSocket, CMSNBuffer &packet, const Licq::UserId& us
     if (bProcess)
     {
       // Handle it, and then remove it from the queue
-      if (m_nServerSocket == _nSocket)
+      if (sock == myServerSocket)
         ProcessServerPacket(pPart ? pPart : pBuf->m_pBuf);
       else
-        ProcessSBPacket(userId, pPart ? pPart : pBuf->m_pBuf, _nSocket);
+        ProcessSBPacket(userId, pPart ? pPart : pBuf->m_pBuf, sock);
       RemovePacket(userId, _nSocket, nFullSize);
       if (pPart)
         delete pPart;
@@ -435,6 +436,7 @@ int CMSN::run()
       tv.tv_sec = 1; tv.tv_usec = 0;
       select(0, NULL, NULL, NULL, &tv);
     }
+
     if (nResult <= 0)
       continue;
 
@@ -458,22 +460,22 @@ int CMSN::run()
       bool recok = sock->receive(packet);
       gSocketMan.DropSocket(sock);
 
-      if (curFd == m_nServerSocket)
+      if (sock == myServerSocket)
       {
         if (recok)
-          HandlePacket(m_nServerSocket, packet, myOwnerId);
+          HandlePacket(myServerSocket, packet, myOwnerId);
         else
         {
           // Time to reconnect
           gLog.info("Disconnected from server, reconnecting");
           sleep(1);
-          m_nServerSocket = -1;
           gSocketMan.CloseSocket(curFd);
+          myServerSocket = NULL;
           Logon(myOwnerId, myStatus);
         }
       }
 
-      else if (curFd == m_nSSLSocket)
+      else if (sock == mySslSocket)
       {
         if (recok)
           ProcessSSLServerPacket(packet);
@@ -483,15 +485,13 @@ int CMSN::run()
       {
         //SB socket
         if (recok)
-          HandlePacket(curFd, packet, sock->userId());
+          HandlePacket(sock, packet, sock->userId());
         else
         {
           // Sometimes SB just drops connection without sending any BYE for the user(s) first
           // This seems to happen when other user is offical client
+          killConversation(sock);
           gSocketMan.CloseSocket(curFd);
-
-          // Clean up any conversations that was associated with the socket
-          killConversation(curFd);
         }
       }
     }
@@ -541,7 +541,7 @@ void CMSN::ProcessPipe()
 
 void CMSN::ProcessSignal(Licq::ProtocolSignal* s)
 {
-  if (m_nServerSocket < 0 && s->signal() != Licq::ProtocolSignal::SignalLogon)
+  if (myServerSocket == NULL && s->signal() != Licq::ProtocolSignal::SignalLogon)
   {
     delete s;
     return;
@@ -551,7 +551,7 @@ void CMSN::ProcessSignal(Licq::ProtocolSignal* s)
   {
     case Licq::ProtocolSignal::SignalLogon:
     {
-      if (m_nServerSocket < 0)
+      if (myServerSocket == NULL)
       {
         Licq::ProtoLogonSignal* sig = dynamic_cast<Licq::ProtoLogonSignal*>(s);
         Logon(sig->userId(), sig->status());
@@ -662,9 +662,10 @@ bool CMSN::RemoveDataEvent(CMSNDataEvent *pData)
 	(*it)->getSocket() == pData->getSocket())
     {
       // Close the socket
-      gSocketMan.CloseSocket(pData->getSocket());
+      int sockFd = pData->getSocket()->Descriptor();
+      gSocketMan.CloseSocket(sockFd);
 
-      Licq::Conversation* convo = gConvoManager.getFromSocket(pData->getSocket());
+      Licq::Conversation* convo = gConvoManager.getFromSocket(sockFd);
       if (convo != NULL)
         gConvoManager.remove(convo->id());
 
@@ -679,14 +680,14 @@ bool CMSN::RemoveDataEvent(CMSNDataEvent *pData)
   return (pData == 0);
 }
 
-CMSNDataEvent* CMSN::FetchDataEvent(const Licq::UserId& userId, int _nSocket)
+CMSNDataEvent* CMSN::FetchDataEvent(const Licq::UserId& userId, Licq::TCPSocket* sock)
 {
   CMSNDataEvent *pReturn = 0;
   list<CMSNDataEvent *>::iterator it;
   pthread_mutex_lock(&mutex_MSNEventList);
   for (it = m_lMSNEvents.begin(); it != m_lMSNEvents.end(); it++)
   {
-    if ((*it)->userId() == userId && (*it)->getSocket() == _nSocket)
+    if ((*it)->userId() == userId && (*it)->getSocket() == sock)
     {
       pReturn = *it;
       break;
@@ -697,7 +698,7 @@ CMSNDataEvent* CMSN::FetchDataEvent(const Licq::UserId& userId, int _nSocket)
   {
     pReturn = FetchStartDataEvent(userId);
     if (pReturn)
-      pReturn->setSocket(_nSocket);
+      pReturn->setSocket(sock);
   }
   pthread_mutex_unlock(&mutex_MSNEventList);
 
@@ -710,7 +711,7 @@ CMSNDataEvent* CMSN::FetchStartDataEvent(const Licq::UserId& userId)
   list<CMSNDataEvent *>::iterator it;
   for (it = m_lMSNEvents.begin(); it != m_lMSNEvents.end(); it++)
   {
-    if ((*it)->userId() == userId && (*it)->getSocket() == -1)
+    if ((*it)->userId() == userId && (*it)->getSocket() == NULL)
     {
       pReturn = *it;
       break;

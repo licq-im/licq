@@ -118,8 +118,8 @@ void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
     {
       string strHost = strLocation.substr(8, pos - 8);
       string strParam = strLocation.substr(pos, strLocation.size() - pos);
-      gSocketMan.CloseSocket(m_nSSLSocket, false, true);
-      m_nSSLSocket = -1;
+      gSocketMan.CloseSocket(mySslSocket->Descriptor(), false, true);
+      mySslSocket = NULL;
       delete m_pSSLPacket;
       m_pSSLPacket = 0;
 
@@ -140,33 +140,34 @@ void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
   {
     gLog.error("Unknown sign in error");
   }
-  
-  gSocketMan.CloseSocket(m_nSSLSocket, false, true);
-  m_nSSLSocket = -1;
+
+  gSocketMan.CloseSocket(mySslSocket->Descriptor(), false, true);
+  mySslSocket = NULL;
   delete m_pSSLPacket;
   m_pSSLPacket = 0;
 }
 
 void CMSN::MSNAuthenticate(const string& server, const string& path)
 {
-  Licq::TCPSocket* sock = new Licq::TCPSocket(myOwnerId);
+  mySslSocket = new Licq::TCPSocket(myOwnerId);
   gLog.info("Authenticating to https://%s%s", server.c_str(), path.c_str());
-  if (!sock->connectTo(server, 443))
+  if (!mySslSocket->connectTo(server, 443))
   {
     gLog.error("Connection to %s failed", server.c_str());
-    delete sock;
+    delete mySslSocket;
+    mySslSocket = NULL;
     return;
   }
 
-  if (!sock->SecureConnect())
+  if (!mySslSocket->SecureConnect())
   {
     gLog.error("SSL connection failed");
-    delete sock;
+    delete mySslSocket;
+    mySslSocket = NULL;
     return;
   }
 
-  gSocketMan.AddSocket(sock);
-  m_nSSLSocket = sock->Descriptor();
+  gSocketMan.AddSocket(mySslSocket);
 
   string request = "GET " + path + " HTTP/1.1\r\n"
       "Authorization: Passport1.4 OrgVerb=GET,OrgURL=http%3A%2F%2Fmessenger%2Emsn%2Ecom,"
@@ -180,6 +181,6 @@ void CMSN::MSNAuthenticate(const string& server, const string& path)
 
   Licq::Buffer buf(request.size());
   buf.packRaw(request);
-  sock->send(buf);
-  gSocketMan.DropSocket(sock);
+  mySslSocket->send(buf);
+  gSocketMan.DropSocket(mySslSocket);
 }

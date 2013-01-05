@@ -26,8 +26,8 @@ using namespace LicqMsn;
 
 User::User(const Licq::UserId& id, bool temporary)
   : Licq::User(id, temporary),
-    myNormalSocketDesc(-1),
-    myInfoSocketDesc(-1)
+    myNormalSocketDesc(NULL),
+    myInfoSocketDesc(NULL)
 {
   Licq::IniFile& conf(userConf());
   conf.get("PictureObject", myPictureObject);
@@ -48,8 +48,8 @@ void User::savePictureInfo()
 
 void User::clearSocketDesc(Licq::INetSocket* s)
 {
-  if (s == NULL || s->Descriptor() == myNormalSocketDesc)
-    myNormalSocketDesc = -1;
-  if (s == NULL || s->Descriptor() == myInfoSocketDesc)
-    myInfoSocketDesc = -1;
+  if (s == NULL || s == myNormalSocketDesc)
+    myNormalSocketDesc = NULL;
+  if (s == NULL || s == myInfoSocketDesc)
+    myInfoSocketDesc = NULL;
 }

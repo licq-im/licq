@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2005-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2005-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 
 namespace Licq
 {
+class TCPSocket;
 class UserId;
 }
 
@@ -56,17 +57,17 @@ public:
 
   int ProcessPacket(CMSNBuffer *);
 
-  int getSocket() { return m_nSocketDesc; }
+  Licq::TCPSocket* getSocket() { return mySocketDesc; }
   const Licq::UserId& userId() const { return myUserId; }
   unsigned long getSessionId() { return m_nSessionId; }
   unsigned long getBaseId() { return m_nBaseId; }
 
-  void setSocket(int _n) { m_nSocketDesc = _n; }
+  void setSocket(Licq::TCPSocket* s) { mySocketDesc = s; }
 
 protected:
   CMSN *m_pMSN;
 
-  int m_nSocketDesc;
+  Licq::TCPSocket* mySocketDesc;
   unsigned long m_nEvent;
   Licq::UserId myUserId;
   Licq::UserId myFromId;

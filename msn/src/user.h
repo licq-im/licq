@@ -47,12 +47,12 @@ public:
   void setPictureObject(const std::string& s)
   { myPictureObject = s; save(SavePictureInfo); }
 
-  void setNormalSocketDesc(Licq::INetSocket* s) { myNormalSocketDesc = s->Descriptor(); }
-  void setInfoSocketDesc(Licq::INetSocket* s) { myInfoSocketDesc = s->Descriptor(); }
+  void setNormalSocketDesc(Licq::TCPSocket* s) { myNormalSocketDesc = s; }
+  void setInfoSocketDesc(Licq::TCPSocket* s) { myInfoSocketDesc = s; }
   void clearSocketDesc(Licq::INetSocket* s);
   void clearAllSocketDesc() { clearSocketDesc(NULL); }
-  int normalSocketDesc() const { return myNormalSocketDesc; }
-  void clearNormalSocketDesc() { myNormalSocketDesc = -1; }
+  Licq::TCPSocket* normalSocketDesc() const { return myNormalSocketDesc; }
+  void clearNormalSocketDesc() { myNormalSocketDesc = NULL; }
 
 private:
   /// Inherited from Licq::User to save local additions
@@ -60,8 +60,8 @@ private:
 
   std::string myPictureObject;
 
-  int myNormalSocketDesc;
-  int myInfoSocketDesc;
+  Licq::TCPSocket* myNormalSocketDesc;
+  Licq::TCPSocket* myInfoSocketDesc;
 };
 
 

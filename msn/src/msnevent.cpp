@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2005-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2005-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 #include <licq/contactlist/user.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
+#include <licq/socket.h>
 
 using namespace std;
 using namespace LicqMsn;
@@ -40,7 +41,7 @@ using Licq::gLog;
 CMSNDataEvent::CMSNDataEvent(CMSN *p)
 {
   m_pMSN = p;
-  m_nSocketDesc = -1;
+  mySocketDesc = NULL;
   m_nEvent = 0;
   m_eState = STATE_WAITING_ACK;
   m_nFileDesc = -1;
@@ -62,7 +63,7 @@ CMSNDataEvent::CMSNDataEvent(unsigned long _nEvent, unsigned long _nSessionId,
     myFromId(fromId)
 {
   m_pMSN = p;
-  m_nSocketDesc = -1;
+  mySocketDesc = NULL;
   m_nEvent = _nEvent;
   m_eState = STATE_WAITING_ACK;
   m_nFileDesc = -1;
@@ -82,12 +83,8 @@ CMSNDataEvent::CMSNDataEvent(unsigned long _nEvent, unsigned long _nSessionId,
 
 CMSNDataEvent::~CMSNDataEvent()
 {
-  if (m_nSocketDesc)
-  {
-    Licq::INetSocket* s = gSocketMan.FetchSocket(m_nSocketDesc);
-    gSocketMan.DropSocket(s);
-    gSocketMan.CloseSocket(m_nSocketDesc);
-  }
+  if (mySocketDesc != NULL)
+    gSocketMan.CloseSocket(mySocketDesc->Descriptor());
 
   if (m_nFileDesc)
     close(m_nFileDesc);
@@ -158,7 +155,7 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
 	  CMSNPacket* pAck = new CPS_MSNP2PAck(myUserId.accountId(), m_nSessionId,
 					       m_nBaseId-3, nIdentifier, nAckId,
 					       nDataSize[1], nDataSize[0]);
-          m_pMSN->Send_SB_Packet(myUserId, pAck, m_nSocketDesc);
+          m_pMSN->Send_SB_Packet(myUserId, pAck, mySocketDesc);
 	  m_eState = STATE_GOT_SID;
 	}
       }
@@ -172,7 +169,7 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
       CMSNPacket* pAck = new CPS_MSNP2PAck(myUserId.accountId(), m_nSessionId,
 					   m_nBaseId-2, nIdentifier, nAckId,
 					   nDataSize[1], nDataSize[0]);
-      m_pMSN->Send_SB_Packet(myUserId, pAck, m_nSocketDesc);
+      m_pMSN->Send_SB_Packet(myUserId, pAck, mySocketDesc);
       m_eState = STATE_RECV_DATA;
 
       gLog.info("Display Picture: Got data start message (%ld)",
@@ -247,12 +244,12 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
 	CMSNPacket* pAck = new CPS_MSNP2PAck(myUserId.accountId(), m_nSessionId,
 					     m_nBaseId-1, nIdentifier, nAckId,
 					     nDataSize[1], nDataSize[0]);
-        m_pMSN->Send_SB_Packet(myUserId, pAck, m_nSocketDesc);
+        m_pMSN->Send_SB_Packet(myUserId, pAck, mySocketDesc);
 
         // Send a bye command
         CMSNPacket* pBye = new CPS_MSNP2PBye(myUserId.accountId(), myFromId.accountId(),
             m_strCallId, m_nBaseId, nAckId, nDataSize[1], nDataSize[0]);
-        m_pMSN->Send_SB_Packet(myUserId, pBye, m_nSocketDesc);
+        m_pMSN->Send_SB_Packet(myUserId, pBye, mySocketDesc);
 	return 0;
       }
 

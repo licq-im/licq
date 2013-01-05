@@ -36,6 +36,7 @@
 namespace Licq
 {
 class Event;
+class TCPSocket;
 }
 
 namespace LicqMsn
@@ -97,7 +98,7 @@ public:
   int defaultServerPort() const;
 
   void MSNPing();
-  bool Connected() { return m_nServerSocket != -1; }
+  bool Connected() { return myServerSocket != NULL; }
   bool CanSendPing() { return m_bCanPing; }
   void Logon(const Licq::UserId& ownerId, unsigned status, std::string host = std::string(), int port = 0);
   void MSNLogoff(bool = false);
@@ -121,11 +122,12 @@ private:
   void ProcessPipe();
   void ProcessServerPacket(CMSNBuffer *);
   void ProcessSSLServerPacket(CMSNBuffer &);
-  void ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer *, int);
+  void ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer*,
+      Licq::TCPSocket* sock);
 
   // Network functions
   void SendPacket(CMSNPacket *);
-  void Send_SB_Packet(const Licq::UserId& userId, CMSNPacket* p, int nSocket = -1,
+  void Send_SB_Packet(const Licq::UserId& userId, CMSNPacket* p, Licq::TCPSocket* sock,
       bool bDelete = true);
   void MSNAuthenticate(const std::string& host = "loginnet.passport.com",
       const std::string& path = "/login2.srf");
@@ -153,13 +155,13 @@ private:
   void RemovePacket(const Licq::UserId& userId, int socketId, int size = 0);
   SBuffer* RetrievePacket(const Licq::UserId& userId, int socketId);
   Licq::Event* RetrieveEvent(unsigned long);
-  void HandlePacket(int, CMSNBuffer &, const Licq::UserId& userId);
+  void HandlePacket(Licq::TCPSocket* sock, CMSNBuffer&, const Licq::UserId& userId);
   unsigned long SocketToCID(int);
   static std::string Decode(const std::string& strIn);
   static std::string Encode(const std::string& strIn);
   void WaitDataEvent(CMSNDataEvent *);
   bool RemoveDataEvent(CMSNDataEvent *);
-  CMSNDataEvent* FetchDataEvent(const Licq::UserId& userId, int socketId);
+  CMSNDataEvent* FetchDataEvent(const Licq::UserId& userId, Licq::TCPSocket* sock);
   CMSNDataEvent* FetchStartDataEvent(const Licq::UserId& userId);
 
   /**
@@ -168,13 +170,13 @@ private:
    *
    * @param sock Socket to clear conversations for
    */
-  void killConversation(int sock);
+  void killConversation(Licq::TCPSocket* sock);
 
   // Variables
   Licq::UserId myOwnerId;
   bool m_bExit;
-  int m_nServerSocket;
-  int m_nSSLSocket;
+  Licq::TCPSocket* myServerSocket;
+  Licq::TCPSocket* mySslSocket;
   CMSNBuffer *m_pPacketBuf,
              *m_pSSLPacket;
   std::vector<BufferList> m_vlPacketBucket;
