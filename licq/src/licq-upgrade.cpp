@@ -430,7 +430,7 @@ static void upgradeLicq18_migrateOwnerConfig(const string& baseDir, StringMap& o
       int serverPort;
       if (!ownerConf.get("ServerPort", serverPort))
         jabberConf.get("Port", serverPort);
-      ownerConf.set("ServerPort", serverPort);
+      ownerConf.set("ServerPort", ((serverPort == 5222 || serverPort == -1) ? 0 : serverPort));
 
       // Jabber specific parameters (moved by Licq 1.7.0)
       string str;
