@@ -268,7 +268,6 @@ void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer* packet,
     else if (strCmd == "USR")
     {
       SStartMessage *pStart = 0;
-      pthread_mutex_lock(&mutex_StartList);
       StartList::iterator it;
       for (it = m_lStart.begin(); it != m_lStart.end(); it++)
       {
@@ -284,7 +283,6 @@ void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer* packet,
         pReply = new CPS_MSNCall(pStart->userId.accountId());
 	pStart->m_nSeq = pReply->Sequence();
       }
-      pthread_mutex_unlock(&mutex_StartList);
     }
     else if (strCmd == "JOI")
     {
@@ -293,7 +291,6 @@ void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer* packet,
 
       SStartMessage *pStart = 0;
       StartList::iterator it;
-      pthread_mutex_lock(&mutex_StartList);
       for (it = m_lStart.begin(); it != m_lStart.end(); it++)
       {
         if ((*it)->userId == userId) // case insensitive perhaps?
@@ -335,7 +332,6 @@ void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer* packet,
 
         delete pStart;
       }
-      pthread_mutex_unlock(&mutex_StartList);
     }
     else if (strCmd == "BYE")
     {
@@ -359,7 +355,7 @@ void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer* packet,
 
       if (convo == NULL || convo->isEmpty())
       {
-        gSocketMan.CloseSocket(nSock);
+        closeSocket(sock);
         if (convo != NULL)
           gConvoManager.remove(convo->id());
       }
@@ -372,7 +368,6 @@ void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer* packet,
       // signals to the daemon and remove these item from the list.
       SStartMessage *pStart = 0;
       StartList::iterator it;
-      pthread_mutex_lock(&mutex_StartList);
       for (it = m_lStart.begin(); it != m_lStart.end(); it++)
       {
         if ((*it)->m_nSeq == nSeq)
@@ -384,8 +379,7 @@ void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer* packet,
           m_lStart.erase(it);
           break; 
         }
-      }     
-      pthread_mutex_unlock(&mutex_StartList);
+      }
     }
     else
     {
@@ -414,10 +408,8 @@ void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket* p, Licq::TCPSocket* 
       return;
   }
 
-  sock->Lock();
   if (!sock->send(*p->getBuffer()) && userId.isValid())
   {
-    sock->Unlock();
     gLog.info("Connection with %s lost", userId.toString().c_str());
 
     int nSock = sock->Descriptor();
@@ -437,13 +429,11 @@ void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket* p, Licq::TCPSocket* 
 
     if (convo == NULL || convo->isEmpty())
     {
-      gSocketMan.CloseSocket(nSock);
+      closeSocket(sock);
       if (convo != NULL)
         gConvoManager.remove(convo->id());
     }
   }
-  else
-    sock->Unlock();
 
   if (bDelete)
     delete p;
@@ -467,7 +457,6 @@ bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
   }
 
   SStartMessage *pStart = 0;  
-  pthread_mutex_lock(&mutex_StartList);
   StartList::iterator it;
   for (it = m_lStart.begin(); it != m_lStart.end(); it++)
   {
@@ -477,13 +466,9 @@ bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
     break;
   }
   if (!pStart)
-  {
-    pthread_mutex_unlock(&mutex_StartList);
     return false;
-  }
   //pStart->m_bConnecting = true;
   Licq::TCPSocket* sock = new Licq::TCPSocket(pStart->userId);
-  pthread_mutex_unlock(&mutex_StartList);
 
   gLog.info("Connecting to SB at %s:%d", host.c_str(), port);
   if (!sock->connectTo(host, port))
@@ -496,7 +481,7 @@ bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
   // This socket was just opened so make sure there isn't any old left over conversation associated with it
   killConversation(sock);
 
-  gSocketMan.AddSocket(sock);
+  myMainLoop.addSocket(sock, this);
 
   {
     UserWriteGuard u(pStart->userId);
@@ -508,7 +493,6 @@ bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
         u->setNormalSocketDesc(sock);
     }
   }
-  gSocketMan.DropSocket(sock);
 
   CMSNPacket* pReply = new CPS_MSN_SBStart(strCookie, myOwnerId.accountId());
   Send_SB_Packet(pStart->userId, pReply, sock);
@@ -546,7 +530,7 @@ bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionI
   // This socket was just opened so make sure there isn't any old left over conversation associated with it
   killConversation(sock);
 
-  gSocketMan.AddSocket(sock);
+  myMainLoop.addSocket(sock, this);
   CMSNPacket* pReply = new CPS_MSN_SBAnswer(strSessionId, strCookie, myOwnerId.accountId());
 
   {
@@ -561,8 +545,6 @@ bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionI
       u->save(Licq::User::SaveLicqInfo);
     }
   }
-
-  gSocketMan.DropSocket(sock);
 
   Send_SB_Packet(userId, pReply, sock);
 
@@ -581,10 +563,8 @@ void CMSN::MSNSendInvitation(const Licq::UserId& userId, CMSNPacket* _pPacket)
   p->m_nSeq = pSB->Sequence();
   p->m_bConnecting = false;
   p->m_bDataConnection = true;
-  pthread_mutex_lock(&mutex_StartList);
   m_lStart.push_back(p);
-  pthread_mutex_unlock(&mutex_StartList);
-  
+
   SendPacket(pSB);
 }
 
@@ -610,8 +590,7 @@ void CMSN::MSNSendMessage(unsigned long eventId, const UserId& userId, const str
   {
     m_pEvents.push_back(e);
 
-    Licq::TCPSocket* sock = dynamic_cast<Licq::TCPSocket*>(gSocketMan.FetchSocket(nSocket));
-    gSocketMan.DropSocket(sock);
+    Licq::TCPSocket* sock = dynamic_cast<Licq::TCPSocket*>(myMainLoop.getSocketFromFd(nSocket));
 
     Send_SB_Packet(userId, pSend, sock, false);
   }
@@ -627,10 +606,8 @@ void CMSN::MSNSendMessage(unsigned long eventId, const UserId& userId, const str
     p->m_nSeq = pSB->Sequence();
     p->m_bConnecting = false;
     p->m_bDataConnection = false;
-    pthread_mutex_lock(&mutex_StartList);
     m_lStart.push_back(p);
-    pthread_mutex_unlock(&mutex_StartList);
-   
+
     SendPacket(pSB);
   }  
 }
@@ -649,8 +626,7 @@ void CMSN::MSNSendTypingNotification(const UserId& userId, unsigned long _nCID)
 
   if (nSockDesc > 0)
   {
-    Licq::TCPSocket* sock = dynamic_cast<Licq::TCPSocket*>(gSocketMan.FetchSocket(nSockDesc));
-    gSocketMan.DropSocket(sock);
+    Licq::TCPSocket* sock = dynamic_cast<Licq::TCPSocket*>(myMainLoop.getSocketFromFd(nSockDesc));
     Send_SB_Packet(userId, pSend, sock);
   }
 }

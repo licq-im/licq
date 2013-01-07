@@ -118,7 +118,7 @@ void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
     {
       string strHost = strLocation.substr(8, pos - 8);
       string strParam = strLocation.substr(pos, strLocation.size() - pos);
-      gSocketMan.CloseSocket(mySslSocket->Descriptor(), false, true);
+      closeSocket(mySslSocket, false);
       mySslSocket = NULL;
       delete m_pSSLPacket;
       m_pSSLPacket = 0;
@@ -141,7 +141,7 @@ void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
     gLog.error("Unknown sign in error");
   }
 
-  gSocketMan.CloseSocket(mySslSocket->Descriptor(), false, true);
+  closeSocket(mySslSocket, false);
   mySslSocket = NULL;
   delete m_pSSLPacket;
   m_pSSLPacket = 0;
@@ -167,7 +167,7 @@ void CMSN::MSNAuthenticate(const string& server, const string& path)
     return;
   }
 
-  gSocketMan.AddSocket(mySslSocket);
+  myMainLoop.addSocket(mySslSocket, this);
 
   string request = "GET " + path + " HTTP/1.1\r\n"
       "Authorization: Passport1.4 OrgVerb=GET,OrgURL=http%3A%2F%2Fmessenger%2Emsn%2Ecom,"
@@ -182,5 +182,4 @@ void CMSN::MSNAuthenticate(const string& server, const string& path)
   Licq::Buffer buf(request.size());
   buf.packRaw(request);
   mySslSocket->send(buf);
-  gSocketMan.DropSocket(mySslSocket);
 }

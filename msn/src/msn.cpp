@@ -21,8 +21,6 @@
 #include <cstdio>
 #include <cstring>
 #include <list>
-#include <pthread.h>
-#include <sys/select.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <string>
@@ -70,11 +68,6 @@ char *strndup(const char *s, size_t n)
 }
 #endif // HAVE_STRNDUP
 
-//Global socket manager
-Licq::SocketManager gSocketMan;
-
-void *MSNPing_tep(void *);
-
 
 CMSN::CMSN(Licq::ProtocolPlugin::Params& p)
   : Licq::ProtocolPlugin(p),
@@ -82,7 +75,6 @@ CMSN::CMSN(Licq::ProtocolPlugin::Params& p)
     mySslSocket(NULL),
     m_vlPacketBucket(211)
 {
-  m_bExit = false;
   m_bWaitingPingReply = m_bCanPing = false;
   m_pPacketBuf = 0;
   m_pSSLPacket = 0;
@@ -139,16 +131,13 @@ void CMSN::StorePacket(SBuffer *_pBuf, int _nSock)
 {
   if (_pBuf->m_bStored == false)
   {
-    pthread_mutex_lock(&mutex_Bucket);
     BufferList &b = m_vlPacketBucket[HashValue(_nSock)];
     b.push_front(_pBuf);
-    pthread_mutex_unlock(&mutex_Bucket);
   }
 }
 
 void CMSN::RemovePacket(const Licq::UserId& userId, int _nSock, int nSize)
 {
-  pthread_mutex_lock(&mutex_Bucket);
   BufferList &b = m_vlPacketBucket[HashValue(_nSock)];
   BufferList::iterator it;
   SBuffer *pNewBuf = 0;
@@ -181,23 +170,17 @@ void CMSN::RemovePacket(const Licq::UserId& userId, int _nSock, int nSize)
   // Now add it here
   if (pNewBuf)
     b.push_front(pNewBuf);
-  pthread_mutex_unlock(&mutex_Bucket);
 }
 
 SBuffer *CMSN::RetrievePacket(const Licq::UserId& userId, int _nSock)
 {
-  pthread_mutex_lock(&mutex_Bucket);
   BufferList &b = m_vlPacketBucket[HashValue(_nSock)];
   BufferList::iterator it;
   for (it = b.begin(); it != b.end(); it++)
   {
     if ((*it)->myUserId == userId)
-    {
-      pthread_mutex_unlock(&mutex_Bucket);
       return *it;
-    }
   }
-  pthread_mutex_unlock(&mutex_Bucket);
 
   return 0;
 }
@@ -392,115 +375,14 @@ string CMSN::Encode(const string &strIn)
 
 int CMSN::run()
 {
-  int nNumDesc;
-  fd_set f;
+  // Ping server every 60s
+  myMainLoop.addTimeout(60*1000, this, 0, false);
 
-  pthread_mutex_init(&mutex_StartList, 0);
-  pthread_mutex_init(&mutex_MSNEventList, 0);
-  pthread_mutex_init(&mutex_ServerSocket, 0);
-  pthread_mutex_init(&mutex_Bucket, 0);
+  myMainLoop.addRawFile(getReadPipe(), this);
+  myMainLoop.run();
 
-  int nResult = pthread_create(&m_tMSNPing, NULL, &MSNPing_tep, this);
-  if (nResult)
-  {
-    gLog.error("Unable to start ping thread: %s", strerror(nResult));
-  }
-
-  int m_nPipe = getReadPipe();
-  nResult = 0;
-  
-  while (!m_bExit)
-  {
-    pthread_mutex_lock(&mutex_ServerSocket);
-    FD_ZERO(&f);
-    f = gSocketMan.socketSet();
-    nNumDesc = gSocketMan.LargestSocket() + 1;
- 
-    if (m_nPipe != -1)
-    {
-      FD_SET(m_nPipe, &f);
-      if (m_nPipe >= nNumDesc)
-        nNumDesc = m_nPipe + 1;
-    }
-
-    struct timeval tv;
-    tv.tv_sec = 10;
-    tv.tv_usec = 0;
-    nResult = select(nNumDesc, &f, NULL, NULL, &tv);
-    pthread_mutex_unlock(&mutex_ServerSocket);
-  
-    if (nResult == 0)
-    {
-      // We need to call select to get a context switch to make
-      // the ping thread be notified that the mutex has been unlocked.
-      tv.tv_sec = 1; tv.tv_usec = 0;
-      select(0, NULL, NULL, NULL, &tv);
-    }
-
-    if (nResult <= 0)
-      continue;
-
-    for (int curFd = 0; curFd < nNumDesc; ++curFd)
-    {
-      if (!FD_ISSET(curFd, &f))
-        continue;
-
-      // Plugin message pipe
-      if (curFd == m_nPipe)
-      {
-        ProcessPipe();
-        continue;
-      }
-
-      // Anything else is a socket
-      Licq::TCPSocket* sock = dynamic_cast<Licq::TCPSocket*>(gSocketMan.FetchSocket(curFd));
-      assert(sock != NULL);
-
-      CMSNBuffer packet;
-      bool recok = sock->receive(packet);
-      gSocketMan.DropSocket(sock);
-
-      if (sock == myServerSocket)
-      {
-        if (recok)
-          HandlePacket(myServerSocket, packet, myOwnerId);
-        else
-        {
-          // Time to reconnect
-          gLog.info("Disconnected from server, reconnecting");
-          sleep(1);
-          gSocketMan.CloseSocket(curFd);
-          myServerSocket = NULL;
-          Logon(myOwnerId, myStatus);
-        }
-      }
-
-      else if (sock == mySslSocket)
-      {
-        if (recok)
-          ProcessSSLServerPacket(packet);
-      }
-
-      else
-      {
-        //SB socket
-        if (recok)
-          HandlePacket(sock, packet, sock->userId());
-        else
-        {
-          // Sometimes SB just drops connection without sending any BYE for the user(s) first
-          // This seems to happen when other user is offical client
-          killConversation(sock);
-          gSocketMan.CloseSocket(curFd);
-        }
-      }
-    }
-  }
-  
   // Close out now
-  pthread_cancel(m_tMSNPing);
   MSNLogoff();
-  pthread_join(m_tMSNPing, NULL);
   return 0;
 }
 
@@ -519,11 +401,11 @@ Licq::Owner* CMSN::createOwner(const Licq::UserId& id)
   return new Owner(id);
 }
 
-void CMSN::ProcessPipe()
+void CMSN::rawFileEvent(int fd, int /*revents*/)
 {
-  char buf[16];
-  read(getReadPipe(), buf, 1);
-  switch (buf[0])
+  char c;
+  read(fd, &c, 1);
+  switch (c)
   {
     case Licq::ProtocolPlugin::PipeSignal:
     {
@@ -534,7 +416,7 @@ void CMSN::ProcessPipe()
 
     case Licq::ProtocolPlugin::PipeShutdown:
     gLog.info("Exiting");
-    m_bExit = true;
+    myMainLoop.quit();
     break;
   }
 }
@@ -645,17 +527,77 @@ void CMSN::ProcessSignal(Licq::ProtocolSignal* s)
   delete s;
 }
 
+void CMSN::socketEvent(Licq::INetSocket* inetSocket, int /*revents*/)
+{
+  Licq::TCPSocket* sock = dynamic_cast<Licq::TCPSocket*>(inetSocket);
+  assert(sock != NULL);
+
+  CMSNBuffer packet;
+  bool recok = sock->receive(packet);
+
+  if (sock == myServerSocket)
+  {
+    if (recok)
+      HandlePacket(myServerSocket, packet, myOwnerId);
+    else
+    {
+      // Time to reconnect
+      gLog.info("Disconnected from server, reconnecting");
+      sleep(1);
+      closeSocket(myServerSocket, false);
+      myServerSocket = NULL;
+      Logon(myOwnerId, myStatus);
+    }
+  }
+
+  else if (sock == mySslSocket)
+  {
+    if (recok)
+      ProcessSSLServerPacket(packet);
+  }
+
+  else
+  {
+    //SB socket
+    if (recok)
+      HandlePacket(sock, packet, sock->userId());
+    else
+    {
+      // Sometimes SB just drops connection without sending any BYE for the user(s) first
+      // This seems to happen when other user is offical client
+      killConversation(sock);
+      closeSocket(sock);
+    }
+  }
+}
+
+void CMSN::closeSocket(Licq::TCPSocket* sock, bool clearUser)
+{
+  myMainLoop.removeSocket(sock);
+  sock->CloseConnection();
+
+  if (clearUser)
+  {
+    Licq::UserWriteGuard u(sock->userId());
+    if (u.isLocked())
+    {
+      u->clearSocketDesc(sock);
+      if (u->OfflineOnDisconnect())
+        u->statusChanged(Licq::User::OfflineStatus);
+    }
+  }
+
+  delete sock;
+}
+
 void CMSN::WaitDataEvent(CMSNDataEvent *_pEvent)
 {
-  pthread_mutex_lock(&mutex_MSNEventList);
   m_lMSNEvents.push_back(_pEvent);
-  pthread_mutex_unlock(&mutex_MSNEventList);
 }
 
 bool CMSN::RemoveDataEvent(CMSNDataEvent *pData)
 {
   list<CMSNDataEvent *>::iterator it;
-  pthread_mutex_lock(&mutex_MSNEventList);
   for (it = m_lMSNEvents.begin(); it != m_lMSNEvents.end(); it++)
   {
     if ((*it)->userId() == pData->userId() &&
@@ -663,7 +605,7 @@ bool CMSN::RemoveDataEvent(CMSNDataEvent *pData)
     {
       // Close the socket
       int sockFd = pData->getSocket()->Descriptor();
-      gSocketMan.CloseSocket(sockFd);
+      closeSocket(pData->getSocket());
 
       Licq::Conversation* convo = gConvoManager.getFromSocket(sockFd);
       if (convo != NULL)
@@ -675,7 +617,6 @@ bool CMSN::RemoveDataEvent(CMSNDataEvent *pData)
       break;
     }
   }
-  pthread_mutex_unlock(&mutex_MSNEventList);
 
   return (pData == 0);
 }
@@ -684,7 +625,6 @@ CMSNDataEvent* CMSN::FetchDataEvent(const Licq::UserId& userId, Licq::TCPSocket*
 {
   CMSNDataEvent *pReturn = 0;
   list<CMSNDataEvent *>::iterator it;
-  pthread_mutex_lock(&mutex_MSNEventList);
   for (it = m_lMSNEvents.begin(); it != m_lMSNEvents.end(); it++)
   {
     if ((*it)->userId() == userId && (*it)->getSocket() == sock)
@@ -700,7 +640,6 @@ CMSNDataEvent* CMSN::FetchDataEvent(const Licq::UserId& userId, Licq::TCPSocket*
     if (pReturn)
       pReturn->setSocket(sock);
   }
-  pthread_mutex_unlock(&mutex_MSNEventList);
 
   return pReturn;
 }

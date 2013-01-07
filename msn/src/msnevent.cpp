@@ -84,7 +84,7 @@ CMSNDataEvent::CMSNDataEvent(unsigned long _nEvent, unsigned long _nSessionId,
 CMSNDataEvent::~CMSNDataEvent()
 {
   if (mySocketDesc != NULL)
-    gSocketMan.CloseSocket(mySocketDesc->Descriptor());
+    m_pMSN->closeSocket(mySocketDesc);
 
   if (m_nFileDesc)
     close(m_nFileDesc);

@@ -23,11 +23,10 @@
 #include <licq/plugin/protocolplugin.h>
 
 #include <list>
-#include <pthread.h>
 #include <string>
 #include <vector>
 
-#include <licq/socketmanager.h>
+#include <licq/mainloop.h>
 #include <licq/userid.h>
 
 #include "msnbuffer.h"
@@ -36,6 +35,7 @@
 namespace Licq
 {
 class Event;
+class INetSocket;
 class TCPSocket;
 }
 
@@ -60,7 +60,6 @@ char *strndup(const char *s, size_t n);
 
 class CMSNPacket;
 class CMSNDataEvent;
-void* MSNPing_tep(void* p);
 
 struct SBuffer
 {
@@ -83,7 +82,7 @@ struct SStartMessage
 
 typedef std::list<SStartMessage*> StartList;
 
-class CMSN : public Licq::ProtocolPlugin
+class CMSN : public Licq::ProtocolPlugin, public Licq::MainLoopCallback
 {
 public:
   CMSN(Params& p);
@@ -97,17 +96,11 @@ public:
   std::string defaultServerHost() const;
   int defaultServerPort() const;
 
-  void MSNPing();
   bool Connected() { return myServerSocket != NULL; }
-  bool CanSendPing() { return m_bCanPing; }
   void Logon(const Licq::UserId& ownerId, unsigned status, std::string host = std::string(), int port = 0);
   void MSNLogoff(bool = false);
-  unsigned status() const { return myStatus; }
 
-  bool WaitingPingReply()          { return m_bWaitingPingReply; }
-  void SetWaitingPingReply(bool b) { m_bWaitingPingReply = b; }
-
-  pthread_mutex_t mutex_ServerSocket; // Ugly, but whatever.
+  void closeSocket(Licq::TCPSocket* sock, bool clearUser = true);
 
 protected:
   // From Licq::ProtocolPlugin
@@ -118,6 +111,11 @@ protected:
   Licq::Owner* createOwner(const Licq::UserId& id);
 
 private:
+  // From Licq::MainLoopCallback
+  void rawFileEvent(int fd, int revents);
+  void socketEvent(Licq::INetSocket* inetSocket, int revents);
+  void timeoutEvent(int id);
+
   void ProcessSignal(Licq::ProtocolSignal* s);
   void ProcessPipe();
   void ProcessServerPacket(CMSNBuffer *);
@@ -174,7 +172,7 @@ private:
 
   // Variables
   Licq::UserId myOwnerId;
-  bool m_bExit;
+  Licq::MainLoop myMainLoop;
   Licq::TCPSocket* myServerSocket;
   Licq::TCPSocket* mySslSocket;
   CMSNBuffer *m_pPacketBuf,
@@ -192,21 +190,12 @@ private:
   std::string m_strMSPAuth,
          m_strSID,
          m_strKV;
-         
-  pthread_t m_tMSNPing;
-  pthread_mutex_t mutex_StartList,
-                  mutex_MSNEventList,
-                  mutex_Bucket;
-
   std::string myCookie;
   std::string myPassword;
 
   friend class CMSNDataEvent;
-  friend void* MSNPing_tep(void* p);
 };
 
 } // namespace LicqMsn
-
-extern Licq::SocketManager gSocketMan;
 
 #endif

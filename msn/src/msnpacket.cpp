@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2004-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -130,7 +130,6 @@ string MSN_Base64Decode(string const& strIn)
 }
 
 unsigned short CMSNPacket::s_nSequence = 0;
-pthread_mutex_t CMSNPacket::s_xMutex = PTHREAD_MUTEX_INITIALIZER;
 
 CMSNPacket::CMSNPacket(bool _bPing)
 {
@@ -138,12 +137,10 @@ CMSNPacket::CMSNPacket(bool _bPing)
   m_szCommand = 0;
   m_nSize = 0;
   m_bPing = _bPing;
-  
-  pthread_mutex_lock(&s_xMutex);
+
   if (s_nSequence > 9999)
    s_nSequence = 0;
   m_nSequence = s_nSequence++;
-  pthread_mutex_unlock(&s_xMutex);
 }
 
 void CMSNPacket::InitBuffer()

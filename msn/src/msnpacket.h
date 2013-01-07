@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2004-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@
 #define LICQMSN_MSNPACKET_H
 
 #include <cstdlib>
-#include <pthread.h>
 #include <string>
 
 #include <licq/packet.h>
@@ -63,7 +62,6 @@ protected:
   
   // Statics
   static unsigned short s_nSequence;
-  static pthread_mutex_t s_xMutex;
 };
 
 class CMSNPayloadPacket : public CMSNPacket

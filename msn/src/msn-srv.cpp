@@ -96,7 +96,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
           port = atoi(strServer.substr(sep+1).c_str());
         }
 
-        gSocketMan.CloseSocket(myServerSocket->Descriptor(), false, true);
+        closeSocket(myServerSocket, false);
         myServerSocket = NULL;
 
         // Make the new connection
@@ -385,7 +385,6 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
 
       // Do we have a connection attempt to this user?
       StartList::iterator it;
-      pthread_mutex_lock(&mutex_StartList);
       for (it = m_lStart.begin(); it != m_lStart.end(); it++)
       {
         if (*it && userId == (*it)->userId)
@@ -396,7 +395,6 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
           break;
         }
       }
-      pthread_mutex_unlock(&mutex_StartList);
     }
     else if (strCmd == "RNG")
     {
@@ -481,7 +479,6 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       // signals to the daemon and remove these item from the list.
       SStartMessage *pStart = 0;
       StartList::iterator it;
-      pthread_mutex_lock(&mutex_StartList);
       for (it = m_lStart.begin(); it != m_lStart.end(); it++)
       {
         if ((*it)->m_nSeq == nSeq)
@@ -493,8 +490,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
           m_lStart.erase(it);
           break; 
         }
-      }     
-      pthread_mutex_unlock(&mutex_StartList);
+      }
     }
     else if (strCmd == "GTC")
     {
@@ -529,14 +525,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
 void CMSN::SendPacket(CMSNPacket *p)
 {
   assert(myServerSocket != NULL);
-  myServerSocket->Lock();
   if (!myServerSocket->send(*p->getBuffer()))
-  {
-    myServerSocket->Unlock();
     MSNLogoff(true);
-  }
-  else
-    myServerSocket->Unlock();
 
   delete p;
 }
@@ -578,8 +568,7 @@ void CMSN::Logon(const Licq::UserId& ownerId, unsigned status, string host, int 
     return;
   }
 
-  gSocketMan.AddSocket(myServerSocket);
-  gSocketMan.DropSocket(myServerSocket);
+  myMainLoop.addSocket(myServerSocket, this);
 
   CMSNPacket *pHello = new CPS_MSNVersion();
   SendPacket(pHello);
@@ -632,7 +621,7 @@ void CMSN::MSNLogoff(bool bDisconnected)
   m_bCanPing = false;
 
   // Close the server socket
-  gSocketMan.CloseSocket(myServerSocket->Descriptor());
+  closeSocket(myServerSocket, false);
   myServerSocket = NULL;
 
   // Close user sockets and update the daemon
@@ -643,7 +632,7 @@ void CMSN::MSNLogoff(bool bDisconnected)
       UserWriteGuard u(dynamic_cast<User*>(user));
       if (u->normalSocketDesc() != NULL)
       {
-        gSocketMan.CloseSocket(u->normalSocketDesc()->Descriptor(), false, true);
+        closeSocket(u->normalSocketDesc(), false);
         u->clearAllSocketDesc();
       }
       if (u->isOnline())
@@ -755,49 +744,21 @@ void CMSN::MSNGetDisplayPicture(const Licq::UserId& userId, const string &strMSN
   MSNSendInvitation(userId, pGetMSNDP);
 }
 
-
-void CMSN::MSNPing()
+void CMSN::timeoutEvent(int /*id*/)
 {
-  CMSNPacket *pSend = new CPS_MSNPing();
-  SendPacket(pSend);
-}
-
-void* LicqMsn::MSNPing_tep(void* p)
-{
-  CMSN *pMSN = (CMSN *)p;
-
-  Licq::gLogService.createThreadLog("msn-ping");
-  
-  while (true)
+  if (m_bWaitingPingReply)
   {
-    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-    
-    if (pMSN->WaitingPingReply())
-    {
-      pthread_mutex_lock(&(pMSN->mutex_ServerSocket));
-      gLog.info("Ping timeout, reconnecting...");
-      pMSN->SetWaitingPingReply(false);
-      unsigned status = pMSN->status();
-      pMSN->MSNLogoff();
-      pMSN->Logon(pMSN->myOwnerId, status);
-      pthread_mutex_unlock(&(pMSN->mutex_ServerSocket));
-    }
-    else if (pMSN->CanSendPing())
-    {
-      pMSN->MSNPing();
-      pMSN->SetWaitingPingReply(true);
-    }
+    gLog.info("Ping timeout, reconnecting...");
+    m_bWaitingPingReply = false;
+    unsigned status = myStatus;
+    MSNLogoff();
+    Logon(myOwnerId, status);
+  }
+  else if (m_bCanPing)
+  {
+    CMSNPacket* pSend = new CPS_MSNPing();
+    SendPacket(pSend);
 
-    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-    pthread_testcancel();
-
-    struct timeval tv;
-    tv.tv_sec = 60;
-    tv.tv_usec = 0;
-    select(0, 0, 0, 0, &tv);
-
-    pthread_testcancel();
-  }  
-  
-  return 0;
+    m_bWaitingPingReply = true;
+  }
 }
