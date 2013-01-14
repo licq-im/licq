@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -145,6 +145,15 @@ string addStrWithColons(const string& oldStr)
   return str;
 }
 
+static string addSingleLine(const string& oldStr)
+{
+  string str = ":" + oldStr;
+  size_t pos = 0;
+  while ((pos = str.find('\n', pos)) < str.size())
+    str[pos] = ' ';
+  return str + '\n';
+}
+
 
 //-----CUserEvent::AddToHistory-------------------------------------------------
 string UserEvent::historyHeader(bool isReceiver) const
@@ -270,7 +279,7 @@ void Licq::EventFile::AddToHistory(User* u, bool isReceiver) const
 {
   stringstream buf;
   buf << historyHeader(isReceiver);
-  buf << ':' << myFilename << '\n';
+  buf << addSingleLine(myFilename);
   buf << ':' << m_nFileSize << '\n';
   buf << addStrWithColons(myFileDescription);
   writeUserHistory(u, buf.str());
@@ -309,9 +318,7 @@ void Licq::EventUrl::AddToHistory(User* u, bool isReceiver) const
 {
   string str;
   str = historyHeader(isReceiver);
-  str += ':';
-  str += myUrl;
-  str += '\n';
+  str += addSingleLine(myUrl);
   str += addStrWithColons(myUrlDescription);
   writeUserHistory(u, str);
 }
@@ -403,11 +410,11 @@ void Licq::EventAdded::AddToHistory(User* u, bool isReceiver) const
 {
   stringstream buf;
   buf << historyHeader(isReceiver);
-  buf << ':' << myUserId.accountId() << '\n';
-  buf << ':' << myAlias << '\n';
-  buf << ':' << myFirstName << '\n';
-  buf << ':' << myLastName << '\n';
-  buf << ':' << myEmail << '\n';
+  buf << addSingleLine(myUserId.accountId());
+  buf << addSingleLine(myAlias);
+  buf << addSingleLine(myFirstName);
+  buf << addSingleLine(myLastName);
+  buf << addSingleLine(myEmail);
   writeUserHistory(u, buf.str());
 }
 
@@ -452,11 +459,11 @@ void Licq::EventAuthRequest::AddToHistory(User* u, bool isReceiver) const
 {
   stringstream buf;
   buf << historyHeader(isReceiver);
-  buf << ':' << myUserId.accountId() << '\n';
-  buf << ':' << myAlias << '\n';
-  buf << ':' << myFirstName << '\n';
-  buf << ':' << myLastName << '\n';
-  buf << ':' << myEmail << '\n';
+  buf << addSingleLine(myUserId.accountId());
+  buf << addSingleLine(myAlias);
+  buf << addSingleLine(myFirstName);
+  buf << addSingleLine(myLastName);
+  buf << addSingleLine(myEmail);
   buf << addStrWithColons(myReason);
   writeUserHistory(u, buf.str());
 }
@@ -496,9 +503,7 @@ void Licq::EventAuthGranted::AddToHistory(User* u, bool isReceiver) const
 {
   string str;
   str = historyHeader(isReceiver);
-  str += ':';
-  str += myUserId.accountId();
-  str += '\n';
+  str += addSingleLine(myUserId.accountId());
   str += addStrWithColons(myMessage);
   writeUserHistory(u, str);
 }
@@ -537,9 +542,7 @@ void Licq::EventAuthRefused::AddToHistory(User* u, bool isReceiver) const
 {
   string str;
   str = historyHeader(isReceiver);
-  str += ':';
-  str += myUserId.accountId();
-  str += '\n';
+  str += addSingleLine(myUserId.accountId());
   str += addStrWithColons(myMessage);
   writeUserHistory(u, str);
 }
@@ -578,8 +581,8 @@ void Licq::EventWebPanel::AddToHistory(User* u, bool isReceiver) const
 {
   stringstream buf;
   buf << historyHeader(isReceiver);
-  buf << ':' << myName << '\n';
-  buf << ':' << myEmail << '\n';
+  buf << addSingleLine(myName);
+  buf << addSingleLine(myEmail);
   buf << addStrWithColons(myMessage);
   writeUserHistory(u, buf.str());
 }
@@ -617,8 +620,8 @@ void Licq::EventEmailPager::AddToHistory(User* u, bool isReceiver) const
 {
   stringstream buf;
   buf << historyHeader(isReceiver);
-  buf << ':' << myName << '\n';
-  buf << ':' << myEmail << '\n';
+  buf << addSingleLine(myName);
+  buf << addSingleLine(myEmail);
   buf << addStrWithColons(myMessage);
   writeUserHistory(u, buf.str());
 }
@@ -676,8 +679,8 @@ void Licq::EventContactList::AddToHistory(User* u, bool isReceiver) const
   ContactList::const_iterator iter;
   for (iter = m_vszFields.begin(); iter != m_vszFields.end(); ++iter)
   {
-    buf << ':' << (*iter)->userId().accountId() << '\n';
-    buf << ':' << (*iter)->alias() << '\n';
+    buf << addSingleLine((*iter)->userId().accountId());
+    buf << addSingleLine((*iter)->alias());
   }
   writeUserHistory(u, buf.str());
 }
@@ -713,9 +716,7 @@ void Licq::EventSms::AddToHistory(User* u, bool isReceiver) const
 {
   string str;
   str = historyHeader(isReceiver);
-  str += ':';
-  str += myNumber;
-  str += '\n';
+  str += addSingleLine(myNumber);
   str += addStrWithColons(myMessage);
   writeUserHistory(u, str);
 }
@@ -754,8 +755,8 @@ void Licq::EventServerMessage::AddToHistory(User* u, bool isReceiver) const
 {
   stringstream buf;
   buf << historyHeader(isReceiver);
-  buf << ':' << myName << '\n';
-  buf << ':' << myEmail << '\n';
+  buf << addSingleLine(myName);
+  buf << addSingleLine(myEmail);
   buf << addStrWithColons(myMessage);
   writeUserHistory(u, buf.str());
 }
@@ -809,8 +810,8 @@ void Licq::EventEmailAlert::AddToHistory(User* u, bool isReceiver) const
 {
   stringstream buf;
   buf << historyHeader(isReceiver);
-  buf << ':' << myName << '\n';
-  buf << ':' << myEmail << '\n';
+  buf << addSingleLine(myName);
+  buf << addSingleLine(myEmail);
   buf << addStrWithColons(mySubject);
   writeUserHistory(u, buf.str());
 }
@@ -854,9 +855,7 @@ void Licq::EventUnknownSysMsg::AddToHistory(User* /* u */, bool /* isReceiver */
 /*
   string str;
   str = historyHeader(isReceiver);
-  str += ':';
-  str += myUserId.accountId();
-  str += '\n';
+  str += addSingleLine(myUserId.accountId());
   str += addStrWithColons(myMessage);
   writeUserHistory(u, str);
 */
