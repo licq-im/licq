@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,7 +76,8 @@ void UserHistory::setFile(const string& filename, const string& description)
     while ((szResult = fgets(sz, sizeof(sz), f)) != NULL && sz[0] == ':') \
       dest.append(sz+1); \
     /* Don't include the final line break */ \
-    dest.resize(dest.size() - 1); \
+    if (dest.size() > 0) \
+      dest.resize(dest.size() - 1); \
   }
 
 #define SKIP_VALID_LINES \
