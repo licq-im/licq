@@ -1,8 +1,16 @@
 Change log for Licq.
 
 New in 1.8.0
+o Removed console plugin (no longer maintained)
+o Change config file structure to support multiple owners
+o Plugin API: Add a mainloop class that plugins can use
+o Plugin API: Many changes to better support multiple owners
+o Auto-Reply: Apply startup status to all owners
 o Fifo: Don't hang if data doesn't end with a line break
+o Forwarder: Apply startup status to all owners
 o ICQ: Moved from daemon and built as separate protocol plugin
+o Qt4-Gui: Ask for missing password before trying to log on
+o RMS: Apply auto response changes to all owners
 
 
 New in 1.7.1
