@@ -1,5 +1,5 @@
 # Belarussian translation for Licq daemon.
-# Copyright (C) 2008-2012 Licq Developers <licq-dev@googlegroups.com>
+# Copyright (C) 2008-2013 Licq Developers <licq-dev@googlegroups.com>
 # This file is distributed under the same license as the Licq package.
 # Alexey Ivaniuk aka Varjat <varjat@gmail.com>, 2008.
 #
@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Licq\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2012-10-03 17:54+0200\n"
+"POT-Creation-Date: 2013-01-17 21:28+0100\n"
 "PO-Revision-Date: 2008-02-25 20:37+0300\n"
 "Last-Translator: Alexey Ivaniuk aka Varjat <varjat@gmail.com>\n"
 "Language-Team: Belarussian language team <team@mova.org>\n"
@@ -215,11 +215,11 @@ msgstr ""
 "\tuserinfo <карыстальнік>\n"
 "\t\tАднавіць дадзеныя аб карыстальніку.\n"
 
-#: src/userevents.cpp:870
+#: src/userevents.cpp:869
 msgid " (cancelled)"
 msgstr "(спынена)"
 
-#: src/userevents.cpp:479
+#: src/userevents.cpp:486
 #, fuzzy
 msgid " authorized you"
 msgstr "Карыстальнік %s (%s) Вас аўтарызаваў"
@@ -254,17 +254,17 @@ msgstr "%d хвіліна"
 msgid " minutes "
 msgstr "%d хвілін"
 
-#: src/userevents.cpp:521
+#: src/userevents.cpp:526
 #, fuzzy
 msgid " refused to authorize you"
 msgstr "Карыстальнік  %s (%s) адмовіў Вам у аўтарызацыі"
 
-#: src/userevents.cpp:603
+#: src/userevents.cpp:606
 #, fuzzy
 msgid " through email pager"
 msgstr "Паведамленьне праз Вэб-панэль."
 
-#: src/userevents.cpp:564
+#: src/userevents.cpp:567
 #, fuzzy
 msgid " through web panel"
 msgstr "Паведамленьне праз Вэб-панэль."
@@ -1068,7 +1068,7 @@ msgstr ""
 msgid "Algeria"
 msgstr "Алжыр"
 
-#: src/userevents.cpp:387 src/userevents.cpp:434
+#: src/userevents.cpp:394 src/userevents.cpp:441
 msgid "Alias"
 msgstr ""
 
@@ -1594,7 +1594,7 @@ msgstr "Аўтарызацыя дазволена"
 msgid "Authorization Refused"
 msgstr "Адмоўлена ў аўтарызацыі"
 
-#: src/userevents.cpp:56 src/userevents.cpp:439
+#: src/userevents.cpp:56 src/userevents.cpp:446
 msgid "Authorization Request"
 msgstr "Запыт аўтарызацыі"
 
@@ -3677,7 +3677,7 @@ msgstr "Злучэньне з %s згублена: %s."
 msgid "Connection to %s was closed."
 msgstr "Злучэньне з %s зачынена."
 
-#: src/icq/icq-srv.cpp:1739
+#: src/icq/icq-srv.cpp:1741
 #, fuzzy
 msgid "Connection to server already exists, aborting."
 msgstr "Злучэньне з паслужнікам ужо ўсталявана, скасаваньне."
@@ -3790,7 +3790,7 @@ msgstr ""
 msgid "Contact List"
 msgstr "Сьпіс кантактаў"
 
-#: src/icq/icq.cpp:1311 src/userevents.cpp:649
+#: src/icq/icq.cpp:1311 src/userevents.cpp:652
 msgid "Contact list"
 msgstr "Сьпіс кантактаў"
 
@@ -3828,7 +3828,7 @@ msgstr "Атрыман сьпіс кантактаў без яго запыту.
 msgid "Cook Islands"
 msgstr "Астравы Кука"
 
-#: src/contactlist/userhistory.cpp:368
+#: src/contactlist/userhistory.cpp:369
 #, fuzzy, c-format
 msgid "Corrupt history file (%s): Unknown sub-command 0x%04X."
 msgstr "Файл гісторыі пашкоджаны (%s): Невядомая падкаманда 0x%04X."
@@ -3983,7 +3983,7 @@ msgstr "Выдаленьне сьпісу бачных карыстальнік�
 msgid "Denmark"
 msgstr "Данія"
 
-#: src/userevents.cpp:256 src/userevents.cpp:297
+#: src/userevents.cpp:265 src/userevents.cpp:306
 msgid "Description"
 msgstr ""
 
@@ -4052,7 +4052,7 @@ msgstr "Эль Сальвадор"
 msgid "Elementary School"
 msgstr ""
 
-#: src/userevents.cpp:390 src/userevents.cpp:437
+#: src/userevents.cpp:397 src/userevents.cpp:444
 #, fuzzy
 msgid "Email"
 msgstr "Паштовы пэйджар"
@@ -4121,7 +4121,7 @@ msgstr ""
 msgid "Error during parsing packet!"
 msgstr "памылка падчас атрыманьня з сокета паслужніка :-(("
 
-#: src/icq/icq-srv.cpp:1902
+#: src/icq/icq-srv.cpp:1904
 #, fuzzy
 msgid "Error during parsing service redirect packet!"
 msgstr "памылка падчас атрыманьня з сокета паслужніка :-(("
@@ -4155,12 +4155,12 @@ msgstr "Нямагчыма адчыніць \"%s\" дзеля запісу."
 msgid "Error opening '%s' for writing. See log for details."
 msgstr ""
 
-#: src/icq/icq-srv.cpp:2096
+#: src/icq/icq-srv.cpp:2098
 #, fuzzy
 msgid "Error parsing MOTD packet!"
 msgstr "памылка падчас атрыманьня з сокета паслужніка :-(("
 
-#: src/icq/icq-srv.cpp:1868
+#: src/icq/icq-srv.cpp:1870
 msgid "Error parsing SNAC header"
 msgstr ""
 
@@ -4168,7 +4168,7 @@ msgstr ""
 msgid "Error parsing SNAC header."
 msgstr ""
 
-#: src/icq/icq-srv.cpp:2115
+#: src/icq/icq-srv.cpp:2117
 #, fuzzy
 msgid "Error parsing URL packet!"
 msgstr "памылка падчас атрыманьня з сокета паслужніка :-(("
@@ -4696,7 +4696,7 @@ msgstr "Фарсі"
 msgid "Fiji"
 msgstr "Фіджы"
 
-#: src/userevents.cpp:254
+#: src/userevents.cpp:263
 msgid "File"
 msgstr ""
 
@@ -9164,7 +9164,7 @@ msgstr ""
 msgid "Got Master Group record."
 msgstr "Атрыман запіс Асноўнага гурта."
 
-#: src/icq/icq-srv.cpp:2024
+#: src/icq/icq-srv.cpp:2026
 #, fuzzy
 msgid "Got Name Info from Server"
 msgstr "Атрыманы дадзеныя аб імені з паслужніка"
@@ -11523,7 +11523,7 @@ msgstr "Няспраўны TCP-сокет паслужніка."
 msgid "Invalid server socket in set."
 msgstr "Няспраўны сокет паслужніка."
 
-#: src/icq/icq-srv.cpp:1914
+#: src/icq/icq-srv.cpp:1916
 #, c-format
 msgid "Invalid servername (%s) or cookie (%s) in service redirect packet!"
 msgstr ""
@@ -12726,7 +12726,7 @@ msgstr ""
 msgid "Message"
 msgstr "Паведамленьне"
 
-#: src/userevents.cpp:563 src/userevents.cpp:602
+#: src/userevents.cpp:566 src/userevents.cpp:605
 #, fuzzy
 msgid "Message from "
 msgstr "Паведамленьне ад "
@@ -13508,7 +13508,7 @@ msgstr ""
 msgid "Mozambique"
 msgstr "Мазамбік"
 
-#: src/userevents.cpp:350
+#: src/userevents.cpp:357
 msgid "Multiparty"
 msgstr ""
 
@@ -14843,7 +14843,7 @@ msgstr ""
 msgid "N/A"
 msgstr "НД"
 
-#: src/userevents.cpp:389 src/userevents.cpp:436
+#: src/userevents.cpp:396 src/userevents.cpp:443
 msgid "Name"
 msgstr ""
 
@@ -15035,7 +15035,7 @@ msgstr "Нэвіс"
 msgid "New Caledonia"
 msgstr "Новая Каледонія"
 
-#: src/userevents.cpp:787
+#: src/userevents.cpp:788
 #, fuzzy
 msgid "New Email from"
 msgstr "Зьвесткі аб пошце"
@@ -15646,7 +15646,7 @@ msgstr "Атрыман пакет у неапрацоўваемым канале
 msgid "Packet length (%lu) different than expected (%i)"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:1838
+#: src/icq/icq-srv.cpp:1840
 #, fuzzy
 msgid "Packet on unhandled Channel 'Error' received!"
 msgstr "Атрыман пакет у неапрацоўваемым канале!"
@@ -15736,7 +15736,7 @@ msgstr "Нідэрляндскія Анцілы"
 msgid "Philippines"
 msgstr "Філіпіны"
 
-#: src/userevents.cpp:697
+#: src/userevents.cpp:700
 msgid "Phone"
 msgstr ""
 
@@ -15832,7 +15832,7 @@ msgstr "Пашырэньне %s завершана з кодам %d."
 msgid "Protocol plugin %s failed to exit"
 msgstr "Пашырэньне %s ня здолела завяршыцца."
 
-#: src/icq/icq-srv.cpp:1717
+#: src/icq/icq-srv.cpp:1719
 #, fuzzy
 msgid "Proxy server not properly configured."
 msgstr "Проксі-паслужнік няспраўна ўсталяваны."
@@ -15980,7 +15980,7 @@ msgstr "Атрыманы карыстальніцкія дадзеныя аб %s
 msgid "Received verification image."
 msgstr "Запыт малюнка дзеля атрыманьня падцьверджаньня..."
 
-#: src/icq/icq-srv.cpp:1908
+#: src/icq/icq-srv.cpp:1910
 #, fuzzy, c-format
 msgid "Redirect for service 0x%02X received."
 msgstr "Перадача файла: %s атрымана."
@@ -16054,7 +16054,7 @@ msgstr "Перайменаваньне гурта  id %d у %s..."
 msgid "Renaming request for invalid group %u"
 msgstr "Дасылаем запыт на бясьпечны канал да %s (#%hu)."
 
-#: src/icq/icq-srv.cpp:1990
+#: src/icq/icq-srv.cpp:1992
 #, fuzzy
 msgid "Requesting BOS rights."
 msgstr "Запыт правоў BOS."
@@ -16069,7 +16069,7 @@ msgstr ""
 msgid "Requesting ICQphone status from %s."
 msgstr "зьмяніў стан ICQ-тэлефону на %s."
 
-#: src/icq/icq-srv.cpp:1986
+#: src/icq/icq-srv.cpp:1988
 #, fuzzy
 msgid "Requesting Instant Messaging rights."
 msgstr "Запыт правоў ICQ IM."
@@ -16124,7 +16124,7 @@ msgstr "Запытваецца аўтаадказ ад %s."
 msgid "Requesting buddy icon for %s (#%hu/#%d)..."
 msgstr "Запыт метададзеных дзеля %s (#%hu/#%d)..."
 
-#: src/icq/icq-srv.cpp:1982
+#: src/icq/icq-srv.cpp:1984
 #, fuzzy
 msgid "Requesting contact list rights."
 msgstr "Запыт правоў сьпісу кантактаў."
@@ -16149,12 +16149,12 @@ msgstr "Запытваецца аўтаматычны адказ ад %s."
 msgid "Requesting info plugin list from %s."
 msgstr "Запытваецца аўтаадказ ад %s."
 
-#: src/icq/icq-srv.cpp:1970
+#: src/icq/icq-srv.cpp:1972
 #, fuzzy
 msgid "Requesting list rights."
 msgstr "Запыт правоў сьпісу кантактаў."
 
-#: src/icq/icq-srv.cpp:1978
+#: src/icq/icq-srv.cpp:1980
 #, fuzzy
 msgid "Requesting location rights."
 msgstr "Запыт правоў месцазнаходжаньня."
@@ -16169,7 +16169,7 @@ msgstr "Запыт злучэньня (#%hu)..."
 msgid "Requesting meta info for %s (#%hu/#%d)..."
 msgstr "Запыт метададзеных дзеля %s (#%hu/#%d)..."
 
-#: src/icq/icq-srv.cpp:1885
+#: src/icq/icq-srv.cpp:1887
 #, fuzzy
 msgid "Requesting rate info..."
 msgstr "Запыт дадзеных аб хуткасьці..."
@@ -16179,12 +16179,12 @@ msgstr "Запыт дадзеных аб хуткасьці..."
 msgid "Requesting reverse connection from %s."
 msgstr "Запытваецца аўтаадказ ад %s."
 
-#: src/icq/icq-srv.cpp:1974
+#: src/icq/icq-srv.cpp:1976
 #, fuzzy
 msgid "Requesting roster rights."
 msgstr "Запыт правоў сьпісу кантактаў."
 
-#: src/icq/icq-srv.cpp:1966
+#: src/icq/icq-srv.cpp:1968
 #, fuzzy
 msgid "Requesting self info."
 msgstr "Запыт дадзеных аб сабе."
@@ -16736,7 +16736,7 @@ msgstr "Адсылка СМС праз SMTP пакуль не падтрымлі
 msgid "Sending ack for rate-limits for service 0x%02X."
 msgstr "Перадача файла: %s атрымана."
 
-#: src/icq/icq-srv.cpp:2011
+#: src/icq/icq-srv.cpp:2013
 #, fuzzy
 msgid "Sending capability settings (?)"
 msgstr "Адсылка ўсталяваньняў здольнасьцей (?)"
@@ -16795,7 +16795,7 @@ msgstr "Адсылка іншых дадзеных праз праз паслу�
 msgid "Sending offline message request..."
 msgstr "Адсылка запыту на пазасеткавае паведамленьне..."
 
-#: src/icq/icq-srv.cpp:1881
+#: src/icq/icq-srv.cpp:1883
 #, fuzzy
 msgid "Sending our channel capability list..."
 msgstr "Адсылка здольнасцьей нашага каналу..."
@@ -16847,7 +16847,7 @@ msgstr "Паведамленьне з паслужніка"
 msgid "Server granted contact list rights."
 msgstr "Паслужнік паведаміў пра правы на сьпіс кантактаў."
 
-#: src/icq/icq-srv.cpp:2085
+#: src/icq/icq-srv.cpp:2087
 #, fuzzy
 msgid "Server is going to disconnect/pause. Lets reconnect to another one."
 msgstr "Паслужнік разз'яднаецца/спыняецца. Паспрабуйце злучыцца з іншым."
@@ -16869,22 +16869,22 @@ msgstr "Паведамленьне з паслужніка."
 msgid "Server says he's ready for service 0x%02X."
 msgstr "Паслужнік кажа, што ён гатовы."
 
-#: src/icq/icq-srv.cpp:1879
+#: src/icq/icq-srv.cpp:1881
 #, fuzzy
 msgid "Server says he's ready."
 msgstr "Паслужнік кажа, што ён гатовы."
 
-#: src/icq/icq-srv.cpp:2055
+#: src/icq/icq-srv.cpp:2057
 #, fuzzy, c-format
 msgid "Server says we are at %s."
 msgstr "Паслужнік кажа, што мы з %s."
 
-#: src/icq/icq-srv.cpp:2070
+#: src/icq/icq-srv.cpp:2072
 #, fuzzy, c-format
 msgid "Server says we're now: %s"
 msgstr "Паслужнік кажа, што мы: %s"
 
-#: src/icq/icq-srv.cpp:1846
+#: src/icq/icq-srv.cpp:1848
 #, fuzzy, c-format
 msgid "Server send unknown channel: %02x"
 msgstr "Паслужнік адаслаў невядомы канал: %02x"
@@ -16894,7 +16894,7 @@ msgstr "Паслужнік адаслаў невядомы канал: %02x"
 msgid "Server send us request for close service 0x%02X."
 msgstr "Перадача файла: %s атрымана."
 
-#: src/icq/icq-srv.cpp:1964
+#: src/icq/icq-srv.cpp:1966
 #, fuzzy
 msgid "Server sent us channel capability list (ignoring)."
 msgstr "Паслужнік даслаў сьпіс здольнасьцей канала (праігнаравана)."
@@ -16904,7 +16904,7 @@ msgstr "Паслужнік даслаў сьпіс здольнасьцей ка
 msgid "Server sent us channel capability list for service 0x%02X."
 msgstr "Паслужнік даслаў сьпіс здольнасьцей канала (праігнаравана)."
 
-#: src/icq/icq-srv.cpp:1999
+#: src/icq/icq-srv.cpp:2001
 #, fuzzy
 msgid "Server sent us rate information."
 msgstr "Паслужнік даслаў дадзеныя аб хуткасьці."
@@ -16919,11 +16919,11 @@ msgstr "Паслужнік даслаў дадзеныя аб хуткасьці
 msgid "Server wants stats reports every %i hours"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:1945
+#: src/icq/icq-srv.cpp:1947
 msgid "Service redirect packet for unallocated BART service."
 msgstr ""
 
-#: src/icq/icq-srv.cpp:1950
+#: src/icq/icq-srv.cpp:1952
 #, fuzzy, c-format
 msgid "Service redirect packet for unhandled service 0x%02X."
 msgstr "Перадача файла: %s атрымана."
@@ -16932,7 +16932,7 @@ msgstr "Перадача файла: %s атрымана."
 msgid "Session management is not supported by Licq.\n"
 msgstr "Кіраваньне сэсіямі не падтрымліваецца Licq.\n"
 
-#: src/icq/icq-srv.cpp:2003
+#: src/icq/icq-srv.cpp:2005
 #, fuzzy
 msgid "Setting ICQ Instant Messaging Mode."
 msgstr "Усталяваньне рэжыму ICQ IM."
@@ -18237,7 +18237,7 @@ msgid ""
 "Studying Abroad - By Place of Origin"
 msgstr ""
 
-#: src/userevents.cpp:793
+#: src/userevents.cpp:794
 #, fuzzy
 msgid "Subject"
 msgstr "Тэма: %s"
@@ -18283,7 +18283,7 @@ msgstr "Швэйцарыя"
 msgid "Syrian Arab Republic"
 msgstr "Арабская Рэспубліка Сірыя"
 
-#: src/userevents.cpp:736
+#: src/userevents.cpp:737
 msgid "System Server Message from"
 msgstr ""
 
@@ -18676,7 +18676,7 @@ msgstr "Цівалі"
 msgid "Typing status received for unknown user (%s)."
 msgstr "Паведамленьне аб наборы атрымана ад невядомага карыстальніка (%s)."
 
-#: src/icq/icq-srv.cpp:2030
+#: src/icq/icq-srv.cpp:2032
 #, c-format
 msgid "UIN: %s Evil: %04hx"
 msgstr ""
@@ -19433,7 +19433,7 @@ msgstr "Немагчыма адчыніць fifo: %s"
 msgid "Unable to open file (%s): %s."
 msgstr "Немагчыма адчыніць файл (%s): %s."
 
-#: src/contactlist/userhistory.cpp:101 src/contactlist/userhistory.cpp:405
+#: src/contactlist/userhistory.cpp:102 src/contactlist/userhistory.cpp:406
 #, fuzzy, c-format
 msgid "Unable to open history file (%s): %s."
 msgstr "Немагчыма адчыніць файл гісторыі (%s): %s."
@@ -19576,7 +19576,7 @@ msgstr "Невядомы падтып сямейства  BOS: %04hx"
 msgid "Unknown Event"
 msgstr "Невядомы выпадак"
 
-#: src/icq/icq-srv.cpp:2190
+#: src/icq/icq-srv.cpp:2188
 #, c-format
 msgid "Unknown Extended Status Data type 0x%04x flags 0x%02x length 0x%02x"
 msgstr ""
@@ -19626,7 +19626,7 @@ msgstr "Невядомы падтып сямейства паведамлень�
 msgid "Unknown SMS response"
 msgstr "Невядомы СМС-адказ"
 
-#: src/icq/icq-srv.cpp:2130
+#: src/icq/icq-srv.cpp:2132
 #, fuzzy, c-format
 msgid "Unknown Service Family Subtype: %04hx"
 msgstr "Невядомы разнастайны падтып сямейства: %04hx"
@@ -19746,7 +19746,7 @@ msgstr ""
 "Невядомая памылка зьмяненьня сьпісу кантактаў на паслужніку: 0x%02X "
 "(карыстальнік: %s)"
 
-#: src/icq/icq-srv.cpp:1802 src/icq/icq-srv.cpp:2033 src/icq/icq-srv.cpp:3928
+#: src/icq/icq-srv.cpp:1804 src/icq/icq-srv.cpp:2035 src/icq/icq-srv.cpp:3928
 #: src/icq/icq-srv.cpp:3935 src/icq/icq-srv.cpp:4935
 #, fuzzy
 msgid "Unknown server response"
@@ -19776,7 +19776,7 @@ msgstr ""
 msgid "Unknown status request from %s."
 msgstr "Запыт размовы ад %s."
 
-#: src/userevents.cpp:834
+#: src/userevents.cpp:835
 #, fuzzy
 msgid "Unknown system message"
 msgstr "Невядомае сыстэмнае паведамленьне (0x%04x)"
@@ -19948,7 +19948,7 @@ msgstr "Абнаўленьне зьвестак аб працы (#%hu/#%d)..."
 msgid "Urdu"
 msgstr "Урду"
 
-#: src/userevents.cpp:296
+#: src/userevents.cpp:305
 msgid "Url"
 msgstr ""
 
@@ -19956,11 +19956,11 @@ msgstr ""
 msgid "Uruguay"
 msgstr "Уругвай"
 
-#: src/userevents.cpp:388 src/userevents.cpp:435
+#: src/userevents.cpp:395 src/userevents.cpp:442
 msgid "User"
 msgstr ""
 
-#: src/userevents.cpp:479 src/userevents.cpp:521
+#: src/userevents.cpp:486 src/userevents.cpp:526
 msgid "User "
 msgstr ""
 
@@ -21235,16 +21235,16 @@ msgstr "Зімбабвэ"
 msgid "bad start code %d for packet in socket of service 0x%02X."
 msgstr "Адчыненьне сокета да паслужніка."
 
-#: src/userevents.cpp:255
+#: src/userevents.cpp:264
 msgid "bytes"
 msgstr ""
 
-#: src/userevents.cpp:650
+#: src/userevents.cpp:653
 #, fuzzy
 msgid "contacts"
 msgstr "Кантакты"
 
-#: src/userevents.cpp:839
+#: src/userevents.cpp:840
 msgid "from"
 msgstr ""
 

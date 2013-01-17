@@ -65,27 +65,32 @@
 <context>
     <name>LicqQtGui::AddUserDlg</name>
     <message>
-        <location filename="../src/dialogs/adduserdlg.cpp" line="45"/>
+        <location filename="../src/dialogs/adduserdlg.cpp" line="49"/>
         <source>Licq - Add User</source>
         <translation>Licq - Benutzer hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/adduserdlg.cpp" line="50"/>
+        <location filename="../src/dialogs/adduserdlg.cpp" line="54"/>
         <source>&amp;Protocol:</source>
         <translation>&amp;Protokoll:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/adduserdlg.cpp" line="71"/>
+        <location filename="../src/dialogs/adduserdlg.cpp" line="75"/>
         <source>&amp;User ID:</source>
         <translation>&amp;Benutzer-ID:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/adduserdlg.cpp" line="82"/>
+        <location filename="../src/dialogs/adduserdlg.cpp" line="86"/>
         <source>&amp;Notify user</source>
         <translation>&amp;Benutzer benachrichtigen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/adduserdlg.cpp" line="60"/>
+        <location filename="../src/dialogs/adduserdlg.cpp" line="90"/>
+        <source>&amp;Request authorization</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/adduserdlg.cpp" line="64"/>
         <source>&amp;Group:</source>
         <translation>&amp;Gruppe:</translation>
     </message>
@@ -661,22 +666,22 @@ Sie können mir eine Nachricht hinterlassen.</translation>
 <context>
     <name>LicqQtGui::DockIcon</name>
     <message>
-        <location filename="../src/dockicons/dockicon.cpp" line="141"/>
+        <location filename="../src/dockicons/dockicon.cpp" line="142"/>
         <source>&lt;br&gt;Left click - Show main window&lt;br&gt;Middle click - Show next message&lt;br&gt;Right click - System menu</source>
         <translation>&lt;br&gt;linker Mausklick - Hauptfenster&lt;br&gt;mittlerer Mausklick - Nächste Nachricht&lt;br&gt;rechter Mausklick - Systemmenü</translation>
     </message>
     <message>
-        <location filename="../src/dockicons/dockicon.cpp" line="134"/>
+        <location filename="../src/dockicons/dockicon.cpp" line="135"/>
         <source>%1 system messages</source>
         <translation>%1 Systemnachrichten</translation>
     </message>
     <message>
-        <location filename="../src/dockicons/dockicon.cpp" line="137"/>
+        <location filename="../src/dockicons/dockicon.cpp" line="138"/>
         <source>%1 msgs</source>
         <translation>%1 Nachrichten</translation>
     </message>
     <message>
-        <location filename="../src/dockicons/dockicon.cpp" line="139"/>
+        <location filename="../src/dockicons/dockicon.cpp" line="140"/>
         <source>1 msg</source>
         <translation>1 Nachricht</translation>
     </message>
@@ -2068,98 +2073,98 @@ Wollen sie die die alte Version laden?</translation>
 <context>
     <name>LicqQtGui::MainWindow</name>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="420"/>
+        <location filename="../src/core/mainwin.cpp" line="421"/>
         <source>System</source>
         <translation>System</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="410"/>
+        <location filename="../src/core/mainwin.cpp" line="411"/>
         <source>&amp;System</source>
         <translation>&amp;System</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="195"/>
+        <location filename="../src/core/mainwin.cpp" line="196"/>
         <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%c - &lt;/tt&gt;cellular number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%M - &lt;/tt&gt;# pending messages (if any)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%P - &lt;/tt&gt;Protocol&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;Benutzeralias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%c - &lt;/tt&gt;Mobilfunknummer&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;Email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;Vorname&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;Telefonnummer&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;Benutzer IP&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;Nachname&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;Ortszeit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# wartende Nachrichten&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%M - &lt;/tt&gt;# wartende Nachrichten (falls vorhanden)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;Voller Name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;Zuletzt Online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;Online seit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;Benutzerport&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%P - &lt;/tt&gt;Protokoll&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;Voller Status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;Abgekürzter status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;UIN&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;Webseite&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="444"/>
+        <location filename="../src/core/mainwin.cpp" line="445"/>
         <source>Right click - User groups
 Double click - Show next message</source>
         <translation>Rechte Maustaste - Benutzergruppen
 Doppelklick - Nächste Nachricht</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="456"/>
+        <location filename="../src/core/mainwin.cpp" line="457"/>
         <source>Right click - Status menu
 Double click - Set auto response</source>
         <translation>Rechte Maustaste - Status setzen
 Doppelklick - Auto Antwort setzen</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="666"/>
+        <location filename="../src/core/mainwin.cpp" line="667"/>
         <source>Error! No owner set</source>
         <translation>Fehler! Kein Eigentümer eingerichtet</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="735"/>
+        <location filename="../src/core/mainwin.cpp" line="736"/>
         <source>SysMsg</source>
         <translation>Systemnachricht</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="736"/>
+        <location filename="../src/core/mainwin.cpp" line="737"/>
         <source>System Message</source>
         <translation>Systemnachricht</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="744"/>
+        <location filename="../src/core/mainwin.cpp" line="745"/>
         <source>%1 msg%2</source>
         <translation>%1 Nachricht%2</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="744"/>
         <location filename="../src/core/mainwin.cpp" line="745"/>
+        <location filename="../src/core/mainwin.cpp" line="746"/>
         <source> </source>
         <translation> </translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="744"/>
         <location filename="../src/core/mainwin.cpp" line="745"/>
+        <location filename="../src/core/mainwin.cpp" line="746"/>
         <source>s</source>
         <translation>en</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="745"/>
+        <location filename="../src/core/mainwin.cpp" line="746"/>
         <source>%1 message%2</source>
         <translation>%1 Nachricht%2</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="761"/>
+        <location filename="../src/core/mainwin.cpp" line="762"/>
         <source>No msgs</source>
         <translation>Keine Nachrichten</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="762"/>
+        <location filename="../src/core/mainwin.cpp" line="763"/>
         <source>No messages</source>
         <translation>Keine Nachrichten</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="694"/>
+        <location filename="../src/core/mainwin.cpp" line="695"/>
         <source>is online</source>
         <translation>ist Online</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1113"/>
+        <location filename="../src/core/mainwin.cpp" line="1124"/>
         <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq %1 Plugin&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
         <translation>&lt;h2&gt;Hinweise für die Benutzung&lt;br&gt;des Licq %1 Plugins&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Wechseln Sie ihren Status durch Rechtsklick auf das Statuslabel.&lt;/li&gt;&lt;li&gt;Ändern Sie ihre Autoantwort durch Doppelklick auf das Statuslabel.&lt;/li&gt;&lt;li&gt;Zeigen Sie Systemnachrichten durch Doppelklick auf das Nachrichtenlabel an.&lt;/li&gt;&lt;li&gt;Ändern Sie die Gruppe durch Rechtsklick auf das Nachrichtenlabel.&lt;/li&gt;&lt;li&gt;Halten sie die Steuerung-Taste während des Klickens fest um einen Benutzer aus der Kontaktliste zu löschen.&lt;/li&gt;&lt;li&gt;Drücken Sie Strg-Enter in den meisten Eingabefeldern um &quot;Ok&quot; oder &quot;Akzeptieren&quot; auszuwählen..   Z.B. im Senden-Tab des Benutzerfunktionsfenster.&lt;/li&gt;&lt;li&gt;Hier ist eine vollständige Liste von Benutzer-%-Optionen, welche verwendet werden kann bei &lt;b&gt;OnEvent&lt;/b&gt;   Parametern, &lt;b&gt;Autoantworten&lt;/b&gt; und &lt;b&gt;Werkzeugen&lt;/b&gt;:</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1130"/>
+        <location filename="../src/core/mainwin.cpp" line="1141"/>
         <source>Qt URL handling</source>
         <translation>URL-Behandlung</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1147"/>
+        <location filename="../src/core/mainwin.cpp" line="1158"/>
         <source>&lt;p&gt;For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
         <translation>&lt;p&gt;Für weitere Informationen besuchen Sie bitte die Licq Homepage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
     </message>
@@ -6271,7 +6276,7 @@ Ein anderes Bild auswählen?</translation>
     <message>
         <location filename="../src/userdlg/owner.cpp" line="89"/>
         <source>Protocol default</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Protokollstandard</translation>
     </message>
     <message>
         <location filename="../src/userdlg/owner.cpp" line="91"/>
