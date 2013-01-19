@@ -70,7 +70,8 @@ UserHistory::~UserHistory()
     while ((szResult = fgets(sz, sizeof(sz), f)) != NULL && sz[0] == ':') \
       dest.append(sz+1); \
     /* Don't include the final line break */ \
-    dest.resize(dest.size() - 1); \
+    if (dest.size() > 0) \
+      dest.resize(dest.size() - 1); \
   }
 
 #define SKIP_VALID_LINES \

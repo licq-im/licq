@@ -2092,7 +2092,6 @@ void IcqProtocol::processIconHash(User* u, Buffer& packet)
       case BART_TYPExBUDDY_ICON_PHOTO:
       {
         // TODO: Handle photo item
-        packet.incDataPosRead(length);
         break;
       }
       case BART_TYPExBUDDY_ICON:
@@ -2106,38 +2105,37 @@ void IcqProtocol::processIconHash(User* u, Buffer& packet)
           u->setBuddyIconType(type);
           u->setBuddyIconHashType(flags);
           u->save(Licq::User::SavePictureInfo);
+          continue;
         }
         break;
       }
       case BART_TYPExSTATUS_STR:
       {
         // TODO: Handle status string
-        packet.incDataPosRead(length);
         break;
       }
       case BART_TYPExSTATUS_STR_TIMESTAMP:
       {
         // TODO: Handle status string timestamp
-        packet.incDataPosRead(length);
         break;
       }
       case BART_TYPExSTATUS_MOOD:
       {
         // TODO: Handle status mood item
-        packet.incDataPosRead(length);
         break;
       }
       case BART_TYPExITUNES_LINK:
       {
         // TODO: Handle iTunes music store link
-        packet.incDataPosRead(length);
         break;
       }
       default:
         gLog.warning(tr("Unknown Extended Status Data type 0x%04x flags 0x%02x length 0x%02x"),
             type, flags, length);
-        packet.incDataPosRead(length);
     }
+
+    // Unhandled part, skip the data
+    packet.incDataPosRead(length);
   }
 }
 
