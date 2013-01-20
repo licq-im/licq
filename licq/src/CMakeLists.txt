@@ -104,6 +104,11 @@ add_executable(licq ${licq_SRCS})
 # Link with thread library
 target_link_libraries(licq ${CMAKE_THREAD_LIBS_INIT})
 
+# Must link with rt for clock_gettime
+if (UNIX AND NOT APPLE)
+  target_link_libraries(licq rt)
+endif (UNIX AND NOT APPLE)
+
 # Must export symbols from daemon so that plugins can use them
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_EXE_EXPORTS_CXX_FLAG}")
 
