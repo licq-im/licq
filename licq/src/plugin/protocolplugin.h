@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2011, 2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,38 +23,47 @@
 #include <licq/plugin/protocolplugin.h>
 #include "plugin.h"
 
-#include <queue>
-
-#include <licq/plugin/protocolbase.h>
-#include <licq/thread/mutex.h>
-
 namespace Licq
 {
+class Owner;
+class ProtocolPluginInterface;
+class ProtocolSignal;
+class User;
+class UserId;
+}
 
-/**
- * Temporary class used to hold initalization data for ProtocolPlugin constructor
- */
-class ProtocolPlugin::Params : public Plugin::Params
+namespace LicqDaemon
+{
+
+class ProtocolPlugin : public Plugin, public Licq::ProtocolPlugin
 {
 public:
-  Params(int id, LicqDaemon::DynamicLibrary::Ptr lib,
-      LicqDaemon::PluginThread::Ptr thread) :
-    Plugin::Params(id, lib, thread)
-  { /* Empty */ }
-};
+  typedef boost::shared_ptr<ProtocolPlugin> Ptr;
 
-class ProtocolPlugin::Private
-{
-public:
-  Private();
+  ProtocolPlugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
+                 Licq::ProtocolPluginInterface* (*factory)());
+  // Constructor for unit tests
+  ProtocolPlugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
+                 boost::shared_ptr<Licq::ProtocolPluginInterface> interface);
+  ~ProtocolPlugin();
+
+  // From Licq::ProtocolPlugin
+  unsigned long protocolId() const;
+  unsigned long capabilities() const;
+
+  void pushSignal(Licq::ProtocolSignal* signal);
+  Licq::User* createUser(const Licq::UserId& id, bool temporary);
+  Licq::Owner* createOwner(const Licq::UserId& id);
+
+protected:
+  // From Plugin
+  boost::shared_ptr<Licq::PluginInterface> interface() ;
+  boost::shared_ptr<const Licq::PluginInterface> interface() const;
 
 private:
-  std::queue<Licq::ProtocolSignal*> mySignals;
-  Licq::Mutex mySignalsMutex;
-
-  friend class ProtocolPlugin;
+  boost::shared_ptr<Licq::ProtocolPluginInterface> myInterface;
 };
 
-} // namespace Licq
+} // namespace LicqDaemon
 
 #endif

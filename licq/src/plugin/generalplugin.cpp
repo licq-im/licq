@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,105 +17,93 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <licq/plugin/generalplugininterface.h>
 #include "generalplugin.h"
 
-#include <licq/thread/mutexlocker.h>
+using namespace LicqDaemon;
 
-#include <cstring>
-
-using namespace Licq;
-using namespace std;
-
-
-GeneralPlugin::Private::Private() :
-    mySignalMask(0)
+static void destroyGeneralPluginInterface(Licq::GeneralPluginInterface* plugin)
 {
-  // Empty
+  if (plugin != NULL)
+    plugin->destructor();
 }
 
-
-GeneralPlugin::GeneralPlugin(Params& p)
-  : Plugin(p),
-    myPrivate(new Private())
+GeneralPlugin::GeneralPlugin(
+    int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
+    Licq::GeneralPluginInterface* (*factory)())
+  : Plugin(id, lib, thread),
+    myInterface((*factory)(), &destroyGeneralPluginInterface)
 {
-  // Empty
+  if (!myInterface)
+    throw std::exception();
+}
+
+GeneralPlugin::GeneralPlugin(
+    int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
+    boost::shared_ptr<Licq::GeneralPluginInterface> interface)
+  : Plugin(id, lib, thread),
+    myInterface(interface)
+{
+  if (!myInterface)
+    throw std::exception();
 }
 
 GeneralPlugin::~GeneralPlugin()
 {
-  delete myPrivate;
+  // Empty
 }
 
-void GeneralPlugin::pushSignal(PluginSignal* signal)
+std::string GeneralPlugin::description() const
 {
-  LICQ_D();
-  MutexLocker locker(d->mySignalsMutex);
-  d->mySignals.push(signal);
-  notify(PipeSignal);
+  return myInterface->description();
 }
 
-PluginSignal* GeneralPlugin::popSignal()
+std::string GeneralPlugin::usage() const
 {
-  LICQ_D();
-  MutexLocker locker(d->mySignalsMutex);
-  if (!d->mySignals.empty())
-  {
-    PluginSignal* signal = d->mySignals.front();
-    d->mySignals.pop();
-    return signal;
-  }
-  return NULL;
+  return myInterface->usage();
 }
 
-void GeneralPlugin::pushEvent(Event* event)
+std::string GeneralPlugin::configFile() const
 {
-  LICQ_D();
-  MutexLocker locker(d->myEventsMutex);
-  d->myEvents.push(event);
-  notify(PipeEvent);
-}
-
-Event* GeneralPlugin::popEvent()
-{
-  LICQ_D();
-  MutexLocker locker(d->myEventsMutex);
-  if (!d->myEvents.empty())
-  {
-    Event* event = d->myEvents.front();
-    d->myEvents.pop();
-    return event;
-  }
-  return NULL;
-}
-
-string GeneralPlugin::configFile() const
-{
-  return string();
+  return myInterface->configFile();
 }
 
 bool GeneralPlugin::isEnabled() const
 {
-  return true;
-}
-
-bool GeneralPlugin::wantSignal(unsigned long signalType) const
-{
-  LICQ_D_CONST();
-  return (signalType & d->mySignalMask);
-}
-
-void GeneralPlugin::setSignalMask(unsigned long signalMask)
-{
-  LICQ_D();
-  d->mySignalMask = signalMask;
+  return myInterface->isEnabled();
 }
 
 void GeneralPlugin::enable()
 {
-  notify(PipeEnable);
+  myInterface->enable();
 }
 
 void GeneralPlugin::disable()
 {
-  notify(PipeDisable);
+  myInterface->disable();
+}
+
+bool GeneralPlugin::wantSignal(unsigned long signalType) const
+{
+  return myInterface->wantSignal(signalType);
+}
+
+void GeneralPlugin::pushSignal(Licq::PluginSignal* signal)
+{
+  myInterface->pushSignal(signal);
+}
+
+void GeneralPlugin::pushEvent(Licq::Event* event)
+{
+  myInterface->pushEvent(event);
+}
+
+boost::shared_ptr<Licq::PluginInterface> GeneralPlugin::interface()
+{
+  return myInterface;
+}
+
+boost::shared_ptr<const Licq::PluginInterface> GeneralPlugin::interface() const
+{
+  return myInterface;
 }

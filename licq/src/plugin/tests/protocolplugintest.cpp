@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq Developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,97 +17,55 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-// Steal the PluginManager's friend declaration
-#define PluginManager ProtocolPluginTest
 #include "../protocolplugin.h"
-#include <licq/plugin/protocolbase.h>
-#undef PluginManager
+
+#include <licq/plugin/protocolplugininterface.h>
+#include <licq/userid.h>
 
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
-#include "../../utils/dynamiclibrary.h"
-#include "../plugin.h"
-#include "../pluginthread.h"
-
-#define PPID_TEST ('P' << 24 | 'P' << 16 | 'I' << 8 | 'D')
-
-using Licq::ProtocolPlugin;
+using LicqDaemon::ProtocolPlugin;
 using LicqDaemon::DynamicLibrary;
 using LicqDaemon::PluginThread;
 
-namespace LicqDaemon
+using ::testing::InSequence;
+
+namespace LicqTest
 {
 
-class ProtocolPluginTest : public ProtocolPlugin
+class MockProtocolPlugin : public Licq::ProtocolPluginInterface
 {
 public:
-  ProtocolPluginTest(Params& p) :
-      ProtocolPlugin(p)
-  { /* Empty */ }
+  MOCK_CONST_METHOD0(name, std::string());
+  MOCK_CONST_METHOD0(version, std::string());
+  MOCK_METHOD2(init, bool(int argc, char** argv));
+  MOCK_METHOD0(run, int());
+  MOCK_METHOD0(shutdown, void());
+  MOCK_METHOD0(destructor, void());
 
-  bool callInit(int argc = 0, char** argv = NULL, void (*callback)(const Plugin&) = NULL)
-  { return basePrivate()->callInit(argc, argv, callback); }
-
-  void startThread(void (*startCallback)(const Plugin&) = NULL,
-      void (*exitCallback)(const Plugin&) = NULL)
-  { basePrivate()->startThread(startCallback, exitCallback); }
-
-  int joinThread()
-  { return basePrivate()->joinThread(); }
-
-  std::string name() const
-  { return "Name"; }
-
-  std::string version() const
-  { return "Version"; }
-
-  std::string configFile() const
-  { return "ConfigFile"; }
-
-  unsigned long protocolId() const
-  { return PPID_TEST; }
-
-  std::string defaultServerHost() const
-  { return "DefSrvHost"; }
-
-  int defaultServerPort() const
-  { return 12345; }
-
-  unsigned long capabilities() const
-  { return 42; }
-
-  bool init(int, char**)
-  { return true; }
-
-  int run()
-  { return 10; }
-
-  void destructor()
-  { delete this; }
-
-  // Un-protect functions so we can test them without being the PluginManager
-  using ProtocolPlugin::getReadPipe;
-  using ProtocolPlugin::popSignal;
+  MOCK_CONST_METHOD0(protocolId, unsigned long());
+  MOCK_CONST_METHOD0(capabilities, unsigned long());
+  MOCK_METHOD1(pushSignal, void(Licq::ProtocolSignal* signal));
+  MOCK_METHOD2(createUser, Licq::User*(const Licq::UserId& id, bool temporary));
+  MOCK_METHOD1(createOwner, Licq::Owner*(const Licq::UserId& id));
 };
 
-} // namespace LicqDaemon
-
-using LicqDaemon::ProtocolPluginTest;
-
-namespace LicqTest {
+static void NullDeleter(void*) { /* Empty */ }
 
 struct ProtocolPluginFixture : public ::testing::Test
 {
   DynamicLibrary::Ptr myLib;
   PluginThread::Ptr myThread;
-  ProtocolPlugin::Params myPluginParams;
-  ProtocolPluginTest plugin;
+  MockProtocolPlugin myMockInterface;
+  ProtocolPlugin plugin;
 
   ProtocolPluginFixture() :
     myLib(new DynamicLibrary("")),
     myThread(new PluginThread()),
-    myPluginParams(1, myLib, myThread),
-    plugin(myPluginParams)
+    plugin(1, myLib, myThread,
+           boost::shared_ptr<MockProtocolPlugin>(
+               &myMockInterface, &NullDeleter))
   {
     // Empty
   }
@@ -116,64 +74,27 @@ struct ProtocolPluginFixture : public ::testing::Test
   {
     myThread->cancel();
   }
-
-  char getPipeChar()
-  {
-    int fd = plugin.getReadPipe();
-    char ch;
-    read(fd, &ch, sizeof(ch));
-    return ch;
-  }
 };
-
-TEST(ProtocolPlugin, load)
-{
-  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
-  PluginThread::Ptr thread(new PluginThread());
-  ProtocolPlugin::Params pluginParams(1, lib, thread);
-  ASSERT_NO_THROW(ProtocolPluginTest plugin(pluginParams));
-}
 
 TEST_F(ProtocolPluginFixture, callApiFunctions)
 {
-  EXPECT_EQ("Name", plugin.name());
-  EXPECT_EQ("Version", plugin.version());
-  EXPECT_EQ("ConfigFile", plugin.configFile());
-  unsigned long ppid = PPID_TEST;
-  EXPECT_EQ(ppid, plugin.protocolId());
-  EXPECT_TRUE(plugin.callInit());
-  EXPECT_EQ(42u, plugin.capabilities());
-  EXPECT_EQ("DefSrvHost", plugin.defaultServerHost());
-  EXPECT_EQ(12345, plugin.defaultServerPort());
-}
+  Licq::ProtocolSignal* signal = reinterpret_cast<Licq::ProtocolSignal*>(123);
+  Licq::UserId user;
+  Licq::UserId owner;
 
-TEST_F(ProtocolPluginFixture, init)
-{
-  EXPECT_TRUE(plugin.callInit());
-}
+  InSequence dummy;
+  EXPECT_CALL(myMockInterface, protocolId());
+  EXPECT_CALL(myMockInterface, capabilities());
+  EXPECT_CALL(myMockInterface, pushSignal(signal));
+  EXPECT_CALL(myMockInterface, createUser(user, false));
+  EXPECT_CALL(myMockInterface, createOwner(owner));
 
-TEST_F(ProtocolPluginFixture, runPlugin)
-{
-  plugin.startThread();
-  EXPECT_EQ(10, plugin.joinThread());
-}
-
-TEST_F(ProtocolPluginFixture, pushPopSignal)
-{
-  Licq::ProtocolSignal* signal = (Licq::ProtocolSignal*)10;
+  // Verify that the calls are forwarded to the interface
+  plugin.protocolId();
+  plugin.capabilities();
   plugin.pushSignal(signal);
-  plugin.pushSignal(signal);
-
-  EXPECT_EQ('S', getPipeChar());
-  EXPECT_EQ(signal, plugin.popSignal());
-
-  EXPECT_EQ('S', getPipeChar());
-  EXPECT_EQ(signal, plugin.popSignal());
-}
-
-TEST_F(ProtocolPluginFixture, popSignalEmpty)
-{
-  EXPECT_EQ(static_cast<Licq::ProtocolSignal*>(NULL), plugin.popSignal());
+  plugin.createUser(user, false);
+  plugin.createOwner(owner);
 }
 
 } // namespace LicqTest
