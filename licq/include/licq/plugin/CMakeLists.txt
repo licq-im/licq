@@ -1,12 +1,10 @@
 set(licq_HEADERS
-  generalbase.h
   generalplugin.h
   generalpluginhelper.h
   generalplugininterface.h
   plugin.h
   plugininterface.h
   pluginmanager.h
-  protocolbase.h
   protocolplugin.h
   protocolpluginhelper.h
   protocolplugininterface.h
