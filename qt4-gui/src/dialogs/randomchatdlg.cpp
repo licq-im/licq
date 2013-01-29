@@ -108,15 +108,16 @@ RandomChatDlg::~RandomChatDlg()
 
 void RandomChatDlg::okPressed()
 {
-  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-  if (icqProtocol == NULL)
+  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (!icq)
     return;
 
   myOkButton->setEnabled(false);
   connect(gGuiSignalManager, SIGNAL(doneUserFcn(const Licq::Event*)),
       SLOT(userEventDone(const Licq::Event*)));
   unsigned chatGroup = myGroupsList->currentItem()->data(Qt::UserRole).toInt();
-  myTag = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->randomChatSearch(myOwnerId, chatGroup);
+  myTag = icq->randomChatSearch(myOwnerId, chatGroup);
   setWindowTitle(tr("Searching for Random Chat Partner..."));
 }
 

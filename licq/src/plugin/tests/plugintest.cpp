@@ -40,7 +40,12 @@ using ::testing::Return;
 namespace LicqTest
 {
 
-class MockPlugin : public Licq::PluginInterface
+// Two dummy interfaces
+class InternalPluginInterface { };
+class UnImplementedInterface { };
+
+class MockPlugin : public Licq::PluginInterface,
+                   public InternalPluginInterface
 {
 public:
   MOCK_CONST_METHOD0(name, std::string());
@@ -122,6 +127,40 @@ TEST_F(PluginFixture, callApiFunctions)
   plugin.name();
   plugin.version();
   plugin.shutdown();
+}
+
+TEST_F(PluginFixture, castToInternalInterface)
+{
+  Plugin::Ptr ptr(&plugin, &NullDeleter);
+
+  EXPECT_FALSE(plugin_internal_cast<UnImplementedInterface>(ptr));
+  EXPECT_EQ(plugin_internal_cast<InternalPluginInterface>(ptr).get(),
+            &myMockInterface);
+}
+
+static int DeleteCount = 0;
+void CountingNullDeleter(void*)
+{
+  DeleteCount += 1;
+}
+
+TEST_F(PluginFixture, lifeTimeOfCastedObject)
+{
+  DeleteCount = 0;
+
+  // The plugin should not be "deleted" until both the plugin and the interface
+  // has gone out of scope.
+
+  {
+    boost::shared_ptr<InternalPluginInterface> interface;
+    {
+      Plugin::Ptr ptr(&plugin, &CountingNullDeleter);
+      interface = plugin_internal_cast<InternalPluginInterface>(ptr);
+    }
+    EXPECT_EQ(0, DeleteCount);
+  }
+
+  EXPECT_EQ(1, DeleteCount);
 }
 
 struct CallbackData

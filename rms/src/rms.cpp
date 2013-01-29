@@ -1343,11 +1343,12 @@ int CRMSClient::Process_SMS_number()
 
 int CRMSClient::Process_SMS_message()
 {
-  Licq::ProtocolPlugin::Ptr icqProtocol(gPluginManager.getProtocolPlugin(LICQ_PPID));
-  if (icqProtocol == NULL)
+  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (!icq)
     return fflush(fs);
 
-  unsigned long tag = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->icqSendSms(
+  unsigned long tag = icq->icqSendSms(
       myUserId, myLine, Licq::gTranslator.toUtf8(myText));
 
   fprintf(fs, "%d [%lu] Sending SMS to %s (%s).\n", CODE_COMMANDxSTART,

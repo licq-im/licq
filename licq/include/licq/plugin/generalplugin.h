@@ -22,10 +22,9 @@
 
 #include "plugin.h"
 
-#include <boost/shared_ptr.hpp>
-
 namespace Licq
 {
+
 /**
  * Represents a loaded general plugin.
  */

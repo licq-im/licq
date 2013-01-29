@@ -73,6 +73,14 @@ std::string Plugin::libraryName() const
   return myLibrary->getName();
 }
 
+boost::shared_ptr<Licq::PluginInterface> Plugin::internalInterface()
+{
+  // Create a shared_ptr that keeps this object alive at least until the
+  // returned pointer goes out of scope.
+  return boost::shared_ptr<Licq::PluginInterface>(
+      shared_from_this(), interface().get());
+}
+
 bool Plugin::isThread(const pthread_t& thread) const
 {
   return myThread->isThread(thread);

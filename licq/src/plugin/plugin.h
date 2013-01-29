@@ -25,6 +25,8 @@
 #include "utils/dynamiclibrary.h"
 #include "pluginthread.h"
 
+#include <boost/enable_shared_from_this.hpp>
+
 namespace Licq
 {
 class PluginInterface;
@@ -33,7 +35,8 @@ class PluginInterface;
 namespace LicqDaemon
 {
 
-class Plugin : public virtual Licq::Plugin
+class Plugin : public virtual Licq::Plugin,
+               public boost::enable_shared_from_this<Plugin>
 {
 public:
   Plugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread);
@@ -44,6 +47,7 @@ public:
   std::string name() const;
   std::string version() const;
   std::string libraryName() const;
+  boost::shared_ptr<Licq::PluginInterface> internalInterface();
 
   /**
    * Check if a thread belongs to this plugin

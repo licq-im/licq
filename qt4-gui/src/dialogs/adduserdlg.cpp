@@ -129,9 +129,10 @@ void AddUserDlg::ok()
 
   if (added && notify && userId.protocolId() == LICQ_PPID)
   {
-    Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-    if (icqProtocol != NULL)
-      dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->icqAlertUser(userId);
+    Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+        Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+    if (icq)
+      icq->icqAlertUser(userId);
   }
 
   if (added && reqAuth)
