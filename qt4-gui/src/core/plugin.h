@@ -22,28 +22,27 @@
 
 #include "config.h"
 
-#include <licq/plugin/generalpluginhelper.h>
+#include <licq/plugin/generalplugininterface.h>
 
+#include <QObject>
 
 namespace LicqQtGui
 {
 
-class QtGuiPlugin : public Licq::GeneralPluginHelper
+class QtGuiPlugin : public QObject,
+                    public Licq::GeneralPluginInterface
 {
+  Q_OBJECT
+
 public:
   QtGuiPlugin();
-
-  // Make inherited members public so rest of GUI can use them directly
-  using Licq::GeneralPluginHelper::getReadPipe;
-  using Licq::GeneralPluginHelper::popEvent;
-  using Licq::GeneralPluginHelper::popSignal;
-  using Licq::GeneralPluginHelper::setSignalMask;
 
   // From Licq::PluginInterface
   std::string name() const;
   std::string version() const;
   bool init(int argc, char** argv);
   int run();
+  void shutdown();
   void destructor();
 
   // From Licq::GeneralPluginInterface
@@ -51,6 +50,16 @@ public:
   std::string usage() const;
   std::string configFile() const;
   bool isEnabled() const;
+  void enable();
+  void disable();
+  bool wantSignal(unsigned long signalType) const;
+  void pushSignal(Licq::PluginSignal* signal);
+  void pushEvent(Licq::Event* event);
+
+signals:
+  void pluginSignal(Licq::PluginSignal* signal);
+  void pluginEvent(Licq::Event* event);
+  void pluginShutdown();
 
 private:
   int myArgc;

@@ -35,7 +35,9 @@
 #endif
 
 #include <licq/daemon.h>
+#include <licq/event.h>
 #include <licq/logging/log.h>
+#include <licq/pluginsignal.h>
 #include <licq/version.h>
 
 #include "core/gui-defines.h"
@@ -129,6 +131,11 @@ int QtGuiPlugin::run()
   return result;
 }
 
+void QtGuiPlugin::shutdown()
+{
+  emit pluginShutdown();
+}
+
 void QtGuiPlugin::destructor()
 {
   delete this;
@@ -173,7 +180,33 @@ std::string QtGuiPlugin::configFile() const
 
 bool QtGuiPlugin::isEnabled() const
 {
+  // Always enabled
   return true;
+}
+
+void QtGuiPlugin::enable()
+{
+  // Always enabled
+}
+
+void QtGuiPlugin::disable()
+{
+  // Always enabled
+}
+
+bool QtGuiPlugin::wantSignal(unsigned long signalType) const
+{
+  return (signalType & Licq::PluginSignal::SignalAll) != 0;
+}
+
+void QtGuiPlugin::pushSignal(Licq::PluginSignal* signal)
+{
+  emit pluginSignal(signal);
+}
+
+void QtGuiPlugin::pushEvent(Licq::Event* event)
+{
+  emit pluginEvent(event);
 }
 
 Licq::GeneralPluginInterface* QtGuiPluginFactory()
