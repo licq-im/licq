@@ -380,7 +380,7 @@ static int fifo_sms(int argc, const char *const *argv)
   if (icqProtocol == NULL)
     return -1;
 
-  if (userId.protocolId() == LICQ_PPID )
+  if (userId.protocolId() != LICQ_PPID )
   {
     gLog.info(tr("%s `%s': bad protocol. ICQ only allowed"), L_FIFOxSTR, argv[0]);
     return 0;
