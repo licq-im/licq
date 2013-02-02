@@ -33,6 +33,7 @@
 
 #include <algorithm>
 #include <boost/foreach.hpp>
+#include <boost/make_shared.hpp>
 #include <cassert>
 #include <cctype>
 #include <cerrno>
@@ -102,7 +103,7 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
     pluginThread.swap(myGuiThread);
   }
   else
-    pluginThread.reset(new PluginThread);
+    pluginThread = boost::make_shared<PluginThread>();
 
   DynamicLibrary::Ptr lib = loadPlugin(pluginThread, name, "licq");
   if (!lib)
@@ -126,9 +127,8 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
       return GeneralPlugin::Ptr();
 
     // Create the plugin
-    GeneralPlugin::Ptr plugin(
-        new GeneralPlugin(getNewPluginId(), lib, pluginThread,
-                          pluginData->pluginFactory));
+    GeneralPlugin::Ptr plugin = boost::make_shared<GeneralPlugin>(
+        getNewPluginId(), lib, pluginThread, pluginData->pluginFactory);
 
     // Let the plugin initialize itself
     if (!plugin->init(argc, argv, &initPluginCallback))
@@ -162,7 +162,7 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
 ProtocolPlugin::Ptr PluginManager::
 loadProtocolPlugin(const std::string& name, bool keep)
 {
-  PluginThread::Ptr pluginThread(new PluginThread());
+  PluginThread::Ptr pluginThread = boost::make_shared<PluginThread>();
   DynamicLibrary::Ptr lib = loadPlugin(pluginThread, name, "protocol");
   if (!lib)
     return ProtocolPlugin::Ptr();
@@ -185,9 +185,8 @@ loadProtocolPlugin(const std::string& name, bool keep)
       return ProtocolPlugin::Ptr();
 
     // Create the plugin
-    ProtocolPlugin::Ptr plugin(
-        new ProtocolPlugin(getNewPluginId(), lib, pluginThread,
-                           pluginData->pluginFactory));
+    ProtocolPlugin::Ptr plugin = boost::make_shared<ProtocolPlugin>(
+        getNewPluginId(), lib, pluginThread, pluginData->pluginFactory);
 
     {
       // Check if we already got a plugin for this protocol
