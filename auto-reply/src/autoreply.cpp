@@ -64,9 +64,8 @@ const unsigned short SUBJ_CHARS = 20;
 /*---------------------------------------------------------------------------
  * CLicqAutoReply::Constructor
  *-------------------------------------------------------------------------*/
-CLicqAutoReply::CLicqAutoReply(Licq::GeneralPlugin::Params& p)
-  : Licq::GeneralPlugin(p),
-    myIsEnabled(false),
+CLicqAutoReply::CLicqAutoReply()
+  : myIsEnabled(false),
     myMarkAsRead(false)
 {
   m_bExit = false;
@@ -88,31 +87,6 @@ std::string CLicqAutoReply::name() const
 std::string CLicqAutoReply::version() const
 {
   return PLUGIN_VERSION_STRING;
-}
-
-std::string CLicqAutoReply::description() const
-{
-  return "ICQ message Auto Replyer";
-}
-
-std::string CLicqAutoReply::usage() const
-{
-  return
-      "Usage:  Licq [options] -p autoreply -- [ -h ] [ -e ] [ -l <status> ] [ -d ]\n"
-      "         -h          : help\n"
-      "         -e          : start enabled\n"
-      "         -l <status> : log on at startup\n"
-      "         -d          : delete messages after auto-replying\n";
-}
-
-std::string CLicqAutoReply::configFile() const
-{
-  return "licq_autoreply.conf";
-}
-
-bool CLicqAutoReply::isEnabled() const
-{
-  return myIsEnabled;
 }
 
 bool CLicqAutoReply::init(int argc, char** argv)
@@ -217,6 +191,31 @@ void CLicqAutoReply::destructor()
   delete this;
 }
 
+std::string CLicqAutoReply::description() const
+{
+  return "ICQ message Auto Replyer";
+}
+
+std::string CLicqAutoReply::usage() const
+{
+  return
+      "Usage:  Licq [options] -p autoreply -- [ -h ] [ -e ] [ -l <status> ] [ -d ]\n"
+      "         -h          : help\n"
+      "         -e          : start enabled\n"
+      "         -l <status> : log on at startup\n"
+      "         -d          : delete messages after auto-replying\n";
+}
+
+std::string CLicqAutoReply::configFile() const
+{
+  return "licq_autoreply.conf";
+}
+
+bool CLicqAutoReply::isEnabled() const
+{
+  return myIsEnabled;
+}
+
 /*---------------------------------------------------------------------------
  * CLicqAutoReply::ProcessPipe
  *-------------------------------------------------------------------------*/
@@ -226,7 +225,7 @@ void CLicqAutoReply::ProcessPipe()
   read(m_nPipe, buf, 1);
   switch (buf[0])
   {
-    case Licq::GeneralPlugin::PipeSignal:
+    case PipeSignal:
     {
       Licq::PluginSignal* s = popSignal();
       if (myIsEnabled)
@@ -235,7 +234,7 @@ void CLicqAutoReply::ProcessPipe()
       break;
     }
 
-    case Licq::GeneralPlugin::PipeEvent:
+    case PipeEvent:
     {
       // An event is pending (should never happen)
       Licq::Event* e = popEvent();
@@ -245,23 +244,23 @@ void CLicqAutoReply::ProcessPipe()
       break;
     }
 
-    case Licq::GeneralPlugin::PipeShutdown:
+    case PipeShutdown:
     {
-    gLog.info("Exiting");
-    m_bExit = true;
-    break;
-  }
+      gLog.info("Exiting");
+      m_bExit = true;
+      break;
+    }
 
-    case Licq::GeneralPlugin::PipeDisable:
+    case PipeDisable:
     {
-    gLog.info("Disabling");
+      gLog.info("Disabling");
       myIsEnabled = false;
       break;
     }
 
-    case Licq::GeneralPlugin::PipeEnable:
+    case PipeEnable:
     {
-    gLog.info("Enabling");
+      gLog.info("Enabling");
       myIsEnabled = true;
       break;
     }

@@ -189,8 +189,8 @@ QWidget* UserPages::Info::createPageGeneral(QWidget* parent)
 
   if (myPpid == LICQ_PPID)
   {
-    Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-    Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
+    Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+        Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
 
     lay->addWidget(new QLabel(tr("Email 2:")), ++CR, 0);
     nfoEmailSecondary = new InfoField(false);
@@ -283,10 +283,10 @@ void UserPages::Info::loadPageGeneral(const Licq::User* u)
   if (myPpid != LICQ_PPID)
     return;
 
-  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-  if (icqProtocol == NULL)
+  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (!icq)
     return;
-  Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
 
   nfoEmailSecondary->setText(QString::fromUtf8(u->getUserInfoString("Email2").c_str()));
   nfoEmailOld->setText(QString::fromUtf8(u->getUserInfoString("Email0").c_str()));
@@ -329,10 +329,10 @@ void UserPages::Info::savePageGeneral(Licq::User* u)
   if (myPpid != LICQ_PPID)
     return;
 
-  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-  if (icqProtocol == NULL)
+  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (!icq)
     return;
-  Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
 
   u->setUserInfoString("Email2", nfoEmailSecondary->text().toUtf8().constData());
   u->setUserInfoString("Email0", nfoEmailOld->text().toUtf8().constData());
@@ -437,11 +437,10 @@ QWidget* UserPages::Info::createPageMore(QWidget* parent)
     cmbLanguage[2] = new QComboBox();
     lay->addWidget(cmbLanguage[2], CR, 1);
 
-    Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-    if (icqProtocol != NULL)
+    Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+        Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+    if (icq)
     {
-      Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
-
       for (unsigned short i = 0; i < 3; i++)
         for (unsigned short j = 0; j < Licq::NUM_LANGUAGES; j++)
         {
@@ -481,10 +480,10 @@ QWidget* UserPages::Info::createPageMore(QWidget* parent)
 
 void UserPages::Info::loadPageMore(const Licq::User* u)
 {
-  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-  if (icqProtocol == NULL)
+  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (!icq)
     return;
-  Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
 
   // Gender
   unsigned int gender = u->getUserInfoUint("Gender");
@@ -621,10 +620,10 @@ void UserPages::Info::savePageMore(Licq::User* u)
   u->setUserInfoString("Homepage", nfoHomepage->text().toLocal8Bit().constData());
   if (m_bOwner)
   {
-    Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-    if (icqProtocol == NULL)
+    Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+        Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+    if (!icq)
       return;
-    Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
 
     u->setUserInfoUint("Gender", cmbGender->currentIndex());
     u->setUserInfoUint("BirthYear",
@@ -754,10 +753,10 @@ void UserPages::Info::updateMore2Info(Licq::UserCat cat, const Licq::UserCategor
   while (QTreeWidgetItem* lvChild = lviMore2Top[cat]->takeChild(0))
     delete lvChild;
 
-  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-  if (icqProtocol == NULL)
+  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (!icq)
     return;
-  Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
 
   Licq::IcqCategoryType icqcattype;
   switch (cat)
@@ -814,8 +813,8 @@ void UserPages::Info::savePageMore2(Licq::IcqUser* u)
 
 QWidget* UserPages::Info::createPageWork(QWidget* parent)
 {
-  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-  Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
+  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
 
   QWidget* w = new QWidget(parent);
   myPageWorkLayout = new QVBoxLayout(w);
@@ -905,10 +904,10 @@ QWidget* UserPages::Info::createPageWork(QWidget* parent)
 
 void UserPages::Info::loadPageWork(const Licq::User* u)
 {
-  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-  if (icqProtocol == NULL)
+  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (!icq)
     return;
-  Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
 
   nfoCompanyName->setText(QString::fromUtf8(u->getUserInfoString("CompanyName").c_str()));
   nfoCompanyDepartment->setText(QString::fromUtf8(u->getUserInfoString("CompanyDepartment").c_str()));
@@ -952,10 +951,10 @@ void UserPages::Info::loadPageWork(const Licq::User* u)
 
 void UserPages::Info::savePageWork(Licq::User* u)
 {
-  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-  if (icqProtocol == NULL)
+  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (!icq)
     return;
-  Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
 
   u->setUserInfoString("CompanyCity", nfoCompanyCity->text().toUtf8().constData());
   u->setUserInfoString("CompanyState", nfoCompanyState->text().toUtf8().constData());
@@ -1085,10 +1084,10 @@ void UserPages::Info::loadPagePhoneBook(const Licq::IcqUser* u)
 
 void UserPages::Info::updatePhoneBook()
 {
-  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-  if (icqProtocol == NULL)
+  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (!icq)
     return;
-  Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
 
   lsvPhoneBook->clear();
 
@@ -1489,11 +1488,12 @@ unsigned long UserPages::Info::retrieve(UserDlg::UserPage page)
   unsigned long icqEventTag;
   if (page == UserDlg::PhonePage)
   {
-    Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
     if (myPpid != LICQ_PPID)
       return 0;
-    icqEventTag = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->
-        icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginPhoneBook);
+    Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+        Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+    icqEventTag = icq->icqRequestPluginInfo(
+        myUserId, Licq::IcqProtocol::PluginPhoneBook);
   }
   else if (page == UserDlg::PicturePage)
   {
@@ -1532,14 +1532,13 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
   unsigned short cc, i, occupation;
   unsigned long icqEventTag = 0;
 
-  Licq::ProtocolPlugin::Ptr icqProtocol;
-  Licq::IcqProtocol* icq = NULL;
+  Licq::IcqProtocol::Ptr icq;
   if (myPpid == LICQ_PPID)
   {
-    icqProtocol = Licq::gPluginManager.getProtocolPlugin(LICQ_PPID);
-    if (icqProtocol == NULL)
+    icq = plugin_internal_cast<Licq::IcqProtocol>(
+        Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+    if (!icq)
       return 0;
-    icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
   }
 
   switch (page)

@@ -22,23 +22,14 @@
 
 #include <licq/plugin/pluginmanager.h>
 
-#include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
 #include <queue>
 
-#include <licq/plugin/generalplugin.h>
-#include <licq/plugin/protocolplugin.h>
-#include <licq/thread/mutex.h>
-
 #include "../utils/dynamiclibrary.h"
+#include "generalplugin.h"
 #include "pluginthread.h"
+#include "protocolplugin.h"
 
-namespace Licq
-{
-class Owner;
-class User;
-class UserId;
-}
+#include <licq/thread/mutex.h>
 
 namespace LicqDaemon
 {
@@ -53,9 +44,9 @@ public:
 
   void setGuiThread(PluginThread::Ptr guiThread) { myGuiThread = guiThread; }
 
-  Licq::GeneralPlugin::Ptr loadGeneralPlugin(
+  GeneralPlugin::Ptr loadGeneralPlugin(
       const std::string& name, int argc, char** argv, bool keep = true);
-  Licq::ProtocolPlugin::Ptr loadProtocolPlugin(
+  ProtocolPlugin::Ptr loadProtocolPlugin(
       const std::string& name, bool keep = true);
 
   /// Start all plugins that have been loaded
@@ -119,12 +110,6 @@ public:
   void pushProtocolSignal(Licq::ProtocolSignal* signal);
 
 private:
-  /// Helper function to delete a general plugin and close library in the correct order
-  static void deleteGeneralPlugin(Licq::GeneralPlugin* plugin);
-
-  /// Helper function to delete a protocol plugin and close library in the correct order
-  static void deleteProtocolPlugin(Licq::ProtocolPlugin* plugin);
-
   DynamicLibrary::Ptr loadPlugin(PluginThread::Ptr pluginThread,
                                  const std::string& name,
                                  const std::string& prefix);
@@ -132,8 +117,8 @@ private:
   bool verifyPluginVersion(const std::string& name, int version);
   int getNewPluginId();
 
-  void startPlugin(Licq::GeneralPlugin::Ptr plugin);
-  void startPlugin(Licq::ProtocolPlugin::Ptr plugin);
+  void startPlugin(GeneralPlugin::Ptr plugin);
+  void startPlugin(ProtocolPlugin::Ptr plugin);
 
   void getAvailablePlugins(Licq::StringList& plugins,
                            const std::string& prefix) const;
@@ -141,10 +126,10 @@ private:
   int myNextPluginId;
   PluginThread::Ptr myGuiThread;
 
-  Licq::GeneralPluginsList myGeneralPlugins;
+  std::list<GeneralPlugin::Ptr> myGeneralPlugins;
   mutable Licq::Mutex myGeneralPluginsMutex;
 
-  Licq::ProtocolPluginsList myProtocolPlugins;
+  std::list<ProtocolPlugin::Ptr> myProtocolPlugins;
   mutable Licq::Mutex myProtocolPluginsMutex;
 
   Licq::Mutex myExitListMutex;

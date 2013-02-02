@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,46 +20,26 @@
 #ifndef LICQ_PLUGIN_H
 #define LICQ_PLUGIN_H
 
+#include "plugininterface.h"
+
 #include <boost/noncopyable.hpp>
-#include <pthread.h>
+#include <boost/shared_ptr.hpp>
 #include <string>
-
-#include "../macro.h"
-
-namespace LicqDaemon
-{
-class PluginManager;
-}
 
 namespace Licq
 {
 
 /**
- * Base class for plugin instances
- *
- * All plugins must have a subclass implementing this interface
- *
- * Note: When a subclass is constructed, it should only perform minimal
- * initialization needed for simple functions like name() and version() to
- * be usable. Licq will call init() afterwards to properly initialze the
- * plugin before run() is called to start the plugin.
- *
- * Although a plugin will run in a separate thread, calls to the public
- * functions and the protected functions called from the protocol manager
- * can be made from any thread. It is the responsibility of the plugin to make
- * sure these functions are thread safe when needed.
+ * Represents a loaded plugin.
  */
 class Plugin : private boost::noncopyable
 {
 public:
-  class Params;
-
-  // Notification that plugins can get via its pipe
-  static const char PipeSignal = 'S';
-  static const char PipeShutdown = 'X';
+  /// A smart pointer to a Plugin instance
+  typedef boost::shared_ptr<Plugin> Ptr;
 
   /// Get the plugin's unique id.
-  int id() const;
+  virtual int id() const = 0;
 
   /// Get the plugin's name.
   virtual std::string name() const = 0;
@@ -68,91 +48,53 @@ public:
   virtual std::string version() const = 0;
 
   /// Get the name of the library from where the plugin was loaded.
-  const std::string& libraryName() const;
-
-  /**
-   * Check if a thread belongs to this plugin
-   * Called by anyone
-   *
-   * @param thread Thread to test
-   * @return True if thread is the main thread for this plugin
-   */
-  bool isThread(const pthread_t& thread) const;
-
-  /// Convenience function to check the current thread belongs to this plugin
-  bool isThisThread() const
-  { return isThread(::pthread_self()); }
+  virtual std::string libraryName() const = 0;
 
 protected:
-  /**
-   * Constructor
-   *
-   * @param p Paramaters from PluginManager
-   */
-  Plugin(Params& p);
-
   /// Destructor
-  virtual ~Plugin();
+  virtual ~Plugin() { }
 
-  /**
-   * Initialize the plugin
-   * Called in plugin thread by PluginManager
-   *
-   * @param argc Number of command line parameters
-   * @param argv Command line parameters
-   * @return True if initialization was successful
-   */
-  virtual bool init(int argc, char** argv) = 0;
-
-  /**
-   * Run the plugin
-   * Called in plugin thread by PluginManager
-   *
-   * This function will be called in a separate thread and may block
-   *
-   * @return Exit code for the plugin
-   */
-  virtual int run() = 0;
-
-  /**
-   * Delete the plugin object from the plugins context
-   * This function will be called once after run() has returned and the plugin
-   *   thread has terminated but before the library is closed.
-   * Normally this function should only contain "delete this;"
-   */
-  virtual void destructor() = 0;
-
-  /**
-   * Get read end of pipe used to communicate with the plugin
-   * Called from plugin
-   *
-   * @return A file descriptor that can be polled for new events and signals
-   */
-  int getReadPipe() const;
-
-  /**
-   * Send a notification to the plugin
-   *
-   * @param c A character, will be received by plugin through it's read pipe
-   */
-  void notify(char c);
-
-  /**
-   * Tell a plugin to shut down
-   * Called from PluginManager
-   */
-  void shutdown();
-
-private:
-  LICQ_DECLARE_PRIVATE();
-
-  /// Convenience for friends to access myPrivate without casting from subclass
-  Private* basePrivate() { return myPrivate; }
-
-  /// Allow the plugin manager to access private members
-  friend class LicqDaemon::PluginManager;
+  virtual boost::shared_ptr<PluginInterface> internalInterface() = 0;
+  template <typename T> friend boost::shared_ptr<T> plugin_internal_cast(Ptr);
 };
 
+/**
+ * Function to cast a plugin to a plugin specific interface to get access to
+ * methods that only apply for a specific plugin. To e.g. get access to ICQ
+ * specific methods, do:
+ * @code
+ * Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+ *     Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+ * if (icq)
+ *   icq->icqSendSms(...);
+ * @endcode
+ */
+template <typename T>
+inline boost::shared_ptr<T> plugin_internal_cast(Plugin::Ptr plugin)
+{
+  return plugin
+      ? boost::dynamic_pointer_cast<T>(plugin->internalInterface())
+      : boost::shared_ptr<T>();
+}
+
+// plugin_internal_cast<>() is not supposed to be used to cast to
+// PluginInterface, GeneralPluginInterface or ProtocolPluginInterface; only to
+// plugin specific interfaces.
+
+template <> inline boost::shared_ptr<PluginInterface>
+plugin_internal_cast<PluginInterface>(Plugin::Ptr);
+
+class GeneralPluginInterface;
+template <> boost::shared_ptr<GeneralPluginInterface>
+plugin_internal_cast<GeneralPluginInterface>(Plugin::Ptr);
+
+class ProtocolPluginInterface;
+template <> boost::shared_ptr<ProtocolPluginInterface>
+plugin_internal_cast<ProtocolPluginInterface>(Plugin::Ptr);
+
 } // namespace Licq
+
+// Make available in global namespace
+using Licq::plugin_internal_cast;
 
 #endif

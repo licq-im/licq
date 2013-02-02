@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2011, 2013 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,15 +17,14 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <licq/plugin/generalbase.h>
+#include <licq/plugin/generalplugininterface.h>
 #include <licq/version.h>
 
 #include "rms.h"
 
-
-Licq::GeneralPlugin* RmsPluginFactory(Licq::GeneralPlugin::Params& p)
+Licq::GeneralPluginInterface* RmsPluginFactory()
 {
-  return new CLicqRMS(p);
+  return new CLicqRMS;
 }
 
 LICQ_GENERAL_PLUGIN_DATA(&RmsPluginFactory);

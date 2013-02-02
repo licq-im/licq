@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2000-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #define LICQ_ICQ_H
 
 #include <boost/noncopyable.hpp>
+#include <boost/shared_ptr.hpp>
 #include <list>
 #include <map>
 #include <string>
@@ -87,6 +88,8 @@ const unsigned NUM_PROVIDERS = 32;
 class IcqProtocol : private boost::noncopyable
 {
 public:
+  typedef boost::shared_ptr<IcqProtocol> Ptr;
+
   static const int MaxMessageSize = 6800; // Maybe a little bigger?
   static const int MaxOfflineMessageSize = 450;
 

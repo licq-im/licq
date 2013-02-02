@@ -20,7 +20,7 @@
 #ifndef LICQRMS_H
 #define LICQRMS_H
 
-#include <licq/plugin/generalplugin.h>
+#include <licq/plugin/generalpluginhelper.h>
 
 #include <list>
 
@@ -31,8 +31,6 @@
 
 namespace Licq
 {
-class Event;
-class PluginSignal;
 class UserEvent;
 }
 
@@ -42,16 +40,21 @@ const unsigned short MAX_TEXT_LENGTH = 1024 * 8;
 typedef std::list<class CRMSClient*> ClientList;
 typedef std::list<unsigned long> TagList;
 
-class CLicqRMS : public Licq::GeneralPlugin, public Licq::MainLoopCallback
+class CLicqRMS : public Licq::GeneralPluginHelper, public Licq::MainLoopCallback
 {
 public:
-  CLicqRMS(Params& p);
+  CLicqRMS();
   ~CLicqRMS();
   void Shutdown();
 
-  // From Licq::GeneralPlugin
+  // From Licq::PluginInterface
   std::string name() const;
   std::string version() const;
+  bool init(int argc, char** argv);
+  int run();
+  void destructor();
+
+  // From Licq::GeneralPluginInterface
   std::string description() const;
   std::string usage() const;
   std::string configFile() const;
@@ -61,11 +64,6 @@ protected:
   // From Licq::MainLoopCallback
   void rawFileEvent(int fd, int revents);
   void socketEvent(Licq::INetSocket* inetSocket, int revents);
-
-  // From Licq::GeneralPlugin
-  bool init(int argc, char** argv);
-  int run();
-  void destructor();
 
   void deleteClient(CRMSClient* client);
   void setupLogSink();

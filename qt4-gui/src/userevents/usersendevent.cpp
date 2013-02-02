@@ -941,13 +941,11 @@ void UserSendEvent::retrySend(const Licq::Event* e, unsigned flags)
   mySendServerCheck->setChecked((flags & Licq::ProtocolSignal::SendDirect) == 0);
   myUrgentCheck->setChecked(flags & Licq::ProtocolSignal::SendUrgent);
 
-  Licq::ProtocolPlugin::Ptr icqProtocol;
-  Licq::IcqProtocol* icq = NULL;
+  Licq::IcqProtocol::Ptr icq;
   if (myUsers.front().protocolId() == LICQ_PPID)
   {
-    icqProtocol = Licq::gPluginManager.getProtocolPlugin(LICQ_PPID);
-    if (icqProtocol != NULL)
-      icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
+    icq = plugin_internal_cast<Licq::IcqProtocol>(
+        Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
   }
 
   switch (e->userEvent()->eventType())
@@ -1312,13 +1310,11 @@ void UserSendEvent::send()
   {
     unsigned long icqEventTag = 0;
 
-    Licq::ProtocolPlugin::Ptr icqProtocol;
-    Licq::IcqProtocol* icq = NULL;
+    Licq::IcqProtocol::Ptr icq;
     if (myUsers.front().protocolId() == LICQ_PPID)
     {
-      icqProtocol = Licq::gPluginManager.getProtocolPlugin(LICQ_PPID);
-      if (icqProtocol != NULL)
-        icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
+      icq = plugin_internal_cast<Licq::IcqProtocol>(
+          Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
     }
 
     switch (myType)

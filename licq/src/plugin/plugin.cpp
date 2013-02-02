@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <licq/plugin/plugininterface.h>
 #include "plugin.h"
 
 #include <cassert>
@@ -27,28 +28,24 @@
 // From licq.cpp
 extern char** global_argv;
 
-using LicqDaemon::DynamicLibrary;
-using namespace Licq;
+using namespace LicqDaemon;
 using namespace std;
 
-
-Plugin::Private::Private(Plugin* plugin, int id,
-    LicqDaemon::DynamicLibrary::Ptr lib, LicqDaemon::PluginThread::Ptr thread)
-  : myPlugin(plugin),
-    myId(id),
-    myLib(lib),
+Plugin::Plugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread)
+  : myId(id),
+    myLibrary(lib),
     myThread(thread),
-    myInitCallback(NULL),
-    myStartCallback(NULL),
-    myExitCallback(NULL),
     myArgc(0),
     myArgv(NULL),
-    myArgvCopy(NULL)
+    myArgvCopy(NULL),
+    myInitCallback(NULL),
+    myStartCallback(NULL),
+    myExitCallback(NULL)
 {
   // Empty
 }
 
-Plugin::Private::~Private()
+Plugin::~Plugin()
 {
   for (int i = 0; i < myArgc; ++i)
     ::free(myArgv[i]);
@@ -56,25 +53,40 @@ Plugin::Private::~Private()
   delete[] myArgvCopy;
 }
 
-Plugin::Plugin(Params& p)
-  : myPrivate(new Private(this, p.myId, p.myLib, p.myThread))
+int Plugin::id() const
 {
-  // Empty
+  return myId;
 }
 
-Plugin::~Plugin()
+std::string Plugin::name() const
 {
-  delete myPrivate;
+  return interface()->name();
+}
+
+std::string Plugin::version() const
+{
+  return interface()->version();
+}
+
+std::string Plugin::libraryName() const
+{
+  return myLibrary->getName();
+}
+
+boost::shared_ptr<Licq::PluginInterface> Plugin::internalInterface()
+{
+  // Create a shared_ptr that keeps this object alive at least until the
+  // returned pointer goes out of scope.
+  return boost::shared_ptr<Licq::PluginInterface>(
+      shared_from_this(), interface().get());
 }
 
 bool Plugin::isThread(const pthread_t& thread) const
 {
-  LICQ_D();
-  return d->myThread->isThread(thread);
+  return myThread->isThread(thread);
 }
 
-bool Plugin::Private::callInit(int argc, char** argv,
-                         void (*callback)(const Plugin&))
+bool Plugin::init(int argc, char** argv, void (*callback)(const Plugin&))
 {
   assert(myInitCallback == NULL);
 
@@ -85,8 +97,6 @@ bool Plugin::Private::callInit(int argc, char** argv,
 
   myArgv[size - 1] = NULL;
 
-  // TODO: use licq or libname?
-  //myArgv[0] = ::strdup(myLib->getName().c_str());
   myArgv[0] = ::strdup(global_argv[0]);
 
   for (int i = 0; i < argc; ++i)
@@ -100,20 +110,25 @@ bool Plugin::Private::callInit(int argc, char** argv,
   ::memcpy(myArgvCopy, myArgv, size * sizeof(char*));
 
   myInitCallback = callback;
-  return myThread->initPlugin(&Private::initThreadEntry, myPlugin);
+  return myThread->initPlugin(&initThreadEntry, this);
 }
 
-void Plugin::Private::startThread(
-    void (*startCallback)(const Plugin& plugin),
-    void (*exitCallback)(const Plugin& plugin))
+void Plugin::run(void (*startCallback)(const Plugin&),
+                 void (*exitCallback)(const Plugin&))
 {
   assert(myStartCallback == NULL && myExitCallback == NULL);
   myStartCallback = startCallback;
   myExitCallback = exitCallback;
-  myThread->startPlugin(&Private::startThreadEntry, myPlugin);
+
+  myThread->startPlugin(&startThreadEntry, this);
 }
 
-int Plugin::Private::joinThread()
+void Plugin::shutdown()
+{
+  interface()->shutdown();
+}
+
+int Plugin::joinThread()
 {
   void* result = myThread->join();
   if (result != NULL && result != PTHREAD_CANCELED)
@@ -127,67 +142,37 @@ int Plugin::Private::joinThread()
   return -1;
 }
 
-void Plugin::Private::cancelThread()
+void Plugin::cancelThread()
 {
   myThread->cancel();
 }
 
-int Plugin::id() const
-{
-  LICQ_D_CONST();
-  return d->myId;
-}
-
-const string& Plugin::libraryName() const
-{
-  LICQ_D_CONST();
-  return d->myLib->getName();
-}
-
-void Plugin::shutdown()
-{
-  notify(PipeShutdown);
-}
-
-int Plugin::getReadPipe() const
-{
-  LICQ_D_CONST();
-  return d->myPipe.getReadFd();
-}
-
-void Plugin::notify(char c)
-{
-  LICQ_D();
-  d->myPipe.putChar(c);
-}
-
-bool Plugin::Private::initThreadEntry(void* plugin)
+bool Plugin::initThreadEntry(void* plugin)
 {
   Plugin* thisPlugin = static_cast<Plugin*>(plugin);
-  Plugin::Private* const d = thisPlugin->myPrivate;
 
-  if (d->myInitCallback)
-    d->myInitCallback(*thisPlugin);
+  if (thisPlugin->myInitCallback)
+    thisPlugin->myInitCallback(*thisPlugin);
 
   // Set optind to 0 so plugins can use getopt
   optind = 0;
 
-  return thisPlugin->init(d->myArgc, d->myArgvCopy);
+  return thisPlugin->interface()->init(
+      thisPlugin->myArgc, thisPlugin->myArgvCopy);
 }
 
-void* Plugin::Private::startThreadEntry(void* plugin)
+void* Plugin::startThreadEntry(void* plugin)
 {
   Plugin* thisPlugin = static_cast<Plugin*>(plugin);
-  Plugin::Private* const d = thisPlugin->myPrivate;
 
-  if (d->myStartCallback != NULL)
-    (*d->myStartCallback)(*thisPlugin);
+  if (thisPlugin->myStartCallback != NULL)
+    (*thisPlugin->myStartCallback)(*thisPlugin);
 
   int* retval = new int;
-  *retval = thisPlugin->run();
+  *retval = thisPlugin->interface()->run();
 
-  if (d->myExitCallback != NULL)
-    (*d->myExitCallback)(*thisPlugin);
+  if (thisPlugin->myExitCallback != NULL)
+    (*thisPlugin->myExitCallback)(*thisPlugin);
 
   return retval;
 }

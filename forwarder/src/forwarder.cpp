@@ -57,9 +57,8 @@ const unsigned short SUBJ_CHARS = 20;
 /*---------------------------------------------------------------------------
  * CLicqForwarder::Constructor
  *-------------------------------------------------------------------------*/
-CLicqForwarder::CLicqForwarder(Licq::GeneralPlugin::Params& p)
-  : Licq::GeneralPlugin(p),
-    myIsEnabled(false),
+CLicqForwarder::CLicqForwarder()
+  : myIsEnabled(false),
     myMarkAsRead(false)
 {
   tcp = new Licq::TCPSocket;
@@ -83,31 +82,6 @@ std::string CLicqForwarder::name() const
 std::string CLicqForwarder::version() const
 {
   return PLUGIN_VERSION_STRING;
-}
-
-std::string CLicqForwarder::description() const
-{
-  return "Message forwarder";
-}
-
-std::string CLicqForwarder::usage() const
-{
-  return
-      "Usage:  Licq [options] -p forwarder -- [ -h ] [ -e ] [ -l <status> ] [ -d ]\n"
-      "         -h          : help\n"
-      "         -e          : start enabled\n"
-      "         -l <status> : log on at startup\n"
-      "         -d          : delete new messages after forwarding\n";
-}
-
-std::string CLicqForwarder::configFile() const
-{
-  return "licq_forwarder.conf";
-}
-
-bool CLicqForwarder::isEnabled() const
-{
-  return myIsEnabled;
 }
 
 bool CLicqForwarder::init(int argc, char** argv)
@@ -249,6 +223,31 @@ void CLicqForwarder::destructor()
   delete this;
 }
 
+std::string CLicqForwarder::description() const
+{
+  return "Message forwarder";
+}
+
+std::string CLicqForwarder::usage() const
+{
+  return
+      "Usage:  Licq [options] -p forwarder -- [ -h ] [ -e ] [ -l <status> ] [ -d ]\n"
+      "         -h          : help\n"
+      "         -e          : start enabled\n"
+      "         -l <status> : log on at startup\n"
+      "         -d          : delete new messages after forwarding\n";
+}
+
+std::string CLicqForwarder::configFile() const
+{
+  return "licq_forwarder.conf";
+}
+
+bool CLicqForwarder::isEnabled() const
+{
+  return myIsEnabled;
+}
+
 /*---------------------------------------------------------------------------
  * CLicqForwarder::ProcessPipe
  *-------------------------------------------------------------------------*/
@@ -258,7 +257,7 @@ void CLicqForwarder::ProcessPipe()
   read(m_nPipe, buf, 1);
   switch (buf[0])
   {
-    case Licq::GeneralPlugin::PipeSignal:
+    case PipeSignal:
     {
       Licq::PluginSignal* s = popSignal();
       if (myIsEnabled)
@@ -267,7 +266,7 @@ void CLicqForwarder::ProcessPipe()
       break;
     }
 
-    case Licq::GeneralPlugin::PipeEvent:
+    case PipeEvent:
     {
       // An event is pending (should never happen)
       Licq::Event* e = popEvent();
@@ -277,21 +276,21 @@ void CLicqForwarder::ProcessPipe()
       break;
     }
 
-    case Licq::GeneralPlugin::PipeShutdown:
+    case PipeShutdown:
     {
     gLog.info("Exiting forwarder");
     m_bExit = true;
     break;
   }
 
-    case Licq::GeneralPlugin::PipeDisable:
+    case PipeDisable:
     {
     gLog.info("Disabling forwarder");
       myIsEnabled = false;
       break;
     }
 
-    case Licq::GeneralPlugin::PipeEnable:
+    case PipeEnable:
     {
     gLog.info("Enabling forwarder");
       myIsEnabled = true;

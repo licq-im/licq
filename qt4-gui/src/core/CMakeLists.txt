@@ -9,5 +9,4 @@ set(core_SRCS
   usermenu.cpp
 )
 
-string(REGEX REPLACE ".cpp" ".h" core_HDRS "${core_SRCS}")
-string(REGEX REPLACE "plugin.h" "" core_MOC_HDRS "${core_HDRS}")
+string(REGEX REPLACE ".cpp" ".h" core_MOC_HDRS "${core_SRCS}")

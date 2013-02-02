@@ -24,8 +24,8 @@
 #include <licq/event.h>
 #include <licq/exceptions/exception.h>
 #include <licq/logging/logservice.h>
-#include <licq/plugin/generalbase.h>
-#include <licq/plugin/protocolbase.h>
+#include <licq/plugin/generalplugininterface.h>
+#include <licq/plugin/protocolplugininterface.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolsignal.h>
 #include <licq/thread/mutexlocker.h>
@@ -33,6 +33,7 @@
 
 #include <algorithm>
 #include <boost/foreach.hpp>
+#include <boost/make_shared.hpp>
 #include <cassert>
 #include <cctype>
 #include <cerrno>
@@ -47,11 +48,8 @@
 #include "pluginthread.h"
 #include "protocolplugin.h"
 
-using Licq::GeneralPlugin;
 using Licq::MutexLocker;
 using Licq::Owner;
-using Licq::Plugin;
-using Licq::ProtocolPlugin;
 using Licq::StringList;
 using Licq::User;
 using Licq::UserId;
@@ -66,6 +64,24 @@ LicqDaemon::PluginManager LicqDaemon::gPluginManager;
 // Initialize global Licq::PluginManager to refer to the internal PluginManager
 Licq::PluginManager& Licq::gPluginManager(LicqDaemon::gPluginManager);
 
+namespace
+{
+
+// Called in the plugin's thread just before the init function
+static void initPluginCallback(const Plugin& plugin)
+{
+  string name = plugin.name();
+  std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+  gLogService.createThreadLog(name);
+}
+
+static void exitPluginCallback(const Plugin& plugin)
+{
+  gPluginManager.pluginHasExited(plugin.id());
+}
+
+} // namespace
+
 PluginManager::PluginManager() :
   myNextPluginId(1)
 {
@@ -75,14 +91,6 @@ PluginManager::PluginManager() :
 PluginManager::~PluginManager()
 {
   // Empty
-}
-
-// Called in the plugin's thread just before the init function
-static void initPluginCallback(const Plugin& plugin)
-{
-  string name = plugin.name();
-  std::transform(name.begin(), name.end(), name.begin(), ::tolower);
-  gLogService.createThreadLog(name);
 }
 
 GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
@@ -95,7 +103,7 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
     pluginThread.swap(myGuiThread);
   }
   else
-    pluginThread.reset(new PluginThread);
+    pluginThread = boost::make_shared<PluginThread>();
 
   DynamicLibrary::Ptr lib = loadPlugin(pluginThread, name, "licq");
   if (!lib)
@@ -114,19 +122,16 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
       return GeneralPlugin::Ptr();
     }
 
-    if (!verifyPluginMagic(name, pluginData->licqMagic)
+    if (!verifyPluginMagic(name, pluginData->magic)
         || !verifyPluginVersion(name, pluginData->licqVersion))
       return GeneralPlugin::Ptr();
 
-    // Generate an ID for the plugin
-    const int pluginId = getNewPluginId();
-
-    // Create main plugin object
-    GeneralPlugin::Params pluginParams(pluginId, lib, pluginThread);
-    GeneralPlugin::Ptr plugin(pluginData->pluginFactory(pluginParams), deleteGeneralPlugin);
+    // Create the plugin
+    GeneralPlugin::Ptr plugin = boost::make_shared<GeneralPlugin>(
+        getNewPluginId(), lib, pluginThread, pluginData->pluginFactory);
 
     // Let the plugin initialize itself
-    if (!plugin->basePrivate()->callInit(argc, argv, &initPluginCallback))
+    if (!plugin->init(argc, argv, &initPluginCallback))
     {
       gLog.error(tr("Failed to initialize plugin (%s)"),
           plugin->name().c_str());
@@ -138,7 +143,6 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
       MutexLocker generalLocker(myGeneralPluginsMutex);
       myGeneralPlugins.push_back(plugin);
     }
-
     return plugin;
   }
   catch (const DynamicLibrary::Exception& ex)
@@ -158,7 +162,7 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
 ProtocolPlugin::Ptr PluginManager::
 loadProtocolPlugin(const std::string& name, bool keep)
 {
-  PluginThread::Ptr pluginThread(new PluginThread());
+  PluginThread::Ptr pluginThread = boost::make_shared<PluginThread>();
   DynamicLibrary::Ptr lib = loadPlugin(pluginThread, name, "protocol");
   if (!lib)
     return ProtocolPlugin::Ptr();
@@ -176,16 +180,13 @@ loadProtocolPlugin(const std::string& name, bool keep)
       return ProtocolPlugin::Ptr();
     }
 
-    if (!verifyPluginMagic(name, pluginData->licqMagic)
+    if (!verifyPluginMagic(name, pluginData->magic)
         || !verifyPluginVersion(name, pluginData->licqVersion))
       return ProtocolPlugin::Ptr();
 
-    // Generate an ID for the plugin
-    const int pluginId = getNewPluginId();
-
-    // Create main plugin object
-    ProtocolPlugin::Params pluginParams(pluginId, lib, pluginThread);
-    ProtocolPlugin::Ptr plugin(pluginData->pluginFactory(pluginParams), deleteProtocolPlugin);
+    // Create the plugin
+    ProtocolPlugin::Ptr plugin = boost::make_shared<ProtocolPlugin>(
+        getNewPluginId(), lib, pluginThread, pluginData->pluginFactory);
 
     {
       // Check if we already got a plugin for this protocol
@@ -198,7 +199,7 @@ loadProtocolPlugin(const std::string& name, bool keep)
     }
 
     // Let the plugin initialize itself
-    if (!plugin->basePrivate()->callInit(0, NULL, &initPluginCallback))
+    if (!plugin->init(0, NULL, &initPluginCallback))
     {
       gLog.error(tr("Failed to initialize plugin (%s)"),
           plugin->name().c_str());
@@ -229,21 +230,6 @@ loadProtocolPlugin(const std::string& name, bool keep)
   }
 
   return ProtocolPlugin::Ptr();
-}
-
-void PluginManager::unloadGeneralPlugin(GeneralPlugin::Ptr plugin)
-{
-  plugin->shutdown();
-}
-
-void PluginManager::unloadProtocolPlugin(ProtocolPlugin::Ptr plugin)
-{
-  // Check with user manager first if unloading is allowed
-  if (!gUserManager.allowUnloadProtocol(plugin->protocolId()))
-    return;
-
-  gUserManager.unloadProtocol(plugin->protocolId());
-  plugin->shutdown();
 }
 
 void PluginManager::startAllPlugins()
@@ -299,36 +285,6 @@ void PluginManager::pluginHasExited(unsigned short id)
   gDaemon.notifyPluginExited();
 }
 
-void PluginManager::deleteGeneralPlugin(GeneralPlugin* plugin)
-{
-  // Deleting the library object will close the plugin library.
-  // If we do this from Plugin::~Plugin() we will crash.
-
-  // Grab a pointer to the library before deleting the plugin, that way
-  //   the pointer in the plugin won't be the last instance triggering
-  //   the library to be closed.
-  DynamicLibrary::Ptr lib(plugin->basePrivate()->library());
-  plugin->destructor();
-
-  // The plugin instance is gone, it's now safe to let the last library
-  //   pointer go out of scope and delete itself.
-}
-
-void PluginManager::deleteProtocolPlugin(ProtocolPlugin* plugin)
-{
-  // Deleting the library object will close the plugin library.
-  // If we do this from Plugin::~Plugin() we will crash.
-
-  // Grab a pointer to the library before deleting the plugin, that way
-  //   the pointer in the plugin won't be the last instance triggering
-  //   the library to be closed.
-  DynamicLibrary::Ptr lib(plugin->basePrivate()->library());
-  plugin->destructor();
-
-  // The plugin instance is gone, it's now safe to let the last library
-  //   pointer go out of scope and delete itself.
-}
-
 void PluginManager::reapPlugin()
 {
   unsigned short exitId = myExitList.front();
@@ -338,12 +294,12 @@ void PluginManager::reapPlugin()
   MutexLocker protocolLocker(myProtocolPluginsMutex);
 
   // Check general plugins first
-  for (Licq::GeneralPluginsList::iterator plugin = myGeneralPlugins.begin();
+  for (list<GeneralPlugin::Ptr>::iterator plugin = myGeneralPlugins.begin();
        plugin != myGeneralPlugins.end(); ++plugin)
   {
     if ((*plugin)->id() == exitId)
     {
-      int result = (*plugin)->basePrivate()->joinThread();
+      int result = (*plugin)->joinThread();
       gLog.info(tr("Plugin %s exited with code %d"),
           (*plugin)->name().c_str(), result);
       myGeneralPlugins.erase(plugin);
@@ -353,13 +309,13 @@ void PluginManager::reapPlugin()
   generalLocker.unlock();
 
   // Then check protocol plugins
-  for (Licq::ProtocolPluginsList::iterator plugin = myProtocolPlugins.begin();
+  for (list<ProtocolPlugin::Ptr>::iterator plugin = myProtocolPlugins.begin();
        plugin != myProtocolPlugins.end(); ++plugin)
   {
     if ((*plugin)->id() == exitId)
     {
       unsigned long protocolId = (*plugin)->protocolId();
-      int result = (*plugin)->basePrivate()->joinThread();
+      int result = (*plugin)->joinThread();
       gLog.info(tr("Protocol plugin %s exited with code %d"),
           (*plugin)->name().c_str(), result);
 
@@ -387,7 +343,7 @@ void PluginManager::cancelAllPlugins()
     BOOST_FOREACH(GeneralPlugin::Ptr plugin, myGeneralPlugins)
     {
       gLog.warning(tr("Plugin %s failed to exit"), plugin->name().c_str());
-      plugin->basePrivate()->cancelThread();
+      plugin->cancelThread();
     }
   }
 
@@ -396,7 +352,7 @@ void PluginManager::cancelAllPlugins()
     BOOST_FOREACH(ProtocolPlugin::Ptr plugin, myProtocolPlugins)
     {
       gLog.warning(tr("Protocol plugin %s failed to exit"), plugin->name().c_str());
-      plugin->basePrivate()->cancelThread();
+      plugin->cancelThread();
     }
   }
 }
@@ -414,6 +370,25 @@ size_t PluginManager::pluginCount() const
   return myGeneralPlugins.size() + myProtocolPlugins.size();
 }
 
+User* PluginManager::createProtocolUser(const UserId& id, bool temporary)
+{
+  ProtocolPlugin::Ptr plugin = boost::dynamic_pointer_cast<ProtocolPlugin>(
+      getProtocolPlugin(id.protocolId()));
+  if (!plugin)
+    return NULL;
+
+  return plugin->createUser(id, temporary);
+}
+
+Owner* PluginManager::createProtocolOwner(const UserId& id)
+{
+  ProtocolPlugin::Ptr plugin = boost::dynamic_pointer_cast<ProtocolPlugin>(
+      getProtocolPlugin(id.protocolId()));
+  if (!plugin)
+    return NULL;
+
+  return plugin->createOwner(id);
+}
 void PluginManager::
 getGeneralPluginsList(Licq::GeneralPluginsList& plugins) const
 {
@@ -498,7 +473,7 @@ Licq::ProtocolPlugin::Ptr PluginManager::getProtocolPlugin(
     unsigned long protocolId) const
 {
   MutexLocker locker(myProtocolPluginsMutex);
-  BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, myProtocolPlugins)
+  BOOST_FOREACH(ProtocolPlugin::Ptr protocol, myProtocolPlugins)
   {
     if (protocol->protocolId() == protocolId)
       return protocol;
@@ -532,6 +507,29 @@ bool PluginManager::startProtocolPlugin(const std::string& name)
     return true;
   }
   return false;
+}
+
+void PluginManager::unloadGeneralPlugin(Licq::GeneralPlugin::Ptr p)
+{
+  GeneralPlugin::Ptr plugin = boost::dynamic_pointer_cast<GeneralPlugin>(p);
+  if (!plugin)
+    return;
+
+  plugin->shutdown();
+}
+
+void PluginManager::unloadProtocolPlugin(Licq::ProtocolPlugin::Ptr p)
+{
+  ProtocolPlugin::Ptr plugin = boost::dynamic_pointer_cast<ProtocolPlugin>(p);
+  if (!plugin)
+    return;
+
+  // Check with user manager first if unloading is allowed
+  if (!gUserManager.allowUnloadProtocol(plugin->protocolId()))
+    return;
+
+  gUserManager.unloadProtocol(plugin->protocolId());
+  plugin->shutdown();
 }
 
 DynamicLibrary::Ptr PluginManager::loadPlugin(
@@ -611,17 +609,12 @@ int PluginManager::getNewPluginId()
   return myNextPluginId++;
 }
 
-static void exitPluginCallback(const Plugin& plugin)
-{
-  gPluginManager.pluginHasExited(plugin.id());
-}
-
 void PluginManager::startPlugin(GeneralPlugin::Ptr plugin)
 {
   gLog.info(tr("Starting plugin %s (version %s)"),
       plugin->name().c_str(), plugin->version().c_str());
 
-  plugin->basePrivate()->startThread(NULL, exitPluginCallback);
+  plugin->run(NULL, exitPluginCallback);
 }
 
 void PluginManager::startPlugin(ProtocolPlugin::Ptr plugin)
@@ -629,7 +622,7 @@ void PluginManager::startPlugin(ProtocolPlugin::Ptr plugin)
   gLog.info(tr("Starting protocol plugin %s (version %s)"),
       plugin->name().c_str(), plugin->version().c_str());
 
-  plugin->basePrivate()->startThread(NULL, exitPluginCallback);
+  plugin->run(NULL, exitPluginCallback);
 }
 
 void PluginManager::pushPluginEvent(Licq::Event* event)
@@ -675,22 +668,4 @@ void PluginManager::pushProtocolSignal(Licq::ProtocolSignal* signal)
 
   Licq::gLog.error(tr("Invalid protocol plugin requested (%ld)"), protocolId);
   delete signal;
-}
-
-User* PluginManager::createProtocolUser(const UserId& id, bool temporary)
-{
-  ProtocolPlugin::Ptr plugin = getProtocolPlugin(id.protocolId());
-  if (plugin.get() == NULL)
-    return NULL;
-
-  return plugin->createUser(id, temporary);
-}
-
-Owner* PluginManager::createProtocolOwner(const UserId& id)
-{
-  ProtocolPlugin::Ptr plugin = getProtocolPlugin(id.protocolId());
-  if (plugin.get() == NULL)
-    return NULL;
-
-  return plugin->createOwner(id);
 }

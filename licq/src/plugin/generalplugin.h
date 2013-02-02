@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2011, 2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,42 +23,49 @@
 #include <licq/plugin/generalplugin.h>
 #include "plugin.h"
 
-#include <queue>
-
-#include <licq/plugin/generalbase.h>
-#include <licq/thread/mutex.h>
-
 namespace Licq
 {
+class Event;
+class GeneralPluginInterface;
+class PluginSignal;
+}
 
-/**
- * Temporary class used to hold initalization data for GeneralPlugin constructor
- */
-class GeneralPlugin::Params : public Plugin::Params
+namespace LicqDaemon
+{
+
+class GeneralPlugin : public Plugin, public Licq::GeneralPlugin
 {
 public:
-  Params(int id, LicqDaemon::DynamicLibrary::Ptr lib,
-      LicqDaemon::PluginThread::Ptr thread) :
-    Plugin::Params(id, lib, thread)
-  { /* Empty */ }
-};
+  typedef boost::shared_ptr<GeneralPlugin> Ptr;
 
-class GeneralPlugin::Private
-{
-public:
-  Private();
+  GeneralPlugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
+                Licq::GeneralPluginInterface* (*factory)());
+  // Constructor for unit tests
+  GeneralPlugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
+                boost::shared_ptr<Licq::GeneralPluginInterface> interface);
+  ~GeneralPlugin();
+
+  // From Licq::GeneralPlugin
+  std::string description() const;
+  std::string usage() const;
+  std::string configFile() const;
+  bool isEnabled() const;
+  void enable();
+  void disable();
+
+  bool wantSignal(unsigned long signalType) const;
+  void pushSignal(Licq::PluginSignal* signal);
+  void pushEvent(Licq::Event* event);
+
+protected:
+  // From Plugin
+  boost::shared_ptr<Licq::PluginInterface> interface() ;
+  boost::shared_ptr<const Licq::PluginInterface> interface() const;
 
 private:
-  unsigned long mySignalMask;
-  std::queue<Licq::PluginSignal*> mySignals;
-  Licq::Mutex mySignalsMutex;
-
-  std::queue<Licq::Event*> myEvents;
-  Licq::Mutex myEventsMutex;
-
-  friend class GeneralPlugin;
+  boost::shared_ptr<Licq::GeneralPluginInterface> myInterface;
 };
 
-} // namespace Licq
+} // namespace LicqDaemon
 
 #endif

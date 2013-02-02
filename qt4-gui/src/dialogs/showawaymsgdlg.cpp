@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1999-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -96,9 +96,10 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(const Licq::UserId& userId, bool fetch, QWidget* 
 
     if (myUserId.protocolId() == LICQ_PPID)
     {
-      Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-      if (icqProtocol != NULL)
-        icqEventTag = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->icqFetchAutoResponse(myUserId);
+      Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+          Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+      if (icq)
+        icqEventTag = icq->icqFetchAutoResponse(myUserId);
     }
   }
 

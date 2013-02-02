@@ -178,9 +178,8 @@ static const unsigned short NUM_COMMANDS = sizeof(commands)/sizeof(*commands);
 /*---------------------------------------------------------------------------
  * CLicqRMS::Constructor
  *-------------------------------------------------------------------------*/
-CLicqRMS::CLicqRMS(Licq::GeneralPlugin::Params& p)
-  : GeneralPlugin(p),
-    m_bEnabled(true),
+CLicqRMS::CLicqRMS()
+  : m_bEnabled(true),
     myPort(0)
 {
   licqRMS = this;
@@ -199,36 +198,25 @@ CLicqRMS::~CLicqRMS()
     delete *iter;
 }
 
+/*---------------------------------------------------------------------------
+ * CLicqRMS::Shutdown
+ *-------------------------------------------------------------------------*/
+void CLicqRMS::Shutdown()
+{
+  gLog.info("Shutting down remote manager server");
+
+  if (myLogSink)
+    Licq::gLogService.unregisterLogSink(myLogSink);
+}
+
 string CLicqRMS::name() const
 {
   return "RMS";
 }
 
-string CLicqRMS::description() const
-{
-  return "Licq remote management server";
-}
-
 string CLicqRMS::version() const
 {
   return PLUGIN_VERSION_STRING;
-}
-
-string CLicqRMS::usage() const
-{
-  return "Usage:  Licq [options] -p rms -- [ -h ] [ -d ]\n"
-      "         -h          : help\n"
-      "         -d          : start disabled\n";
-}
-
-string CLicqRMS::configFile() const
-{
-  return "licq_rms.conf";
-}
-
-bool CLicqRMS::isEnabled() const
-{
-  return m_bEnabled;
 }
 
 bool CLicqRMS::init(int argc, char** argv)
@@ -257,18 +245,6 @@ bool CLicqRMS::init(int argc, char** argv)
   }
   return true;
 }
-
-/*---------------------------------------------------------------------------
- * CLicqRMS::Shutdown
- *-------------------------------------------------------------------------*/
-void CLicqRMS::Shutdown()
-{
-  gLog.info("Shutting down remote manager server");
-
-  if (myLogSink)
-    Licq::gLogService.unregisterLogSink(myLogSink);
-}
-
 
 /*---------------------------------------------------------------------------
  * CLicqRMS::Run
@@ -352,6 +328,28 @@ void CLicqRMS::destructor()
   delete this;
 }
 
+string CLicqRMS::description() const
+{
+  return "Licq remote management server";
+}
+
+string CLicqRMS::usage() const
+{
+  return "Usage:  Licq [options] -p rms -- [ -h ] [ -d ]\n"
+      "         -h          : help\n"
+      "         -d          : start disabled\n";
+}
+
+string CLicqRMS::configFile() const
+{
+  return "licq_rms.conf";
+}
+
+bool CLicqRMS::isEnabled() const
+{
+  return m_bEnabled;
+}
+
 void CLicqRMS::rawFileEvent(int fd, int /* revents */)
 {
   if (fd == getReadPipe())
@@ -399,7 +397,7 @@ void CLicqRMS::ProcessPipe()
   read(getReadPipe(), &buf, 1);
   switch (buf)
   {
-    case Licq::GeneralPlugin::PipeSignal:
+    case PipeSignal:
     {
       Licq::PluginSignal* s = popSignal();
       if (m_bEnabled)
@@ -408,7 +406,7 @@ void CLicqRMS::ProcessPipe()
       break;
     }
 
-    case Licq::GeneralPlugin::PipeEvent:
+    case PipeEvent:
     {
       // An event is pending (should never happen)
       Licq::Event* e = popEvent();
@@ -418,17 +416,17 @@ void CLicqRMS::ProcessPipe()
       break;
     }
 
-    case Licq::GeneralPlugin::PipeShutdown:
+    case PipeShutdown:
       gLog.info("Exiting");
       myMainLoop.quit();
       break;
 
-    case Licq::GeneralPlugin::PipeDisable:
+    case PipeDisable:
       gLog.info("Disabling");
       m_bEnabled = false;
       break;
 
-    case Licq::GeneralPlugin::PipeEnable:
+    case PipeEnable:
       gLog.info("Enabling");
       m_bEnabled = true;
       break;
@@ -1345,11 +1343,12 @@ int CRMSClient::Process_SMS_number()
 
 int CRMSClient::Process_SMS_message()
 {
-  Licq::ProtocolPlugin::Ptr icqProtocol(gPluginManager.getProtocolPlugin(LICQ_PPID));
-  if (icqProtocol == NULL)
+  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (!icq)
     return fflush(fs);
 
-  unsigned long tag = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->icqSendSms(
+  unsigned long tag = icq->icqSendSms(
       myUserId, myLine, Licq::gTranslator.toUtf8(myText));
 
   fprintf(fs, "%d [%lu] Sending SMS to %s (%s).\n", CODE_COMMANDxSTART,

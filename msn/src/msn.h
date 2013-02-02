@@ -20,7 +20,7 @@
 #ifndef LICQMSN_MSN_H
 #define LICQMSN_MSN_H
 
-#include <licq/plugin/protocolplugin.h>
+#include <licq/plugin/protocolpluginhelper.h>
 
 #include <list>
 #include <string>
@@ -82,17 +82,24 @@ struct SStartMessage
 
 typedef std::list<SStartMessage*> StartList;
 
-class CMSN : public Licq::ProtocolPlugin, public Licq::MainLoopCallback
+class CMSN : public Licq::ProtocolPluginHelper, public Licq::MainLoopCallback
 {
 public:
-  CMSN(Params& p);
+  CMSN();
   ~CMSN();
 
-  // From Licq::ProtocolPlugin
+  // From Licq::PluginInterface
   std::string name() const;
   std::string version() const;
+  int run();
+  void destructor();
+
+  // From Licq::ProtocolPluginInterface
   unsigned long protocolId() const;
   unsigned long capabilities() const;
+  Licq::User* createUser(const Licq::UserId& id, bool temporary);
+  Licq::Owner* createOwner(const Licq::UserId& id);
+
   std::string defaultServerHost() const;
   int defaultServerPort() const;
 
@@ -101,14 +108,6 @@ public:
   void MSNLogoff(bool = false);
 
   void closeSocket(Licq::TCPSocket* sock, bool clearUser = true);
-
-protected:
-  // From Licq::ProtocolPlugin
-  bool init(int, char**);
-  int run();
-  void destructor();
-  Licq::User* createUser(const Licq::UserId& id, bool temporary = false);
-  Licq::Owner* createOwner(const Licq::UserId& id);
 
 private:
   // From Licq::MainLoopCallback
