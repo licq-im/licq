@@ -376,17 +376,16 @@ static int fifo_sms(int argc, const char *const *argv)
     return 0;
   }
 
-  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-  if (!icq)
-    return -1;
-
-  // TODO: is this correct?
   if (userId.protocolId() != LICQ_PPID )
   {
     gLog.info(tr("%s `%s': bad protocol. ICQ only allowed"), L_FIFOxSTR, argv[0]);
     return 0;
   }
+
+  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (!icq)
+    return -1;
 
   string number;
   {

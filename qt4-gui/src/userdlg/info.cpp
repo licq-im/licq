@@ -1488,11 +1488,10 @@ unsigned long UserPages::Info::retrieve(UserDlg::UserPage page)
   unsigned long icqEventTag;
   if (page == UserDlg::PhonePage)
   {
-    Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-        Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-    // TODO: is this correct?
     if (myPpid != LICQ_PPID)
       return 0;
+    Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+        Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
     icqEventTag = icq->icqRequestPluginInfo(
         myUserId, Licq::IcqProtocol::PluginPhoneBook);
   }
