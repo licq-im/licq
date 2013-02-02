@@ -101,7 +101,7 @@ User::User(const UserId& id, bool temporary)
   filename += "/" + myId.accountId();
   d->myConf.setFilename(filename + ".conf");
   d->myHistory.setFile(gDaemon.baseDir() + filename + ".history");
-  myPictureFileName = filename + ".pic";
+  myPictureFileName = gDaemon.baseDir() + filename + ".pic";
 
   if (m_bNotInList)
   {

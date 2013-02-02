@@ -1491,7 +1491,7 @@ unsigned long UserPages::Info::retrieve(UserDlg::UserPage page)
     Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
         Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
     // TODO: is this correct?
-    if (myPpid == LICQ_PPID)
+    if (myPpid != LICQ_PPID)
       return 0;
     icqEventTag = icq->icqRequestPluginInfo(
         myUserId, Licq::IcqProtocol::PluginPhoneBook);
