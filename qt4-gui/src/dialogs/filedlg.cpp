@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1999-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -133,11 +133,10 @@ FileDlg::FileDlg(const Licq::UserId& userId, QWidget* parent)
   connect(btnCancel, SIGNAL(clicked()), SLOT(close()));
   hbox->addWidget(btnCancel);
 
-  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-  if (icqProtocol != NULL)
+  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (icq)
   {
-    Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
-
     //TODO fix this
     ftman = icq->createFileTransferManager(myUserId);
     ftman->SetUpdatesEnabled(2);

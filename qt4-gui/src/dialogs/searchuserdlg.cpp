@@ -62,13 +62,13 @@ SearchUserDlg::SearchUserDlg(const Licq::UserId& ownerId)
   setAttribute(Qt::WA_DeleteOnClose, true);
   setWindowTitle(tr("Licq - User Search"));
 
-  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-  if (icqProtocol == NULL)
+  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (!icq)
   {
     close();
     return;
   }
-  Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
 
   connect(gGuiSignalManager, SIGNAL(searchResult(const Licq::Event*)),
       SLOT(searchResult(const Licq::Event*)));
@@ -239,10 +239,10 @@ void SearchUserDlg::startSearch()
   unsigned short mins[7] = {0, 18, 23, 30, 40, 50, 60};
   unsigned short maxs[7] = {0, 22, 29, 39, 49, 59, 120};
 
-  Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-  if (icqProtocol == NULL)
+  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (!icq)
     return;
-  Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
 
   foundView->clear();
   for (int i = 0; i < foundView->columnCount(); i++)

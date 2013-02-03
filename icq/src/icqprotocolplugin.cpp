@@ -20,6 +20,7 @@
 #include "icqprotocolplugin.h"
 
 #include <licq/logging/log.h>
+#include <licq/plugin/protocolplugin.h>
 #include <licq/protocolmanager.h>
 #include <licq/protocolsignal.h>
 #include <licq/version.h>
@@ -37,8 +38,7 @@ using Licq::gLog;
 
 IcqProtocolPlugin* LicqIcq::gIcqProtocolPlugin(NULL);
 
-IcqProtocolPlugin::IcqProtocolPlugin(Params& p)
-  : ProtocolPlugin(p)
+IcqProtocolPlugin::IcqProtocolPlugin()
 {
   gIcqProtocolPlugin = this;
 }
@@ -58,33 +58,7 @@ std::string IcqProtocolPlugin::version() const
   return LICQ_VERSION_STRING;
 }
 
-unsigned long IcqProtocolPlugin::protocolId() const
-{
-  return LICQ_PPID;
-}
-
-unsigned long IcqProtocolPlugin::capabilities() const
-{
-  return ProtocolPlugin::CanSendMsg | ProtocolPlugin::CanSendUrl |
-      ProtocolPlugin::CanSendFile | ProtocolPlugin::CanSendChat |
-      ProtocolPlugin::CanSendContact | ProtocolPlugin::CanSendAuth |
-      ProtocolPlugin::CanSendAuthReq | ProtocolPlugin::CanSendSms |
-      ProtocolPlugin::CanSendSecure | ProtocolPlugin::CanSendDirect |
-      ProtocolPlugin::CanHoldStatusMsg | ProtocolPlugin::CanVaryEncoding |
-      ProtocolPlugin::CanSingleGroup;
-}
-
-std::string IcqProtocolPlugin::defaultServerHost() const
-{
-  return "login.icq.com";
-}
-
-int IcqProtocolPlugin::defaultServerPort() const
-{
-  return 5190;
-}
-
-bool IcqProtocolPlugin::init(int, char**)
+bool IcqProtocolPlugin::init(int /*argc*/, char** /*argv*/)
 {
   gIcqProtocol.initialize();
   return true;
@@ -102,6 +76,30 @@ void IcqProtocolPlugin::destructor()
   delete this;
 }
 
+unsigned long IcqProtocolPlugin::protocolId() const
+{
+  return LICQ_PPID;
+}
+
+unsigned long IcqProtocolPlugin::capabilities() const
+{
+  using Licq::ProtocolPlugin;
+
+  return ProtocolPlugin::CanSendMsg
+      | ProtocolPlugin::CanSendUrl
+      | ProtocolPlugin::CanSendFile
+      | ProtocolPlugin::CanSendChat
+      | ProtocolPlugin::CanSendContact
+      | ProtocolPlugin::CanSendAuth
+      | ProtocolPlugin::CanSendAuthReq
+      | ProtocolPlugin::CanSendSms
+      | ProtocolPlugin::CanSendSecure
+      | ProtocolPlugin::CanSendDirect
+      | ProtocolPlugin::CanHoldStatusMsg
+      | ProtocolPlugin::CanVaryEncoding
+      | ProtocolPlugin::CanSingleGroup;
+}
+
 Licq::User* IcqProtocolPlugin::createUser(const Licq::UserId& id, bool temporary)
 {
   return new User(id, temporary);
@@ -112,20 +110,30 @@ Licq::Owner* IcqProtocolPlugin::createOwner(const Licq::UserId& id)
   return new Owner(id);
 }
 
+std::string IcqProtocolPlugin::defaultServerHost() const
+{
+  return "login.icq.com";
+}
+
+int IcqProtocolPlugin::defaultServerPort() const
+{
+  return 5190;
+}
+
 void IcqProtocolPlugin::processPipe()
 {
   char c;
   read(getReadPipe(), &c, 1);
   switch (c)
   {
-    case Licq::ProtocolPlugin::PipeSignal:
+    case PipeSignal:
     {
       Licq::ProtocolSignal* s = popSignal();
       gIcqProtocol.processSignal(s);
       delete s;
       break;
     }
-    case Licq::ProtocolPlugin::PipeShutdown:
+    case PipeShutdown:
       gIcqProtocol.shutdown();
       break;
     default:
@@ -385,9 +393,9 @@ Licq::IcqChatManager* IcqProtocolPlugin::createChatManager(const Licq::UserId& u
 }
 
 
-Licq::ProtocolPlugin* IcqPluginFactory(Licq::ProtocolPlugin::Params& p)
+Licq::ProtocolPluginInterface* IcqPluginFactory()
 {
-  return new LicqIcq::IcqProtocolPlugin(p);
+  return new LicqIcq::IcqProtocolPlugin;
 }
 
 LICQ_PROTOCOL_PLUGIN_DATA(&IcqPluginFactory);

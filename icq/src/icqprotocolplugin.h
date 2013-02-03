@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2012-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,28 +20,36 @@
 #ifndef LICQICQ_ICQPROTOCOLPLUGIN_H
 #define LICQICQ_ICQPROTOCOLPLUGIN_H
 
-#include <licq/plugin/protocolbase.h>
+#include <licq/plugin/protocolpluginhelper.h>
 #include <licq/icq/icq.h>
 
 namespace LicqIcq
 {
 
-class IcqProtocolPlugin : public Licq::ProtocolPlugin, public Licq::IcqProtocol
+class IcqProtocolPlugin : public Licq::ProtocolPluginHelper, public Licq::IcqProtocol
 {
 public:
-  IcqProtocolPlugin(Params& p);
+  IcqProtocolPlugin();
 
   /// Read and process next event from plugin pipe
   void processPipe();
 
   // Make read pipe available to monitor thread
-  using Licq::ProtocolPlugin::getReadPipe;
+  using Licq::ProtocolPluginHelper::getReadPipe;
 
-  // From Licq::ProtocolPlugin
+  // From Licq::PluginInterface
   std::string name() const;
   std::string version() const;
+  bool init(int argc, char** argv);
+  int run();
+  void destructor();
+
+  // From Licq::ProtocolPluginInterface
   unsigned long protocolId() const;
   unsigned long capabilities() const;
+  Licq::User* createUser(const Licq::UserId& id, bool temporary);
+  Licq::Owner* createOwner(const Licq::UserId& id);
+
   std::string defaultServerHost() const;
   int defaultServerPort() const;
 
@@ -98,14 +106,6 @@ public:
   const struct Licq::IcqProvider* getProviderByGateway(const char* gateway);
   const struct Licq::IcqProvider* getProviderByIndex(unsigned short index);
   const struct Licq::IcqProvider* getProviderByName(const char* name);
-
-protected:
-  // From Licq::ProtocolPlugin
-  bool init(int, char**);
-  int run();
-  void destructor();
-  Licq::User* createUser(const Licq::UserId& id, bool temporary = false);
-  Licq::Owner* createOwner(const Licq::UserId& id);
 
 private:
   bool isOwnerOnline(const Licq::UserId& userId);

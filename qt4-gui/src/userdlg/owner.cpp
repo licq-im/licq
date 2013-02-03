@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2012-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -278,10 +278,10 @@ unsigned long UserPages::Owner::send(UserDlg::UserPage page)
 {
   if (myProtocolId == LICQ_PPID)
   {
-    Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-    if (icqProtocol == NULL)
+    Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+        Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+    if (!icq)
       return 0;
-    Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
 
     if (page == UserDlg::OwnerSecurityPage)
     {

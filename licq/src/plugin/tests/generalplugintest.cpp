@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq Developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,96 +17,58 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-// Steal the PluginManager's friend declaration
-#define PluginManager GeneralPluginTest
 #include "../generalplugin.h"
-#include <licq/plugin/generalbase.h>
-#undef PluginManager
 
-#include <licq/pluginsignal.h>
+#include <licq/plugin/generalplugininterface.h>
 
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
-#include "../../utils/dynamiclibrary.h"
-#include "../plugin.h"
-#include "../pluginthread.h"
-
-using Licq::GeneralPlugin;
+using LicqDaemon::GeneralPlugin;
 using LicqDaemon::DynamicLibrary;
 using LicqDaemon::PluginThread;
 
-namespace LicqDaemon
+using ::testing::InSequence;
+
+namespace LicqTest
 {
 
-class GeneralPluginTest : public GeneralPlugin
+class MockGeneralPlugin : public Licq::GeneralPluginInterface
 {
 public:
-  GeneralPluginTest(Params& p) :
-      GeneralPlugin(p)
-  { /* Empty */ }
+  MOCK_CONST_METHOD0(name, std::string());
+  MOCK_CONST_METHOD0(version, std::string());
+  MOCK_METHOD2(init, bool(int argc, char** argv));
+  MOCK_METHOD0(run, int());
+  MOCK_METHOD0(shutdown, void());
+  MOCK_METHOD0(destructor, void());
 
-  bool callInit(int argc = 0, char** argv = NULL, void (*callback)(const Plugin&) = NULL)
-  { return basePrivate()->callInit(argc, argv, callback); }
-
-  void startThread(void (*startCallback)(const Plugin&) = NULL,
-      void (*exitCallback)(const Plugin&) = NULL)
-  { basePrivate()->startThread(startCallback, exitCallback); }
-
-  int joinThread()
-  { return basePrivate()->joinThread(); }
-
-  std::string name() const
-  { return "Name"; }
-
-  std::string version() const
-  { return "Version"; }
-
-  std::string description() const
-  { return "Description"; }
-
-  std::string usage() const
-  { return "Usage"; }
-
-  std::string configFile() const
-  { return "ConfigFile"; }
-
-  bool isEnabled() const
-  { return false; }
-
-  bool init(int, char**)
-  { return true; }
-
-  int run()
-  { return 20; }
-
-  void destructor()
-  { delete this; }
-
-  // Un-protect functions so we can test them without being the PluginManager
-  using GeneralPlugin::getReadPipe;
-  using GeneralPlugin::popEvent;
-  using GeneralPlugin::popSignal;
-  using GeneralPlugin::setSignalMask;
+  MOCK_CONST_METHOD0(description, std::string());
+  MOCK_CONST_METHOD0(usage, std::string());
+  MOCK_CONST_METHOD0(configFile, std::string());
+  MOCK_CONST_METHOD0(isEnabled, bool());
+  MOCK_METHOD0(enable, void());
+  MOCK_METHOD0(disable, void());
+  MOCK_CONST_METHOD1(wantSignal, bool(unsigned long signalType));
+  MOCK_METHOD1(pushSignal, void(Licq::PluginSignal* signal));
+  MOCK_METHOD1(pushEvent, void(Licq::Event* event));
 };
 
-} // namespace LicqDaemon
-
-using LicqDaemon::GeneralPluginTest;
-
-namespace LicqTest {
+static void NullDeleter(void*) { /* Empty */ }
 
 struct GeneralPluginFixture : public ::testing::Test
 {
   DynamicLibrary::Ptr myLib;
   PluginThread::Ptr myThread;
-  GeneralPlugin::Params myPluginParams;
-  GeneralPluginTest plugin;
+  MockGeneralPlugin myMockInterface;
+  GeneralPlugin plugin;
 
   GeneralPluginFixture() :
     myLib(new DynamicLibrary("")),
     myThread(new PluginThread()),
-    myPluginParams(1, myLib, myThread),
-    plugin(myPluginParams)
+    plugin(1, myLib, myThread,
+           boost::shared_ptr<MockGeneralPlugin>(
+               &myMockInterface, &NullDeleter))
   {
     // Empty
   }
@@ -115,97 +77,35 @@ struct GeneralPluginFixture : public ::testing::Test
   {
     myThread->cancel();
   }
-
-  char getPipeChar()
-  {
-    int fd = plugin.getReadPipe();
-    char ch;
-    read(fd, &ch, sizeof(ch));
-    return ch;
-  }
 };
-
-TEST(GeneralPlugin, load)
-{
-  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
-  PluginThread::Ptr thread(new PluginThread());
-  GeneralPlugin::Params pluginParams(1, lib, thread);
-  ASSERT_NO_THROW(GeneralPluginTest plugin(pluginParams));
-}
 
 TEST_F(GeneralPluginFixture, callApiFunctions)
 {
-  EXPECT_EQ("Name", plugin.name());
-  EXPECT_EQ("Version", plugin.version());
-  EXPECT_FALSE(plugin.isEnabled());
-  EXPECT_EQ("Description", plugin.description());
-  EXPECT_EQ("Usage", plugin.usage());
-  EXPECT_EQ("ConfigFile", plugin.configFile());
+  unsigned long signalType = 123;
+  Licq::PluginSignal* signal = reinterpret_cast<Licq::PluginSignal*>(456);
+  Licq::Event* event = reinterpret_cast<Licq::Event*>(789);
 
-  EXPECT_TRUE(plugin.callInit(0, 0));
-}
+  InSequence dummy;
+  EXPECT_CALL(myMockInterface, description());
+  EXPECT_CALL(myMockInterface, usage());
+  EXPECT_CALL(myMockInterface, configFile());
+  EXPECT_CALL(myMockInterface, isEnabled());
+  EXPECT_CALL(myMockInterface, enable());
+  EXPECT_CALL(myMockInterface, disable());
+  EXPECT_CALL(myMockInterface, wantSignal(signalType));
+  EXPECT_CALL(myMockInterface, pushSignal(signal));
+  EXPECT_CALL(myMockInterface, pushEvent(event));
 
-TEST_F(GeneralPluginFixture, init)
-{
-  EXPECT_TRUE(plugin.callInit(0, NULL));
-}
-
-TEST_F(GeneralPluginFixture, runPlugin)
-{
-  plugin.startThread();
-  EXPECT_EQ(20, plugin.joinThread());
-}
-
-TEST_F(GeneralPluginFixture, enableDisable)
-{
+  // Verify that the calls are forwarded to the interface
+  plugin.description();
+  plugin.usage();
+  plugin.configFile();
+  plugin.isEnabled();
   plugin.enable();
-  EXPECT_EQ('1', getPipeChar());
   plugin.disable();
-  EXPECT_EQ('0', getPipeChar());
-}
-
-TEST_F(GeneralPluginFixture, signalmask)
-{
-  EXPECT_FALSE(plugin.wantSignal(1));
-  plugin.setSignalMask(0xf);
-  EXPECT_TRUE(plugin.wantSignal(1));
-  EXPECT_FALSE(plugin.wantSignal(0x10));
-}
-
-TEST_F(GeneralPluginFixture, pushPopSignal)
-{
-  Licq::PluginSignal* signal = (Licq::PluginSignal*)10;
+  plugin.wantSignal(signalType);
   plugin.pushSignal(signal);
-  plugin.pushSignal(signal);
-
-  EXPECT_EQ('S', getPipeChar());
-  EXPECT_EQ(signal, plugin.popSignal());
-
-  EXPECT_EQ('S', getPipeChar());
-  EXPECT_EQ(signal, plugin.popSignal());
-}
-
-TEST_F(GeneralPluginFixture, popSignalEmpty)
-{
-  EXPECT_EQ(static_cast<Licq::PluginSignal*>(NULL), plugin.popSignal());
-}
-
-TEST_F(GeneralPluginFixture, pushPopEvent)
-{
-  Licq::Event* event = (Licq::Event*)20;
   plugin.pushEvent(event);
-  plugin.pushEvent(event);
-
-  EXPECT_EQ('E', getPipeChar());
-  EXPECT_EQ(event, plugin.popEvent());
-
-  EXPECT_EQ('E', getPipeChar());
-  EXPECT_EQ(event, plugin.popEvent());
-}
-
-TEST_F(GeneralPluginFixture, popEventEmpty)
-{
-  EXPECT_EQ(static_cast<Licq::Event*>(NULL), plugin.popEvent());
 }
 
 } // namespace LicqTest

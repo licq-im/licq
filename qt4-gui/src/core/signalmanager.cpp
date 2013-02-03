@@ -22,7 +22,6 @@
 #include <unistd.h>
 
 #include <QApplication>
-#include <QSocketNotifier>
 
 #include <licq/logging/log.h>
 #include <licq/contactlist/usermanager.h>
@@ -42,26 +41,23 @@ using namespace LicqQtGui;
 SignalManager* LicqQtGui::gGuiSignalManager = NULL;
 
 SignalManager::SignalManager()
-  : myPipe(gQtGuiPlugin->getReadPipe())
 {
   assert(gGuiSignalManager == NULL);
   gGuiSignalManager = this;
 
-  gQtGuiPlugin->setSignalMask(Licq::PluginSignal::SignalAll);
-
-  sn = new QSocketNotifier(myPipe, QSocketNotifier::Read);
-  connect(sn, SIGNAL(activated(int)), SLOT(process()));
-  sn->setEnabled(true);
+  connect(gQtGuiPlugin, SIGNAL(pluginSignal(Licq::PluginSignal*)),
+          this, SLOT(processSignal(Licq::PluginSignal*)));
+  connect(gQtGuiPlugin, SIGNAL(pluginEvent(Licq::Event*)),
+          this, SLOT(processEvent(Licq::Event*)));
+  connect(gQtGuiPlugin, SIGNAL(pluginShutdown()), this, SLOT(shutdown()));
 }
 
 SignalManager::~SignalManager()
 {
-  delete sn;
-
   gGuiSignalManager = NULL;
 }
 
-void SignalManager::ProcessSignal(Licq::PluginSignal* sig)
+void SignalManager::processSignal(Licq::PluginSignal* sig)
 {
   const Licq::UserId& userId = sig->userId();
   unsigned long ppid = userId.protocolId();
@@ -168,7 +164,7 @@ void SignalManager::ProcessSignal(Licq::PluginSignal* sig)
   delete sig;
 }
 
-void SignalManager::ProcessEvent(Licq::Event* ev)
+void SignalManager::processEvent(Licq::Event* ev)
 {
   if (ev->command() == Licq::Event::CommandSearch)
     emit searchResult(ev);
@@ -177,40 +173,8 @@ void SignalManager::ProcessEvent(Licq::Event* ev)
   delete ev;
 }
 
-void SignalManager::process()
+void SignalManager::shutdown()
 {
-  char buf[16];
-
-  read(myPipe, buf, 1);
-
-  switch (buf[0])
-  {
-    case Licq::GeneralPlugin::PipeSignal:
-    {
-      Licq::PluginSignal* s = gQtGuiPlugin->popSignal();
-      ProcessSignal(s);
-      break;
-    }
-
-    case Licq::GeneralPlugin::PipeEvent:
-    {
-      Licq::Event* e = gQtGuiPlugin->popEvent();
-      ProcessEvent(e);
-      break;
-    }
-
-    case Licq::GeneralPlugin::PipeShutdown:
-    {
-      gLog.info("Exiting main window (qt gui)");
-      qApp->quit();
-      break;
-    }
-
-    case Licq::GeneralPlugin::PipeDisable:
-    case Licq::GeneralPlugin::PipeEnable:
-      break;
-
-    default:
-      gLog.warning("Unknown notification type from daemon: %c", buf[0]);
-  }
+  gLog.info("Exiting main window (qt gui)");
+  qApp->quit();
 }

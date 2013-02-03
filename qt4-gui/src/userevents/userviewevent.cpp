@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2000-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -421,10 +421,10 @@ void UserViewEvent::read2()
 
     case Licq::UserEvent::TypeChat:  // accept a chat request
     {
-      Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-      if (icqProtocol == NULL)
+      Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+          Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+      if (!icq)
         return;
-      Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
 
       myCurrentEvent->SetPending(false);
       myRead2Button->setEnabled(false);
@@ -501,10 +501,10 @@ void UserViewEvent::read3()
 
       if (r->exec())
       {
-        Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-        if (icqProtocol == NULL)
+        Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+            Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+        if (!icq)
           return;
-        Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
 
         myCurrentEvent->SetPending(false);
         Licq::EventChat* c = dynamic_cast<Licq::EventChat*>(myCurrentEvent);
@@ -564,10 +564,10 @@ void UserViewEvent::read4()
 
     case Licq::UserEvent::TypeChat:  // join to current chat
     {
-      Licq::ProtocolPlugin::Ptr icqProtocol(Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-      if (icqProtocol == NULL)
+      Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+          Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+      if (!icq)
         return;
-      Licq::IcqProtocol* icq = dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get());
 
       Licq::EventChat* c = dynamic_cast<Licq::EventChat*>(myCurrentEvent);
       if (c->Port() != 0)  // Joining a multiparty chat (we connect to them)

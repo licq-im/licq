@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2011 Licq developers
+ * Copyright (C) 2007-2011, 2013 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,8 +35,9 @@
 #endif
 
 #include <licq/daemon.h>
-#include <licq/plugin/generalbase.h>
+#include <licq/event.h>
 #include <licq/logging/log.h>
+#include <licq/pluginsignal.h>
 #include <licq/version.h>
 
 #include "core/gui-defines.h"
@@ -47,9 +48,8 @@ using namespace LicqQtGui;
 
 QtGuiPlugin* LicqQtGui::gQtGuiPlugin = NULL;
 
-QtGuiPlugin::QtGuiPlugin(Licq::GeneralPlugin::Params& p)
-  : Licq::GeneralPlugin(p),
-    myArgc(0),
+QtGuiPlugin::QtGuiPlugin()
+  : myArgc(0),
     myArgv(NULL)
 {
   assert(gQtGuiPlugin == NULL);
@@ -61,46 +61,9 @@ std::string QtGuiPlugin::name() const
   return DISPLAY_PLUGIN_NAME;
 }
 
-std::string QtGuiPlugin::description() const
-{
-#ifdef USE_KDE
-  return "KDE4 based GUI";
-#else
-  return "Qt4 based GUI";
-#endif
-}
-
 std::string QtGuiPlugin::version() const
 {
   return PLUGIN_VERSION_STRING;
-}
-
-std::string QtGuiPlugin::usage() const
-{
-  static QString usage = QString(
-    "Usage:  Licq [options] -p %1 -- [-hdD] [-s skinname] [-i iconpack] [-e extendediconpack]"
-    "\n"
-    " -h : this help screen\n"
-    " -d : start hidden (dock icon only)\n"
-    " -D : disable dock icon for this session (does not affect dock icon settings)\n"
-    " -s : set the skin to use (must be in %2%3%4)\n"
-    " -i : set the icons to use (must be in %2%3%5)\n"
-    " -e : set the extended icons to use (must be in %2%3%6)"
-    )
-    .arg(PLUGIN_NAME)
-      .arg(Licq::gDaemon.baseDir().c_str())
-    .arg(QTGUI_DIR)
-    .arg(SKINS_DIR)
-    .arg(ICONS_DIR)
-    .arg(EXTICONS_DIR)
-    ;
-
-  return usage.toLatin1().constData();
-}
-
-std::string QtGuiPlugin::configFile() const
-{
-  return QTGUI_CONFIGFILE;
 }
 
 bool QtGuiPlugin::init(int argc, char** argv)
@@ -168,15 +131,87 @@ int QtGuiPlugin::run()
   return result;
 }
 
+void QtGuiPlugin::shutdown()
+{
+  emit pluginShutdown();
+}
+
 void QtGuiPlugin::destructor()
 {
   delete this;
 }
 
-
-Licq::GeneralPlugin* QtGuiPluginFactory(Licq::GeneralPlugin::Params& p)
+std::string QtGuiPlugin::description() const
 {
-  return new LicqQtGui::QtGuiPlugin(p);
+#ifdef USE_KDE
+  return "KDE4 based GUI";
+#else
+  return "Qt4 based GUI";
+#endif
+}
+
+std::string QtGuiPlugin::usage() const
+{
+  static QString usage = QString(
+    "Usage:  Licq [options] -p %1 -- [-hdD] [-s skinname] [-i iconpack] [-e extendediconpack]"
+    "\n"
+    " -h : this help screen\n"
+    " -d : start hidden (dock icon only)\n"
+    " -D : disable dock icon for this session (does not affect dock icon settings)\n"
+    " -s : set the skin to use (must be in %2%3%4)\n"
+    " -i : set the icons to use (must be in %2%3%5)\n"
+    " -e : set the extended icons to use (must be in %2%3%6)"
+    )
+    .arg(PLUGIN_NAME)
+      .arg(Licq::gDaemon.baseDir().c_str())
+    .arg(QTGUI_DIR)
+    .arg(SKINS_DIR)
+    .arg(ICONS_DIR)
+    .arg(EXTICONS_DIR)
+    ;
+
+  return usage.toLatin1().constData();
+}
+
+std::string QtGuiPlugin::configFile() const
+{
+  return QTGUI_CONFIGFILE;
+}
+
+bool QtGuiPlugin::isEnabled() const
+{
+  // Always enabled
+  return true;
+}
+
+void QtGuiPlugin::enable()
+{
+  // Always enabled
+}
+
+void QtGuiPlugin::disable()
+{
+  // Always enabled
+}
+
+bool QtGuiPlugin::wantSignal(unsigned long signalType) const
+{
+  return (signalType & Licq::PluginSignal::SignalAll) != 0;
+}
+
+void QtGuiPlugin::pushSignal(Licq::PluginSignal* signal)
+{
+  emit pluginSignal(signal);
+}
+
+void QtGuiPlugin::pushEvent(Licq::Event* event)
+{
+  emit pluginEvent(event);
+}
+
+Licq::GeneralPluginInterface* QtGuiPluginFactory()
+{
+  return new LicqQtGui::QtGuiPlugin;
 }
 
 LICQ_GENERAL_PLUGIN_DATA(&QtGuiPluginFactory);

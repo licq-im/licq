@@ -376,15 +376,16 @@ static int fifo_sms(int argc, const char *const *argv)
     return 0;
   }
 
-  Licq::ProtocolPlugin::Ptr icqProtocol(gPluginManager.getProtocolPlugin(LICQ_PPID));
-  if (icqProtocol == NULL)
-    return -1;
-
   if (userId.protocolId() != LICQ_PPID )
   {
     gLog.info(tr("%s `%s': bad protocol. ICQ only allowed"), L_FIFOxSTR, argv[0]);
     return 0;
   }
+
+  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (!icq)
+    return -1;
 
   string number;
   {
@@ -395,7 +396,7 @@ static int fifo_sms(int argc, const char *const *argv)
     }
   }
   if (!number.empty())
-    dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->icqSendSms(userId, number, gTranslator.toUtf8(argv[2]));
+    icq->icqSendSms(userId, number, gTranslator.toUtf8(argv[2]));
   else
     gLog.error(tr("Unable to send SMS to %s, no SMS number found"), userId.accountId().c_str());
 
@@ -419,12 +420,12 @@ static int fifo_sms_number(int argc, const char *const *argv)
     ownerId = (*ownerList->begin())->id();
   }
 
-  Licq::ProtocolPlugin::Ptr icqProtocol(gPluginManager.getProtocolPlugin(LICQ_PPID));
-  if (icqProtocol == NULL)
+  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  if (!icq)
     return -1;
 
-  dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->icqSendSms(
-      ownerId, argv[1], gTranslator.toUtf8(argv[2]));
+  icq->icqSendSms(ownerId, argv[1], gTranslator.toUtf8(argv[2]));
   return 0;
 }
 
@@ -531,7 +532,8 @@ static int fifo_setpicture(int argc, const char* const* argv)
     }
   }
 
-  Licq::ProtocolPlugin::Ptr icqProtocol(gPluginManager.getProtocolPlugin(LICQ_PPID));
+  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
 
   Licq::OwnerListGuard ownerList(protocolId);
   BOOST_FOREACH(Licq::Owner* owner, **ownerList)
@@ -545,9 +547,9 @@ static int fifo_setpicture(int argc, const char* const* argv)
       o->save(Licq::Owner::SavePictureInfo);
     }
     Licq::gUserManager.notifyUserUpdated(owner->id(), Licq::PluginSignal::UserPicture);
-    if (owner->id().protocolId() == LICQ_PPID && icqProtocol != NULL)
+    if (owner->id().protocolId() == LICQ_PPID && icq)
     {
-      dynamic_cast<Licq::IcqProtocol*>(icqProtocol.get())->icqUpdateInfoTimestamp(
+      icq->icqUpdateInfoTimestamp(
           owner->id(), Licq::IcqProtocol::PluginPicture);
     }
   }

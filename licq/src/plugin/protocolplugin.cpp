@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,62 +17,75 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <licq/plugin/protocolplugininterface.h>
 #include "protocolplugin.h"
 
-#include <licq/thread/mutexlocker.h>
+using namespace LicqDaemon;
 
-using namespace Licq;
-using namespace std;
-
-
-ProtocolPlugin::Private::Private()
+static void destroyProtocolPluginInterface(
+    Licq::ProtocolPluginInterface* plugin)
 {
-  // Empty
+  if (plugin != NULL)
+    plugin->destructor();
 }
 
-
-ProtocolPlugin::ProtocolPlugin(Params& p)
-  : Plugin(p),
-    myPrivate(new Private())
+ProtocolPlugin::ProtocolPlugin(
+    int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
+    Licq::ProtocolPluginInterface* (*factory)())
+  : Plugin(id, lib, thread),
+    myInterface((*factory)(), &destroyProtocolPluginInterface)
 {
-  // Empty
+  if (!myInterface)
+    throw std::exception();
+}
+
+ProtocolPlugin::ProtocolPlugin(
+    int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
+    boost::shared_ptr<Licq::ProtocolPluginInterface> interface)
+  : Plugin(id, lib, thread),
+    myInterface(interface)
+{
+  if (!myInterface)
+    throw std::exception();
 }
 
 ProtocolPlugin::~ProtocolPlugin()
 {
-  delete myPrivate;
+  // Empty
 }
 
-void ProtocolPlugin::pushSignal(ProtocolSignal* signal)
+unsigned long ProtocolPlugin::protocolId() const
 {
-  LICQ_D();
-  MutexLocker locker(d->mySignalsMutex);
-  d->mySignals.push(signal);
-  notify(PipeSignal);
+  return myInterface->protocolId();
 }
 
-ProtocolSignal* ProtocolPlugin::popSignal()
+unsigned long ProtocolPlugin::capabilities() const
 {
-  LICQ_D();
-  MutexLocker locker(d->mySignalsMutex);
-  if (!d->mySignals.empty())
-  {
-    ProtocolSignal* signal = d->mySignals.front();
-    d->mySignals.pop();
-    return signal;
-  }
-  return NULL;
+  return myInterface->capabilities();
 }
 
-User* ProtocolPlugin::createUser(const UserId& /* id */, bool /* temporary */)
+void ProtocolPlugin::pushSignal(Licq::ProtocolSignal* signal)
 {
-  // Only UserManager is allowed to create instances of Licq::User so either
-  // we need to call a UserManager function to create a default user from here
-  // or we just return NULL back to the UserManager to make it create it itself
-  return NULL;
+  myInterface->pushSignal(signal);
 }
 
-Owner* ProtocolPlugin::createOwner(const UserId& /* id */)
+Licq::User* ProtocolPlugin::createUser(const Licq::UserId& id, bool temporary)
 {
-  return NULL;
+  return myInterface->createUser(id, temporary);
+}
+
+Licq::Owner* ProtocolPlugin::createOwner(const Licq::UserId& id)
+{
+  return myInterface->createOwner(id);
+}
+
+boost::shared_ptr<Licq::PluginInterface> ProtocolPlugin::interface()
+{
+  return myInterface;
+}
+
+boost::shared_ptr<const Licq::PluginInterface>
+ProtocolPlugin::interface() const
+{
+  return myInterface;
 }
