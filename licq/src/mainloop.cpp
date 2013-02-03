@@ -123,8 +123,7 @@ void MainLoop::run()
       if (c != fdcount)
       {
         // Reallocate pfd
-        if (pfds != NULL)
-          delete [] pfds;
+        delete[] pfds;
         if (c > 0)
           pfds = new struct pollfd[c];
         else
@@ -241,6 +240,8 @@ void MainLoop::run()
       }
     }
   }
+
+  delete[] pfds;
 }
 
 void MainLoop::quit()
