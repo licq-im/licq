@@ -24,6 +24,7 @@
 
 #include <cstdio>
 #include <QApplication>
+#include <QMetaType>
 #include <QString>
 
 #ifdef USE_KDE
@@ -43,6 +44,9 @@
 #include "core/gui-defines.h"
 #include "core/licqgui.h"
 
+Q_DECLARE_METATYPE(boost::shared_ptr<Licq::PluginSignal>);
+Q_DECLARE_METATYPE(boost::shared_ptr<Licq::Event>);
+
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::QtGuiPlugin */
 
@@ -54,6 +58,9 @@ QtGuiPlugin::QtGuiPlugin()
 {
   assert(gQtGuiPlugin == NULL);
   gQtGuiPlugin = this;
+
+  qRegisterMetaType< boost::shared_ptr<Licq::PluginSignal> >();
+  qRegisterMetaType< boost::shared_ptr<Licq::Event> >();
 }
 
 std::string QtGuiPlugin::name() const
@@ -199,12 +206,12 @@ bool QtGuiPlugin::wantSignal(unsigned long signalType) const
   return (signalType & Licq::PluginSignal::SignalAll) != 0;
 }
 
-void QtGuiPlugin::pushSignal(Licq::PluginSignal* signal)
+void QtGuiPlugin::pushSignal(boost::shared_ptr<Licq::PluginSignal> signal)
 {
   emit pluginSignal(signal);
 }
 
-void QtGuiPlugin::pushEvent(Licq::Event* event)
+void QtGuiPlugin::pushEvent(boost::shared_ptr<Licq::Event> event)
 {
   emit pluginEvent(event);
 }

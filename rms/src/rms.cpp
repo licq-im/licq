@@ -398,23 +398,19 @@ void CLicqRMS::ProcessPipe()
   switch (buf)
   {
     case PipeSignal:
-    {
-      Licq::PluginSignal* s = popSignal();
       if (m_bEnabled)
-        ProcessSignal(s);
-      delete s;
+        ProcessSignal(popSignal().get());
+      else
+        popSignal();
       break;
-    }
 
     case PipeEvent:
-    {
       // An event is pending (should never happen)
-      Licq::Event* e = popEvent();
       if (m_bEnabled)
-        ProcessEvent(e);
-      delete e;
+        ProcessEvent(popEvent().get());
+      else
+        popEvent();
       break;
-    }
 
     case PipeShutdown:
       gLog.info("Exiting");

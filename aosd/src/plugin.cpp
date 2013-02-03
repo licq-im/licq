@@ -67,22 +67,14 @@ int AosdPlugin::run()
     switch (msg)
     {
       case PipeSignal:
-        {
-          Licq::PluginSignal* sig = popSignal();
-          if (sig != NULL)
-          {
-            if (!myBlocked)
-              iface->processSignal(sig);
-            delete sig;
-          }
-        }
+        if (!myBlocked)
+          iface->processSignal(popSignal().get());
+        else
+          popSignal();
         break;
 
       case PipeEvent:
-        {
-          Licq::Event* ev = popEvent();
-          delete ev;
-        }
+        popEvent();
         break;
 
       case PipeShutdown:

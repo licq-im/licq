@@ -54,8 +54,8 @@ public:
   void disable();
 
   bool wantSignal(unsigned long signalType) const;
-  void pushSignal(Licq::PluginSignal* signal);
-  void pushEvent(Licq::Event* event);
+  void pushSignal(boost::shared_ptr<Licq::PluginSignal> signal);
+  void pushEvent(boost::shared_ptr<Licq::Event> event);
 
 protected:
   // From Plugin

@@ -258,44 +258,34 @@ void CLicqForwarder::ProcessPipe()
   switch (buf[0])
   {
     case PipeSignal:
-    {
-      Licq::PluginSignal* s = popSignal();
       if (myIsEnabled)
-        ProcessSignal(s);
-      delete s;
+        ProcessSignal(popSignal().get());
+      else
+        popSignal();
       break;
-    }
 
     case PipeEvent:
-    {
       // An event is pending (should never happen)
-      Licq::Event* e = popEvent();
       if (myIsEnabled)
-        ProcessEvent(e);
-      delete e;
+        ProcessEvent(popEvent().get());
+      else
+        popEvent();
       break;
-    }
 
     case PipeShutdown:
-    {
-    gLog.info("Exiting forwarder");
-    m_bExit = true;
-    break;
-  }
+      gLog.info("Exiting forwarder");
+      m_bExit = true;
+      break;
 
     case PipeDisable:
-    {
-    gLog.info("Disabling forwarder");
+      gLog.info("Disabling forwarder");
       myIsEnabled = false;
       break;
-    }
 
     case PipeEnable:
-    {
-    gLog.info("Enabling forwarder");
+      gLog.info("Enabling forwarder");
       myIsEnabled = true;
       break;
-    }
 
   default:
     gLog.warning("Unknown notification type from daemon: %c", buf[0]);

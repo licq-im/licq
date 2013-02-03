@@ -103,36 +103,42 @@ TEST_F(GeneralPluginHelperFixture, popEmpty)
   EXPECT_TRUE(helper.popEvent() == NULL);
 }
 
+static void NullDeleter(void*) { /* Empty */ }
+
 TEST_F(GeneralPluginHelperFixture, pushPopSignal)
 {
   using Licq::PluginSignal;
+  using boost::shared_ptr;
+
   PluginSignal* signal1 = reinterpret_cast<PluginSignal*>(10);
   PluginSignal* signal2 = reinterpret_cast<PluginSignal*>(11);
 
-  helper.pushSignal(signal1);
-  helper.pushSignal(signal2);
+  helper.pushSignal(shared_ptr<PluginSignal>(signal1, &NullDeleter));
+  helper.pushSignal(shared_ptr<PluginSignal>(signal2, &NullDeleter));
 
   EXPECT_EQ('S', getPipeChar());
-  EXPECT_EQ(signal1, helper.popSignal());
+  EXPECT_EQ(signal1, helper.popSignal().get());
 
   EXPECT_EQ('S', getPipeChar());
-  EXPECT_EQ(signal2, helper.popSignal());
+  EXPECT_EQ(signal2, helper.popSignal().get());
 }
 
 TEST_F(GeneralPluginHelperFixture, pushPopEvent)
 {
   using Licq::Event;
+  using boost::shared_ptr;
+
   Event* event1 = reinterpret_cast<Event*>(10);
   Event* event2 = reinterpret_cast<Event*>(11);
 
-  helper.pushEvent(event1);
-  helper.pushEvent(event2);
+  helper.pushEvent(shared_ptr<Event>(event1, &NullDeleter));
+  helper.pushEvent(shared_ptr<Event>(event2, &NullDeleter));
 
   EXPECT_EQ('E', getPipeChar());
-  EXPECT_EQ(event1, helper.popEvent());
+  EXPECT_EQ(event1, helper.popEvent().get());
 
   EXPECT_EQ('E', getPipeChar());
-  EXPECT_EQ(event2, helper.popEvent());
+  EXPECT_EQ(event2, helper.popEvent().get());
 }
 
 } // namespace LicqTest

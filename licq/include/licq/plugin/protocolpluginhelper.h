@@ -47,7 +47,7 @@ public:
   void shutdown();
 
   /// Queues the signal and writes PipeSignal to the pipe
-  void pushSignal(ProtocolSignal* signal);
+  void pushSignal(boost::shared_ptr<ProtocolSignal> signal);
 
   /// Returns NULL to make UserManager create a Licq::User
   User* createUser(const UserId& id, bool temporary);
@@ -72,12 +72,11 @@ protected:
    * Called from protocol plugin
    *
    * The plugin must call this function to fetch a signal after getting
-   * notified via its pipe. The signal must be deleted by the plugin after
-   * processing.
+   * notified via its pipe.
    *
    * @return The oldest signal on the queue, or NULL if queue is empty
    */
-  ProtocolSignal* popSignal();
+  boost::shared_ptr<ProtocolSignal> popSignal();
 
 private:
   LICQ_DECLARE_PRIVATE();

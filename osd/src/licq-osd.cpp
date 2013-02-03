@@ -338,16 +338,10 @@ int OsdPlugin::run()
 	{
       case PipeSignal:
       {
-		// read the actual signal from the daemon
-        Licq::PluginSignal* s = popSignal();
-		if (s)
-		{
-		    ProcessSignal(s);
-		    delete s;
-		    s=0;
-		}
-		break;
-	    }
+        // read the actual signal from the daemon
+        ProcessSignal(popSignal().get());
+        break;
+      }
 
 	    // An event is pending - skip it - shouldnt happen
 	    // events are responses to some requests to the licq daemon
@@ -355,8 +349,7 @@ int OsdPlugin::run()
       case PipeEvent:
       {
         gLog.warning("Event received - should not happen in this plugin");
-        Licq::Event* e = popEvent();
-        delete e;
+        popEvent();
         break;
       }
 	    // shutdown command from daemon

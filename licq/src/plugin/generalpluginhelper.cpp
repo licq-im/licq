@@ -40,10 +40,10 @@ public:
   Licq::Pipe myPipe;
   unsigned long mySignalMask;
 
-  std::queue<Licq::PluginSignal*> mySignals;
+  std::queue< boost::shared_ptr<Licq::PluginSignal> > mySignals;
   Licq::Mutex mySignalsMutex;
 
-  std::queue<Licq::Event*> myEvents;
+  std::queue< boost::shared_ptr<Licq::Event> > myEvents;
   Licq::Mutex myEventsMutex;
 };
 
@@ -81,7 +81,7 @@ bool GeneralPluginHelper::wantSignal(unsigned long signalType) const
   return (signalType & d->mySignalMask);
 }
 
-void GeneralPluginHelper::pushSignal(PluginSignal* signal)
+void GeneralPluginHelper::pushSignal(boost::shared_ptr<PluginSignal> signal)
 {
   LICQ_D();
   MutexLocker locker(d->mySignalsMutex);
@@ -89,7 +89,7 @@ void GeneralPluginHelper::pushSignal(PluginSignal* signal)
   d->notify(PipeSignal);
 }
 
-void GeneralPluginHelper::pushEvent(Event* event)
+void GeneralPluginHelper::pushEvent(boost::shared_ptr<Event> event)
 {
   LICQ_D();
   MutexLocker locker(d->myEventsMutex);
@@ -120,28 +120,28 @@ void GeneralPluginHelper::setSignalMask(unsigned long signalMask)
   d->mySignalMask = signalMask;
 }
 
-Licq::PluginSignal* GeneralPluginHelper::popSignal()
+boost::shared_ptr<Licq::PluginSignal> GeneralPluginHelper::popSignal()
 {
   LICQ_D();
   MutexLocker locker(d->mySignalsMutex);
   if (!d->mySignals.empty())
   {
-    PluginSignal* signal = d->mySignals.front();
+    boost::shared_ptr<PluginSignal> signal = d->mySignals.front();
     d->mySignals.pop();
     return signal;
   }
-  return NULL;
+  return boost::shared_ptr<PluginSignal>();
 }
 
-Licq::Event* GeneralPluginHelper::popEvent()
+boost::shared_ptr<Licq::Event> GeneralPluginHelper::popEvent()
 {
   LICQ_D();
   MutexLocker locker(d->myEventsMutex);
   if (!d->myEvents.empty())
   {
-    Event* event = d->myEvents.front();
+    boost::shared_ptr<Event> event = d->myEvents.front();
     d->myEvents.pop();
     return event;
   }
-  return NULL;
+  return boost::shared_ptr<Event>();
 }

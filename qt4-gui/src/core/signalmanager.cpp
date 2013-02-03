@@ -45,10 +45,11 @@ SignalManager::SignalManager()
   assert(gGuiSignalManager == NULL);
   gGuiSignalManager = this;
 
-  connect(gQtGuiPlugin, SIGNAL(pluginSignal(Licq::PluginSignal*)),
-          this, SLOT(processSignal(Licq::PluginSignal*)));
-  connect(gQtGuiPlugin, SIGNAL(pluginEvent(Licq::Event*)),
-          this, SLOT(processEvent(Licq::Event*)));
+  connect(gQtGuiPlugin,
+          SIGNAL(pluginSignal(boost::shared_ptr<Licq::PluginSignal>)),
+          this, SLOT(processSignal(boost::shared_ptr<Licq::PluginSignal>)));
+  connect(gQtGuiPlugin, SIGNAL(pluginEvent(boost::shared_ptr<Licq::Event>)),
+          this, SLOT(processEvent(boost::shared_ptr<Licq::Event>)));
   connect(gQtGuiPlugin, SIGNAL(pluginShutdown()), this, SLOT(shutdown()));
 }
 
@@ -57,7 +58,7 @@ SignalManager::~SignalManager()
   gGuiSignalManager = NULL;
 }
 
-void SignalManager::processSignal(Licq::PluginSignal* sig)
+void SignalManager::processSignal(boost::shared_ptr<Licq::PluginSignal> sig)
 {
   const Licq::UserId& userId = sig->userId();
   unsigned long ppid = userId.protocolId();
@@ -160,17 +161,14 @@ void SignalManager::processSignal(Licq::PluginSignal* sig)
           sig->signal());
       break;
   }
-
-  delete sig;
 }
 
-void SignalManager::processEvent(Licq::Event* ev)
+void SignalManager::processEvent(boost::shared_ptr<Licq::Event> ev)
 {
   if (ev->command() == Licq::Event::CommandSearch)
-    emit searchResult(ev);
+    emit searchResult(ev.get());
   else
-    emit doneUserFcn(ev);
-  delete ev;
+    emit doneUserFcn(ev.get());
 }
 
 void SignalManager::shutdown()

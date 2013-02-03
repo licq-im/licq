@@ -64,7 +64,7 @@ unsigned long ProtocolPlugin::capabilities() const
   return myInterface->capabilities();
 }
 
-void ProtocolPlugin::pushSignal(Licq::ProtocolSignal* signal)
+void ProtocolPlugin::pushSignal(boost::shared_ptr<Licq::ProtocolSignal> signal)
 {
   myInterface->pushSignal(signal);
 }

@@ -226,23 +226,19 @@ void CLicqAutoReply::ProcessPipe()
   switch (buf[0])
   {
     case PipeSignal:
-    {
-      Licq::PluginSignal* s = popSignal();
       if (myIsEnabled)
-        ProcessSignal(s);
-      delete s;
+        ProcessSignal(popSignal().get());
+      else
+        popSignal();
       break;
-    }
 
     case PipeEvent:
-    {
       // An event is pending (should never happen)
-      Licq::Event* e = popEvent();
       if (myIsEnabled)
-        ProcessEvent(e);
-      delete e;
+        ProcessEvent(popEvent().get());
+      else
+        popEvent();
       break;
-    }
 
     case PipeShutdown:
     {

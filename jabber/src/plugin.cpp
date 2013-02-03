@@ -107,9 +107,7 @@ void Plugin::rawFileEvent(int fd, int /*revents*/)
   {
     case PipeSignal:
     {
-      Licq::ProtocolSignal* signal = popSignal();
-      processSignal(signal);
-      delete signal;
+      processSignal(popSignal().get());
       break;
     }
     case PipeShutdown:

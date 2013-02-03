@@ -403,8 +403,7 @@ void CMSN::rawFileEvent(int fd, int /*revents*/)
   {
     case PipeSignal:
     {
-      Licq::ProtocolSignal* s = popSignal();
-      ProcessSignal(s);
+      ProcessSignal(popSignal().get());
       break;
     }
 
@@ -418,10 +417,7 @@ void CMSN::rawFileEvent(int fd, int /*revents*/)
 void CMSN::ProcessSignal(Licq::ProtocolSignal* s)
 {
   if (myServerSocket == NULL && s->signal() != Licq::ProtocolSignal::SignalLogon)
-  {
-    delete s;
     return;
-  }
 
   switch (s->signal())
   {
@@ -517,8 +513,6 @@ void CMSN::ProcessSignal(Licq::ProtocolSignal* s)
       break;
     }
   }
-
-  delete s;
 }
 
 void CMSN::socketEvent(Licq::INetSocket* inetSocket, int /*revents*/)

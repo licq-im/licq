@@ -25,6 +25,8 @@
 
 #include "plugininterface.h"
 
+#include <boost/shared_ptr.hpp>
+
 namespace Licq
 {
 
@@ -66,20 +68,18 @@ public:
   /**
    * Pushes a signal to the plugin.
    *
-   * The plugin takes ownership of the @a signal and is responsible for
-   * deleting it when done with it. The plugin should also take care not to
-   * block the caller (i.e. only queue the signal for later processing).
+   * The plugin should take care not to block the caller (i.e. only queue the
+   * signal for later processing).
    */
-  virtual void pushSignal(PluginSignal* signal) = 0;
+  virtual void pushSignal(boost::shared_ptr<PluginSignal> signal) = 0;
 
   /**
    * Pushes an event to the plugin.
    *
-   * The plugin takes ownership of the @a event and is responsible for
-   * deleting it when done with it. The plugin should also take care not to
-   * block the caller (i.e. only queue the event for later processing).
+   * The plugin should take care not to block the caller (i.e. only queue the
+   * event for later processing).
    */
-  virtual void pushEvent(Event* event) = 0;
+  virtual void pushEvent(boost::shared_ptr<Event> event) = 0;
 
 protected:
   virtual ~GeneralPluginInterface() { /* Empty */ }
