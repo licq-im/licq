@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2006-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2006-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,8 +105,9 @@ void Support::setWidgetProps(QWidget* widget, const QString& name)
       return;
 
     XFree(classHint.res_name);
-    classHint.res_name = name.toLocal8Bit().data();
+    QByteArray local8Bit = name.toLocal8Bit();
 
+    classHint.res_name = local8Bit.data();
     XSetClassHint(display, win, &classHint);
 
     XFree(classHint.res_class);
