@@ -46,10 +46,11 @@ SignalManager::SignalManager()
   gGuiSignalManager = this;
 
   connect(gQtGuiPlugin, SIGNAL(pluginSignal(Licq::PluginSignal*)),
-          this, SLOT(processSignal(Licq::PluginSignal*)));
+      this, SLOT(processSignal(Licq::PluginSignal*)), Qt::QueuedConnection);
   connect(gQtGuiPlugin, SIGNAL(pluginEvent(Licq::Event*)),
-          this, SLOT(processEvent(Licq::Event*)));
-  connect(gQtGuiPlugin, SIGNAL(pluginShutdown()), this, SLOT(shutdown()));
+      this, SLOT(processEvent(Licq::Event*)), Qt::QueuedConnection);
+  connect(gQtGuiPlugin, SIGNAL(pluginShutdown()), this, SLOT(shutdown()),
+      Qt::QueuedConnection);
 }
 
 SignalManager::~SignalManager()
