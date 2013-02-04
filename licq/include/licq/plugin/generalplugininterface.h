@@ -71,7 +71,7 @@ public:
    * The plugin should take care not to block the caller (i.e. only queue the
    * signal for later processing).
    */
-  virtual void pushSignal(boost::shared_ptr<PluginSignal> signal) = 0;
+  virtual void pushSignal(boost::shared_ptr<const PluginSignal> signal) = 0;
 
   /**
    * Pushes an event to the plugin.
@@ -79,7 +79,7 @@ public:
    * The plugin should take care not to block the caller (i.e. only queue the
    * event for later processing).
    */
-  virtual void pushEvent(boost::shared_ptr<Event> event) = 0;
+  virtual void pushEvent(boost::shared_ptr<const Event> event) = 0;
 
 protected:
   virtual ~GeneralPluginInterface() { /* Empty */ }

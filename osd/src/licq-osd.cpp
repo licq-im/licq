@@ -92,8 +92,7 @@ struct Config {
 
 
 // some forward declarations
-void ProcessSignal(Licq::PluginSignal* s);
-void ProcessEvent(Licq::Event* e);
+void ProcessSignal(const Licq::PluginSignal* s);
 #ifdef CP_TRANSLATE
     const char *get_iconv_encoding_name(const char *licq_encoding_name);
 string my_translate(const UserId& userId, const string& msg, const char* userenc);
@@ -388,7 +387,7 @@ void OsdPlugin::destructor()
   delete this;
 }
 
-void ProcessSignal(Licq::PluginSignal* s)
+void ProcessSignal(const Licq::PluginSignal* s)
 {
     string username;
     bool notify=false;

@@ -270,7 +270,7 @@ void CLicqAutoReply::ProcessPipe()
 /*---------------------------------------------------------------------------
  * CLicqAutoReply::ProcessSignal
  *-------------------------------------------------------------------------*/
-void CLicqAutoReply::ProcessSignal(Licq::PluginSignal* s)
+void CLicqAutoReply::ProcessSignal(const Licq::PluginSignal* s)
 {
   switch (s->signal())
   {
@@ -288,7 +288,7 @@ void CLicqAutoReply::ProcessSignal(Licq::PluginSignal* s)
 /*---------------------------------------------------------------------------
  * CLicqAutoReply::ProcessEvent
  *-------------------------------------------------------------------------*/
-void CLicqAutoReply::ProcessEvent(Licq::Event* e)
+void CLicqAutoReply::ProcessEvent(const Licq::Event* e)
 {
   const Licq::UserEvent* user_event;
 

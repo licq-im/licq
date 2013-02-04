@@ -46,7 +46,8 @@ public:
 
   MOCK_CONST_METHOD0(protocolId, unsigned long());
   MOCK_CONST_METHOD0(capabilities, unsigned long());
-  MOCK_METHOD1(pushSignal, void(boost::shared_ptr<Licq::ProtocolSignal> signal));
+  MOCK_METHOD1(pushSignal,
+               void(boost::shared_ptr<const Licq::ProtocolSignal> signal));
   MOCK_METHOD2(createUser, Licq::User*(const Licq::UserId& id, bool temporary));
   MOCK_METHOD1(createOwner, Licq::Owner*(const Licq::UserId& id));
 };
@@ -78,7 +79,7 @@ struct ProtocolPluginFixture : public ::testing::Test
 
 TEST_F(ProtocolPluginFixture, callApiFunctions)
 {
-  boost::shared_ptr<Licq::ProtocolSignal> signal(
+  boost::shared_ptr<const Licq::ProtocolSignal> signal(
       reinterpret_cast<Licq::ProtocolSignal*>(123), &NullDeleter);
   Licq::UserId user;
   Licq::UserId owner;

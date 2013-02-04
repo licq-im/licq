@@ -471,7 +471,7 @@ void CLicqRMS::ProcessLog()
 /*---------------------------------------------------------------------------
  * CLicqRMS::ProcessSignal
  *-------------------------------------------------------------------------*/
-void CLicqRMS::ProcessSignal(Licq::PluginSignal* s)
+void CLicqRMS::ProcessSignal(const Licq::PluginSignal* s)
 {
   switch (s->signal())
   {
@@ -518,12 +518,13 @@ void CLicqRMS::ProcessSignal(Licq::PluginSignal* s)
 /*---------------------------------------------------------------------------
  * CLicqRMS::ProcessEvent
  *-------------------------------------------------------------------------*/
-void CLicqRMS::ProcessEvent(Licq::Event* e)
+void CLicqRMS::ProcessEvent(const Licq::Event* e)
 {
   ClientList ::iterator iter;
   for (iter = clients.begin(); iter != clients.end(); iter++)
   {
-    if ((*iter)->ProcessEvent(e)) break;
+    if ((*iter)->ProcessEvent(e))
+      break;
   }
 }
 
@@ -627,7 +628,7 @@ void CRMSClient::ParseUser(const string& strData)
 /*---------------------------------------------------------------------------
  * CRMSClient::ProcessEvent
  *-------------------------------------------------------------------------*/
-bool CRMSClient::ProcessEvent(Licq::Event* e)
+bool CRMSClient::ProcessEvent(const Licq::Event* e)
 {
   TagList::iterator iter;
   for (iter = tags.begin(); iter != tags.end(); iter++)

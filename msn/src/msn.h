@@ -115,7 +115,7 @@ private:
   void socketEvent(Licq::INetSocket* inetSocket, int revents);
   void timeoutEvent(int id);
 
-  void ProcessSignal(Licq::ProtocolSignal* s);
+  void ProcessSignal(const Licq::ProtocolSignal* s);
   void ProcessPipe();
   void ProcessServerPacket(CMSNBuffer *);
   void ProcessSSLServerPacket(CMSNBuffer &);

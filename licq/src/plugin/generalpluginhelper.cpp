@@ -40,10 +40,10 @@ public:
   Licq::Pipe myPipe;
   unsigned long mySignalMask;
 
-  std::queue< boost::shared_ptr<Licq::PluginSignal> > mySignals;
+  std::queue< boost::shared_ptr<const Licq::PluginSignal> > mySignals;
   Licq::Mutex mySignalsMutex;
 
-  std::queue< boost::shared_ptr<Licq::Event> > myEvents;
+  std::queue< boost::shared_ptr<const Licq::Event> > myEvents;
   Licq::Mutex myEventsMutex;
 };
 
@@ -81,7 +81,8 @@ bool GeneralPluginHelper::wantSignal(unsigned long signalType) const
   return (signalType & d->mySignalMask);
 }
 
-void GeneralPluginHelper::pushSignal(boost::shared_ptr<PluginSignal> signal)
+void GeneralPluginHelper::pushSignal(
+    boost::shared_ptr<const PluginSignal> signal)
 {
   LICQ_D();
   MutexLocker locker(d->mySignalsMutex);
@@ -89,7 +90,7 @@ void GeneralPluginHelper::pushSignal(boost::shared_ptr<PluginSignal> signal)
   d->notify(PipeSignal);
 }
 
-void GeneralPluginHelper::pushEvent(boost::shared_ptr<Event> event)
+void GeneralPluginHelper::pushEvent(boost::shared_ptr<const Event> event)
 {
   LICQ_D();
   MutexLocker locker(d->myEventsMutex);
@@ -120,28 +121,28 @@ void GeneralPluginHelper::setSignalMask(unsigned long signalMask)
   d->mySignalMask = signalMask;
 }
 
-boost::shared_ptr<Licq::PluginSignal> GeneralPluginHelper::popSignal()
+boost::shared_ptr<const Licq::PluginSignal> GeneralPluginHelper::popSignal()
 {
   LICQ_D();
   MutexLocker locker(d->mySignalsMutex);
   if (!d->mySignals.empty())
   {
-    boost::shared_ptr<PluginSignal> signal = d->mySignals.front();
+    boost::shared_ptr<const PluginSignal> signal = d->mySignals.front();
     d->mySignals.pop();
     return signal;
   }
-  return boost::shared_ptr<PluginSignal>();
+  return boost::shared_ptr<const PluginSignal>();
 }
 
-boost::shared_ptr<Licq::Event> GeneralPluginHelper::popEvent()
+boost::shared_ptr<const Licq::Event> GeneralPluginHelper::popEvent()
 {
   LICQ_D();
   MutexLocker locker(d->myEventsMutex);
   if (!d->myEvents.empty())
   {
-    boost::shared_ptr<Event> event = d->myEvents.front();
+    boost::shared_ptr<const Event> event = d->myEvents.front();
     d->myEvents.pop();
     return event;
   }
-  return boost::shared_ptr<Event>();
+  return boost::shared_ptr<const Event>();
 }

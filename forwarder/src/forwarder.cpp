@@ -296,7 +296,7 @@ void CLicqForwarder::ProcessPipe()
 /*---------------------------------------------------------------------------
  * CLicqForwarder::ProcessSignal
  *-------------------------------------------------------------------------*/
-void CLicqForwarder::ProcessSignal(Licq::PluginSignal* s)
+void CLicqForwarder::ProcessSignal(const Licq::PluginSignal* s)
 {
   switch (s->signal())
   {
@@ -317,7 +317,7 @@ void CLicqForwarder::ProcessSignal(Licq::PluginSignal* s)
 /*---------------------------------------------------------------------------
  * CLicqForwarder::ProcessEvent
  *-------------------------------------------------------------------------*/
-void CLicqForwarder::ProcessEvent(Licq::Event* /* e */)
+void CLicqForwarder::ProcessEvent(const Licq::Event* /* e */)
 {
 /*  switch (e->m_nCommand)
   {

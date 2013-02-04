@@ -146,7 +146,7 @@ bool IcqProtocolPlugin::isOwnerOnline(const Licq::UserId& userId)
 void IcqProtocolPlugin::pushSignal(Licq::ProtocolSignal* signal)
 {
   ProtocolPluginHelper::pushSignal(
-      boost::shared_ptr<Licq::ProtocolSignal>(signal));
+      boost::shared_ptr<const Licq::ProtocolSignal>(signal));
 }
 
 unsigned long IcqProtocolPlugin::icqSendContactList(const Licq::UserId& userId,

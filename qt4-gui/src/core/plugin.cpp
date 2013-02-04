@@ -44,8 +44,8 @@
 #include "core/gui-defines.h"
 #include "core/licqgui.h"
 
-Q_DECLARE_METATYPE(boost::shared_ptr<Licq::PluginSignal>);
-Q_DECLARE_METATYPE(boost::shared_ptr<Licq::Event>);
+Q_DECLARE_METATYPE(boost::shared_ptr<const Licq::PluginSignal>);
+Q_DECLARE_METATYPE(boost::shared_ptr<const Licq::Event>);
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::QtGuiPlugin */
@@ -59,8 +59,8 @@ QtGuiPlugin::QtGuiPlugin()
   assert(gQtGuiPlugin == NULL);
   gQtGuiPlugin = this;
 
-  qRegisterMetaType< boost::shared_ptr<Licq::PluginSignal> >();
-  qRegisterMetaType< boost::shared_ptr<Licq::Event> >();
+  qRegisterMetaType< boost::shared_ptr<const Licq::PluginSignal> >();
+  qRegisterMetaType< boost::shared_ptr<const Licq::Event> >();
 }
 
 std::string QtGuiPlugin::name() const
@@ -206,12 +206,13 @@ bool QtGuiPlugin::wantSignal(unsigned long signalType) const
   return (signalType & Licq::PluginSignal::SignalAll) != 0;
 }
 
-void QtGuiPlugin::pushSignal(boost::shared_ptr<Licq::PluginSignal> signal)
+void QtGuiPlugin::pushSignal(
+    boost::shared_ptr<const Licq::PluginSignal> signal)
 {
   emit pluginSignal(signal);
 }
 
-void QtGuiPlugin::pushEvent(boost::shared_ptr<Licq::Event> event)
+void QtGuiPlugin::pushEvent(boost::shared_ptr<const Licq::Event> event)
 {
   emit pluginEvent(event);
 }

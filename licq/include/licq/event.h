@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -265,7 +265,7 @@ public:
   ~Event();
 
 protected:
-  Event(ProtocolSignal* ps, ResultType result = ResultSuccess, UserEvent* ue = NULL);
+  Event(const ProtocolSignal* ps, ResultType result = ResultSuccess, UserEvent* ue = NULL);
   Event(pthread_t caller, unsigned long id, int _nSocketDesc, Packet* p, ConnectType _eConnect,
       const UserId& userId = UserId(), UserEvent* e = NULL);
   Event(int _nSocketDesc, Packet* p, ConnectType _eConnect, const UserId& userId = UserId(),

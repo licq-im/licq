@@ -212,7 +212,7 @@ bool IcqProtocol::start()
   return true;
 }
 
-void IcqProtocol::processSignal(Licq::ProtocolSignal* s)
+void IcqProtocol::processSignal(const Licq::ProtocolSignal* s)
 {
   if (s->userId().protocolId() != LICQ_PPID)
     return;
@@ -222,7 +222,8 @@ void IcqProtocol::processSignal(Licq::ProtocolSignal* s)
   {
     case Licq::ProtocolSignal::SignalLogon:
     {
-      Licq::ProtoLogonSignal* sig = dynamic_cast<Licq::ProtoLogonSignal*>(s);
+      const Licq::ProtoLogonSignal* sig =
+          dynamic_cast<const Licq::ProtoLogonSignal*>(s);
       logon(s->userId(), sig->status());
       break;
     }
@@ -231,7 +232,8 @@ void IcqProtocol::processSignal(Licq::ProtocolSignal* s)
       break;
     case Licq::ProtocolSignal::SignalChangeStatus:
     {
-      Licq::ProtoChangeStatusSignal* sig = dynamic_cast<Licq::ProtoChangeStatusSignal*>(s);
+      const Licq::ProtoChangeStatusSignal* sig =
+          dynamic_cast<const Licq::ProtoChangeStatusSignal*>(s);
       setStatus(sig->status());
       break;
     }
@@ -249,11 +251,12 @@ void IcqProtocol::processSignal(Licq::ProtocolSignal* s)
       icqChangeGroup(s->userId());
       break;
     case Licq::ProtocolSignal::SignalSendMessage:
-      icqSendMessage(dynamic_cast<Licq::ProtoSendMessageSignal*>(s));
+      icqSendMessage(dynamic_cast<const Licq::ProtoSendMessageSignal*>(s));
       break;
     case Licq::ProtocolSignal::SignalNotifyTyping:
     {
-      Licq::ProtoTypingNotificationSignal* sig = dynamic_cast<Licq::ProtoTypingNotificationSignal*>(s);
+      const Licq::ProtoTypingNotificationSignal* sig =
+          dynamic_cast<const Licq::ProtoTypingNotificationSignal*>(s);
       icqTypingNotification(s->userId(), sig->active());
       break;
     }
@@ -261,7 +264,7 @@ void IcqProtocol::processSignal(Licq::ProtocolSignal* s)
       icqAuthorizeGrant(s);
       break;
     case Licq::ProtocolSignal::SignalRefuseAuth:
-      icqAuthorizeRefuse(dynamic_cast<Licq::ProtoRefuseAuthSignal*>(s));
+      icqAuthorizeRefuse(dynamic_cast<const Licq::ProtoRefuseAuthSignal*>(s));
       break;
     case Licq::ProtocolSignal::SignalRequestInfo:
       icqRequestMetaInfo(s->userId(), s);
@@ -291,14 +294,15 @@ void IcqProtocol::processSignal(Licq::ProtocolSignal* s)
       icqRemoveFromIgnoreList(s->userId());
       break;
     case Licq::ProtocolSignal::SignalSendFile:
-      icqFileTransfer(dynamic_cast<Licq::ProtoSendFileSignal*>(s));
+      icqFileTransfer(dynamic_cast<const Licq::ProtoSendFileSignal*>(s));
       break;
     case Licq::ProtocolSignal::SignalCancelEvent:
       CancelEvent(s->eventId());
       break;
     case Licq::ProtocolSignal::SignalSendReply:
     {
-      Licq::ProtoSendEventReplySignal* sig = dynamic_cast<Licq::ProtoSendEventReplySignal*>(s);
+      const Licq::ProtoSendEventReplySignal* sig =
+          dynamic_cast<const Licq::ProtoSendEventReplySignal*>(s);
       if (sig->accept())
         icqFileTransferAccept(sig);
       else
@@ -313,93 +317,109 @@ void IcqProtocol::processSignal(Licq::ProtocolSignal* s)
       break;
     case Licq::ProtocolSignal::SignalRequestAuth:
     {
-      Licq::ProtoRequestAuthSignal* sig = dynamic_cast<Licq::ProtoRequestAuthSignal*>(s);
+      const Licq::ProtoRequestAuthSignal* sig =
+          dynamic_cast<const Licq::ProtoRequestAuthSignal*>(s);
       icqRequestAuth(s->userId(), sig->message());
       break;
     }
     case Licq::ProtocolSignal::SignalRenameGroup:
-      gIcqProtocol.icqRenameGroup(dynamic_cast<Licq::ProtoRenameGroupSignal*>(s));
+      gIcqProtocol.icqRenameGroup(
+          dynamic_cast<const Licq::ProtoRenameGroupSignal*>(s));
       break;
     case Licq::ProtocolSignal::SignalRemoveGroup:
-      gIcqProtocol.icqRemoveGroup(dynamic_cast<Licq::ProtoRemoveGroupSignal*>(s));
+      gIcqProtocol.icqRemoveGroup(
+          dynamic_cast<const Licq::ProtoRemoveGroupSignal*>(s));
       break;
     case Licq::ProtocolSignal::SignalSendUrl:
-      icqSendUrl(dynamic_cast<Licq::ProtoSendUrlSignal*>(s));
+      icqSendUrl(dynamic_cast<const Licq::ProtoSendUrlSignal*>(s));
       break;
     case Licq::ProtocolSignal::SignalProtocolSpecific:
     {
-      ProtocolSignal* ips = dynamic_cast<ProtocolSignal*>(s);
+      const ProtocolSignal* ips = dynamic_cast<const ProtocolSignal*>(s);
       assert(ips != NULL);
       switch (ips->icqSignal())
       {
         case ProtocolSignal::SignalIcqSendContacts:
-          icqSendContactList(dynamic_cast<ProtoSendContactsSignal*>(ips));
+          icqSendContactList(
+              dynamic_cast<const ProtoSendContactsSignal*>(ips));
           break;
         case ProtocolSignal::SignalIcqSendSms:
-          icqSendSms(dynamic_cast<ProtoSendSmsSignal*>(ips));
+          icqSendSms(dynamic_cast<const ProtoSendSmsSignal*>(ips));
           break;
         case ProtocolSignal::SignalIcqFetchAutoResponse:
           icqFetchAutoResponse(s);
           break;
         case ProtocolSignal::SignalIcqChatRequest:
-          icqChatRequest(dynamic_cast<ProtoChatRequestSignal*>(ips));
+          icqChatRequest(dynamic_cast<const ProtoChatRequestSignal*>(ips));
           break;
         case ProtocolSignal::SignalIcqChatRefuse:
-          icqChatRequestRefuse(dynamic_cast<ProtoChatRefuseSignal*>(ips));
+          icqChatRequestRefuse(
+              dynamic_cast<const ProtoChatRefuseSignal*>(ips));
           break;
         case ProtocolSignal::SignalIcqChatAccept:
-          icqChatRequestAccept(dynamic_cast<ProtoChatAcceptSignal*>(ips));
+          icqChatRequestAccept(
+              dynamic_cast<const ProtoChatAcceptSignal*>(ips));
           break;
         case ProtocolSignal::SignalIcqRequestPlugin:
         {
-          ProtoRequestPluginSignal* sig = dynamic_cast<ProtoRequestPluginSignal*>(ips);
+          const ProtoRequestPluginSignal* sig =
+              dynamic_cast<const ProtoRequestPluginSignal*>(ips);
           icqRequestPluginInfo(s->userId(), sig->type(), sig->direct(), s);
           break;
         }
         case ProtocolSignal::SignalIcqUpdateWork:
-          icqSetWorkInfo(dynamic_cast<ProtoUpdateWorkSignal*>(ips));
+          icqSetWorkInfo(dynamic_cast<const ProtoUpdateWorkSignal*>(ips));
           break;
         case ProtocolSignal::SignalIcqUpdateEmail:
-          icqSetEmailInfo(dynamic_cast<ProtoUpdateEmailSignal*>(ips));
+          icqSetEmailInfo(dynamic_cast<const ProtoUpdateEmailSignal*>(ips));
           break;
         case ProtocolSignal::SignalIcqUpdateMore:
-          icqSetMoreInfo(dynamic_cast<ProtoUpdateMoreSignal*>(ips));
+          icqSetMoreInfo(dynamic_cast<const ProtoUpdateMoreSignal*>(ips));
           break;
         case ProtocolSignal::SignalIcqUpdateSecurity:
-          icqSetSecurityInfo(dynamic_cast<ProtoUpdateSecuritySignal*>(ips));
+          icqSetSecurityInfo(
+              dynamic_cast<const ProtoUpdateSecuritySignal*>(ips));
           break;
         case ProtocolSignal::SignalIcqUpdateInterests:
-          icqSetInterestsInfo(dynamic_cast<ProtoUpdateInterestsSignal*>(ips));
+          icqSetInterestsInfo(
+              dynamic_cast<const ProtoUpdateInterestsSignal*>(ips));
           break;
         case ProtocolSignal::SignalIcqUpdateOrgBack:
-          icqSetOrgBackInfo(dynamic_cast<ProtoUpdateOrgBackSignal*>(ips));
+          icqSetOrgBackInfo(
+              dynamic_cast<const ProtoUpdateOrgBackSignal*>(ips));
           break;
         case ProtocolSignal::SignalIcqUpdateAbout:
-          icqSetAbout(dynamic_cast<ProtoUpdateAboutSignal*>(ips));
+          icqSetAbout(dynamic_cast<const ProtoUpdateAboutSignal*>(ips));
           break;
         case ProtocolSignal::SignalIcqSearchWhitePages:
-          icqSearchWhitePages(dynamic_cast<ProtoSearchWhitePagesSignal*>(ips));
+          icqSearchWhitePages(
+              dynamic_cast<const ProtoSearchWhitePagesSignal*>(ips));
           break;
         case ProtocolSignal::SignalIcqSearchUin:
-          icqSearchByUin(dynamic_cast<ProtoSearchUinSignal*>(ips));
+          icqSearchByUin(dynamic_cast<const ProtoSearchUinSignal*>(ips));
           break;
         case ProtocolSignal::SignalIcqNotifyAdded:
           icqAlertUser(s->userId());
           break;
         case ProtocolSignal::SignalIcqUpdateTimestamp:
-          icqUpdateInfoTimestamp(dynamic_cast<ProtoUpdateTimestampSignal*>(ips));
+          icqUpdateInfoTimestamp(
+              dynamic_cast<const ProtoUpdateTimestampSignal*>(ips));
           break;
         case ProtocolSignal::SignalIcqSetPhoneFollowMe:
-          icqSetPhoneFollowMeStatus((dynamic_cast<ProtoSetPhoneFollowMeSignal*>(ips))->status());
+          icqSetPhoneFollowMeStatus(
+              dynamic_cast<const ProtoSetPhoneFollowMeSignal*>(ips)->status());
           break;
         case ProtocolSignal::SignalIcqUpdateRandomChat:
-          setRandomChatGroup(dynamic_cast<ProtoUpdateRandomChatSignal*>(ips));
+          setRandomChatGroup(
+              dynamic_cast<const ProtoUpdateRandomChatSignal*>(ips));
           break;
         case ProtocolSignal::SignalIcqSearchRandom:
-          randomChatSearch(dynamic_cast<ProtoSearchRandomSignal*>(ips));
+          randomChatSearch(
+              dynamic_cast<const ProtoSearchRandomSignal*>(ips));
           break;
         case ProtocolSignal::SignalIcqUpdateUsers:
-          updateAllUsersInGroup((dynamic_cast<ProtoUpdateUsersSignal*>(ips))->groupId());
+          updateAllUsersInGroup(
+              dynamic_cast<const ProtoUpdateUsersSignal*>(ips)->groupId());
           break;
         default:
           // All of these signals are defined within icq protocol

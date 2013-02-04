@@ -62,10 +62,10 @@ public:
   bool wantSignal(unsigned long signalType) const;
 
   /// Queues the signal and writes PipeSignal to the pipe
-  void pushSignal(boost::shared_ptr<PluginSignal> signal);
+  void pushSignal(boost::shared_ptr<const PluginSignal> signal);
 
   // Queues the event and writes PipeEvent to the pipe
-  void pushEvent(boost::shared_ptr<Event> event);
+  void pushEvent(boost::shared_ptr<const Event> event);
 
 protected:
   GeneralPluginHelper();
@@ -94,7 +94,7 @@ protected:
    *
    * @return The oldest signal on the queue, or NULL if queue is empty
    */
-  boost::shared_ptr<PluginSignal> popSignal();
+  boost::shared_ptr<const PluginSignal> popSignal();
 
   /**
    * Get an event from the event queue
@@ -104,7 +104,7 @@ protected:
    *
    * @return The oldest event on the queue, or NULL if queue is empty
    */
-  boost::shared_ptr<Event> popEvent();
+  boost::shared_ptr<const Event> popEvent();
 
 private:
   LICQ_DECLARE_PRIVATE();

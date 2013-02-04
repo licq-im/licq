@@ -51,7 +51,7 @@ public:
   unsigned long protocolId() const;
   unsigned long capabilities() const;
 
-  void pushSignal(boost::shared_ptr<Licq::ProtocolSignal> signal);
+  void pushSignal(boost::shared_ptr<const Licq::ProtocolSignal> signal);
   Licq::User* createUser(const Licq::UserId& id, bool temporary);
   Licq::Owner* createOwner(const Licq::UserId& id);
 

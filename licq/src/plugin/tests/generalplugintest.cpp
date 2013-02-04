@@ -50,8 +50,9 @@ public:
   MOCK_METHOD0(enable, void());
   MOCK_METHOD0(disable, void());
   MOCK_CONST_METHOD1(wantSignal, bool(unsigned long signalType));
-  MOCK_METHOD1(pushSignal, void(boost::shared_ptr<Licq::PluginSignal> signal));
-  MOCK_METHOD1(pushEvent, void(boost::shared_ptr<Licq::Event> event));
+  MOCK_METHOD1(pushSignal,
+               void(boost::shared_ptr<const Licq::PluginSignal> signal));
+  MOCK_METHOD1(pushEvent, void(boost::shared_ptr<const Licq::Event> event));
 };
 
 static void NullDeleter(void*) { /* Empty */ }
@@ -84,9 +85,9 @@ TEST_F(GeneralPluginFixture, callApiFunctions)
   using boost::shared_ptr;
 
   unsigned long signalType = 123;
-  shared_ptr<Licq::PluginSignal> signal(
+  shared_ptr<const Licq::PluginSignal> signal(
       reinterpret_cast<Licq::PluginSignal*>(456), &NullDeleter);
-  shared_ptr<Licq::Event> event(
+  shared_ptr<const Licq::Event> event(
       reinterpret_cast<Licq::Event*>(789), &NullDeleter);
 
   InSequence dummy;

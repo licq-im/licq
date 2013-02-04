@@ -74,24 +74,24 @@ public:
   void rawFileEvent(int fd, int revents);
 
 private:
-  void processSignal(Licq::ProtocolSignal* signal);
+  void processSignal(const Licq::ProtocolSignal* signal);
   void getUserGroups(const Licq::UserId& userId, gloox::StringList& retGroupNames);
 
-  void doLogon(Licq::ProtoLogonSignal* signal);
-  void doChangeStatus(Licq::ProtoChangeStatusSignal* signal);
+  void doLogon(const Licq::ProtoLogonSignal* signal);
+  void doChangeStatus(const Licq::ProtoChangeStatusSignal* signal);
   void doLogoff();
-  void doSendMessage(Licq::ProtoSendMessageSignal* signal);
-  void doNotifyTyping(Licq::ProtoTypingNotificationSignal* signal);
-  void doGetInfo(Licq::ProtoRequestInfo* signal);
-  void doUpdateInfo(Licq::ProtoUpdateInfoSignal* signal);
-  void doAddUser(Licq::ProtoAddUserSignal* signal);
-  void doChangeUserGroups(Licq::ProtoChangeUserGroupsSignal* signal);
-  void doRemoveUser(Licq::ProtoRemoveUserSignal* signal);
-  void doRenameUser(Licq::ProtoRenameUserSignal* signal);
-  void doGrantAuth(Licq::ProtoGrantAuthSignal* signal);
-  void doRefuseAuth(Licq::ProtoRefuseAuthSignal* signal);
-  void doRequestAuth(Licq::ProtoRequestAuthSignal* signal);
-  void doRenameGroup(Licq::ProtoRenameGroupSignal* s);
+  void doSendMessage(const Licq::ProtoSendMessageSignal* signal);
+  void doNotifyTyping(const Licq::ProtoTypingNotificationSignal* signal);
+  void doGetInfo(const Licq::ProtoRequestInfo* signal);
+  void doUpdateInfo(const Licq::ProtoUpdateInfoSignal* signal);
+  void doAddUser(const Licq::ProtoAddUserSignal* signal);
+  void doChangeUserGroups(const Licq::ProtoChangeUserGroupsSignal* signal);
+  void doRemoveUser(const Licq::ProtoRemoveUserSignal* signal);
+  void doRenameUser(const Licq::ProtoRenameUserSignal* signal);
+  void doGrantAuth(const Licq::ProtoGrantAuthSignal* signal);
+  void doRefuseAuth(const Licq::ProtoRefuseAuthSignal* signal);
+  void doRequestAuth(const Licq::ProtoRequestAuthSignal* signal);
+  void doRenameGroup(const Licq::ProtoRenameGroupSignal* signal);
 
   Client* myClient;
   Licq::MainLoop myMainLoop;

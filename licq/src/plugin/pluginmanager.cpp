@@ -643,18 +643,12 @@ void PluginManager::pushPluginEvent(Licq::Event* rawEvent)
 void PluginManager::pushPluginSignal(Licq::PluginSignal* rawSignal)
 {
   boost::shared_ptr<Licq::PluginSignal> signal(rawSignal);
-  bool needCopy = false;
 
   MutexLocker locker(myGeneralPluginsMutex);
   BOOST_FOREACH(GeneralPlugin::Ptr plugin, myGeneralPlugins)
   {
     if (plugin->wantSignal(signal->signal()))
-    {
-      plugin->pushSignal(needCopy
-                         ? boost::make_shared<Licq::PluginSignal>(signal.get())
-                         : signal);
-      needCopy = true;
-    }
+      plugin->pushSignal(signal);
   }
 }
 

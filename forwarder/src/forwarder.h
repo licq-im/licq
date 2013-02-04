@@ -76,8 +76,8 @@ protected:
 
 public:
   void ProcessPipe();
-  void ProcessSignal(Licq::PluginSignal* s);
-  void ProcessEvent(Licq::Event* e);
+  void ProcessSignal(const Licq::PluginSignal* s);
+  void ProcessEvent(const Licq::Event* e);
 
   void ProcessUserEvent(const Licq::UserId& userId, unsigned long nId);
   bool ForwardEvent(const Licq::User* u, const Licq::UserEvent* e);

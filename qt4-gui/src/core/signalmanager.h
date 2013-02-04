@@ -162,8 +162,8 @@ signals:
   void ownerRemoved(const Licq::UserId& userId);
 
 private slots:
-  void processSignal(boost::shared_ptr<Licq::PluginSignal> sig);
-  void processEvent(boost::shared_ptr<Licq::Event> ev);
+  void processSignal(boost::shared_ptr<const Licq::PluginSignal> sig);
+  void processEvent(boost::shared_ptr<const Licq::Event> ev);
   void shutdown();
 };
 

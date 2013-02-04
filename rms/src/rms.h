@@ -82,8 +82,8 @@ protected:
 
 public:
   void ProcessPipe();
-  void ProcessSignal(Licq::PluginSignal* s);
-  void ProcessEvent(Licq::Event* e);
+  void ProcessSignal(const Licq::PluginSignal* s);
+  void ProcessEvent(const Licq::Event* e);
   void ProcessServer();
   void ProcessLog();
 
@@ -141,7 +141,7 @@ protected:
 
   int StateMachine();
   int ProcessCommand();
-  bool ProcessEvent(Licq::Event* e);
+  bool ProcessEvent(const Licq::Event* e);
   bool AddLineToText();
   void ParseUser(const std::string& data);
   int changeStatus(const Licq::UserId& ownerId, const std::string& strStatus);

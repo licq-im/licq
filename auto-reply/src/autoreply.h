@@ -64,8 +64,8 @@ protected:
        m_bSendThroughServer;
 
   void ProcessPipe();
-  void ProcessSignal(Licq::PluginSignal* s);
-  void ProcessEvent(Licq::Event* e);
+  void ProcessSignal(const Licq::PluginSignal* s);
+  void ProcessEvent(const Licq::Event* e);
 
   /**
    * A new event arrived for a user

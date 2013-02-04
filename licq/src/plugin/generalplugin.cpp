@@ -88,12 +88,13 @@ bool GeneralPlugin::wantSignal(unsigned long signalType) const
   return myInterface->wantSignal(signalType);
 }
 
-void GeneralPlugin::pushSignal(boost::shared_ptr<Licq::PluginSignal> signal)
+void GeneralPlugin::pushSignal(
+    boost::shared_ptr<const Licq::PluginSignal> signal)
 {
   myInterface->pushSignal(signal);
 }
 
-void GeneralPlugin::pushEvent(boost::shared_ptr<Licq::Event> event)
+void GeneralPlugin::pushEvent(boost::shared_ptr<const Licq::Event> event)
 {
   myInterface->pushEvent(event);
 }

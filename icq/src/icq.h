@@ -174,7 +174,7 @@ public:
   { myNewSocketPipe.putChar('X'); }
 
   /// Process a protocol signal from daemon
-  void processSignal(Licq::ProtocolSignal* s);
+  void processSignal(const Licq::ProtocolSignal* s);
 
   bool UseServerSideBuddyIcons() const { return m_bUseBART; }
   void SetUseServerSideBuddyIcons(bool b);

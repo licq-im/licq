@@ -60,7 +60,7 @@ public:
    * The plugin should take care not to block the caller (i.e. only queue the
    * signal for later processing).
    */
-  virtual void pushSignal(boost::shared_ptr<ProtocolSignal> signal) = 0;
+  virtual void pushSignal(boost::shared_ptr<const ProtocolSignal> signal) = 0;
 
   /**
    * Create a user object

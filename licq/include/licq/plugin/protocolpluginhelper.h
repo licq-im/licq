@@ -47,7 +47,7 @@ public:
   void shutdown();
 
   /// Queues the signal and writes PipeSignal to the pipe
-  void pushSignal(boost::shared_ptr<ProtocolSignal> signal);
+  void pushSignal(boost::shared_ptr<const ProtocolSignal> signal);
 
   /// Returns NULL to make UserManager create a Licq::User
   User* createUser(const UserId& id, bool temporary);
@@ -76,7 +76,7 @@ protected:
    *
    * @return The oldest signal on the queue, or NULL if queue is empty
    */
-  boost::shared_ptr<ProtocolSignal> popSignal();
+  boost::shared_ptr<const ProtocolSignal> popSignal();
 
 private:
   LICQ_DECLARE_PRIVATE();
