@@ -75,20 +75,24 @@ TEST_F(ProtocolPluginHelperFixture, popEmpty)
   EXPECT_TRUE(helper.popSignal() == NULL);
 }
 
+static void NullDeleter(void*) { /* Empty */ }
+
 TEST_F(ProtocolPluginHelperFixture, pushPopSignal)
 {
   using Licq::ProtocolSignal;
+  using boost::shared_ptr;
+
   ProtocolSignal* signal1 = reinterpret_cast<ProtocolSignal*>(10);
   ProtocolSignal* signal2 = reinterpret_cast<ProtocolSignal*>(11);
 
-  helper.pushSignal(signal1);
-  helper.pushSignal(signal2);
+  helper.pushSignal(shared_ptr<ProtocolSignal>(signal1, &NullDeleter));
+  helper.pushSignal(shared_ptr<ProtocolSignal>(signal2, &NullDeleter));
 
   EXPECT_EQ('S', getPipeChar());
-  EXPECT_EQ(signal1, helper.popSignal());
+  EXPECT_EQ(signal1, helper.popSignal().get());
 
   EXPECT_EQ('S', getPipeChar());
-  EXPECT_EQ(signal2, helper.popSignal());
+  EXPECT_EQ(signal2, helper.popSignal().get());
 }
 
 TEST_F(ProtocolPluginHelperFixture, createUserOwner)

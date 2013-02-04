@@ -53,12 +53,12 @@ public:
   void enable();
   void disable();
   bool wantSignal(unsigned long signalType) const;
-  void pushSignal(Licq::PluginSignal* signal);
-  void pushEvent(Licq::Event* event);
+  void pushSignal(boost::shared_ptr<const Licq::PluginSignal> signal);
+  void pushEvent(boost::shared_ptr<const Licq::Event> event);
 
 signals:
-  void pluginSignal(Licq::PluginSignal* signal);
-  void pluginEvent(Licq::Event* event);
+  void pluginSignal(boost::shared_ptr<const Licq::PluginSignal> signal);
+  void pluginEvent(boost::shared_ptr<const Licq::Event> event);
   void pluginShutdown();
 
 private:

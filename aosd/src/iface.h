@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2010, 2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ public:
   Iface();
   ~Iface();
 
-  void processSignal(Licq::PluginSignal* sig);
+  void processSignal(const Licq::PluginSignal* sig);
   void updateTextRenderData();
 
 private:
@@ -50,7 +50,7 @@ private:
   Conf* conf;
   std::map<unsigned long, time_t> ppidTimers;
 
-  bool filterSignal(Licq::PluginSignal* sig, unsigned long ppid);
+  bool filterSignal(const Licq::PluginSignal* sig, unsigned long ppid);
 
   void displayLayout(std::string& msg, bool control);
 };

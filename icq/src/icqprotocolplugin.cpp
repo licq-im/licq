@@ -127,12 +127,8 @@ void IcqProtocolPlugin::processPipe()
   switch (c)
   {
     case PipeSignal:
-    {
-      Licq::ProtocolSignal* s = popSignal();
-      gIcqProtocol.processSignal(s);
-      delete s;
+      gIcqProtocol.processSignal(popSignal().get());
       break;
-    }
     case PipeShutdown:
       gIcqProtocol.shutdown();
       break;
@@ -145,6 +141,12 @@ bool IcqProtocolPlugin::isOwnerOnline(const Licq::UserId& userId)
 {
   Licq::OwnerReadGuard owner(userId.ownerId());
   return owner.isLocked() && owner->isOnline();
+}
+
+void IcqProtocolPlugin::pushSignal(Licq::ProtocolSignal* signal)
+{
+  ProtocolPluginHelper::pushSignal(
+      boost::shared_ptr<const Licq::ProtocolSignal>(signal));
 }
 
 unsigned long IcqProtocolPlugin::icqSendContactList(const Licq::UserId& userId,

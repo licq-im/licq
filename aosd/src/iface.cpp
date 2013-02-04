@@ -70,7 +70,7 @@ Iface::~Iface()
   pango_layout_unref_aosd(trd.lay);
 }
 
-void Iface::processSignal(Licq::PluginSignal* sig)
+void Iface::processSignal(const Licq::PluginSignal* sig)
 {
   string msg = "";
   bool control = true;
@@ -173,7 +173,7 @@ void Iface::updateTextRenderData()
         (width > conf->wrapWidth ? conf->wrapWidth : width) * PANGO_SCALE);
 }
 
-bool Iface::filterSignal(Licq::PluginSignal* sig, unsigned long ppid)
+bool Iface::filterSignal(const Licq::PluginSignal* sig, unsigned long ppid)
 {
   switch (sig->subSignal())
   {

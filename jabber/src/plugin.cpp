@@ -107,9 +107,7 @@ void Plugin::rawFileEvent(int fd, int /*revents*/)
   {
     case PipeSignal:
     {
-      Licq::ProtocolSignal* signal = popSignal();
-      processSignal(signal);
-      delete signal;
+      processSignal(popSignal().get());
       break;
     }
     case PipeShutdown:
@@ -122,56 +120,59 @@ void Plugin::rawFileEvent(int fd, int /*revents*/)
   }
 }
 
-void Plugin::processSignal(Licq::ProtocolSignal* signal)
+void Plugin::processSignal(const Licq::ProtocolSignal* signal)
 {
   assert(signal != NULL);
 
   switch (signal->signal())
   {
     case Licq::ProtocolSignal::SignalLogon:
-      doLogon(dynamic_cast<Licq::ProtoLogonSignal*>(signal));
+      doLogon(dynamic_cast<const Licq::ProtoLogonSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalLogoff:
       doLogoff();
       break;
     case Licq::ProtocolSignal::SignalChangeStatus:
-      doChangeStatus(dynamic_cast<Licq::ProtoChangeStatusSignal*>(signal));
+      doChangeStatus(
+          dynamic_cast<const Licq::ProtoChangeStatusSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalAddUser:
-      doAddUser(dynamic_cast<Licq::ProtoAddUserSignal*>(signal));
+      doAddUser(dynamic_cast<const Licq::ProtoAddUserSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalRemoveUser:
-      doRemoveUser(dynamic_cast<Licq::ProtoRemoveUserSignal*>(signal));
+      doRemoveUser(dynamic_cast<const Licq::ProtoRemoveUserSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalRenameUser:
-      doRenameUser(dynamic_cast<Licq::ProtoRenameUserSignal*>(signal));
+      doRenameUser(dynamic_cast<const Licq::ProtoRenameUserSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalChangeUserGroups:
-      doChangeUserGroups(dynamic_cast<Licq::ProtoChangeUserGroupsSignal*>(signal));
+      doChangeUserGroups(
+          dynamic_cast<const Licq::ProtoChangeUserGroupsSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalSendMessage:
-      doSendMessage(dynamic_cast<Licq::ProtoSendMessageSignal*>(signal));
+      doSendMessage(dynamic_cast<const Licq::ProtoSendMessageSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalNotifyTyping:
-      doNotifyTyping(dynamic_cast<Licq::ProtoTypingNotificationSignal*>(signal));
+      doNotifyTyping(
+          dynamic_cast<const Licq::ProtoTypingNotificationSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalGrantAuth:
-      doGrantAuth(dynamic_cast<Licq::ProtoGrantAuthSignal*>(signal));
+      doGrantAuth(dynamic_cast<const Licq::ProtoGrantAuthSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalRefuseAuth:
-      doRefuseAuth(dynamic_cast<Licq::ProtoRefuseAuthSignal*>(signal));
+      doRefuseAuth(dynamic_cast<const Licq::ProtoRefuseAuthSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalRequestInfo:
-      doGetInfo(dynamic_cast<Licq::ProtoRequestInfo*>(signal));
+      doGetInfo(dynamic_cast<const Licq::ProtoRequestInfo*>(signal));
       break;
     case Licq::ProtocolSignal::SignalUpdateInfo:
-      doUpdateInfo(dynamic_cast<Licq::ProtoUpdateInfoSignal*>(signal));
+      doUpdateInfo(dynamic_cast<const Licq::ProtoUpdateInfoSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalRequestAuth:
-      doRequestAuth(dynamic_cast<Licq::ProtoRequestAuthSignal*>(signal));
+      doRequestAuth(dynamic_cast<const Licq::ProtoRequestAuthSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalRenameGroup:
-      doRenameGroup(dynamic_cast<Licq::ProtoRenameGroupSignal*>(signal));
+      doRenameGroup(dynamic_cast<const Licq::ProtoRenameGroupSignal*>(signal));
       break;
     default:
       gLog.error("Unknown signal %u", signal->signal());
@@ -183,7 +184,7 @@ void Plugin::processSignal(Licq::ProtocolSignal* signal)
   }
 }
 
-void Plugin::doLogon(Licq::ProtoLogonSignal* signal)
+void Plugin::doLogon(const Licq::ProtoLogonSignal* signal)
 {
   unsigned status = signal->status();
   if (status == Licq::User::OfflineStatus)
@@ -227,7 +228,7 @@ void Plugin::doLogon(Licq::ProtoLogonSignal* signal)
   }
 }
 
-void Plugin::doChangeStatus(Licq::ProtoChangeStatusSignal* signal)
+void Plugin::doChangeStatus(const Licq::ProtoChangeStatusSignal* signal)
 {
   assert(myClient != NULL);
   myClient->changeStatus(signal->status());
@@ -242,7 +243,7 @@ void Plugin::doLogoff()
   myClient = NULL;
 }
 
-void Plugin::doSendMessage(Licq::ProtoSendMessageSignal* signal)
+void Plugin::doSendMessage(const Licq::ProtoSendMessageSignal* signal)
 {
   assert(myClient != NULL);
 
@@ -272,7 +273,7 @@ void Plugin::doSendMessage(Licq::ProtoSendMessageSignal* signal)
   Licq::gPluginManager.pushPluginEvent(event);
 }
 
-void Plugin::doNotifyTyping(Licq::ProtoTypingNotificationSignal* signal)
+void Plugin::doNotifyTyping(const Licq::ProtoTypingNotificationSignal* signal)
 {
   assert(myClient != NULL);
 
@@ -280,7 +281,7 @@ void Plugin::doNotifyTyping(Licq::ProtoTypingNotificationSignal* signal)
       signal->userId().accountId(), signal->active());
 }
 
-void Plugin::doGetInfo(Licq::ProtoRequestInfo* signal)
+void Plugin::doGetInfo(const Licq::ProtoRequestInfo* signal)
 {
   assert(myClient != NULL);
   myClient->getVCard(signal->userId().accountId());
@@ -288,7 +289,7 @@ void Plugin::doGetInfo(Licq::ProtoRequestInfo* signal)
   Licq::gPluginManager.pushPluginEvent(new Licq::Event(signal));
 }
 
-void Plugin::doUpdateInfo(Licq::ProtoUpdateInfoSignal* signal)
+void Plugin::doUpdateInfo(const Licq::ProtoUpdateInfoSignal* signal)
 {
   assert(myClient != NULL);
   Licq::OwnerReadGuard owner(signal->userId());
@@ -304,7 +305,7 @@ void Plugin::doUpdateInfo(Licq::ProtoUpdateInfoSignal* signal)
   Licq::gPluginManager.pushPluginEvent(new Licq::Event(signal));
 }
 
-void Plugin::doAddUser(Licq::ProtoAddUserSignal* signal)
+void Plugin::doAddUser(const Licq::ProtoAddUserSignal* signal)
 {
   assert(myClient != NULL);
   const Licq::UserId userId = signal->userId();
@@ -313,7 +314,8 @@ void Plugin::doAddUser(Licq::ProtoAddUserSignal* signal)
   myClient->addUser(userId.accountId(), groupNames, true);
 }
 
-void Plugin::doChangeUserGroups(Licq::ProtoChangeUserGroupsSignal* signal)
+void Plugin::doChangeUserGroups(
+    const Licq::ProtoChangeUserGroupsSignal* signal)
 {
   assert(myClient != NULL);
   const Licq::UserId userId = signal->userId();
@@ -337,14 +339,14 @@ void Plugin::getUserGroups(const Licq::UserId& userId, gloox::StringList& retGro
   }
 }
 
-void Plugin::doRemoveUser(Licq::ProtoRemoveUserSignal* signal)
+void Plugin::doRemoveUser(const Licq::ProtoRemoveUserSignal* signal)
 {
   assert(myClient != NULL);
   myClient->removeUser(signal->userId().accountId());
   Licq::gUserManager.removeLocalUser(signal->userId());
 }
 
-void Plugin::doRenameUser(Licq::ProtoRenameUserSignal* signal)
+void Plugin::doRenameUser(const Licq::ProtoRenameUserSignal* signal)
 {
   assert(myClient != NULL);
   string newName;
@@ -358,7 +360,7 @@ void Plugin::doRenameUser(Licq::ProtoRenameUserSignal* signal)
   myClient->renameUser(signal->userId().accountId(), newName);
 }
 
-void Plugin::doGrantAuth(Licq::ProtoGrantAuthSignal* signal)
+void Plugin::doGrantAuth(const Licq::ProtoGrantAuthSignal* signal)
 {
   assert(myClient != NULL);
   myClient->grantAuthorization(signal->userId().accountId());
@@ -366,7 +368,7 @@ void Plugin::doGrantAuth(Licq::ProtoGrantAuthSignal* signal)
   Licq::gPluginManager.pushPluginEvent(new Licq::Event(signal));
 }
 
-void Plugin::doRefuseAuth(Licq::ProtoRefuseAuthSignal* signal)
+void Plugin::doRefuseAuth(const Licq::ProtoRefuseAuthSignal* signal)
 {
   assert(myClient != NULL);
   myClient->refuseAuthorization(signal->userId().accountId());
@@ -374,14 +376,14 @@ void Plugin::doRefuseAuth(Licq::ProtoRefuseAuthSignal* signal)
   Licq::gPluginManager.pushPluginEvent(new Licq::Event(signal));
 }
 
-void Plugin::doRequestAuth(Licq::ProtoRequestAuthSignal* signal)
+void Plugin::doRequestAuth(const Licq::ProtoRequestAuthSignal* signal)
 {
   assert(myClient != NULL);
   myClient->requestAuthorization(
       signal->userId().accountId(), signal->message());
 }
 
-void Plugin::doRenameGroup(Licq::ProtoRenameGroupSignal* s)
+void Plugin::doRenameGroup(const Licq::ProtoRenameGroupSignal* s)
 {
   Licq::UserListGuard userList(s->userId());
   BOOST_FOREACH(Licq::User* licqUser, **userList)

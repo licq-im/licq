@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ using Licq::ProtocolSignal;
 using Licq::UserId;
 using Licq::UserEvent;
 
-Event::Event(ProtocolSignal* ps, ResultType result, UserEvent* ue)
+Event::Event(const ProtocolSignal* ps, ResultType result, UserEvent* ue)
   : m_eResult(result),
     myUserId(ps->userId()),
     thread_plugin(ps->callerThread()),

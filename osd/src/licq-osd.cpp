@@ -92,8 +92,7 @@ struct Config {
 
 
 // some forward declarations
-void ProcessSignal(Licq::PluginSignal* s);
-void ProcessEvent(Licq::Event* e);
+void ProcessSignal(const Licq::PluginSignal* s);
 #ifdef CP_TRANSLATE
     const char *get_iconv_encoding_name(const char *licq_encoding_name);
 string my_translate(const UserId& userId, const string& msg, const char* userenc);
@@ -338,16 +337,10 @@ int OsdPlugin::run()
 	{
       case PipeSignal:
       {
-		// read the actual signal from the daemon
-        Licq::PluginSignal* s = popSignal();
-		if (s)
-		{
-		    ProcessSignal(s);
-		    delete s;
-		    s=0;
-		}
-		break;
-	    }
+        // read the actual signal from the daemon
+        ProcessSignal(popSignal().get());
+        break;
+      }
 
 	    // An event is pending - skip it - shouldnt happen
 	    // events are responses to some requests to the licq daemon
@@ -355,8 +348,7 @@ int OsdPlugin::run()
       case PipeEvent:
       {
         gLog.warning("Event received - should not happen in this plugin");
-        Licq::Event* e = popEvent();
-        delete e;
+        popEvent();
         break;
       }
 	    // shutdown command from daemon
@@ -395,7 +387,7 @@ void OsdPlugin::destructor()
   delete this;
 }
 
-void ProcessSignal(Licq::PluginSignal* s)
+void ProcessSignal(const Licq::PluginSignal* s)
 {
     string username;
     bool notify=false;

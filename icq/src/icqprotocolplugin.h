@@ -110,6 +110,8 @@ public:
 private:
   bool isOwnerOnline(const Licq::UserId& userId);
 
+  void pushSignal(Licq::ProtocolSignal* signal);
+
   ~IcqProtocolPlugin();
 };
 

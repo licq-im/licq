@@ -62,10 +62,10 @@ public:
   bool wantSignal(unsigned long signalType) const;
 
   /// Queues the signal and writes PipeSignal to the pipe
-  void pushSignal(PluginSignal* signal);
+  void pushSignal(boost::shared_ptr<const PluginSignal> signal);
 
   // Queues the event and writes PipeEvent to the pipe
-  void pushEvent(Event* event);
+  void pushEvent(boost::shared_ptr<const Event> event);
 
 protected:
   GeneralPluginHelper();
@@ -90,23 +90,21 @@ protected:
    * Get a signal from the signal queue
    *
    * The plugin must call this function to fetch a signal after getting
-   * notified via its pipe. The signal must be deleted by the plugin after
-   * processing.
+   * notified via its pipe.
    *
    * @return The oldest signal on the queue, or NULL if queue is empty
    */
-  PluginSignal* popSignal();
+  boost::shared_ptr<const PluginSignal> popSignal();
 
   /**
    * Get an event from the event queue
    *
    * The plugin must call this function to fetch an event after getting
-   * notified via its pipe. The event must be deleted by the plugin after
-   * processing.
+   * notified via its pipe.
    *
    * @return The oldest event on the queue, or NULL if queue is empty
    */
-  Event* popEvent();
+  boost::shared_ptr<const Event> popEvent();
 
 private:
   LICQ_DECLARE_PRIVATE();

@@ -25,6 +25,8 @@
 
 #include "plugininterface.h"
 
+#include <boost/shared_ptr.hpp>
+
 namespace Licq
 {
 
@@ -55,11 +57,10 @@ public:
   /**
    * Pushes a signal to the plugin.
    *
-   * The plugin takes ownership of the @a signal and is responsible for
-   * deleting it when done with it. The plugin should also take care not to
-   * block the caller (i.e. only queue the signal for later processing).
+   * The plugin should take care not to block the caller (i.e. only queue the
+   * signal for later processing).
    */
-  virtual void pushSignal(ProtocolSignal* signal) = 0;
+  virtual void pushSignal(boost::shared_ptr<const ProtocolSignal> signal) = 0;
 
   /**
    * Create a user object

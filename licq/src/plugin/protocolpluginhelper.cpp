@@ -38,7 +38,7 @@ public:
   void notify(char ch) { myPipe.putChar(ch); }
 
   Licq::Pipe myPipe;
-  std::queue<Licq::ProtocolSignal*> mySignals;
+  std::queue< boost::shared_ptr<const Licq::ProtocolSignal> > mySignals;
   Licq::Mutex mySignalsMutex;
 };
 
@@ -53,13 +53,12 @@ void ProtocolPluginHelper::shutdown()
   d->notify(PipeShutdown);
 }
 
-void ProtocolPluginHelper::pushSignal(ProtocolSignal* signal)
+void ProtocolPluginHelper::pushSignal(
+    boost::shared_ptr<const ProtocolSignal> signal)
 {
   LICQ_D();
-  {
-    MutexLocker locker(d->mySignalsMutex);
-    d->mySignals.push(signal);
-  }
+  MutexLocker locker(d->mySignalsMutex);
+  d->mySignals.push(signal);
   d->notify(PipeSignal);
 }
 
@@ -93,15 +92,15 @@ int ProtocolPluginHelper::getReadPipe() const
   return d->myPipe.getReadFd();
 }
 
-Licq::ProtocolSignal* ProtocolPluginHelper::popSignal()
+boost::shared_ptr<const Licq::ProtocolSignal> ProtocolPluginHelper::popSignal()
 {
   LICQ_D();
   MutexLocker locker(d->mySignalsMutex);
   if (!d->mySignals.empty())
   {
-    ProtocolSignal* signal = d->mySignals.front();
+    boost::shared_ptr<const ProtocolSignal> signal = d->mySignals.front();
     d->mySignals.pop();
     return signal;
   }
-  return NULL;
+  return boost::shared_ptr<const ProtocolSignal>();
 }

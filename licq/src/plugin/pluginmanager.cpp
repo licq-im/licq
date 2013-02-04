@@ -625,8 +625,10 @@ void PluginManager::startPlugin(ProtocolPlugin::Ptr plugin)
   plugin->run(NULL, exitPluginCallback);
 }
 
-void PluginManager::pushPluginEvent(Licq::Event* event)
+void PluginManager::pushPluginEvent(Licq::Event* rawEvent)
 {
+  boost::shared_ptr<Licq::Event> event(rawEvent);
+
   MutexLocker locker(myGeneralPluginsMutex);
   BOOST_FOREACH(GeneralPlugin::Ptr plugin, myGeneralPlugins)
   {
@@ -636,25 +638,24 @@ void PluginManager::pushPluginEvent(Licq::Event* event)
       return;
     }
   }
-
-  // If no plugin got the event, then just delete it
-  delete event;
 }
 
-void PluginManager::pushPluginSignal(Licq::PluginSignal* signal)
+void PluginManager::pushPluginSignal(Licq::PluginSignal* rawSignal)
 {
+  boost::shared_ptr<Licq::PluginSignal> signal(rawSignal);
+
   MutexLocker locker(myGeneralPluginsMutex);
   BOOST_FOREACH(GeneralPlugin::Ptr plugin, myGeneralPlugins)
   {
     if (plugin->wantSignal(signal->signal()))
-      plugin->pushSignal(new Licq::PluginSignal(signal));
+      plugin->pushSignal(signal);
   }
-  delete signal;
 }
 
-void PluginManager::pushProtocolSignal(Licq::ProtocolSignal* signal)
+void PluginManager::pushProtocolSignal(Licq::ProtocolSignal* rawSignal)
 {
-  unsigned long protocolId = signal->userId().protocolId();
+  boost::shared_ptr<Licq::ProtocolSignal> signal(rawSignal);
+  const unsigned long protocolId = signal->userId().protocolId();
 
   MutexLocker locker(myProtocolPluginsMutex);
   BOOST_FOREACH(ProtocolPlugin::Ptr plugin, myProtocolPlugins)
@@ -667,5 +668,4 @@ void PluginManager::pushProtocolSignal(Licq::ProtocolSignal* signal)
   }
 
   Licq::gLog.error(tr("Invalid protocol plugin requested (%ld)"), protocolId);
-  delete signal;
 }

@@ -20,6 +20,7 @@
 #ifndef SIGNALMANAGER_H
 #define SIGNALMANAGER_H
 
+#include <boost/shared_ptr.hpp>
 #include <QObject>
 
 namespace Licq
@@ -161,8 +162,8 @@ signals:
   void ownerRemoved(const Licq::UserId& userId);
 
 private slots:
-  void processSignal(Licq::PluginSignal* sig);
-  void processEvent(Licq::Event* ev);
+  void processSignal(boost::shared_ptr<const Licq::PluginSignal> sig);
+  void processEvent(boost::shared_ptr<const Licq::Event> ev);
   void shutdown();
 };
 

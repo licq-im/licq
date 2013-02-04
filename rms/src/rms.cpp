@@ -398,23 +398,19 @@ void CLicqRMS::ProcessPipe()
   switch (buf)
   {
     case PipeSignal:
-    {
-      Licq::PluginSignal* s = popSignal();
       if (m_bEnabled)
-        ProcessSignal(s);
-      delete s;
+        ProcessSignal(popSignal().get());
+      else
+        popSignal();
       break;
-    }
 
     case PipeEvent:
-    {
       // An event is pending (should never happen)
-      Licq::Event* e = popEvent();
       if (m_bEnabled)
-        ProcessEvent(e);
-      delete e;
+        ProcessEvent(popEvent().get());
+      else
+        popEvent();
       break;
-    }
 
     case PipeShutdown:
       gLog.info("Exiting");
@@ -475,7 +471,7 @@ void CLicqRMS::ProcessLog()
 /*---------------------------------------------------------------------------
  * CLicqRMS::ProcessSignal
  *-------------------------------------------------------------------------*/
-void CLicqRMS::ProcessSignal(Licq::PluginSignal* s)
+void CLicqRMS::ProcessSignal(const Licq::PluginSignal* s)
 {
   switch (s->signal())
   {
@@ -522,12 +518,13 @@ void CLicqRMS::ProcessSignal(Licq::PluginSignal* s)
 /*---------------------------------------------------------------------------
  * CLicqRMS::ProcessEvent
  *-------------------------------------------------------------------------*/
-void CLicqRMS::ProcessEvent(Licq::Event* e)
+void CLicqRMS::ProcessEvent(const Licq::Event* e)
 {
   ClientList ::iterator iter;
   for (iter = clients.begin(); iter != clients.end(); iter++)
   {
-    if ((*iter)->ProcessEvent(e)) break;
+    if ((*iter)->ProcessEvent(e))
+      break;
   }
 }
 
@@ -631,7 +628,7 @@ void CRMSClient::ParseUser(const string& strData)
 /*---------------------------------------------------------------------------
  * CRMSClient::ProcessEvent
  *-------------------------------------------------------------------------*/
-bool CRMSClient::ProcessEvent(Licq::Event* e)
+bool CRMSClient::ProcessEvent(const Licq::Event* e)
 {
   TagList::iterator iter;
   for (iter = tags.begin(); iter != tags.end(); iter++)
