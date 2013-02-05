@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ MMUserView::MMUserView(const Licq::UserId& userId, ContactListModel* contactList
   setRootIndex(dynamic_cast<MultiContactProxy*>(myListProxy)->rootIndex());
 
   // Setup popup menu
-  myMenu = new QMenu();
+  myMenu = new QMenu(this);
   myMenu->addAction(tr("Remove"), this, SLOT(remove()));
   myMenu->addAction(tr("Crop"), this, SLOT(crop()));
   myMenu->addAction(tr("Clear"), this, SLOT(clear()));
