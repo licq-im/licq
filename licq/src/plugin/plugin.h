@@ -58,6 +58,13 @@ public:
   bool isThread(const pthread_t& thread) const;
 
   /**
+   * Create the plugin instance
+   *
+   * @return True if the plugin was created successfully
+   */
+  bool create();
+
+  /**
    * Initialize the plugin
    *
    * @param argc Number of command line parameters
@@ -94,10 +101,14 @@ public:
   void cancelThread();
 
 protected:
+  virtual void createInterface() = 0;
   virtual boost::shared_ptr<Licq::PluginInterface> interface() = 0;
   virtual boost::shared_ptr<const Licq::PluginInterface> interface() const = 0;
 
 private:
+  /// Entry point for creating plugin in plugin's thread
+  static void createThreadEntry(void* plugin);
+
   /// Entry point for calling init() in plugin's thread
   static bool initThreadEntry(void* plugin);
 

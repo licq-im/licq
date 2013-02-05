@@ -86,6 +86,12 @@ bool Plugin::isThread(const pthread_t& thread) const
   return myThread->isThread(thread);
 }
 
+bool Plugin::create()
+{
+  myThread->createPlugin(&createThreadEntry, this);
+  return !! interface();
+}
+
 bool Plugin::init(int argc, char** argv, void (*callback)(const Plugin&))
 {
   assert(myInitCallback == NULL);
@@ -145,6 +151,12 @@ int Plugin::joinThread()
 void Plugin::cancelThread()
 {
   myThread->cancel();
+}
+
+void Plugin::createThreadEntry(void* plugin)
+{
+  Plugin* thisPlugin = static_cast<Plugin*>(plugin);
+  thisPlugin->createInterface();
 }
 
 bool Plugin::initThreadEntry(void* plugin)

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010,2012 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010, 2012-2013 Licq Developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,11 @@ static bool init(void* argument)
 {
   *static_cast<pthread_t*>(argument) = ::pthread_self();
   return true;
+}
+
+static void create(void* argument)
+{
+  *static_cast<pthread_t*>(argument) = ::pthread_self();
 }
 
 static void* start(void* argument)
@@ -76,6 +81,14 @@ TEST_F(PluginThreadFixture, initPlugin)
   EXPECT_TRUE(thread.initPlugin(&init, &id));
   EXPECT_FALSE(::pthread_equal(id, ::pthread_self()));
   EXPECT_TRUE(thread.isThread(id));
+}
+
+TEST_F(PluginThreadFixture, createPlugin)
+{
+  pthread_t id = ::pthread_self();
+  thread.createPlugin(&create, &id);
+  EXPECT_FALSE(::pthread_equal(id, ::pthread_self()));
+  EXPECT_TRUE(thread.isThread(id));  
 }
 
 TEST_F(PluginThreadFixture, startPlugin)

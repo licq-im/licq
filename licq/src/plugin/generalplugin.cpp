@@ -32,20 +32,19 @@ GeneralPlugin::GeneralPlugin(
     int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
     Licq::GeneralPluginInterface* (*factory)())
   : Plugin(id, lib, thread),
-    myInterface((*factory)(), &destroyGeneralPluginInterface)
+    myFactory(factory)
 {
-  if (!myInterface)
-    throw std::exception();
+  // Empty
 }
 
 GeneralPlugin::GeneralPlugin(
     int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
     boost::shared_ptr<Licq::GeneralPluginInterface> interface)
   : Plugin(id, lib, thread),
+    myFactory(NULL),
     myInterface(interface)
 {
-  if (!myInterface)
-    throw std::exception();
+  // Empty
 }
 
 GeneralPlugin::~GeneralPlugin()
@@ -96,6 +95,12 @@ void GeneralPlugin::pushSignal(Licq::PluginSignal* signal)
 void GeneralPlugin::pushEvent(Licq::Event* event)
 {
   myInterface->pushEvent(event);
+}
+
+void GeneralPlugin::createInterface()
+{
+  assert(!myInterface);
+  myInterface.reset((*myFactory)(), &destroyGeneralPluginInterface);
 }
 
 boost::shared_ptr<Licq::PluginInterface> GeneralPlugin::interface()

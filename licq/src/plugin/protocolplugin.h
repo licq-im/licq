@@ -57,10 +57,12 @@ public:
 
 protected:
   // From Plugin
-  boost::shared_ptr<Licq::PluginInterface> interface() ;
+  void createInterface();
+  boost::shared_ptr<Licq::PluginInterface> interface();
   boost::shared_ptr<const Licq::PluginInterface> interface() const;
 
 private:
+  Licq::ProtocolPluginInterface* (*myFactory)();
   boost::shared_ptr<Licq::ProtocolPluginInterface> myInterface;
 };
 
