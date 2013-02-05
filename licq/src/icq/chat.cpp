@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,6 +57,17 @@ const unsigned short CHAT_STATE_CONNECTED = 5;
 
 
 //---Chat-----------------------------------------------------------------------
+CPacketChat::CPacketChat()
+  : buffer(NULL)
+{
+  // Empty
+}
+
+CPacketChat::~CPacketChat()
+{
+  delete buffer;
+}
+
 void CPacketChat::InitBuffer()
 {
   buffer = new CBuffer(m_nSize);

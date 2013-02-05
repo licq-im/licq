@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -229,6 +229,17 @@ bool LicqIcq::Decrypt_Client(CBuffer* pkt, unsigned long version)
   pkt->log(Licq::Log::Debug, tr("Decrypted (ICQ) TCP Packet (%lu bytes)"), size);
 
   return true;
+}
+
+CPacketTcp_Handshake::CPacketTcp_Handshake()
+  : buffer(NULL)
+{
+  // Empty
+}
+
+CPacketTcp_Handshake::~CPacketTcp_Handshake()
+{
+  delete buffer;
 }
 
 CPacketTcp_Handshake_v2::CPacketTcp_Handshake_v2(unsigned long nLocalPort)
@@ -592,7 +603,7 @@ CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand, int
 
 CPacketTcp::~CPacketTcp()
 {
-  // Empty
+  delete buffer;
 }
 
 

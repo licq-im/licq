@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -296,7 +296,7 @@ CSrvPacketTcp::CSrvPacketTcp(unsigned char icqChannel)
 
 CSrvPacketTcp::~CSrvPacketTcp()
 {
-  // Empty
+  delete buffer;
 }
 
 CBuffer *CSrvPacketTcp::Finalize(Licq::INetSocket*)
@@ -387,7 +387,7 @@ CPacketUdp::CPacketUdp(unsigned short _nCommand)
 
 CPacketUdp::~CPacketUdp()
 {
-  // Empty
+  delete buffer;
 }
 
 void CPacketUdp::InitBuffer()

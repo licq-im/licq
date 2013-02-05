@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2000-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,8 @@ void Encrypt_Client(Licq::Buffer* pkt, unsigned long version);
 class CPacketTcp_Handshake : public CPacket
 {
 public:
+  ~CPacketTcp_Handshake();
+
   virtual Licq::Buffer* getBuffer() { return buffer; }
 
   virtual unsigned short Sequence()   { return 0; }
@@ -63,6 +65,8 @@ public:
   virtual unsigned short SubCommand() { return 0; }
 
 protected:
+  CPacketTcp_Handshake();
+
   Licq::Buffer* buffer;
 };
 
@@ -642,12 +646,15 @@ public:
 class CPacketChat : public Licq::Packet
 {
 public:
+  ~CPacketChat();
+
   virtual Licq::Buffer* getBuffer() { return buffer; }
 
   virtual unsigned short Sequence()   { return 0; };
   virtual unsigned short SubSequence()   { return 0; };
   virtual unsigned short SubCommand() { return 0; };
 protected:
+  CPacketChat();
    void InitBuffer();
 
   Licq::Buffer* buffer;
