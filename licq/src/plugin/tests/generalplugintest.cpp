@@ -79,8 +79,18 @@ struct GeneralPluginFixture : public ::testing::Test
   }
 };
 
-TEST_F(GeneralPluginFixture, callApiFunctions)
+struct RunnableGeneralPluginFixture
+  : public GeneralPluginFixture,
+    public ::testing::WithParamInterface<bool>
 {
+  // Empty
+};
+
+TEST_P(RunnableGeneralPluginFixture, callApiFunctions)
+{
+  if (GetParam())
+    plugin.setIsRunning(true);
+
   unsigned long signalType = 123;
   Licq::PluginSignal* signal = reinterpret_cast<Licq::PluginSignal*>(456);
   Licq::Event* event = reinterpret_cast<Licq::Event*>(789);
@@ -90,11 +100,17 @@ TEST_F(GeneralPluginFixture, callApiFunctions)
   EXPECT_CALL(myMockInterface, usage());
   EXPECT_CALL(myMockInterface, configFile());
   EXPECT_CALL(myMockInterface, isEnabled());
-  EXPECT_CALL(myMockInterface, enable());
-  EXPECT_CALL(myMockInterface, disable());
+  if (GetParam())
+  {
+    EXPECT_CALL(myMockInterface, enable());
+    EXPECT_CALL(myMockInterface, disable());
+  }
   EXPECT_CALL(myMockInterface, wantSignal(signalType));
-  EXPECT_CALL(myMockInterface, pushSignal(signal));
-  EXPECT_CALL(myMockInterface, pushEvent(event));
+  if (GetParam())
+  {
+    EXPECT_CALL(myMockInterface, pushSignal(signal));
+    EXPECT_CALL(myMockInterface, pushEvent(event));
+  }
 
   // Verify that the calls are forwarded to the interface
   plugin.description();
@@ -107,5 +123,8 @@ TEST_F(GeneralPluginFixture, callApiFunctions)
   plugin.pushSignal(signal);
   plugin.pushEvent(event);
 }
+
+INSTANTIATE_TEST_CASE_P(Running, RunnableGeneralPluginFixture,
+                        ::testing::Bool());
 
 } // namespace LicqTest

@@ -65,7 +65,8 @@ unsigned long ProtocolPlugin::capabilities() const
 
 void ProtocolPlugin::pushSignal(Licq::ProtocolSignal* signal)
 {
-  myInterface->pushSignal(signal);
+  if (isRunning())
+    myInterface->pushSignal(signal);
 }
 
 Licq::User* ProtocolPlugin::createUser(const Licq::UserId& id, bool temporary)

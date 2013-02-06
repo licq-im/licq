@@ -76,8 +76,18 @@ struct ProtocolPluginFixture : public ::testing::Test
   }
 };
 
-TEST_F(ProtocolPluginFixture, callApiFunctions)
+struct RunnableProtocolPluginFixture
+  : public ProtocolPluginFixture,
+    public ::testing::WithParamInterface<bool>
 {
+  // Empty
+};
+
+TEST_P(RunnableProtocolPluginFixture, callApiFunctions)
+{
+  if (GetParam())
+    plugin.setIsRunning(true);
+
   Licq::ProtocolSignal* signal = reinterpret_cast<Licq::ProtocolSignal*>(123);
   Licq::UserId user;
   Licq::UserId owner;
@@ -85,7 +95,8 @@ TEST_F(ProtocolPluginFixture, callApiFunctions)
   InSequence dummy;
   EXPECT_CALL(myMockInterface, protocolId());
   EXPECT_CALL(myMockInterface, capabilities());
-  EXPECT_CALL(myMockInterface, pushSignal(signal));
+  if (GetParam())
+    EXPECT_CALL(myMockInterface, pushSignal(signal));
   EXPECT_CALL(myMockInterface, createUser(user, false));
   EXPECT_CALL(myMockInterface, createOwner(owner));
 
@@ -96,5 +107,8 @@ TEST_F(ProtocolPluginFixture, callApiFunctions)
   plugin.createUser(user, false);
   plugin.createOwner(owner);
 }
+
+INSTANTIATE_TEST_CASE_P(Running, RunnableProtocolPluginFixture,
+                        ::testing::Bool());
 
 } // namespace LicqTest

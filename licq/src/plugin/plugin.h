@@ -100,10 +100,15 @@ public:
    */
   void cancelThread();
 
+  // For use by unit test
+  void setIsRunning(bool running) { myIsRunning = running; }
+
 protected:
   virtual void createInterface() = 0;
   virtual boost::shared_ptr<Licq::PluginInterface> interface() = 0;
   virtual boost::shared_ptr<const Licq::PluginInterface> interface() const = 0;
+
+  bool isRunning() const { return myIsRunning; }
 
 private:
   /// Entry point for creating plugin in plugin's thread
@@ -118,6 +123,7 @@ private:
   const int myId;
   DynamicLibrary::Ptr myLibrary;
   PluginThread::Ptr myThread;
+  bool myIsRunning;
 
   int myArgc;
   char** myArgv;

@@ -35,6 +35,7 @@ Plugin::Plugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread)
   : myId(id),
     myLibrary(lib),
     myThread(thread),
+    myIsRunning(false),
     myArgc(0),
     myArgv(NULL),
     myArgvCopy(NULL),
@@ -132,6 +133,7 @@ void Plugin::run(void (*startCallback)(const Plugin&),
 void Plugin::shutdown()
 {
   interface()->shutdown();
+  myIsRunning = false;
 }
 
 int Plugin::joinThread()
@@ -179,6 +181,8 @@ void* Plugin::startThreadEntry(void* plugin)
 
   if (thisPlugin->myStartCallback != NULL)
     (*thisPlugin->myStartCallback)(*thisPlugin);
+
+  thisPlugin->myIsRunning = true;
 
   int* retval = new int;
   *retval = thisPlugin->interface()->run();

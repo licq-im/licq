@@ -74,12 +74,14 @@ bool GeneralPlugin::isEnabled() const
 
 void GeneralPlugin::enable()
 {
-  myInterface->enable();
+  if (isRunning())
+    myInterface->enable();
 }
 
 void GeneralPlugin::disable()
 {
-  myInterface->disable();
+  if (isRunning())
+    myInterface->disable();
 }
 
 bool GeneralPlugin::wantSignal(unsigned long signalType) const
@@ -89,12 +91,14 @@ bool GeneralPlugin::wantSignal(unsigned long signalType) const
 
 void GeneralPlugin::pushSignal(Licq::PluginSignal* signal)
 {
-  myInterface->pushSignal(signal);
+  if (isRunning())
+    myInterface->pushSignal(signal);
 }
 
 void GeneralPlugin::pushEvent(Licq::Event* event)
 {
-  myInterface->pushEvent(event);
+  if (isRunning())
+    myInterface->pushEvent(event);
 }
 
 void GeneralPlugin::createInterface()
