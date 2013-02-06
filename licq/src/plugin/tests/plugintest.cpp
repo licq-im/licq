@@ -60,11 +60,12 @@ class TestPlugin : public Plugin
 {
 public:
   bool myIsCreated;
+
   TestPlugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
              boost::shared_ptr<Licq::PluginInterface> interface)
     : Plugin(id, lib, thread),
-      myInterface(interface),
-      myIsCreated(false)
+      myIsCreated(false),
+      myInterface(interface)
   {
     // Empty
   }
