@@ -45,15 +45,16 @@ SignalManager::SignalManager()
   assert(gGuiSignalManager == NULL);
   gGuiSignalManager = this;
 
-  connect(
-      gQtGuiPlugin,
+  connect(gQtGuiPlugin,
       SIGNAL(pluginSignal(boost::shared_ptr<const Licq::PluginSignal>)),
-      this, SLOT(processSignal(boost::shared_ptr<const Licq::PluginSignal>)));
-  connect(
-      gQtGuiPlugin,
+      this, SLOT(processSignal(boost::shared_ptr<const Licq::PluginSignal>)),
+      Qt::QueuedConnection);
+  connect(gQtGuiPlugin,
       SIGNAL(pluginEvent(boost::shared_ptr<const Licq::Event>)),
-      this, SLOT(processEvent(boost::shared_ptr<const Licq::Event>)));
-  connect(gQtGuiPlugin, SIGNAL(pluginShutdown()), this, SLOT(shutdown()));
+      this, SLOT(processEvent(boost::shared_ptr<const Licq::Event>)),
+      Qt::QueuedConnection);
+  connect(gQtGuiPlugin, SIGNAL(pluginShutdown()), this, SLOT(shutdown()),
+      Qt::QueuedConnection);
 }
 
 SignalManager::~SignalManager()

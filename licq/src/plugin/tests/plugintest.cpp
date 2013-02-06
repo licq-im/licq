@@ -59,9 +59,12 @@ public:
 class TestPlugin : public Plugin
 {
 public:
+  bool myIsCreated;
+
   TestPlugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
              boost::shared_ptr<Licq::PluginInterface> interface)
     : Plugin(id, lib, thread),
+      myIsCreated(false),
       myInterface(interface)
   {
     // Empty
@@ -69,6 +72,8 @@ public:
 
 protected:
   // From Plugin
+  void createInterface() { myIsCreated = true; }
+
   boost::shared_ptr<Licq::PluginInterface> interface()
   {
     return myInterface;
@@ -161,6 +166,13 @@ TEST_F(PluginFixture, lifeTimeOfCastedObject)
   }
 
   EXPECT_EQ(1, DeleteCount);
+}
+
+TEST_F(PluginFixture, create)
+{
+  EXPECT_FALSE(plugin.myIsCreated);
+  EXPECT_TRUE(plugin.create());
+  EXPECT_TRUE(plugin.myIsCreated);
 }
 
 struct CallbackData

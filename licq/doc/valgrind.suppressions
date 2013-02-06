@@ -1,0 +1,68 @@
+{
+   std::string
+   Memcheck:Leak
+   fun:_Znwm
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+}
+
+{
+   dlopen
+   Memcheck:Leak
+   ...
+   fun:_dlerror_run
+   fun:dlopen@@GLIBC_2.2.5
+}
+
+{
+   fontconfig
+   Memcheck:Leak
+   fun:malloc
+   fun:FcPatternCreate
+   fun:FcFontRenderPrepare
+   fun:FcFontMatch
+}
+
+{
+   QLibrary 1
+   Memcheck:Leak
+   fun:_Znwm
+   ...
+   fun:_ZN8QLibrary21setFileNameAndVersionERK7QStringi
+   fun:_ZN8QLibraryC1ERK7QStringiP7QObject
+}
+
+{
+   QLibrary 2
+   Memcheck:Leak
+   fun:_Znwm
+   ...
+   fun:_ZN8QLibrary21setFileNameAndVersionERK7QStringS2_
+   fun:_ZN8QLibraryC1ERK7QStringS2_P7QObject
+}
+
+{
+   QEventDispatcher
+   Memcheck:Leak
+   fun:memalign
+   fun:posix_memalign
+   ...
+   fun:_ZN27QEventDispatcherGlibPrivateC1EP13_GMainContext
+}
+
+{
+   QFontDatabase
+   Memcheck:Leak
+   ...
+   fun:_ZN13QFontDatabase4loadEPK12QFontPrivatei
+   fun:_ZNK12QFontPrivate15engineForScriptEi
+}
+
+{
+   QFactoryLoader
+   Memcheck:Leak
+   fun:_Znwm
+   ...
+   fun:_ZN14QFactoryLoader9updateDirERK7QStringR9QSettings
+   fun:_ZN14QFactoryLoader6updateEv
+   fun:_ZN14QFactoryLoaderC1EPKcRK7QStringN2Qt15CaseSensitivityE
+}

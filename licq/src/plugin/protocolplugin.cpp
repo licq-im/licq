@@ -33,20 +33,19 @@ ProtocolPlugin::ProtocolPlugin(
     int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
     Licq::ProtocolPluginInterface* (*factory)())
   : Plugin(id, lib, thread),
-    myInterface((*factory)(), &destroyProtocolPluginInterface)
+    myFactory(factory)
 {
-  if (!myInterface)
-    throw std::exception();
+  // Empty
 }
 
 ProtocolPlugin::ProtocolPlugin(
     int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
     boost::shared_ptr<Licq::ProtocolPluginInterface> interface)
   : Plugin(id, lib, thread),
+    myFactory(NULL),
     myInterface(interface)
 {
-  if (!myInterface)
-    throw std::exception();
+  // Empty
 }
 
 ProtocolPlugin::~ProtocolPlugin()
@@ -67,7 +66,8 @@ unsigned long ProtocolPlugin::capabilities() const
 void ProtocolPlugin::pushSignal(
     boost::shared_ptr<const Licq::ProtocolSignal> signal)
 {
-  myInterface->pushSignal(signal);
+  if (isRunning())
+    myInterface->pushSignal(signal);
 }
 
 Licq::User* ProtocolPlugin::createUser(const Licq::UserId& id, bool temporary)
@@ -78,6 +78,12 @@ Licq::User* ProtocolPlugin::createUser(const Licq::UserId& id, bool temporary)
 Licq::Owner* ProtocolPlugin::createOwner(const Licq::UserId& id)
 {
   return myInterface->createOwner(id);
+}
+
+void ProtocolPlugin::createInterface()
+{
+  assert(!myInterface);
+  myInterface.reset((*myFactory)(), &destroyProtocolPluginInterface);
 }
 
 boost::shared_ptr<Licq::PluginInterface> ProtocolPlugin::interface()

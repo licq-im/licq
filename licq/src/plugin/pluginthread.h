@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2011, 2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,6 +70,7 @@ public:
   bool isThread(const pthread_t& thread) const;
 
   DynamicLibrary::Ptr loadPlugin(const std::string& path);
+  void createPlugin(void (*pluginCreate)(void*), void* argument);
   bool initPlugin(bool (*pluginInit)(void*), void* argument);
   void startPlugin(void* (*pluginStart)(void*), void* argument);
 

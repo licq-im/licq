@@ -129,6 +129,8 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
     // Create the plugin
     GeneralPlugin::Ptr plugin = boost::make_shared<GeneralPlugin>(
         getNewPluginId(), lib, pluginThread, pluginData->pluginFactory);
+    if (!plugin->create())
+      throw std::exception();
 
     // Let the plugin initialize itself
     if (!plugin->init(argc, argv, &initPluginCallback))
@@ -187,6 +189,8 @@ loadProtocolPlugin(const std::string& name, bool keep)
     // Create the plugin
     ProtocolPlugin::Ptr plugin = boost::make_shared<ProtocolPlugin>(
         getNewPluginId(), lib, pluginThread, pluginData->pluginFactory);
+    if (!plugin->create())
+      throw std::exception();
 
     {
       // Check if we already got a plugin for this protocol

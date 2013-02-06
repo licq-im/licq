@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2011, 2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ struct PluginThread::Data
     STATE_STOP,
     STATE_WAITING,
     STATE_LOAD_PLUGIN,
+    STATE_CREATE_PLUGIN,
     STATE_INIT_PLUGIN,
     STATE_START_PLUGIN,
     STATE_RUNNING,
@@ -53,6 +54,10 @@ struct PluginThread::Data
   std::string myPluginPath;
   DynamicLibrary::Ptr myLib;
   boost::exception_ptr myException;
+
+  // For plugin create
+  void (*myPluginCreate)(void*);
+  void* myPluginCreateArgument;
 
   // For plugin init
   bool (*myPluginInit)(void*);
@@ -112,6 +117,10 @@ static void* pluginThreadEntry(void* arg)
           data.myCondition.signal();
           return NULL;
         }
+        data.myState = PluginThread::Data::STATE_WAITING;
+        break;
+      case PluginThread::Data::STATE_CREATE_PLUGIN:
+        data.myPluginCreate(data.myPluginCreateArgument);
         data.myState = PluginThread::Data::STATE_WAITING;
         break;
       case PluginThread::Data::STATE_INIT_PLUGIN:
@@ -280,6 +289,29 @@ DynamicLibrary::Ptr PluginThread::loadPlugin(const std::string& path)
   myData->myPluginPath.clear();
 
   return lib;
+}
+
+void PluginThread::createPlugin(void (*pluginCreate)(void*), void* argument)
+{
+  assert(!isThread(INVALID_THREAD_ID));
+
+  MutexLocker locker(myData->myMutex);
+  assert(myData->myState == PluginThread::Data::STATE_WAITING);
+
+  myData->myState = PluginThread::Data::STATE_CREATE_PLUGIN;
+  myData->myPluginCreate = pluginCreate;
+  myData->myPluginCreateArgument = argument;
+  myData->myCondition.signal();
+
+  // Wait for thread to create plugin
+  do
+  {
+    myData->myCondition.wait(myData->myMutex);
+  } while (myData->myState == PluginThread::Data::STATE_CREATE_PLUGIN);
+
+  // Reset myData
+  myData->myPluginCreate = NULL;
+  myData->myPluginCreateArgument = NULL;
 }
 
 bool PluginThread::initPlugin(bool (*pluginInit)(void*), void* argument)

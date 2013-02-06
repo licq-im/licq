@@ -32,20 +32,19 @@ GeneralPlugin::GeneralPlugin(
     int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
     Licq::GeneralPluginInterface* (*factory)())
   : Plugin(id, lib, thread),
-    myInterface((*factory)(), &destroyGeneralPluginInterface)
+    myFactory(factory)
 {
-  if (!myInterface)
-    throw std::exception();
+  // Empty
 }
 
 GeneralPlugin::GeneralPlugin(
     int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
     boost::shared_ptr<Licq::GeneralPluginInterface> interface)
   : Plugin(id, lib, thread),
+    myFactory(NULL),
     myInterface(interface)
 {
-  if (!myInterface)
-    throw std::exception();
+  // Empty
 }
 
 GeneralPlugin::~GeneralPlugin()
@@ -75,12 +74,14 @@ bool GeneralPlugin::isEnabled() const
 
 void GeneralPlugin::enable()
 {
-  myInterface->enable();
+  if (isRunning())
+    myInterface->enable();
 }
 
 void GeneralPlugin::disable()
 {
-  myInterface->disable();
+  if (isRunning())
+    myInterface->disable();
 }
 
 bool GeneralPlugin::wantSignal(unsigned long signalType) const
@@ -91,12 +92,20 @@ bool GeneralPlugin::wantSignal(unsigned long signalType) const
 void GeneralPlugin::pushSignal(
     boost::shared_ptr<const Licq::PluginSignal> signal)
 {
-  myInterface->pushSignal(signal);
+  if (isRunning())
+    myInterface->pushSignal(signal);
 }
 
 void GeneralPlugin::pushEvent(boost::shared_ptr<const Licq::Event> event)
 {
-  myInterface->pushEvent(event);
+  if (isRunning())
+    myInterface->pushEvent(event);
+}
+
+void GeneralPlugin::createInterface()
+{
+  assert(!myInterface);
+  myInterface.reset((*myFactory)(), &destroyGeneralPluginInterface);
 }
 
 boost::shared_ptr<Licq::PluginInterface> GeneralPlugin::interface()
