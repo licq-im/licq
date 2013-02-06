@@ -295,7 +295,7 @@ CSrvPacketTcp::CSrvPacketTcp(unsigned char icqChannel)
 
 CSrvPacketTcp::~CSrvPacketTcp()
 {
-  // Empty
+  delete buffer;
 }
 
 CBuffer *CSrvPacketTcp::Finalize(Licq::INetSocket*)
@@ -386,7 +386,7 @@ CPacketUdp::CPacketUdp(unsigned short _nCommand)
 
 CPacketUdp::~CPacketUdp()
 {
-  // Empty
+  delete buffer;
 }
 
 void CPacketUdp::InitBuffer()

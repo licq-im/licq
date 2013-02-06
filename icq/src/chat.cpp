@@ -87,6 +87,17 @@ const unsigned short CHAT_STATE_CONNECTED = 5;
 
 
 //---Chat-----------------------------------------------------------------------
+CPacketChat::CPacketChat()
+  : buffer(NULL)
+{
+  // Empty
+}
+
+CPacketChat::~CPacketChat()
+{
+  delete buffer;
+}
+
 void CPacketChat::InitBuffer()
 {
   buffer = new CBuffer(m_nSize);

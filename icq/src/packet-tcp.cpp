@@ -231,6 +231,17 @@ bool LicqIcq::Decrypt_Client(CBuffer* pkt, unsigned long version)
   return true;
 }
 
+CPacketTcp_Handshake::CPacketTcp_Handshake()
+  : buffer(NULL)
+{
+  // Empty
+}
+
+CPacketTcp_Handshake::~CPacketTcp_Handshake()
+{
+  delete buffer;
+}
+
 CPacketTcp_Handshake_v2::CPacketTcp_Handshake_v2(unsigned long nLocalPort)
 {
   m_nLocalPort = nLocalPort;
@@ -592,7 +603,7 @@ CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand, int
 
 CPacketTcp::~CPacketTcp()
 {
-  // Empty
+  delete buffer;
 }
 
 

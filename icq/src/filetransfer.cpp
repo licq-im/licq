@@ -63,13 +63,14 @@ using Licq::gLog;
 
 //-----PacketFile---------------------------------------------------------------
 CPacketFile::CPacketFile()
+  : buffer(NULL)
 {
   // Empty
 }
 
 CPacketFile::~CPacketFile()
 {
-  // Empty
+  delete buffer;
 }
 
 //-----FileInitClient-----------------------------------------------------------
