@@ -245,7 +245,7 @@ static void upgradeLicq18_moveUserData(const string& baseDir, StringMap& owners,
 
     // If there is a user picture file, move that too
     string oldPicFile = userDir + "/" + accountId + ".pic";
-    string newPicFile = userDirs[ppidStr] + "/" + accountId + ".pic";
+    string newPicFile = userDirs[ppidStr] + "/" + accountId + ".picture";
     file_rename(oldPicFile, newPicFile, true);
   }
   closedir(userDirList);
@@ -265,7 +265,7 @@ static void upgradeLicq18_moveOwnerData(const string& baseDir, StringMap& owners
     file_rename(oldOwnerFile, newOwnerFile);
 
     // If there is an owner picture file, copy that too (old file is shared for all owners)
-    string newPicFile = userDirs[ppidStr] + "/" + iter->second + ".pic";
+    string newPicFile = userDirs[ppidStr] + "/" + iter->second + ".picture";
     file_copy(oldOwnerPicFile, newPicFile);
   }
 
