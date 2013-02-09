@@ -68,6 +68,7 @@ public:
   // From Licq::ProtocolPluginInterface
   unsigned long protocolId() const;
   unsigned long capabilities() const;
+  Licq::User* createUser(const Licq::UserId& id, bool temporary);
   Licq::Owner* createOwner(const Licq::UserId& id);
 
   // From Licq::MainLoopCallback

@@ -5,6 +5,7 @@ set(jabber_SRCS
   owner.cpp
   plugin.cpp
   sessionmanager.cpp
+  user.cpp
   vcard.cpp
 )
 

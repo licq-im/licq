@@ -27,6 +27,7 @@
 #include "plugin.h"
 #include "pluginversion.h"
 #include "sessionmanager.h"
+#include "user.h"
 #include "vcard.h"
 
 #include <licq/contactlist/owner.h>
@@ -91,6 +92,11 @@ unsigned long Plugin::capabilities() const
       | Licq::ProtocolPlugin::CanHoldStatusMsg
       | Licq::ProtocolPlugin::CanSendAuth
       | Licq::ProtocolPlugin::CanSendAuthReq;
+}
+
+Licq::User* Plugin::createUser(const Licq::UserId& id, bool temporary)
+{
+  return new User(id, temporary);
 }
 
 Licq::Owner* Plugin::createOwner(const Licq::UserId& id)
