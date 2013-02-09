@@ -75,7 +75,6 @@ public:
 
 private:
   void processSignal(const Licq::ProtocolSignal* signal);
-  void getUserGroups(const Licq::UserId& userId, gloox::StringList& retGroupNames);
 
   void doLogon(const Licq::ProtoLogonSignal* signal);
   void doChangeStatus(const Licq::ProtoChangeStatusSignal* signal);
@@ -92,6 +91,9 @@ private:
   void doRefuseAuth(const Licq::ProtoRefuseAuthSignal* signal);
   void doRequestAuth(const Licq::ProtoRequestAuthSignal* signal);
   void doRenameGroup(const Licq::ProtoRenameGroupSignal* signal);
+
+  void getUserGroups(const Licq::UserId& userId,
+                     gloox::StringList& retGroupNames);
 
   Client* myClient;
   Licq::MainLoop myMainLoop;

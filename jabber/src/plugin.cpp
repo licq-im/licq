@@ -106,10 +106,8 @@ void Plugin::rawFileEvent(int fd, int /*revents*/)
   switch (ch)
   {
     case PipeSignal:
-    {
       processSignal(popSignal().get());
       break;
-    }
     case PipeShutdown:
       doLogoff();
       myMainLoop.quit();
@@ -213,7 +211,8 @@ void Plugin::doLogon(const Licq::ProtoLogonSignal* signal)
   }
 
   if (myClient == NULL)
-    myClient = new Client(myMainLoop, signal->userId(), username, password, host, port, resource, tlsPolicy);
+    myClient = new Client(myMainLoop, signal->userId(), username, password,
+                          host, port, resource, tlsPolicy);
   else
     myClient->setPassword(password);
 
@@ -253,9 +252,11 @@ void Plugin::doSendMessage(const Licq::ProtoSendMessageSignal* signal)
       signal->userId().accountId(), signal->message(), isUrgent);
 
   Licq::EventMsg* message = new Licq::EventMsg(
-      signal->message().c_str(), Licq::EventMsg::TimeNow, Licq::EventMsg::FlagSender);
+      signal->message().c_str(), Licq::EventMsg::TimeNow,
+      Licq::EventMsg::FlagSender);
 
-  Licq::Event* event = new Licq::Event(signal, Licq::Event::ResultAcked, message);
+  Licq::Event* event =
+      new Licq::Event(signal, Licq::Event::ResultAcked, message);
   event->myCommand = Licq::Event::CommandMessage;
 
   if (event->m_pUserEvent)
@@ -324,21 +325,6 @@ void Plugin::doChangeUserGroups(
   myClient->changeUserGroups(userId.accountId(), groupNames);
 }
 
-void Plugin::getUserGroups(const Licq::UserId& userId, gloox::StringList& retGroupNames)
-{
-  Licq::UserReadGuard u(userId);
-  if (!u.isLocked())
-    return;
-
-  const Licq::UserGroupList groups = u->GetGroups();
-  BOOST_FOREACH(int groupId, groups)
-  {
-    string groupName = Licq::gUserManager.GetGroupNameFromGroup(groupId);
-    if (!groupName.empty())
-      retGroupNames.push_back(groupName);
-  }
-}
-
 void Plugin::doRemoveUser(const Licq::ProtoRemoveUserSignal* signal)
 {
   assert(myClient != NULL);
@@ -383,19 +369,20 @@ void Plugin::doRequestAuth(const Licq::ProtoRequestAuthSignal* signal)
       signal->userId().accountId(), signal->message());
 }
 
-void Plugin::doRenameGroup(const Licq::ProtoRenameGroupSignal* s)
+void Plugin::doRenameGroup(const Licq::ProtoRenameGroupSignal* signal)
 {
-  Licq::UserListGuard userList(s->userId());
+  Licq::UserListGuard userList(signal->userId());
   BOOST_FOREACH(Licq::User* licqUser, **userList)
   {
     Licq::UserReadGuard user(licqUser);
 
-    if (!user->isInGroup(s->groupId()))
+    if (!user->isInGroup(signal->groupId()))
       continue;
 
-    // User is member of renamed group, get complete group list and update server
+    // User is member of renamed group, get complete group list and update
+    // server
     gloox::StringList groupNames;
-    const Licq::UserGroupList groups = user->GetGroups();
+    const Licq::UserGroupList& groups = user->GetGroups();
     BOOST_FOREACH(int groupId, groups)
     {
       string groupName = Licq::gUserManager.GetGroupNameFromGroup(groupId);
@@ -403,5 +390,21 @@ void Plugin::doRenameGroup(const Licq::ProtoRenameGroupSignal* s)
         groupNames.push_back(groupName);
     }
     myClient->changeUserGroups(user->id().accountId(), groupNames);
+  }
+}
+
+void Plugin::getUserGroups(const Licq::UserId& userId,
+                           gloox::StringList& retGroupNames)
+{
+  Licq::UserReadGuard u(userId);
+  if (!u.isLocked())
+    return;
+
+  const Licq::UserGroupList& groups = u->GetGroups();
+  BOOST_FOREACH(int groupId, groups)
+  {
+    string groupName = Licq::gUserManager.GetGroupNameFromGroup(groupId);
+    if (!groupName.empty())
+      retGroupNames.push_back(groupName);
   }
 }
