@@ -33,8 +33,8 @@
 #include <licq/byteorder.h>
 #include <licq/contactlist/group.h>
 #include <licq/contactlist/usermanager.h>
+#include <licq/crypto.h>
 #include <licq/daemon.h>
-#include <licq/md5.h>
 #include <licq/socket.h>
 #include <licq/translator.h>
 #include <licq/logging/log.h>
@@ -603,17 +603,20 @@ CPU_NewLogon::CPU_NewLogon(const string& password, const string& accountId, cons
     pass.erase(8);
   }
 
-  string toHash(md5Salt);
-  toHash += pass;
-  toHash += "AOL Instant Messenger (SM)";
-  unsigned char szDigest[MD5_DIGEST_LENGTH];
-  Licq::md5((const unsigned char*)toHash.c_str(), toHash.size(), szDigest);
-
-  m_nSize += accountId.size() + MD5_DIGEST_LENGTH + 70;
+  m_nSize += accountId.size() + Licq::Md5::DIGEST_LENGTH + 70;
   InitBuffer();
 
   buffer->PackTLV(0x0001, accountId.size(), accountId.c_str());
-  buffer->PackTLV(0x0025, MD5_DIGEST_LENGTH, reinterpret_cast<char *>(szDigest));
+
+  {
+    const string toHash = md5Salt + pass + "AOL Instant Messenger (SM)";
+
+    using namespace Licq::Md5;
+    uint8_t digest[DIGEST_LENGTH];
+    hash(toHash, digest);
+
+    buffer->PackTLV(0x0025, DIGEST_LENGTH, reinterpret_cast<char *>(digest));
+  }
 
   buffer->PackTLV(0x0003, 0x0008, "ICQBasic");
 

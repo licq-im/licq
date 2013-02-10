@@ -20,21 +20,12 @@
 
 #include <cstring> // for memcpy()
 
-#include <licq/md5.h>
-
-void Licq::md5(const uint8_t* buf, size_t len, uint8_t* digest)
-{
-  Md5Context context;
-
-  md5Init(&context);
-  md5Update(&context, buf, len);
-  md5Final(&context, digest);
-}
+#include "md5.h"
 
 /*
  * Note: this code is harmless but does nothing on little-endian machines.
  */
-void byteSwap(uint32_t* buf, unsigned words)
+static void byteSwap(uint32_t* buf, unsigned words)
 {
   for ( ; words > 0; --words)
   {
@@ -43,11 +34,13 @@ void byteSwap(uint32_t* buf, unsigned words)
   }
 }
 
+static void md5Transform(uint32_t buf[4], const uint32_t in[16]);
+
 /*
  * Start MD5 accumulation.  Set bit count to 0 and buffer to mysterious
  * initialization constants.
  */
-void Licq::md5Init(struct Md5Context* ctx)
+void LicqDaemon::md5Init(Md5Context* ctx)
 {
   ctx->buf[0] = 0x67452301;
   ctx->buf[1] = 0xefcdab89;
@@ -60,7 +53,7 @@ void Licq::md5Init(struct Md5Context* ctx)
  * Update context to reflect the concatenation of another buffer full
  * of bytes.
  */
-void Licq::md5Update(struct Md5Context* ctx, uint8_t const* buf, size_t len)
+void LicqDaemon::md5Update(Md5Context* ctx, uint8_t const* buf, size_t len)
 {
   // Space available in ctx->in (at least 1)
   uint32_t t = 64 - (ctx->bytes & 0x3f);
@@ -98,7 +91,7 @@ void Licq::md5Update(struct Md5Context* ctx, uint8_t const* buf, size_t len)
  * Final wrapup - pad to 64-byte boundary with the bit pattern
  * 1 0* (64-bit count of bits processed, MSB-first)
  */
-void Licq::md5Final(struct Md5Context* ctx, uint8_t digest[16])
+void LicqDaemon::md5Final(Md5Context* ctx, uint8_t digest[16])
 {
   // Number of bytes in ctx->in
   int count = ctx->bytes & 0x3f;
@@ -149,7 +142,7 @@ void Licq::md5Final(struct Md5Context* ctx, uint8_t digest[16])
  * reflect the addition of 16 longwords of new data.  MD5Update blocks
  * the data and converts bytes into longwords for this routine.
  */
-void Licq::md5Transform(uint32_t buf[4], const uint32_t in[16])
+static void md5Transform(uint32_t buf[4], const uint32_t in[16])
 {
   register uint32_t a, b, c, d;
 

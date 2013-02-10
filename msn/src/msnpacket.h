@@ -156,7 +156,7 @@ public:
 class CPS_MSNChallenge : public CMSNPacket
 {
 public:
-  CPS_MSNChallenge(const char *);
+  CPS_MSNChallenge(const std::string& hash);
 };
 
 class CPS_MSNSetPrivacy : public CMSNPacket

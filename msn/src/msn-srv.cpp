@@ -30,10 +30,10 @@
 #include <vector>
 
 #include <licq/contactlist/usermanager.h>
+#include <licq/crypto.h>
 #include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/logging/logservice.h>
-#include <licq/md5.h>
 #include <licq/oneventmanager.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
@@ -142,7 +142,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       packet->SkipParameter(); // Seq
       string strHash = packet->GetParameter();
       
-      pReply = new CPS_MSNChallenge(strHash.c_str());
+      pReply = new CPS_MSNChallenge(strHash);
     }
     else if (strCmd == "SYN")
     {
@@ -445,19 +445,16 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         string strFrom = packet->GetValue("From");
         string strFromAddr = packet->GetValue("From-Addr");
         string strSubject = packet->GetValue("Subject");
-        
-        string strToHash = m_strMSPAuth + "9" + myPassword;
-        unsigned char szDigest[16];
-        char szHexOut[32];
-        Licq::md5((const uint8_t*)strToHash.c_str(), strToHash.size(), szDigest);
-        for (int i = 0; i < 16; i++)
-          sprintf(&szHexOut[i*2], "%02x", szDigest[i]);
+
+        const string toHash = m_strMSPAuth + "9" + myPassword;
+        const string hexDigest = Licq::Md5::hashToHexString(toHash);
     
         gLog.info("New email from %s (%s)", strFrom.c_str(), strFromAddr.c_str());
-        Licq::EventEmailAlert* pEmailAlert = new Licq::EventEmailAlert(strFrom, myOwnerId.accountId(),
-            strFromAddr, strSubject, time(0), m_strMSPAuth, m_strSID, m_strKV, packet->GetValue("id"),
+        Licq::EventEmailAlert* pEmailAlert = new Licq::EventEmailAlert(
+            strFrom, myOwnerId.accountId(), strFromAddr, strSubject, time(0),
+            m_strMSPAuth, m_strSID, m_strKV, packet->GetValue("id"),
             packet->GetValue("Post-URL"), packet->GetValue("Message-URL"),
-          szHexOut, m_nSessionStart);
+            hexDigest, m_nSessionStart);
 
         Licq::OwnerWriteGuard o(myOwnerId);
         if (Licq::gDaemon.addUserEvent(*o, pEmailAlert))

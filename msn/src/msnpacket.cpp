@@ -24,8 +24,8 @@
 #include <cstring>
 #include <string>
 
+#include <licq/crypto.h>
 #include <licq/daemon.h>
-#include <licq/md5.h>
 
 #include "msn_constants.h"
 #include "pluginversion.h"
@@ -341,27 +341,19 @@ CPS_MSNSync::CPS_MSNSync(unsigned long nVersion) : CMSNPacket()
   m_pBuffer->packRaw("\r\n", 2);
 }
 
-CPS_MSNChallenge::CPS_MSNChallenge(const char *szHash) : CMSNPacket()
+CPS_MSNChallenge::CPS_MSNChallenge(const std::string& hash) : CMSNPacket()
 {
   m_szCommand = strdup("QRY");
   const char *szParams = "msmsgs@msnmsgr.com 32";
   m_nSize += strlen(szParams) + 32; //payload
   InitBuffer();
   
-  char szSource[65];
-  unsigned char szDigest[16];
-  char szHexOut[33];
-  snprintf(szSource, 64, "%sQ1P7W2E4J9R8U3S5", szHash);
-  szSource[64] = '\0';
-  Licq::md5((const uint8_t*)szSource, strlen(szSource), szDigest);
+  const string toHash = (hash + "Q1P7W2E4J9R8U3S5").substr(0, 64);
+  const string hexDigest = Licq::Md5::hashToHexString(toHash);
 
-  for (int i = 0; i < 16; i++)
-  {
-    sprintf(&szHexOut[i*2], "%02x", szDigest[i]);
-  }
   m_pBuffer->packRaw(szParams, strlen(szParams));
   m_pBuffer->packRaw("\r\n", 2);
-  m_pBuffer->packRaw(szHexOut, 32);
+  m_pBuffer->packRaw(hexDigest);
 }
 
 CPS_MSNSetPrivacy::CPS_MSNSetPrivacy() : CMSNPacket()

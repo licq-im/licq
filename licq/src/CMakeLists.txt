@@ -1,6 +1,8 @@
 set(tested_SRCS
   conversation.cpp
+  crypto.cpp
   inifile.cpp
+  md5.cpp
 
   logging/adjustablelogsink.cpp
   logging/log.cpp
@@ -36,7 +38,6 @@ set(licq_SRCS
   licq-upgrade.cpp
   main.cpp
   mainloop.cpp
-  md5.cpp
   oneventmanager.cpp
   packet.cpp
   protocolmanager.cpp
@@ -69,6 +70,7 @@ set(licq_SRCS
 set(test_SRCS
   tests/conversationtest.cpp
   tests/inifiletest.cpp
+  tests/cryptotest.cpp
 
   logging/tests/adjustablelogsinktest.cpp
   logging/tests/logdistributortest.cpp
@@ -155,6 +157,7 @@ if (BUILD_TESTS)
   target_link_libraries(unittest ${GTEST_LIBRARIES})
   target_link_libraries(unittest ${GMOCK_LIBRARIES})
   target_link_libraries(unittest ${CMAKE_DL_LIBS})
+  target_link_libraries(unittest ${OPENSSL_LIBRARIES})
   target_link_libraries(unittest ${SOCKET_LIBRARIES})
 
   # Link with thread library

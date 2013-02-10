@@ -6,18 +6,14 @@
  *         This file is in the public domain.
  */
 
-#ifndef LICQ_MD5_H
-#define LICQ_MD5_H
+#ifndef LICQDAEMON_MD5_H
+#define LICQDAEMON_MD5_H
 
 #include <stddef.h>
 #include <stdint.h>
 
-#define MD5_DIGEST_LENGTH 16
-
-namespace Licq
+namespace LicqDaemon
 {
-
-void md5(const uint8_t* buf, size_t len, uint8_t* digest);
 
 struct Md5Context
 {
@@ -29,8 +25,7 @@ struct Md5Context
 void md5Init(struct Md5Context* context);
 void md5Update(struct Md5Context* context, uint8_t const* buf, size_t len);
 void md5Final(struct Md5Context* context, unsigned char digest[16]);
-void md5Transform(uint32_t buf[4], const uint32_t in[16]);
 
-} // namespace Licq
+} // namespace LicqDaemon
 
 #endif
