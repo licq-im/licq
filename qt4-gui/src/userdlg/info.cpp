@@ -1610,8 +1610,13 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
         Licq::OwnerWriteGuard o(myUserId);
         savePagePicture(*o);
       }
-      icq->icqUpdateInfoTimestamp(myUserId, Licq::IcqProtocol::PluginPicture);
-      icqEventTag = 0;
+      if (icq)
+      {
+        icq->icqUpdateInfoTimestamp(myUserId, Licq::IcqProtocol::PluginPicture);
+        icqEventTag = 0;
+      }
+      else
+        icqEventTag = gProtocolManager.updateOwnerInfo(myUserId);
       break;
     }
     default:
