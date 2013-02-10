@@ -1522,8 +1522,8 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
       savePageGeneral(*owner);
   }
 
-    if (status == Licq::User::OfflineStatus)
-    {
+  if (status == Licq::User::OfflineStatus)
+  {
     InformUser(dynamic_cast<UserDlg*>(parent()),
         tr("You need to be connected to the\nICQ Network to change your settings."));
     return 0;
@@ -1553,17 +1553,17 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
       break;
 
     case UserDlg::MorePage:
-    icqEventTag = icq->icqSetMoreInfo(myUserId,
-        nfoAge->text().toUShort(),
-        cmbGender->currentIndex(),
+      icqEventTag = icq->icqSetMoreInfo(myUserId,
+          nfoAge->text().toUShort(),
+          cmbGender->currentIndex(),
           nfoHomepage->text().toLocal8Bit().constData(),
-        (spnBirthYear->value() == spnBirthYear->minimum() ? 0 : spnBirthYear->value()),
-        spnBirthMonth->value(),
-        spnBirthDay->value(),
-        icq->getLanguageByIndex(cmbLanguage[0]->currentIndex())->nCode,
-        icq->getLanguageByIndex(cmbLanguage[1]->currentIndex())->nCode,
-        icq->getLanguageByIndex(cmbLanguage[2]->currentIndex())->nCode);
-  break;
+          (spnBirthYear->value() == spnBirthYear->minimum() ? 0 : spnBirthYear->value()),
+          spnBirthMonth->value(),
+          spnBirthDay->value(),
+          icq->getLanguageByIndex(cmbLanguage[0]->currentIndex())->nCode,
+          icq->getLanguageByIndex(cmbLanguage[1]->currentIndex())->nCode,
+          icq->getLanguageByIndex(cmbLanguage[2]->currentIndex())->nCode);
+      break;
 
     case UserDlg::More2Page:
       icq->icqSetInterestsInfo(myUserId, myInterests);
@@ -1571,28 +1571,28 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
       break;
 
     case UserDlg::WorkPage:
-    i = cmbCompanyCountry->currentIndex();
-    cc = icq->getCountryByIndex(i)->nCode;
-    i = cmbCompanyOccupation->currentIndex();
-    occupation = icq->getOccupationByIndex(i)->nCode;
-    icqEventTag = icq->icqSetWorkInfo(myUserId,
+      i = cmbCompanyCountry->currentIndex();
+      cc = icq->getCountryByIndex(i)->nCode;
+      i = cmbCompanyOccupation->currentIndex();
+      occupation = icq->getOccupationByIndex(i)->nCode;
+      icqEventTag = icq->icqSetWorkInfo(myUserId,
           nfoCompanyCity->text().toUtf8().constData(),
           nfoCompanyState->text().toUtf8().constData(),
           nfoCompanyPhone->text().toUtf8().constData(),
           nfoCompanyFax->text().toUtf8().constData(),
           nfoCompanyAddress->text().toUtf8().constData(),
           nfoCompanyZip->text().toUtf8().constData(),
-        cc,
+          cc,
           nfoCompanyName->text().toUtf8().constData(),
           nfoCompanyDepartment->text().toUtf8().constData(),
           nfoCompanyPosition->text().toUtf8().constData(),
-        occupation,
+          occupation,
           nfoCompanyHomepage->text().toUtf8().constData());
-  break;
+      break;
 
     case UserDlg::AboutPage:
-    icqEventTag = icq->icqSetAbout(myUserId, mlvAbout->toPlainText().toUtf8().constData());
-    break;
+      icqEventTag = icq->icqSetAbout(myUserId, mlvAbout->toPlainText().toUtf8().constData());
+      break;
 
     case UserDlg::PhonePage:
     {
@@ -1616,6 +1616,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
     }
     default:
       icqEventTag = 0;
+      break;
   }
 
   return icqEventTag;
@@ -1623,10 +1624,10 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
 
 void UserPages::Info::addPhone()
 {
-    EditPhoneDlg* epd = new EditPhoneDlg(dynamic_cast<UserDlg*>(parent()));
+  EditPhoneDlg* epd = new EditPhoneDlg(dynamic_cast<UserDlg*>(parent()));
   connect(epd, SIGNAL(updated(struct Licq::PhoneBookEntry&, int)),
       SLOT(phoneBookUpdated(struct Licq::PhoneBookEntry&, int)));
-    epd->show();
+  epd->show();
 }
 
 void UserPages::Info::browsePicture()
