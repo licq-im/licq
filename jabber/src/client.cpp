@@ -21,7 +21,9 @@
  */
 
 #include "client.h"
+
 #include "sessionmanager.h"
+#include "user.h"
 #include "vcard.h"
 
 #include <gloox/connectionhttpproxy.h>
@@ -30,7 +32,6 @@
 #include <gloox/message.h>
 #include <gloox/rostermanager.h>
 
-#include <licq/contactlist/user.h>
 #include <licq/daemon.h>
 #include <licq/logging/log.h>
 #include <licq/licqversion.h>
@@ -39,7 +40,6 @@
 
 using namespace LicqJabber;
 
-using Licq::User;
 using Licq::gDaemon;
 using Licq::gLog;
 using std::string;

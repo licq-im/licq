@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2012-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -23,6 +23,8 @@
 #ifndef LICQJABBER_OWNER_H
 #define LICQJABBER_OWNER_H
 
+#include "user.h"
+
 #include <licq/contactlist/owner.h>
 
 #include <gloox/gloox.h>
@@ -31,7 +33,7 @@
 namespace LicqJabber
 {
 
-class Owner : public Licq::Owner
+class Owner : public Licq::Owner, public User
 {
 public:
  /// Constructor

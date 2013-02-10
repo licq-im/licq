@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -22,8 +22,9 @@
 
 #include "vcard.h"
 
+#include "user.h"
+
 #include <gloox/vcard.h>
-#include <licq/contactlist/user.h>
 
 #include <cstdlib>
 #include <iomanip>
@@ -44,7 +45,7 @@ gloox::VCard* UserToVCard::createVCard() const
 
   std::ostringstream tz;
   int offset = myUser->timezone();
-  if (offset == Licq::User::TimezoneUnknown)
+  if (offset == User::TimezoneUnknown)
     tz << "-00:00";
   else
   {
@@ -60,7 +61,7 @@ gloox::VCard* UserToVCard::createVCard() const
   return card;
 }
 
-bool VCardToUser::updateUser(Licq::User* user) const
+bool VCardToUser::updateUser(User* user) const
 {
   if (!user->KeepAliasOnUpdate())
   {

@@ -31,7 +31,7 @@
 namespace LicqJabber
 {
 
-class User : public Licq::User
+class User : public virtual Licq::User
 {
 public:
  /// Constructor

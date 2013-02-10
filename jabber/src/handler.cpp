@@ -21,12 +21,12 @@
  */
 
 #include "handler.h"
+#include "owner.h"
+#include "user.h"
 #include "vcard.h"
 
 #include <boost/foreach.hpp>
 
-#include <licq/contactlist/owner.h>
-#include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/logging/log.h>
@@ -58,12 +58,12 @@ void Handler::onConnect(const string& ip, int port, unsigned status)
   TRACE();
 
   {
-    Licq::OwnerWriteGuard owner(myOwnerId);
+    OwnerWriteGuard owner(myOwnerId);
     if (owner.isLocked())
     {
       owner->statusChanged(status);
       owner->SetIpPort(Licq::INetSocket::ipToInt(ip), port);
-      owner->setTimezone(Licq::User::systemTimezone());
+      owner->setTimezone(User::systemTimezone());
     }
   }
 
@@ -76,7 +76,7 @@ void Handler::onChangeStatus(unsigned status)
 {
   TRACE();
 
-  Licq::OwnerWriteGuard owner(myOwnerId);
+  OwnerWriteGuard owner(myOwnerId);
   if (owner.isLocked())
     owner->statusChanged(status);
 }
@@ -91,14 +91,14 @@ void Handler::onDisconnect(bool authError)
     {
       Licq::UserWriteGuard user(licqUser);
       if (user->isOnline())
-        user->statusChanged(Licq::User::OfflineStatus);
+        user->statusChanged(User::OfflineStatus);
     }
   }
 
   {
-    Licq::OwnerWriteGuard owner(myOwnerId);
+    OwnerWriteGuard owner(myOwnerId);
     if (owner.isLocked())
-      owner->statusChanged(Licq::User::OfflineStatus);
+      owner->statusChanged(User::OfflineStatus);
   }
 
   Licq::gPluginManager.pushPluginSignal(
@@ -122,7 +122,7 @@ void Handler::onUserAdded(
     gUserManager.addUser(userId, true, false);
     wasAdded = true;
   }
-  Licq::UserWriteGuard user(userId);
+  UserWriteGuard user(userId);
   assert(user.isLocked());
   if (wasAdded)
     user->setAlias(name);
@@ -147,7 +147,7 @@ void Handler::onUserAdded(
   user->SetAwaitingAuth(awaitingAuthorization);
 
   // Remove this line when SetGroups call above saves contact groups itself.
-  user->save(Licq::User::SaveLicqInfo);
+  user->save(User::SaveLicqInfo);
 
   Licq::gPluginManager.pushPluginSignal(
       new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
@@ -173,7 +173,7 @@ void Handler::onUserStatusChange(
 {
   TRACE();
 
-  Licq::UserWriteGuard user(Licq::UserId(myOwnerId, id));
+  UserWriteGuard user(Licq::UserId(myOwnerId, id));
   if (user.isLocked())
   {
     user->SetSendServer(true);
@@ -190,13 +190,13 @@ void Handler::onUserInfo(const string& id, const VCardToUser& wrapper)
   Licq::UserId userId(myOwnerId, id);
   if (userId.isOwner())
   {
-    Licq::OwnerWriteGuard owner(userId);
+    OwnerWriteGuard owner(userId);
     if (owner.isLocked())
       updated = wrapper.updateUser(*owner);
   }
   else
   {
-    Licq::UserWriteGuard user(userId);
+    UserWriteGuard user(userId);
     if (user.isLocked())
       updated = wrapper.updateUser(*user);
   }
@@ -242,7 +242,7 @@ void Handler::onUserAuthorizationRequest(
       message,
       time(0), 0);
 
-  Licq::OwnerWriteGuard owner(myOwnerId);
+  OwnerWriteGuard owner(myOwnerId);
   if (Licq::gDaemon.addUserEvent(*owner, event))
   {
     event->AddToHistory(*owner, true);
@@ -263,6 +263,7 @@ void Handler::onMessage(const string& from, const string& message, time_t sent,
 
   if (user.isLocked())
     user->setIsTyping(false);
+
   if (Licq::gDaemon.addUserEvent(*user, event))
     gOnEventManager.performOnEvent(OnEventData::OnEventMessage, *user);
 }
@@ -271,7 +272,7 @@ void Handler::onNotifyTyping(const string& from, bool active)
 {
   TRACE();
 
-  Licq::UserWriteGuard user(UserId(myOwnerId, from));
+  UserWriteGuard user(UserId(myOwnerId, from));
   if (user.isLocked())
   {
     user->setIsTyping(active);
@@ -285,10 +286,10 @@ void Handler::onNotifyTyping(const string& from, bool active)
 
 string Handler::getStatusMessage(unsigned status)
 {
-  if ((status & Licq::User::MessageStatuses) == 0)
+  if ((status & User::MessageStatuses) == 0)
     return string();
 
-  Licq::OwnerReadGuard o(myOwnerId);
+  OwnerReadGuard o(myOwnerId);
   if (!o.isLocked())
     return string();
 

@@ -30,8 +30,6 @@
 #include "user.h"
 #include "vcard.h"
 
-#include <licq/contactlist/owner.h>
-#include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
 #include <licq/logging/log.h>
@@ -191,7 +189,7 @@ void Plugin::processSignal(const Licq::ProtocolSignal* signal)
 void Plugin::doLogon(const Licq::ProtoLogonSignal* signal)
 {
   unsigned status = signal->status();
-  if (status == Licq::User::OfflineStatus)
+  if (status == User::OfflineStatus)
     return;
 
   string username;
@@ -267,7 +265,7 @@ void Plugin::doSendMessage(const Licq::ProtoSendMessageSignal* signal)
 
   if (event->m_pUserEvent)
   {
-    Licq::UserWriteGuard user(signal->userId());
+    UserWriteGuard user(signal->userId());
     if (user.isLocked())
     {
       event->m_pUserEvent->AddToHistory(*user, false);
@@ -299,7 +297,7 @@ void Plugin::doGetInfo(const Licq::ProtoRequestInfo* signal)
 void Plugin::doUpdateInfo(const Licq::ProtoUpdateInfoSignal* signal)
 {
   assert(myClient != NULL);
-  Licq::OwnerReadGuard owner(signal->userId());
+  OwnerReadGuard owner(signal->userId());
   if (!owner.isLocked())
   {
     gLog.error("No owner set");
@@ -343,7 +341,7 @@ void Plugin::doRenameUser(const Licq::ProtoRenameUserSignal* signal)
   assert(myClient != NULL);
   string newName;
   {
-    Licq::UserReadGuard u(signal->userId());
+    UserReadGuard u(signal->userId());
     if (!u.isLocked())
       return;
     newName = u->getAlias();
@@ -402,11 +400,11 @@ void Plugin::doRenameGroup(const Licq::ProtoRenameGroupSignal* signal)
 void Plugin::getUserGroups(const Licq::UserId& userId,
                            gloox::StringList& retGroupNames)
 {
-  Licq::UserReadGuard u(userId);
-  if (!u.isLocked())
+  UserReadGuard user(userId);
+  if (!user.isLocked())
     return;
 
-  const Licq::UserGroupList& groups = u->GetGroups();
+  const Licq::UserGroupList& groups = user->GetGroups();
   BOOST_FOREACH(int groupId, groups)
   {
     string groupName = Licq::gUserManager.GetGroupNameFromGroup(groupId);

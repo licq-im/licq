@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -25,11 +25,12 @@
 
 #include <boost/noncopyable.hpp>
 
-namespace Licq { class User; }
 namespace gloox { class VCard; }
 
 namespace LicqJabber
 {
+
+class User;
 
 /**
  * Converts between a Licq user and a gloox vcard.
@@ -37,18 +38,18 @@ namespace LicqJabber
 class UserToVCard : private boost::noncopyable
 {
 public:
-  explicit UserToVCard(const Licq::User* user) : myUser(user) {}
+  explicit UserToVCard(const User* user) : myUser(user) {}
   gloox::VCard* createVCard() const;
 
 private:
-  const Licq::User* myUser;
+  const User* myUser;
 };
 
 class VCardToUser : private boost::noncopyable
 {
 public:
   explicit VCardToUser(const gloox::VCard* vcard) : myVCard(vcard) {}
-  bool updateUser(Licq::User* user) const;
+  bool updateUser(User* user) const;
 
 private:
   const gloox::VCard* myVCard;

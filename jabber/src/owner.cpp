@@ -24,7 +24,7 @@
 using namespace LicqJabber;
 
 Owner::Owner(const Licq::UserId& id)
-  : Licq::User(id, false), Licq::Owner(id)
+  : Licq::User(id, false), Licq::Owner(id), User(id, false)
 {
   Licq::IniFile& conf(userConf());
 
