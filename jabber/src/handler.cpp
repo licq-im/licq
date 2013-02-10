@@ -169,43 +169,63 @@ void Handler::onUserRemoved(const string& id)
 }
 
 void Handler::onUserStatusChange(
-    const string& id, unsigned status, const string& msg)
+    const string& id, unsigned status, const string& msg,
+    const string& photoHash)
 {
   TRACE();
 
-  UserWriteGuard user(Licq::UserId(myOwnerId, id));
+  bool refreshInfo = false;
+
+  Licq::UserId userId(myOwnerId, id);
+  UserWriteGuard user(userId);
   if (user.isLocked())
   {
     user->SetSendServer(true);
     user->setAutoResponse(msg);
     user->statusChanged(status);
+
+    if (!photoHash.empty() && photoHash != user->pictureSha1())
+    {
+      Licq::gLog.debug("New picture SHA1 for %s; requesting new VCard",
+                       userId.accountId().c_str());
+      refreshInfo = true;
+    }
   }
+
+  if (refreshInfo)
+    Licq::gProtocolManager.requestUserInfo(userId);
 }
 
 void Handler::onUserInfo(const string& id, const VCardToUser& wrapper)
 {
   TRACE();
 
-  bool updated = false;
+  int saveGroup = 0;
   Licq::UserId userId(myOwnerId, id);
   if (userId.isOwner())
   {
     OwnerWriteGuard owner(userId);
     if (owner.isLocked())
-      updated = wrapper.updateUser(*owner);
+      saveGroup = wrapper.updateUser(*owner);
   }
   else
   {
     UserWriteGuard user(userId);
     if (user.isLocked())
-      updated = wrapper.updateUser(*user);
+      saveGroup = wrapper.updateUser(*user);
   }
 
-  if (updated)
+  if (saveGroup != 0)
   {
-    Licq::gPluginManager.pushPluginSignal(
-        new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
-                               Licq::PluginSignal::UserBasic, userId));
+    if (saveGroup & User::SaveUserInfo)
+      Licq::gPluginManager.pushPluginSignal(
+          new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                                 Licq::PluginSignal::UserBasic, userId));
+
+    if (saveGroup & User::SavePictureInfo)
+      Licq::gPluginManager.pushPluginSignal(
+          new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                                 Licq::PluginSignal::UserPicture, userId));
   }
 }
 

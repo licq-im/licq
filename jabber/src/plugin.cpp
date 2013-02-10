@@ -170,6 +170,9 @@ void Plugin::processSignal(const Licq::ProtocolSignal* signal)
     case Licq::ProtocolSignal::SignalUpdateInfo:
       doUpdateInfo(dynamic_cast<const Licq::ProtoUpdateInfoSignal*>(signal));
       break;
+    case Licq::ProtocolSignal::SignalRequestPicture:
+      doGetPicture(dynamic_cast<const Licq::ProtoRequestPicture*>(signal));
+      break;
     case Licq::ProtocolSignal::SignalRequestAuth:
       doRequestAuth(dynamic_cast<const Licq::ProtoRequestAuthSignal*>(signal));
       break;
@@ -306,6 +309,14 @@ void Plugin::doUpdateInfo(const Licq::ProtoUpdateInfoSignal* signal)
 
   UserToVCard vcard(*owner);
   myClient->setOwnerVCard(vcard);
+
+  Licq::gPluginManager.pushPluginEvent(new Licq::Event(signal));
+}
+
+void Plugin::doGetPicture(const Licq::ProtoRequestPicture* signal)
+{
+  assert(myClient != NULL);
+  myClient->getVCard(signal->userId().accountId());
 
   Licq::gPluginManager.pushPluginEvent(new Licq::Event(signal));
 }

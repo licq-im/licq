@@ -31,6 +31,7 @@
 #include <gloox/disco.h>
 #include <gloox/message.h>
 #include <gloox/rostermanager.h>
+#include <gloox/vcardupdate.h>
 
 #include <licq/daemon.h>
 #include <licq/logging/log.h>
@@ -73,6 +74,8 @@ Client::Client(Licq::MainLoop& mainLoop, const Licq::UserId& ownerId,
   myRosterManager(myClient.rosterManager()),
   myVCardManager(&myClient)
 {
+  myClient.registerStanzaExtension(new gloox::VCardUpdate);
+
   myClient.registerConnectionListener(this);
   myRosterManager->registerRosterListener(this, false);
   myClient.logInstance().registerLogHandler(
@@ -373,10 +376,31 @@ void Client::handleRosterPresence(const gloox::RosterItem& item,
                                   gloox::Presence::PresenceType presence,
                                   const string& msg)
 {
+  using namespace gloox;
+
   TRACE();
 
-  myHandler.onUserStatusChange(gloox::JID(item.jid()).bare(),
-      presenceToStatus(presence), msg);
+  std::string photoHash;
+
+  const RosterItem::ResourceMap& resources = item.resources();
+  for (RosterItem::ResourceMap::const_iterator resource = resources.begin();
+       photoHash.empty() && resource != resources.end(); ++resource)
+  {
+    const StanzaExtensionList& extensions = resource->second->extensions();
+    for (StanzaExtensionList::const_iterator it = extensions.begin();
+         photoHash.empty() && it != extensions.end(); ++it)
+    {
+      if ((*it)->extensionType() == gloox::ExtVCardUpdate)
+      {
+        const VCardUpdate* vCardUpdate = dynamic_cast<const VCardUpdate*>(*it);
+        if (vCardUpdate != NULL)
+          photoHash = vCardUpdate->hash();
+      }
+    }
+  }
+
+  myHandler.onUserStatusChange(
+      JID(item.jid()).bare(), presenceToStatus(presence), msg, photoHash);
 }
 
 void Client::handleSelfPresence(const gloox::RosterItem& /*item*/,

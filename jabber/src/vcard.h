@@ -25,6 +25,8 @@
 
 #include <boost/noncopyable.hpp>
 
+#include <string>
+
 namespace gloox { class VCard; }
 
 namespace LicqJabber
@@ -49,9 +51,11 @@ class VCardToUser : private boost::noncopyable
 {
 public:
   explicit VCardToUser(const gloox::VCard* vcard) : myVCard(vcard) {}
-  bool updateUser(User* user) const;
+  int updateUser(User* user) const;
 
 private:
+  void updatePhoto(User* user, const std::string& binPhoto) const;
+
   const gloox::VCard* myVCard;
 };
 

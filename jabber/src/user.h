@@ -40,9 +40,14 @@ public:
   /// Destructor
   virtual ~User();
 
+  void setPictureSha1(const std::string sha1) { myPictureSha1 = sha1; }
+  const std::string& pictureSha1() const { return myPictureSha1; }
+
 private:
   /// Inherited from Licq::User to save local additions
   virtual void saveUserInfo();
+
+  std::string myPictureSha1;
 };
 
 /**

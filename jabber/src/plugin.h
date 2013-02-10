@@ -41,6 +41,7 @@ class ProtoRenameGroupSignal;
 class ProtoRenameUserSignal;
 class ProtoRequestAuthSignal;
 class ProtoRequestInfo;
+class ProtoRequestPicture;
 class ProtoTypingNotificationSignal;
 class ProtoUpdateInfoSignal;
 class ProtoSendMessageSignal;
@@ -84,6 +85,7 @@ private:
   void doNotifyTyping(const Licq::ProtoTypingNotificationSignal* signal);
   void doGetInfo(const Licq::ProtoRequestInfo* signal);
   void doUpdateInfo(const Licq::ProtoUpdateInfoSignal* signal);
+  void doGetPicture(const Licq::ProtoRequestPicture* signal);
   void doAddUser(const Licq::ProtoAddUserSignal* signal);
   void doChangeUserGroups(const Licq::ProtoChangeUserGroupsSignal* signal);
   void doRemoveUser(const Licq::ProtoRemoveUserSignal* signal);

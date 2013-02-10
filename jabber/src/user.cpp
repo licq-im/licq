@@ -26,7 +26,9 @@ using namespace LicqJabber;
 User::User(const Licq::UserId& id, bool temporary)
   : Licq::User(id, temporary)
 {
-  //Licq::IniFile& conf(userConf());
+  Licq::IniFile& conf(userConf());
+
+  conf.get("JabberPictureSha1", myPictureSha1);
 }
 
 User::~User()
@@ -38,5 +40,7 @@ void User::saveUserInfo()
 {
   Licq::User::saveUserInfo();
 
-  //Licq::IniFile& conf(userConf());
+  Licq::IniFile& conf(userConf());
+
+  conf.set("JabberPictureSha1", myPictureSha1);
 }
