@@ -25,6 +25,7 @@
 #include <cerrno>
 #include <cstdio>
 #include <ctime>
+#include <fcntl.h>
 #include <netinet/in.h>
 #include <sstream>
 #include <sys/socket.h>
@@ -1347,6 +1348,60 @@ void User::save(unsigned group)
   if (!d->myConf.writeFile())
     gLog.error(tr("Error opening '%s' for writing. See log for details."),
         d->myConf.filename().c_str());
+}
+
+bool Licq::User::readPictureData(std::string& pictureData) const
+{
+  int fd = ::open(pictureFileName().c_str(), O_RDONLY);
+  if (fd == -1)
+  {
+    gLog.error(tr("Could not open picture file '%s' for reading (%s)"),
+               pictureFileName().c_str(), ::strerror(errno));
+    return false;
+  }
+
+  uint8_t buffer[1024];
+  ssize_t count;
+  while ((count = ::read(fd, &buffer, sizeof(buffer))) > 0)
+    pictureData.append(buffer, buffer + count);
+
+  if (count < 0)
+    gLog.error(tr("Could not read picture file '%s' (%s)"),
+               pictureFileName().c_str(), ::strerror(errno));
+
+  ::close(fd);
+  return count == 0;
+}
+
+bool Licq::User::writePictureData(const std::string& pictureData) const
+{
+  int fd = ::open(pictureFileName().c_str(), O_WRONLY | O_CREAT | O_TRUNC,
+                  S_IRUSR | S_IWUSR);
+  if (fd == -1)
+  {
+    gLog.error(tr("Could not open picture file '%s' for writing (%s)"),
+               pictureFileName().c_str(), ::strerror(errno));
+    return false;
+  }
+
+  const ssize_t count = ::write(fd, pictureData.data(), pictureData.size());
+  if (count != static_cast<ssize_t>(pictureData.size()))
+    gLog.error(tr("Could not write picture file '%s' (%s)"),
+               pictureFileName().c_str(), ::strerror(errno));
+
+  ::close(fd);
+  return count == static_cast<ssize_t>(pictureData.size());
+}
+
+bool Licq::User::deletePictureData() const
+{
+  if (::unlink(pictureFileName().c_str()) == -1 && errno != ENOENT)
+  {
+    gLog.error(tr("Could not delete the picture file '%s' (%s)"),
+               pictureFileName().c_str(), ::strerror(errno));
+    return false;
+  }
+  return true;
 }
 
 void Licq::User::EventPush(Licq::UserEvent *e)

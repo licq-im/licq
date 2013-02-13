@@ -176,6 +176,24 @@ public:
    */
   const std::string& pictureFileName() const    { return myPictureFileName; }
 
+  /**
+   * Read the user's picture and store the data in @a pictureData
+   * @return True if the picture could be read
+   */
+  bool readPictureData(std::string& pictureData) const;
+
+  /**
+   * Write @a pictureData to the user's picture file
+   * @return True if the picture could be written
+   */
+  bool writePictureData(const std::string& pictureData) const;
+
+  /**
+   * Removes the user's picture file
+   * @return True if the picture could be removed
+   */
+  bool deletePictureData() const;
+
   // Licq Info
   bool GetAwaitingAuth() const                  { return m_bAwaitingAuth; }
 

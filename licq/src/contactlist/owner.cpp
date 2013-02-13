@@ -108,16 +108,11 @@ void Licq::Owner::SetPicture(const char *f)
   if (f == NULL)
   {
     SetPicturePresent(false);
-    if (remove(filename.c_str()) != 0 && errno != ENOENT)
-    {
-      gLog.error(tr("Unable to delete %s's picture file (%s): %s"),
-          myAlias.c_str(), filename.c_str(), strerror(errno));
-    }
+    deletePictureData();
   }
-  else if (strcmp(f, filename.c_str()) == 0)
+  else if (filename == f)
   {
     SetPicturePresent(true);
-    return;
   }
   else
   {
