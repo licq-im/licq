@@ -29,17 +29,13 @@
 #include <licq/crypto.h>
 #include <licq/logging/log.h>
 
-#include <cerrno>
 #include <cstdlib>
 #include <cstring>
-#include <fcntl.h>
 #include <iomanip>
 #include <sstream>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
 
 using namespace LicqJabber;
+using Licq::gLog;
 
 namespace
 {
@@ -60,6 +56,14 @@ static std::string guessPictureMimeType(const std::string& bindata)
 }
 
 } // namespace
+
+boost::optional<std::string> UserToVCard::pictureSha1() const
+{
+  if (Licq::Sha1::supported())
+    return myUser->pictureSha1();
+  else
+    return boost::none;
+}
 
 gloox::VCard* UserToVCard::createVCard() const
 {
@@ -89,24 +93,41 @@ gloox::VCard* UserToVCard::createVCard() const
 
   if (myUser->GetPicturePresent())
   {
-    int fd = ::open(myUser->pictureFileName().c_str(), O_RDONLY);
-    if (fd != -1)
+    std::string pictureData;
+    if (myUser->readPictureData(pictureData))
     {
-      std::string binPhoto;
+      // Only 8 KiB allowed according to XEP-0153
+      const size_t maxSize = 8 * 1024;
 
-      uint8_t buffer[1024];
-      ssize_t count;
-      while ((count = ::read(fd, &buffer, sizeof(buffer))) > 0)
-        binPhoto.append(buffer, buffer + count);
-
-      if (!binPhoto.empty())
-        card->setPhoto(guessPictureMimeType(binPhoto), binPhoto);
-
-      ::close(fd);
+      if (pictureData.size() < maxSize)
+        card->setPhoto(guessPictureMimeType(pictureData), pictureData);
+      else
+        gLog.error("Picture is too large (%zu bytes); must be less than %zu",
+                   pictureData.size(), maxSize);
     }
   }
 
   return card;
+}
+
+
+VCardToUser::VCardToUser(const gloox::VCard* vcard)
+  : myVCard(vcard)
+{
+  if (Licq::Sha1::supported())
+  {
+    const gloox::VCard::Photo& photo = myVCard->photo();
+    if (!photo.binval.empty())
+      myPictureSha1 = Licq::Sha1::hashToHexString(photo.binval);
+  }
+}
+
+boost::optional<std::string> VCardToUser::pictureSha1() const
+{
+  if (Licq::Sha1::supported())
+    return myPictureSha1;
+  else
+    return boost::none;
 }
 
 int VCardToUser::updateUser(User* user) const
@@ -136,48 +157,33 @@ int VCardToUser::updateUser(User* user) const
   if (!photo.binval.empty())
   {
     saveGroup |= User::SavePictureInfo;
-    updatePhoto(user, photo.binval);
+
+    // Store hash of too large picture as well to avoid downloading them again
+    if (Licq::Sha1::supported())
+      user->setPictureSha1(myPictureSha1);
+
+    if (photo.binval.size() <= 100 * 1024)
+      user->SetPicturePresent(user->writePictureData(photo.binval));
+    else
+    {
+      gLog.error("Picture for %s is too big (%zu bytes)",
+                 user->id().accountId().c_str(), photo.binval.size());
+
+      user->SetPicturePresent(false);
+      user->deletePictureData();
+    }
   }
   else if (user->GetPicturePresent())
   {
     saveGroup |= User::SavePictureInfo;
 
-    if (::unlink(user->pictureFileName().c_str()) == -1 && errno != ENOENT)
-      Licq::gLog.warning("Could not remove user picture for %s",
-                         user->id().accountId().c_str());
-
+    user->setPictureSha1("");
     user->SetPicturePresent(false);
+    user->deletePictureData();
   }
 
   user->SetEnableSave(true);
   user->save(saveGroup);
+
   return saveGroup;
-}
-
-void VCardToUser::updatePhoto(User* user, const std::string& binPhoto) const
-{
-  if (Licq::Sha1::supported())
-    user->setPictureSha1(Licq::Sha1::hashToHexString(binPhoto));
-
-  if (binPhoto.size() > 100 * 1024)
-  {
-    Licq::gLog.error("Picture for %s is too big (%zu bytes)",
-                     user->id().accountId().c_str(), binPhoto.size());
-    return;
-  }
-
-  int fd = ::open(user->pictureFileName().c_str(),
-                  O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
-  if (fd == -1)
-  {
-    Licq::gLog.error("Could not save picture for %s (%s)",
-                     user->id().accountId().c_str(), ::strerror(errno));
-    return;
-  }
-
-  if (::write(fd, binPhoto.data(), binPhoto.size())
-      == static_cast<ssize_t>(binPhoto.size()))
-    user->SetPicturePresent(true);
-
-  ::close(fd);
 }

@@ -75,6 +75,7 @@ Client::Client(Licq::MainLoop& mainLoop, const Licq::UserId& ownerId,
   myVCardManager(&myClient)
 {
   myClient.registerStanzaExtension(new gloox::VCardUpdate);
+  myClient.addPresenceExtension(new gloox::VCardUpdate);
 
   myClient.registerConnectionListener(this);
   myRosterManager->registerRosterListener(this, false);
@@ -184,6 +185,8 @@ void Client::getVCard(const string& user)
 
 void Client::setOwnerVCard(const UserToVCard& wrapper)
 {
+  myPendingPhotoHash = wrapper.pictureSha1();
+
   gloox::VCard* card = wrapper.createVCard();
   myVCardManager.storeVCard(card, this);
 }
@@ -245,6 +248,9 @@ void Client::onConnect()
   gloox::ConnectionBase* conn = myClient.connectionImpl();
   myHandler.onConnect(conn->localInterface(), conn->localPort(),
                       presenceToStatus(myClient.presence().subtype()));
+
+  // Fetch the current vCard from the server
+  myVCardManager.fetchVCard(myClient.jid().bareJID(), this);
 }
 
 bool Client::onTLSConnect(const gloox::CertInfo& /*info*/)
@@ -524,6 +530,9 @@ void Client::handleVCard(const gloox::JID& jid, const gloox::VCard* vcard)
   {
     VCardToUser user(vcard);
     myHandler.onUserInfo(jid.bare(), user);
+
+    if (jid.bare() == myClient.jid().bare())
+      broadcastPhotoHash(user.pictureSha1());
   }
 }
 
@@ -534,10 +543,50 @@ void Client::handleVCardResult(gloox::VCardHandler::VCardContext context,
 
   if (error != gloox::StanzaErrorUndefined)
   {
-    gLog.warning("%s VCard for user %s failed with error %u",
+    gLog.warning("%s vCard for user %s failed with error %u",
         context == gloox::VCardHandler::StoreVCard ? "Storing" : "Fetching",
-        jid.bare().c_str(), error);
+        jid ? jid.bare().c_str() : myClient.jid().bare().c_str(), error);
   }
+
+  if (!jid && context == gloox::VCardHandler::StoreVCard)
+  {
+    if (error == gloox::StanzaErrorUndefined)
+      broadcastPhotoHash(myPendingPhotoHash);
+    else
+      broadcastPhotoHash(boost::none);
+
+    myPendingPhotoHash = boost::none;
+  }
+}
+
+void Client::broadcastPhotoHash(const boost::optional<std::string>& hash)
+{
+  TRACE();
+
+  if (hash)
+  {
+    if (hash->empty())
+    {
+      // Bug in gloox: if the hash is empty then VCardUpdate will not generate
+      // a empty photo tag as it should.
+      gloox::VCardUpdate card("dummy");
+
+      gloox::Tag* tag = card.tag();
+      tag->removeChild("photo");
+      new gloox::Tag(tag, "photo");
+
+      myClient.addPresenceExtension(new gloox::VCardUpdate(tag));
+      delete tag;
+    }
+    else
+      myClient.addPresenceExtension(new gloox::VCardUpdate(*hash));
+  }
+  else
+  {
+    myClient.addPresenceExtension(new gloox::VCardUpdate);
+  }
+
+  myClient.setPresence();
 }
 
 bool Client::addRosterItem(const gloox::RosterItem& item)

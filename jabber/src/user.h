@@ -45,7 +45,7 @@ public:
 
 private:
   /// Inherited from Licq::User to save local additions
-  virtual void saveUserInfo();
+  virtual void savePictureInfo();
 
   std::string myPictureSha1;
 };

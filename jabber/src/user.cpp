@@ -19,16 +19,24 @@
 
 #include "user.h"
 
+#include <licq/crypto.h>
 #include <licq/inifile.h>
 
 using namespace LicqJabber;
+
+namespace
+{
+
+const char KEY_PICTURE_SHA1[] = "JabberPictureSha1";
+
+} // namespace
 
 User::User(const Licq::UserId& id, bool temporary)
   : Licq::User(id, temporary)
 {
   Licq::IniFile& conf(userConf());
 
-  conf.get("JabberPictureSha1", myPictureSha1);
+  conf.get(KEY_PICTURE_SHA1, myPictureSha1);
 }
 
 User::~User()
@@ -36,11 +44,21 @@ User::~User()
   // Empty
 }
 
-void User::saveUserInfo()
+void User::savePictureInfo()
 {
-  Licq::User::saveUserInfo();
+  Licq::User::savePictureInfo();
+
+  if (GetPicturePresent() && myPictureSha1.empty() && Licq::Sha1::supported())
+  {
+    std::string pictureData;
+    if (readPictureData(pictureData))
+      myPictureSha1 = Licq::Sha1::hashToHexString(pictureData);
+  }
 
   Licq::IniFile& conf(userConf());
 
-  conf.set("JabberPictureSha1", myPictureSha1);
+  if (!myPictureSha1.empty())
+    conf.set(KEY_PICTURE_SHA1, myPictureSha1);
+  else
+    conf.unset(KEY_PICTURE_SHA1);
 }

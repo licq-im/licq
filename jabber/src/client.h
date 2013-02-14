@@ -24,6 +24,7 @@
 #define LICQJABBER_CLIENT_H
 
 #include <boost/noncopyable.hpp>
+#include <boost/optional.hpp>
 #include <gloox/client.h>
 #include <gloox/connectionlistener.h>
 #include <gloox/loghandler.h>
@@ -146,6 +147,9 @@ private:
   gloox::ConnectionTCPClient* myTcpClient;
   gloox::RosterManager* myRosterManager;
   gloox::VCardManager myVCardManager;
+  boost::optional<std::string> myPendingPhotoHash;
+
+  void broadcastPhotoHash(const boost::optional<std::string>& hash);
 
   bool addRosterItem(const gloox::RosterItem& item);
 

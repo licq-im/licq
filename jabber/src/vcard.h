@@ -24,6 +24,7 @@
 #define JABBER_VCARD_H
 
 #include <boost/noncopyable.hpp>
+#include <boost/optional.hpp>
 
 #include <string>
 
@@ -41,6 +42,7 @@ class UserToVCard : private boost::noncopyable
 {
 public:
   explicit UserToVCard(const User* user) : myUser(user) {}
+  boost::optional<std::string> pictureSha1() const;
   gloox::VCard* createVCard() const;
 
 private:
@@ -50,11 +52,12 @@ private:
 class VCardToUser : private boost::noncopyable
 {
 public:
-  explicit VCardToUser(const gloox::VCard* vcard) : myVCard(vcard) {}
+  explicit VCardToUser(const gloox::VCard* vcard);
+  boost::optional<std::string> pictureSha1() const;
   int updateUser(User* user) const;
 
 private:
-  void updatePhoto(User* user, const std::string& binPhoto) const;
+  std::string myPictureSha1;
 
   const gloox::VCard* myVCard;
 };
