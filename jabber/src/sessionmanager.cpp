@@ -134,8 +134,7 @@ void SessionManager::handleMessage(
   const bool urgent = message.findExtension(gloox::ExtAttention) != NULL;
 
   time_t sent = ::time(NULL);
-  if (const gloox::DelayedDelivery* delayed
-      = message.findExtension<gloox::DelayedDelivery>(gloox::ExtDelay))
+  if (const gloox::DelayedDelivery* delayed = message.when())
   {
     struct tm tm;
     ::memset(&tm, 0, sizeof(tm));
