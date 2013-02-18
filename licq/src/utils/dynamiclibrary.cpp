@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2010, 2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 #include <boost/exception/info.hpp>
 #include <boost/exception/get_error_info.hpp>
 #include <cassert>
+#include <cstdlib>
 #include <dlfcn.h>
 #include <string>
 
@@ -60,7 +61,8 @@ DynamicLibrary::DynamicLibrary(const std::string& filename)
 
 DynamicLibrary::~DynamicLibrary() throw()
 {
-  ::dlclose(myDlHandle);
+  if (::getenv("LICQ_NO_DLCLOSE") == NULL)
+    ::dlclose(myDlHandle);
 }
 
 template<> void
