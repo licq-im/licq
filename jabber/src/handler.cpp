@@ -126,7 +126,10 @@ void Handler::onUserAdded(
   }
   UserWriteGuard user(userId);
   assert(user.isLocked());
-  if (wasAdded)
+
+  user->SetEnableSave(false);
+
+  if (wasAdded || !user->KeepAliasOnUpdate())
     user->setAlias(name);
 
   Licq::UserGroupList glist;
@@ -143,13 +146,11 @@ void Handler::onUserAdded(
   user->SetGroups(glist);
 
   user->setUserEncoding("UTF-8");
-  if (!user->KeepAliasOnUpdate())
-    user->setAlias(name);
-
   user->SetAwaitingAuth(awaitingAuthorization);
+  user->SetSendServer(true);
 
-  // Remove this line when SetGroups call above saves contact groups itself.
-  user->save(User::SaveLicqInfo);
+  user->SetEnableSave(true);
+  user->save(User::SaveUserInfo | User::SaveLicqInfo);
 
   Licq::gPluginManager.pushPluginSignal(
       new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
@@ -202,19 +203,28 @@ void Handler::onUserInfo(const string& id, const VCardToUser& wrapper)
 {
   TRACE();
 
+  bool aliasUpdated = false;
   int saveGroup = 0;
   Licq::UserId userId(myOwnerId, id);
   if (userId.isOwner())
   {
     OwnerWriteGuard owner(userId);
     if (owner.isLocked())
+    {
+      const string oldAlias = owner->getAlias();
       saveGroup = wrapper.updateUser(*owner);
+      aliasUpdated = owner->getAlias() != oldAlias;
+    }
   }
   else
   {
     UserWriteGuard user(userId);
     if (user.isLocked())
+    {
+      const string oldAlias = user->getAlias();
       saveGroup = wrapper.updateUser(*user);
+      aliasUpdated = user->getAlias() != oldAlias;
+    }
   }
 
   if (saveGroup != 0)
@@ -229,6 +239,9 @@ void Handler::onUserInfo(const string& id, const VCardToUser& wrapper)
           new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
                                  Licq::PluginSignal::UserPicture, userId));
   }
+
+  if (aliasUpdated)
+    Licq::gProtocolManager.updateUserAlias(userId);
 }
 
 void Handler::onRosterReceived(const std::set<string>& ids)
