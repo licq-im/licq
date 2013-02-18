@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -33,8 +33,6 @@
 #include <gloox/disco.h>
 #include <gloox/message.h>
 #include <licq/logging/log.h>
-
-#define TRACE() gLog.debug("In SessionManager::%s()", __func__)
 
 using namespace LicqJabber;
 

@@ -37,6 +37,10 @@
 #include <licq/socket.h>
 #include <licq/userevents.h>
 
+#define TRACE_FORMAT "Handler::%s: "
+#define TRACE_ARGS __func__
+#include "debug.h"
+
 using namespace LicqJabber;
 
 using Licq::OnEventData;
@@ -44,8 +48,6 @@ using Licq::UserId;
 using Licq::gOnEventManager;
 using Licq::gUserManager;
 using std::string;
-
-#define TRACE() Licq::gLog.debug("In Handler::%s()", __func__)
 
 Handler::Handler(const Licq::UserId& ownerId)
   : myOwnerId(ownerId)

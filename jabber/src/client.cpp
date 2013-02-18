@@ -37,7 +37,9 @@
 #include <licq/logging/log.h>
 #include <licq/licqversion.h>
 
-#define TRACE() gLog.debug("In Client::%s()", __func__)
+#define TRACE_FORMAT "Client::%s: "
+#define TRACE_ARGS __func__
+#include "debug.h"
 
 using namespace LicqJabber;
 
@@ -326,7 +328,7 @@ void Client::onDisconnect(gloox::ConnectionError error)
 
 void Client::handleItemAdded(const gloox::JID& jid)
 {
-  TRACE();
+  TRACE("%s", jid.full().c_str());
 
   gloox::RosterItem* item = myRosterManager->getRosterItem(jid);
   addRosterItem(*item);
@@ -334,21 +336,21 @@ void Client::handleItemAdded(const gloox::JID& jid)
 
 void Client::handleItemSubscribed(const gloox::JID& jid)
 {
-  TRACE();
+  TRACE("%s", jid.full().c_str());
 
   gLog.info("Now authorized for %s", jid.bare().c_str());
 }
 
 void Client::handleItemRemoved(const gloox::JID& jid)
 {
-  TRACE();
+  TRACE("%s", jid.full().c_str());
 
   myHandler.onUserRemoved(jid.bare());
 }
 
 void Client::handleItemUpdated(const gloox::JID& jid)
 {
-  TRACE();
+  TRACE("%s", jid.full().c_str());
 
   gloox::RosterItem* item = myRosterManager->getRosterItem(jid);
   addRosterItem(*item);
@@ -356,7 +358,7 @@ void Client::handleItemUpdated(const gloox::JID& jid)
 
 void Client::handleItemUnsubscribed(const gloox::JID& jid)
 {
-  TRACE();
+  TRACE("%s", jid.full().c_str());
 
   gLog.info("No longer authorized for %s", jid.bare().c_str());
 }
@@ -384,7 +386,7 @@ void Client::handleRosterPresence(const gloox::RosterItem& item,
 {
   using namespace gloox;
 
-  TRACE();
+  TRACE("%s %d", item.jid().c_str(), presence);
 
   std::string photoHash;
 
