@@ -1,5 +1,5 @@
 Licq Jabber protocol plugin
----------------------------
+===========================
 
 Adds support for the Jabber (XMPP) protocol to Licq. Jabber is the protocol
 used by e.g. Google Talk and Facebook. The currently supported features are:
@@ -15,10 +15,16 @@ used by e.g. Google Talk and Facebook. The currently supported features are:
 * Status messages
 * Secure communication
 
+In addition to the requirements that Licq have (e.g. boost), the jabber plugin
+also requires gloox: http://camaya.net/gloox/
+
+Report any bugs at http://www.licq.org.
+
+
 TODO
 ----
 
-Major features would be nice to have, but hasn't been added yet:
+Major features that would be nice to have, but hasn't been added yet:
 
 * Multi-user chat rooms
 * File transfers
@@ -32,4 +38,14 @@ Minor features missing:
 * Support XEP-0115: Entity Capabilities
 
 
-Report any bugs at http://www.licq.org.
+Developer setup
+---------------
+
+To test the jabber plugin one needs a jabber server. One such server is jabberd
+2.x (http://jabberd2.org/). After installation (on Debian the package is named
+jabberd2), all configuration that is needed is to set the hostname and change
+the database type to Berkeley DB (db). For details, see:
+https://github.com/jabberd2/jabberd2/wiki/InstallGuide-BasicConfiguration
+
+Until Licq supports creating new accounts, you need to use another client to
+create one or several test accounts.
