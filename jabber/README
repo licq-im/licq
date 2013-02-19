@@ -1,7 +1,35 @@
 Licq Jabber protocol plugin
 ---------------------------
 
-Adds support for the Jabber (XMPP) protocol to Licq. Still in early
-development, but capable of sending and receiving messages.
+Adds support for the Jabber (XMPP) protocol to Licq. Jabber is the protocol
+used by e.g. Google Talk and Facebook. The currently supported features are:
+
+* Sending and receiving messages
+* Contact list management
+  - Add/remove contacts
+  - Add/remove groups
+  - Fetch contact's details, including photo
+  - Update your own details, including photo
+  - Handle subscriptions (authorizations)
+* Typing notifications
+* Status messages
+* Secure communication
+
+TODO
+----
+
+Major features would be nice to have, but hasn't been added yet:
+
+* Multi-user chat rooms
+* File transfers
+* New account registration
+
+
+Minor features missing:
+
+* Correct handling of self presence with regard to owner photo
+  See: http://xmpp.org/extensions/xep-0153.html#bizrules-resources
+* Support XEP-0115: Entity Capabilities
+
 
 Report any bugs at http://www.licq.org.
