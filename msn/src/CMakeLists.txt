@@ -1,4 +1,5 @@
 set(msn_SRCS
+  factory.cpp
   msn-sb.cpp
   msn-srv.cpp
   msn-ssl.cpp
@@ -7,7 +8,6 @@ set(msn_SRCS
   msnevent.cpp
   msnpacket.cpp
   owner.cpp
-  plugin.cpp
   user.cpp
 )
 

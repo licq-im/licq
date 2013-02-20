@@ -26,6 +26,8 @@
 namespace LicqIcq
 {
 
+class Factory;
+
 class IcqProtocolPlugin : public Licq::ProtocolPluginHelper, public Licq::IcqProtocol
 {
 public:
@@ -38,17 +40,8 @@ public:
   using Licq::ProtocolPluginHelper::getReadPipe;
 
   // From Licq::PluginInterface
-  std::string name() const;
-  std::string version() const;
   bool init(int argc, char** argv);
   int run();
-  void destructor();
-
-  // From Licq::ProtocolPluginInterface
-  unsigned long protocolId() const;
-  unsigned long capabilities() const;
-  Licq::User* createUser(const Licq::UserId& id, bool temporary);
-  Licq::Owner* createOwner(const Licq::UserId& id);
 
   std::string defaultServerHost() const;
   int defaultServerPort() const;
@@ -112,6 +105,7 @@ private:
 
   void pushSignal(Licq::ProtocolSignal* signal);
 
+  friend class Factory;
   ~IcqProtocolPlugin();
 };
 
