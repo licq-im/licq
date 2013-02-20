@@ -26,6 +26,7 @@
 namespace Licq
 {
 class Owner;
+class ProtocolPluginFactory;
 class ProtocolPluginInterface;
 class ProtocolSignal;
 class User;
@@ -41,10 +42,7 @@ public:
   typedef boost::shared_ptr<ProtocolPlugin> Ptr;
 
   ProtocolPlugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
-                 Licq::ProtocolPluginInterface* (*factory)());
-  // Constructor for unit tests
-  ProtocolPlugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
-                 boost::shared_ptr<Licq::ProtocolPluginInterface> interface);
+                 boost::shared_ptr<Licq::ProtocolPluginFactory> factory);
   ~ProtocolPlugin();
 
   // From Licq::ProtocolPlugin
@@ -58,11 +56,12 @@ public:
 protected:
   // From Plugin
   void createInterface();
+  boost::shared_ptr<const Licq::PluginFactory> factory() const;
   boost::shared_ptr<Licq::PluginInterface> interface();
   boost::shared_ptr<const Licq::PluginInterface> interface() const;
 
 private:
-  Licq::ProtocolPluginInterface* (*myFactory)();
+  boost::shared_ptr<Licq::ProtocolPluginFactory> myFactory;
   boost::shared_ptr<Licq::ProtocolPluginInterface> myInterface;
 };
 

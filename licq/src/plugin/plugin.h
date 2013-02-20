@@ -29,6 +29,7 @@
 
 namespace Licq
 {
+class PluginFactory;
 class PluginInterface;
 }
 
@@ -105,6 +106,7 @@ public:
 
 protected:
   virtual void createInterface() = 0;
+  virtual boost::shared_ptr<const Licq::PluginFactory> factory() const = 0;
   virtual boost::shared_ptr<Licq::PluginInterface> interface() = 0;
   virtual boost::shared_ptr<const Licq::PluginInterface> interface() const = 0;
 

@@ -26,6 +26,7 @@
 namespace Licq
 {
 class Event;
+class GeneralPluginFactory;
 class GeneralPluginInterface;
 class PluginSignal;
 }
@@ -39,10 +40,7 @@ public:
   typedef boost::shared_ptr<GeneralPlugin> Ptr;
 
   GeneralPlugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
-                Licq::GeneralPluginInterface* (*factory)());
-  // Constructor for unit tests
-  GeneralPlugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
-                boost::shared_ptr<Licq::GeneralPluginInterface> interface);
+                boost::shared_ptr<Licq::GeneralPluginFactory> factory);
   ~GeneralPlugin();
 
   // From Licq::GeneralPlugin
@@ -60,11 +58,12 @@ public:
 protected:
   // From Plugin
   void createInterface();
+  boost::shared_ptr<const Licq::PluginFactory> factory() const;
   boost::shared_ptr<Licq::PluginInterface> interface();
   boost::shared_ptr<const Licq::PluginInterface> interface() const;
 
 private:
-  Licq::GeneralPluginInterface* (*myFactory)();
+  boost::shared_ptr<Licq::GeneralPluginFactory> myFactory;
   boost::shared_ptr<Licq::GeneralPluginInterface> myInterface;
 };
 

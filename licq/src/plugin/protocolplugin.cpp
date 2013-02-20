@@ -17,50 +17,38 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <licq/plugin/protocolplugininterface.h>
 #include "protocolplugin.h"
+
+#include <licq/plugin/protocolpluginfactory.h>
+#include <licq/plugin/protocolplugininterface.h>
 
 using namespace LicqDaemon;
 
-static void destroyProtocolPluginInterface(
-    Licq::ProtocolPluginInterface* plugin)
-{
-  if (plugin != NULL)
-    plugin->destructor();
-}
+static void nullDeleter(void*) { /* Empty */ }
 
 ProtocolPlugin::ProtocolPlugin(
     int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
-    Licq::ProtocolPluginInterface* (*factory)())
+    boost::shared_ptr<Licq::ProtocolPluginFactory> factory)
   : Plugin(id, lib, thread),
     myFactory(factory)
 {
   // Empty
 }
 
-ProtocolPlugin::ProtocolPlugin(
-    int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
-    boost::shared_ptr<Licq::ProtocolPluginInterface> interface)
-  : Plugin(id, lib, thread),
-    myFactory(NULL),
-    myInterface(interface)
-{
-  // Empty
-}
-
 ProtocolPlugin::~ProtocolPlugin()
 {
-  // Empty
+  if (myInterface)
+    myFactory->destroyPlugin(myInterface.get());
 }
 
 unsigned long ProtocolPlugin::protocolId() const
 {
-  return myInterface->protocolId();
+  return myFactory->protocolId();
 }
 
 unsigned long ProtocolPlugin::capabilities() const
 {
-  return myInterface->capabilities();
+  return myFactory->capabilities();
 }
 
 void ProtocolPlugin::pushSignal(
@@ -72,18 +60,23 @@ void ProtocolPlugin::pushSignal(
 
 Licq::User* ProtocolPlugin::createUser(const Licq::UserId& id, bool temporary)
 {
-  return myInterface->createUser(id, temporary);
+  return myFactory->createUser(id, temporary);
 }
 
 Licq::Owner* ProtocolPlugin::createOwner(const Licq::UserId& id)
 {
-  return myInterface->createOwner(id);
+  return myFactory->createOwner(id);
 }
 
 void ProtocolPlugin::createInterface()
 {
   assert(!myInterface);
-  myInterface.reset((*myFactory)(), &destroyProtocolPluginInterface);
+  myInterface.reset(myFactory->createPlugin(), &nullDeleter);
+}
+
+boost::shared_ptr<const Licq::PluginFactory> ProtocolPlugin::factory() const
+{
+  return myFactory;
 }
 
 boost::shared_ptr<Licq::PluginInterface> ProtocolPlugin::interface()

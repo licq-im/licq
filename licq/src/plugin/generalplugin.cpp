@@ -17,54 +17,43 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <licq/plugin/generalplugininterface.h>
 #include "generalplugin.h"
+
+#include <licq/plugin/generalpluginfactory.h>
+#include <licq/plugin/generalplugininterface.h>
 
 using namespace LicqDaemon;
 
-static void destroyGeneralPluginInterface(Licq::GeneralPluginInterface* plugin)
-{
-  if (plugin != NULL)
-    plugin->destructor();
-}
+static void nullDeleter(void*) { /* Empty */ }
 
 GeneralPlugin::GeneralPlugin(
     int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
-    Licq::GeneralPluginInterface* (*factory)())
+    boost::shared_ptr<Licq::GeneralPluginFactory> factory)
   : Plugin(id, lib, thread),
     myFactory(factory)
 {
   // Empty
 }
 
-GeneralPlugin::GeneralPlugin(
-    int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
-    boost::shared_ptr<Licq::GeneralPluginInterface> interface)
-  : Plugin(id, lib, thread),
-    myFactory(NULL),
-    myInterface(interface)
-{
-  // Empty
-}
-
 GeneralPlugin::~GeneralPlugin()
 {
-  // Empty
+  if (myInterface)
+    myFactory->destroyPlugin(myInterface.get());
 }
 
 std::string GeneralPlugin::description() const
 {
-  return myInterface->description();
+  return myFactory->description();
 }
 
 std::string GeneralPlugin::usage() const
 {
-  return myInterface->usage();
+  return myFactory->usage();
 }
 
 std::string GeneralPlugin::configFile() const
 {
-  return myInterface->configFile();
+  return myFactory->configFile();
 }
 
 bool GeneralPlugin::isEnabled() const
@@ -105,7 +94,12 @@ void GeneralPlugin::pushEvent(boost::shared_ptr<const Licq::Event> event)
 void GeneralPlugin::createInterface()
 {
   assert(!myInterface);
-  myInterface.reset((*myFactory)(), &destroyGeneralPluginInterface);
+  myInterface.reset(myFactory->createPlugin(), &nullDeleter);
+}
+
+boost::shared_ptr<const Licq::PluginFactory> GeneralPlugin::factory() const
+{
+  return myFactory;
 }
 
 boost::shared_ptr<Licq::PluginInterface> GeneralPlugin::interface()

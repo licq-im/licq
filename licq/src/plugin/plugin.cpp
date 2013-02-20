@@ -17,8 +17,10 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <licq/plugin/plugininterface.h>
 #include "plugin.h"
+
+#include <licq/plugin/pluginfactory.h>
+#include <licq/plugin/plugininterface.h>
 
 #include <cassert>
 #include <cstdlib>
@@ -61,12 +63,12 @@ int Plugin::id() const
 
 std::string Plugin::name() const
 {
-  return interface()->name();
+  return factory()->name();
 }
 
 std::string Plugin::version() const
 {
-  return interface()->version();
+  return factory()->version();
 }
 
 std::string Plugin::libraryName() const

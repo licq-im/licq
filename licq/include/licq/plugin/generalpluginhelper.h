@@ -49,9 +49,6 @@ public:
   /// Writes PipeShutdown to the pipe
   void shutdown();
 
-  /// Returns an empty string
-  std::string configFile() const;
-
   /// Writes PipeEnable to the pipe
   void enable();
 

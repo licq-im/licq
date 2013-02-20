@@ -19,6 +19,7 @@
 
 #include "../generalplugin.h"
 
+#include <licq/plugin/generalpluginfactory.h>
 #include <licq/plugin/generalplugininterface.h>
 
 #include <gtest/gtest.h>
@@ -29,23 +30,31 @@ using LicqDaemon::DynamicLibrary;
 using LicqDaemon::PluginThread;
 
 using ::testing::InSequence;
+using ::testing::Return;
 
 namespace LicqTest
 {
 
-class MockGeneralPlugin : public Licq::GeneralPluginInterface
+class MockGeneralPluginFactory : public Licq::GeneralPluginFactory
 {
 public:
   MOCK_CONST_METHOD0(name, std::string());
   MOCK_CONST_METHOD0(version, std::string());
-  MOCK_METHOD2(init, bool(int argc, char** argv));
-  MOCK_METHOD0(run, int());
-  MOCK_METHOD0(shutdown, void());
-  MOCK_METHOD0(destructor, void());
+  MOCK_METHOD1(destroyPlugin, void(Licq::PluginInterface* plugin));
 
   MOCK_CONST_METHOD0(description, std::string());
   MOCK_CONST_METHOD0(usage, std::string());
   MOCK_CONST_METHOD0(configFile, std::string());
+  MOCK_METHOD0(createPlugin, Licq::GeneralPluginInterface*());
+};
+
+class MockGeneralPlugin : public Licq::GeneralPluginInterface
+{
+public:
+  MOCK_METHOD2(init, bool(int argc, char** argv));
+  MOCK_METHOD0(run, int());
+  MOCK_METHOD0(shutdown, void());
+
   MOCK_CONST_METHOD0(isEnabled, bool());
   MOCK_METHOD0(enable, void());
   MOCK_METHOD0(disable, void());
@@ -55,12 +64,13 @@ public:
   MOCK_METHOD1(pushEvent, void(boost::shared_ptr<const Licq::Event> event));
 };
 
-static void NullDeleter(void*) { /* Empty */ }
+static void nullDeleter(void*) { /* Empty */ }
 
 struct GeneralPluginFixture : public ::testing::Test
 {
   DynamicLibrary::Ptr myLib;
   PluginThread::Ptr myThread;
+  MockGeneralPluginFactory myMockFactory;
   MockGeneralPlugin myMockInterface;
   GeneralPlugin plugin;
 
@@ -68,10 +78,14 @@ struct GeneralPluginFixture : public ::testing::Test
     myLib(new DynamicLibrary("")),
     myThread(new PluginThread()),
     plugin(1, myLib, myThread,
-           boost::shared_ptr<MockGeneralPlugin>(
-               &myMockInterface, &NullDeleter))
+           boost::shared_ptr<MockGeneralPluginFactory>(
+               &myMockFactory, &nullDeleter))
   {
-    // Empty
+    EXPECT_CALL(myMockFactory, createPlugin())
+        .WillOnce(Return(&myMockInterface));
+    EXPECT_CALL(myMockFactory, destroyPlugin(&myMockInterface));
+
+    plugin.create();
   }
 
   ~GeneralPluginFixture()
@@ -96,14 +110,14 @@ TEST_P(RunnableGeneralPluginFixture, callApiFunctions)
 
   unsigned long signalType = 123;
   shared_ptr<const Licq::PluginSignal> signal(
-      reinterpret_cast<Licq::PluginSignal*>(456), &NullDeleter);
+      reinterpret_cast<Licq::PluginSignal*>(456), &nullDeleter);
   shared_ptr<const Licq::Event> event(
-      reinterpret_cast<Licq::Event*>(789), &NullDeleter);
+      reinterpret_cast<Licq::Event*>(789), &nullDeleter);
 
   InSequence dummy;
-  EXPECT_CALL(myMockInterface, description());
-  EXPECT_CALL(myMockInterface, usage());
-  EXPECT_CALL(myMockInterface, configFile());
+  EXPECT_CALL(myMockFactory, description());
+  EXPECT_CALL(myMockFactory, usage());
+  EXPECT_CALL(myMockFactory, configFile());
   EXPECT_CALL(myMockInterface, isEnabled());
   if (GetParam())
   {

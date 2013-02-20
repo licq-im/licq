@@ -24,7 +24,9 @@
 #include <licq/event.h>
 #include <licq/exceptions/exception.h>
 #include <licq/logging/logservice.h>
+#include <licq/plugin/generalpluginfactory.h>
 #include <licq/plugin/generalplugininterface.h>
+#include <licq/plugin/protocolpluginfactory.h>
 #include <licq/plugin/protocolplugininterface.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolsignal.h>
@@ -126,9 +128,12 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
         || !verifyPluginVersion(name, pluginData->licqVersion))
       return GeneralPlugin::Ptr();
 
+    boost::shared_ptr<Licq::GeneralPluginFactory> factory(
+        (*pluginData->createFactory)(), pluginData->destroyFactory);
+
     // Create the plugin
     GeneralPlugin::Ptr plugin = boost::make_shared<GeneralPlugin>(
-        getNewPluginId(), lib, pluginThread, pluginData->pluginFactory);
+        getNewPluginId(), lib, pluginThread, factory);
     if (!plugin->create())
       throw std::exception();
 
@@ -186,9 +191,12 @@ loadProtocolPlugin(const std::string& name, bool keep)
         || !verifyPluginVersion(name, pluginData->licqVersion))
       return ProtocolPlugin::Ptr();
 
+    boost::shared_ptr<Licq::ProtocolPluginFactory> factory(
+        (*pluginData->createFactory)(), pluginData->destroyFactory);
+
     // Create the plugin
     ProtocolPlugin::Ptr plugin = boost::make_shared<ProtocolPlugin>(
-        getNewPluginId(), lib, pluginThread, pluginData->pluginFactory);
+        getNewPluginId(), lib, pluginThread, factory);
     if (!plugin->create())
       throw std::exception();
 

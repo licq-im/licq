@@ -58,11 +58,6 @@ void GeneralPluginHelper::shutdown()
   d->notify(PipeShutdown);
 }
 
-std::string GeneralPluginHelper::configFile() const
-{
-  return std::string();
-}
-
 void GeneralPluginHelper::enable()
 {
   LICQ_D();

@@ -33,23 +33,17 @@ namespace Licq
  *
  * Note: When the class implementing this interface (or to be precise, one of
  * GeneralPluginInterface or ProtocolPluginInterface) is constructed, it should
- * only perform minimal initialization needed for simple functions like name()
- * and version() to be usable. Licq will call init() afterwards to properly
- * initialze the plugin before run() is called to start the plugin.
+ * only perform minimal initialization. Licq will call init() afterwards to
+ * properly initialze the plugin before run() is called to start the plugin.
  *
  * Although a plugin will run in a separate thread, calls to the public
- * functions and the protected functions called from the protocol manager can
- * be made from any thread. It is the responsibility of the plugin to make sure
- * these functions are thread safe when needed.
+ * functions can be made from any thread. It is the responsibility of the
+ * plugin to make sure these functions are thread safe when needed.
  */
 class PluginInterface
 {
 public:
-  /// Return the plugin's name
-  virtual std::string name() const = 0;
-
-  /// Return the plugin's version.
-  virtual std::string version() const = 0;
+  virtual ~PluginInterface() { /* Empty */ }
 
   /**
    * Initialize the plugin
@@ -73,17 +67,6 @@ public:
 
   /// Shut down the plugin
   virtual void shutdown() = 0;
-
-  /**
-   * Delete the plugin object from the plugins context
-   * This function will be called once after run() has returned and the plugin
-   *   thread has terminated but before the library is closed.
-   * Normally this function should only contain "delete this;"
-   */
-  virtual void destructor() = 0;
-
-protected:
-  virtual ~PluginInterface() { /* Empty */ }
 };
 
 } // namespace Licq

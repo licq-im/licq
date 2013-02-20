@@ -20,36 +20,33 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef LICQ_PROTOCOLPLUGININTERFACE_H
-#define LICQ_PROTOCOLPLUGININTERFACE_H
+#ifndef LICQ_PLUGINFACTORY_H
+#define LICQ_PLUGINFACTORY_H
 
-#include "plugininterface.h"
-
-#include <boost/shared_ptr.hpp>
+#include <string>
 
 namespace Licq
 {
 
-class ProtocolSignal;
+class PluginInterface;
 
 /**
- * Interface for protocol plugins implementing support for an IM protocol
- *
- * All protocol plugins must implement this interface. See documentation for
- * Licq::PluginInterface for additional information
+ * Base interface for plugin factories
  */
-class ProtocolPluginInterface : public PluginInterface
+class PluginFactory
 {
 public:
-  virtual ~ProtocolPluginInterface() { /* Empty */ }
+  /// Return the plugin's name
+  virtual std::string name() const = 0;
 
-  /**
-   * Pushes a signal to the plugin.
-   *
-   * The plugin should take care not to block the caller (i.e. only queue the
-   * signal for later processing).
-   */
-  virtual void pushSignal(boost::shared_ptr<const ProtocolSignal> signal) = 0;
+  /// Return the plugin's version.
+  virtual std::string version() const = 0;
+
+  /// Called to destroy a plugin previously created by the factory
+  virtual void destroyPlugin(PluginInterface* plugin) = 0;
+
+protected:
+  virtual ~PluginFactory() { /* Empty */ }
 };
 
 } // namespace Licq

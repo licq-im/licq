@@ -19,6 +19,7 @@
 
 #include "../plugin.h"
 
+#include <licq/plugin/pluginfactory.h>
 #include <licq/plugin/plugininterface.h>
 
 #include <gtest/gtest.h>
@@ -44,16 +45,21 @@ namespace LicqTest
 class InternalPluginInterface { };
 class UnImplementedInterface { };
 
-class MockPlugin : public Licq::PluginInterface,
-                   public InternalPluginInterface
+class MockPluginFactory : public Licq::PluginFactory
 {
 public:
   MOCK_CONST_METHOD0(name, std::string());
   MOCK_CONST_METHOD0(version, std::string());
+  MOCK_METHOD1(destroyPlugin, void(Licq::PluginInterface* plugin));
+};
+
+class MockPlugin : public Licq::PluginInterface,
+                   public InternalPluginInterface
+{
+public:
   MOCK_METHOD2(init, bool(int argc, char** argv));
   MOCK_METHOD0(run, int());
   MOCK_METHOD0(shutdown, void());
-  MOCK_METHOD0(destructor, void());
 };
 
 class TestPlugin : public Plugin
@@ -62,17 +68,30 @@ public:
   bool myIsCreated;
 
   TestPlugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
+             boost::shared_ptr<Licq::PluginFactory> factory,
              boost::shared_ptr<Licq::PluginInterface> interface)
     : Plugin(id, lib, thread),
       myIsCreated(false),
+      myFactory(factory),
       myInterface(interface)
   {
     // Empty
   }
 
+  ~TestPlugin()
+  {
+    if (myInterface)
+      myFactory->destroyPlugin(myInterface.get());
+  }
+
 protected:
   // From Plugin
   void createInterface() { myIsCreated = true; }
+
+  boost::shared_ptr<const Licq::PluginFactory> factory() const
+  {
+    return myFactory;
+  }
 
   boost::shared_ptr<Licq::PluginInterface> interface()
   {
@@ -85,15 +104,17 @@ protected:
   }
 
 private:
+  boost::shared_ptr<Licq::PluginFactory> myFactory;
   boost::shared_ptr<Licq::PluginInterface> myInterface;
 };
 
-static void NullDeleter(void*) { /* Empty */ }
+static void nullDeleter(void*) { /* Empty */ }
 
 struct PluginFixture : public ::testing::Test
 {
   DynamicLibrary::Ptr myLib;
   PluginThread::Ptr myThread;
+  MockPluginFactory myMockFactory;
   MockPlugin myMockInterface;
   TestPlugin plugin;
 
@@ -103,10 +124,11 @@ struct PluginFixture : public ::testing::Test
     myLib(new DynamicLibrary("")),
     myThread(new PluginThread()),
     plugin(1, myLib, myThread,
-           boost::shared_ptr<MockPlugin>(&myMockInterface, &NullDeleter)),
+           boost::shared_ptr<MockPluginFactory>(&myMockFactory, &nullDeleter),
+           boost::shared_ptr<MockPlugin>(&myMockInterface, &nullDeleter)),
     myPluginThreadId(0)
   {
-    // Empty
+    EXPECT_CALL(myMockFactory, destroyPlugin(&myMockInterface));
   }
 
   ~PluginFixture()
@@ -124,8 +146,8 @@ struct PluginFixture : public ::testing::Test
 TEST_F(PluginFixture, callApiFunctions)
 {
   InSequence dummy;
-  EXPECT_CALL(myMockInterface, name());
-  EXPECT_CALL(myMockInterface, version());
+  EXPECT_CALL(myMockFactory, name());
+  EXPECT_CALL(myMockFactory, version());
   EXPECT_CALL(myMockInterface, shutdown());
 
   // Verify that the calls are forwarded to the interface
@@ -136,7 +158,7 @@ TEST_F(PluginFixture, callApiFunctions)
 
 TEST_F(PluginFixture, castToInternalInterface)
 {
-  Plugin::Ptr ptr(&plugin, &NullDeleter);
+  Plugin::Ptr ptr(&plugin, &nullDeleter);
 
   EXPECT_FALSE(plugin_internal_cast<UnImplementedInterface>(ptr));
   EXPECT_EQ(plugin_internal_cast<InternalPluginInterface>(ptr).get(),
@@ -144,7 +166,7 @@ TEST_F(PluginFixture, castToInternalInterface)
 }
 
 static int DeleteCount = 0;
-void CountingNullDeleter(void*)
+void countingNullDeleter(void*)
 {
   DeleteCount += 1;
 }
@@ -159,7 +181,7 @@ TEST_F(PluginFixture, lifeTimeOfCastedObject)
   {
     boost::shared_ptr<InternalPluginInterface> interface;
     {
-      Plugin::Ptr ptr(&plugin, &CountingNullDeleter);
+      Plugin::Ptr ptr(&plugin, &countingNullDeleter);
       interface = plugin_internal_cast<InternalPluginInterface>(ptr);
     }
     EXPECT_EQ(0, DeleteCount);
