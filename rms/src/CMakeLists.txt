@@ -1,5 +1,5 @@
 set(rms_SRCS
-  main.cpp
+  factory.cpp
   rms.cpp
 )
 

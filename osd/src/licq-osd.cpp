@@ -43,7 +43,6 @@
 
 #include "my_xosd.h"
 #include "licq_osd.conf.h"
-#include "pluginversion.h"
 
 using namespace std;
 using Licq::User;
@@ -109,33 +108,6 @@ using namespace std;
 OsdPlugin::OsdPlugin()
 {
   // Empty
-}
-
-string OsdPlugin::name() const
-{
-  return "OSD";
-}
-
-string OsdPlugin::version() const
-{
-    return PLUGIN_VERSION_STRING;
-}
-
-string OsdPlugin::description() const
-{
-  return "OSD-text on new messages";
-}
-
-string OsdPlugin::usage() const
-{
-  return "no options for this plugin. Configure via configfile";
-}
-
-// config file for this plugin
-// used when you select configure in the licq plugin selector
-string OsdPlugin::configFile() const
-{
-  return "licq_osd.conf";
 }
 
 // status of plugin - so they can be deactivated
@@ -380,11 +352,6 @@ int OsdPlugin::run()
     }
 
     return 0;
-}
-
-void OsdPlugin::destructor()
-{
-  delete this;
 }
 
 void ProcessSignal(const Licq::PluginSignal* s)
