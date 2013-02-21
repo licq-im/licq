@@ -194,21 +194,21 @@ loadProtocolPlugin(const std::string& name, bool keep)
     boost::shared_ptr<Licq::ProtocolPluginFactory> factory(
         (*pluginData->createFactory)(), pluginData->destroyFactory);
 
-    // Create the plugin
-    ProtocolPlugin::Ptr plugin = boost::make_shared<ProtocolPlugin>(
-        getNewPluginId(), lib, pluginThread, factory);
-    if (!plugin->create())
-      throw std::exception();
-
     {
       // Check if we already got a plugin for this protocol
       MutexLocker protocolLocker(myProtocolPluginsMutex);
       BOOST_FOREACH(ProtocolPlugin::Ptr proto, myProtocolPlugins)
       {
-        if (proto->protocolId() == plugin->protocolId())
+        if (proto->protocolId() == factory->protocolId())
           throw std::exception();
       }
     }
+
+    // Create the plugin
+    ProtocolPlugin::Ptr plugin = boost::make_shared<ProtocolPlugin>(
+        getNewPluginId(), lib, pluginThread, factory);
+    if (!plugin->create())
+      throw std::exception();
 
     // Let the plugin initialize itself
     if (!plugin->init(0, NULL, &initPluginCallback))
