@@ -55,7 +55,8 @@ unsigned long Factory::capabilities() const
   return ProtocolPlugin::CanSendMsg
       | ProtocolPlugin::CanHoldStatusMsg
       | ProtocolPlugin::CanSendAuth
-      | ProtocolPlugin::CanSendAuthReq;
+      | ProtocolPlugin::CanSendAuthReq
+      | ProtocolPlugin::CanMultipleOwners;
 }
 
 Licq::ProtocolPluginInterface* Factory::createPlugin()
