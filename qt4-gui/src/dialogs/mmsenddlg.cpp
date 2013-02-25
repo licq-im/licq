@@ -251,7 +251,7 @@ void MMSendDlg::SendNext()
     case Licq::UserEvent::TypeContactList:
     {
       Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-          Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+          Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
       if (!icq)
         return;
 

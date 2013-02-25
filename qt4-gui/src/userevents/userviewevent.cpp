@@ -422,7 +422,7 @@ void UserViewEvent::read2()
     case Licq::UserEvent::TypeChat:  // accept a chat request
     {
       Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-          Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+          Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
       if (!icq)
         return;
 
@@ -502,7 +502,7 @@ void UserViewEvent::read3()
       if (r->exec())
       {
         Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-            Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+            Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
         if (!icq)
           return;
 
@@ -565,7 +565,7 @@ void UserViewEvent::read4()
     case Licq::UserEvent::TypeChat:  // join to current chat
     {
       Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-          Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+          Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
       if (!icq)
         return;
 

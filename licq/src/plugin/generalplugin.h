@@ -20,51 +20,49 @@
 #ifndef LICQDAEMON_GENERALPLUGIN_H
 #define LICQDAEMON_GENERALPLUGIN_H
 
-#include <licq/plugin/generalplugin.h>
 #include "plugin.h"
+#include "pluginthread.h"
+
+#include <licq/plugin/generalplugin.h>
 
 namespace Licq
 {
 class Event;
 class GeneralPluginFactory;
-class GeneralPluginInterface;
 class PluginSignal;
 }
 
 namespace LicqDaemon
 {
 
+class GeneralPluginInstance;
+
 class GeneralPlugin : public Plugin, public Licq::GeneralPlugin
 {
 public:
   typedef boost::shared_ptr<GeneralPlugin> Ptr;
 
-  GeneralPlugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
+  GeneralPlugin(DynamicLibrary::Ptr lib,
                 boost::shared_ptr<Licq::GeneralPluginFactory> factory);
   ~GeneralPlugin();
+
+  boost::shared_ptr<GeneralPluginInstance> createInstance(
+      int id, PluginThread::Ptr thread);
+
+  boost::shared_ptr<Licq::GeneralPluginFactory> generalFactory();
 
   // From Licq::GeneralPlugin
   std::string description() const;
   std::string usage() const;
   std::string configFile() const;
-  bool isEnabled() const;
-  void enable();
-  void disable();
-
-  bool wantSignal(unsigned long signalType) const;
-  void pushSignal(boost::shared_ptr<const Licq::PluginSignal> signal);
-  void pushEvent(boost::shared_ptr<const Licq::Event> event);
+  Licq::GeneralPluginInstance::Ptr instance() const;
 
 protected:
   // From Plugin
-  void createInterface();
   boost::shared_ptr<const Licq::PluginFactory> factory() const;
-  boost::shared_ptr<Licq::PluginInterface> interface();
-  boost::shared_ptr<const Licq::PluginInterface> interface() const;
 
 private:
   boost::shared_ptr<Licq::GeneralPluginFactory> myFactory;
-  boost::shared_ptr<Licq::GeneralPluginInterface> myInterface;
 };
 
 } // namespace LicqDaemon

@@ -1,6 +1,9 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2013 Licq Developers <licq-dev@googlegroups.com>
+ *
+ * Please refer to the COPYRIGHT file distributed with this source
+ * distribution for the names of the individual contributors.
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,37 +20,33 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef LICQ_PLUGIN_H
-#define LICQ_PLUGIN_H
+#ifndef LICQ_PROTOCOLPLUGININSTANCE_H
+#define LICQ_PROTOCOLPLUGININSTANCE_H
 
-#include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
-#include <string>
+#include "plugininstance.h"
 
 namespace Licq
 {
 
+class ProtocolPlugin;
+class UserId;
+
 /**
- * Represents a loaded plugin.
+ * Represents an instance of a loaded protocol plugin.
  */
-class Plugin : private boost::noncopyable
+class ProtocolPluginInstance : public virtual PluginInstance
 {
 public:
-  /// A smart pointer to a Plugin
-  typedef boost::shared_ptr<Plugin> Ptr;
+  typedef boost::shared_ptr<ProtocolPluginInstance> Ptr;
 
-  /// Get the plugin's name.
-  virtual std::string name() const = 0;
+  /// Get the plugin for this instance
+  virtual boost::shared_ptr<ProtocolPlugin> plugin() const = 0;
 
-  /// Get the plugin's version.
-  virtual std::string version() const = 0;
-
-  /// Get the name of the library from where the plugin was loaded.
-  virtual std::string libraryName() const = 0;
+  /// Get the owner ID that is associated with this protocol instance.
+  virtual const UserId& ownerId() const = 0;
 
 protected:
-  /// Destructor
-  virtual ~Plugin() { }
+  virtual ~ProtocolPluginInstance() { }
 };
 
 } // namespace Licq

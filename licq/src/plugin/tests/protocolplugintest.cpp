@@ -18,6 +18,7 @@
  */
 
 #include "../protocolplugin.h"
+#include "../protocolplugininstance.h"
 
 #include <licq/plugin/protocolpluginfactory.h>
 #include <licq/plugin/protocolplugininterface.h>
@@ -27,6 +28,7 @@
 #include <gmock/gmock.h>
 
 using LicqDaemon::ProtocolPlugin;
+using LicqDaemon::ProtocolPluginInstance;
 using LicqDaemon::DynamicLibrary;
 using LicqDaemon::PluginThread;
 
@@ -71,19 +73,21 @@ struct ProtocolPluginFixture : public ::testing::Test
   MockProtocolPluginFactory myMockFactory;
   MockProtocolPlugin myMockInterface;
   ProtocolPlugin plugin;
+  ProtocolPluginInstance instance;
 
   ProtocolPluginFixture() :
     myLib(new DynamicLibrary("")),
     myThread(new PluginThread()),
-    plugin(1, myLib, myThread,
-           boost::shared_ptr<MockProtocolPluginFactory>(
-               &myMockFactory, &nullDeleter))
+    plugin(myLib, boost::shared_ptr<MockProtocolPluginFactory>(
+               &myMockFactory, &nullDeleter)),
+    instance(1, boost::shared_ptr<ProtocolPlugin>(&plugin, &nullDeleter),
+             myThread)
   {
     EXPECT_CALL(myMockFactory, createPlugin())
         .WillOnce(Return(&myMockInterface));
     EXPECT_CALL(myMockFactory, destroyPlugin(&myMockInterface));
 
-    plugin.create();
+    EXPECT_TRUE(instance.create());
   }
 
   ~ProtocolPluginFixture()
@@ -102,7 +106,7 @@ struct RunnableProtocolPluginFixture
 TEST_P(RunnableProtocolPluginFixture, callApiFunctions)
 {
   if (GetParam())
-    plugin.setIsRunning(true);
+    instance.setIsRunning(true);
 
   boost::shared_ptr<const Licq::ProtocolSignal> signal(
       reinterpret_cast<Licq::ProtocolSignal*>(123), &nullDeleter);
@@ -120,7 +124,7 @@ TEST_P(RunnableProtocolPluginFixture, callApiFunctions)
   // Verify that the calls are forwarded to the interface
   plugin.protocolId();
   plugin.capabilities();
-  plugin.pushSignal(signal);
+  instance.pushSignal(signal);
   plugin.createUser(user, false);
   plugin.createOwner(owner);
 }

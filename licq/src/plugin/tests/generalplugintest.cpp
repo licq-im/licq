@@ -18,6 +18,7 @@
  */
 
 #include "../generalplugin.h"
+#include "../generalplugininstance.h"
 
 #include <licq/plugin/generalpluginfactory.h>
 #include <licq/plugin/generalplugininterface.h>
@@ -26,6 +27,7 @@
 #include <gmock/gmock.h>
 
 using LicqDaemon::GeneralPlugin;
+using LicqDaemon::GeneralPluginInstance;
 using LicqDaemon::DynamicLibrary;
 using LicqDaemon::PluginThread;
 
@@ -73,19 +75,21 @@ struct GeneralPluginFixture : public ::testing::Test
   MockGeneralPluginFactory myMockFactory;
   MockGeneralPlugin myMockInterface;
   GeneralPlugin plugin;
+  GeneralPluginInstance instance;
 
   GeneralPluginFixture() :
     myLib(new DynamicLibrary("")),
     myThread(new PluginThread()),
-    plugin(1, myLib, myThread,
-           boost::shared_ptr<MockGeneralPluginFactory>(
-               &myMockFactory, &nullDeleter))
+    plugin(myLib, boost::shared_ptr<MockGeneralPluginFactory>(
+               &myMockFactory, &nullDeleter)),
+    instance(1, boost::shared_ptr<GeneralPlugin>(&plugin, &nullDeleter),
+             myThread)
   {
     EXPECT_CALL(myMockFactory, createPlugin())
         .WillOnce(Return(&myMockInterface));
     EXPECT_CALL(myMockFactory, destroyPlugin(&myMockInterface));
 
-    plugin.create();
+    EXPECT_TRUE(instance.create());
   }
 
   ~GeneralPluginFixture()
@@ -106,7 +110,7 @@ TEST_P(RunnableGeneralPluginFixture, callApiFunctions)
   using boost::shared_ptr;
 
   if (GetParam())
-    plugin.setIsRunning(true);
+    instance.setIsRunning(true);
 
   unsigned long signalType = 123;
   shared_ptr<const Licq::PluginSignal> signal(
@@ -135,12 +139,12 @@ TEST_P(RunnableGeneralPluginFixture, callApiFunctions)
   plugin.description();
   plugin.usage();
   plugin.configFile();
-  plugin.isEnabled();
-  plugin.enable();
-  plugin.disable();
-  plugin.wantSignal(signalType);
-  plugin.pushSignal(signal);
-  plugin.pushEvent(event);
+  instance.isEnabled();
+  instance.enable();
+  instance.disable();
+  instance.wantSignal(signalType);
+  instance.pushSignal(signal);
+  instance.pushEvent(event);
 }
 
 INSTANTIATE_TEST_CASE_P(Running, RunnableGeneralPluginFixture,

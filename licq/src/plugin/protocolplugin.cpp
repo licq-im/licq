@@ -18,18 +18,19 @@
  */
 
 #include "protocolplugin.h"
+#include "protocolplugininstance.h"
 
 #include <licq/plugin/protocolpluginfactory.h>
-#include <licq/plugin/protocolplugininterface.h>
+#include <licq/thread/mutexlocker.h>
+
+#include <boost/make_shared.hpp>
 
 using namespace LicqDaemon;
 
-static void nullDeleter(void*) { /* Empty */ }
-
 ProtocolPlugin::ProtocolPlugin(
-    int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
+    DynamicLibrary::Ptr lib,
     boost::shared_ptr<Licq::ProtocolPluginFactory> factory)
-  : Plugin(id, lib, thread),
+  : Plugin(lib),
     myFactory(factory)
 {
   // Empty
@@ -37,8 +38,29 @@ ProtocolPlugin::ProtocolPlugin(
 
 ProtocolPlugin::~ProtocolPlugin()
 {
-  if (myInterface)
-    myFactory->destroyPlugin(myInterface.get());
+  // Empty
+}
+
+boost::shared_ptr<ProtocolPluginInstance> ProtocolPlugin::createInstance(
+    int id, PluginThread::Ptr thread)
+{
+  ProtocolPluginInstance::Ptr instance =
+      boost::make_shared<ProtocolPluginInstance>(
+          id, boost::dynamic_pointer_cast<ProtocolPlugin>(shared_from_this()),
+          thread);
+
+  if (instance->create())
+    registerInstance(instance);
+  else
+    instance.reset();
+
+  return instance;
+}
+
+boost::shared_ptr<Licq::ProtocolPluginFactory>
+ProtocolPlugin::protocolFactory()
+{
+  return myFactory;
 }
 
 unsigned long ProtocolPlugin::protocolId() const
@@ -51,11 +73,22 @@ unsigned long ProtocolPlugin::capabilities() const
   return myFactory->capabilities();
 }
 
-void ProtocolPlugin::pushSignal(
-    boost::shared_ptr<const Licq::ProtocolSignal> signal)
+Licq::ProtocolPlugin::Instances ProtocolPlugin::instances() const
 {
-  if (isRunning())
-    myInterface->pushSignal(signal);
+  Instances list;
+
+  Licq::MutexLocker locker(myMutex);
+
+  for (std::vector< boost::weak_ptr<PluginInstance> >::const_iterator it =
+           myInstances.begin(); it != myInstances.end(); ++it)
+  {
+    ProtocolPluginInstance::Ptr instance =
+        boost::dynamic_pointer_cast<ProtocolPluginInstance>(it->lock());
+    if (instance)
+      list.push_back(instance);
+  }
+
+  return list;
 }
 
 Licq::User* ProtocolPlugin::createUser(const Licq::UserId& id, bool temporary)
@@ -68,24 +101,7 @@ Licq::Owner* ProtocolPlugin::createOwner(const Licq::UserId& id)
   return myFactory->createOwner(id);
 }
 
-void ProtocolPlugin::createInterface()
-{
-  assert(!myInterface);
-  myInterface.reset(myFactory->createPlugin(), &nullDeleter);
-}
-
 boost::shared_ptr<const Licq::PluginFactory> ProtocolPlugin::factory() const
 {
   return myFactory;
-}
-
-boost::shared_ptr<Licq::PluginInterface> ProtocolPlugin::interface()
-{
-  return myInterface;
-}
-
-boost::shared_ptr<const Licq::PluginInterface>
-ProtocolPlugin::interface() const
-{
-  return myInterface;
 }

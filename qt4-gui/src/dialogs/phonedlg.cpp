@@ -54,7 +54,7 @@ EditPhoneDlg::EditPhoneDlg(QWidget* parent, const struct Licq::PhoneBookEntry* p
   m_nEntry = nEntry;
 
   Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+      Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
   if (!icq)
   {
     close();

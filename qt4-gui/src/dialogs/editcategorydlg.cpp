@@ -43,7 +43,7 @@ EditCategoryDlg::EditCategoryDlg(Licq::UserCat cat, const Licq::UserCategoryMap&
   QString title = "Licq - Edit @ Category";
 
   Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+      Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
   if (!icq)
   {
     close();
@@ -139,7 +139,7 @@ EditCategoryDlg::EditCategoryDlg(Licq::UserCat cat, const Licq::UserCategoryMap&
 void EditCategoryDlg::ok()
 {
   Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+      Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
   if (!icq)
   {
     close();

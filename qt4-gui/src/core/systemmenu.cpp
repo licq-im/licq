@@ -418,7 +418,7 @@ void SystemMenu::toggleMainInvisibleStatus()
 void SystemMenu::updateAllUsers()
 {
   Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+      Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
   if (!icq)
     return;
 
@@ -439,7 +439,7 @@ void SystemMenu::updateAllUsersInGroup()
     return;
 
   Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+      Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
   if (!icq)
     return;
 
@@ -692,7 +692,7 @@ void OwnerData::setIcqFollowMeStatus(QAction* action)
   int id = action->data().toUInt();
 
   Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+      Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
   if (!icq)
     return;
   icq->icqSetPhoneFollowMeStatus(myUserId, id);

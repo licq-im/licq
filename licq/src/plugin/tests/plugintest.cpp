@@ -18,6 +18,7 @@
  */
 
 #include "../plugin.h"
+#include "../plugininstance.h"
 
 #include <licq/plugin/pluginfactory.h>
 #include <licq/plugin/plugininterface.h>
@@ -30,6 +31,7 @@ static const char* argv0 = "test";
 char** global_argv = const_cast<char**>(&argv0);
 
 using LicqDaemon::Plugin;
+using LicqDaemon::PluginInstance;
 using LicqDaemon::DynamicLibrary;
 using LicqDaemon::PluginThread;
 
@@ -65,33 +67,57 @@ public:
 class TestPlugin : public Plugin
 {
 public:
+  typedef boost::shared_ptr<TestPlugin> Ptr;
+
+  TestPlugin(DynamicLibrary::Ptr lib,
+             boost::shared_ptr<Licq::PluginFactory> factory)
+    : Plugin(lib),
+      myFactory(factory)
+  {
+    // Empty
+  }
+
+  boost::shared_ptr<Licq::PluginFactory> factory()
+  {
+    return myFactory;
+  }
+
+protected:
+  // From Plugin
+  boost::shared_ptr<const Licq::PluginFactory> factory() const
+  {
+    return myFactory;
+  }
+
+private:
+  boost::shared_ptr<Licq::PluginFactory> myFactory;
+};
+
+class TestPluginInstance : public PluginInstance
+{
+public:
   bool myIsCreated;
 
-  TestPlugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
-             boost::shared_ptr<Licq::PluginFactory> factory,
-             boost::shared_ptr<Licq::PluginInterface> interface)
-    : Plugin(id, lib, thread),
+  TestPluginInstance(
+      int id, TestPlugin::Ptr plugin, PluginThread::Ptr thread,
+      boost::shared_ptr<Licq::PluginInterface> interface)
+    : PluginInstance(id, thread),
       myIsCreated(false),
-      myFactory(factory),
+      myPlugin(plugin),
       myInterface(interface)
   {
     // Empty
   }
 
-  ~TestPlugin()
+  ~TestPluginInstance()
   {
     if (myInterface)
-      myFactory->destroyPlugin(myInterface.get());
+      myPlugin->factory()->destroyPlugin(myInterface.get());
   }
 
 protected:
-  // From Plugin
+  // From PluginInstance
   void createInterface() { myIsCreated = true; }
-
-  boost::shared_ptr<const Licq::PluginFactory> factory() const
-  {
-    return myFactory;
-  }
 
   boost::shared_ptr<Licq::PluginInterface> interface()
   {
@@ -104,7 +130,7 @@ protected:
   }
 
 private:
-  boost::shared_ptr<Licq::PluginFactory> myFactory;
+  TestPlugin::Ptr myPlugin;
   boost::shared_ptr<Licq::PluginInterface> myInterface;
 };
 
@@ -117,15 +143,18 @@ struct PluginFixture : public ::testing::Test
   MockPluginFactory myMockFactory;
   MockPlugin myMockInterface;
   TestPlugin plugin;
+  TestPluginInstance instance;
 
   pthread_t myPluginThreadId;
 
   PluginFixture() :
     myLib(new DynamicLibrary("")),
     myThread(new PluginThread()),
-    plugin(1, myLib, myThread,
-           boost::shared_ptr<MockPluginFactory>(&myMockFactory, &nullDeleter),
-           boost::shared_ptr<MockPlugin>(&myMockInterface, &nullDeleter)),
+    plugin(myLib,
+           boost::shared_ptr<MockPluginFactory>(&myMockFactory, &nullDeleter)),
+    instance(1, boost::shared_ptr<TestPlugin>(&plugin, &nullDeleter),
+             myThread,
+             boost::shared_ptr<MockPlugin>(&myMockInterface, &nullDeleter)),
     myPluginThreadId(0)
   {
     EXPECT_CALL(myMockFactory, destroyPlugin(&myMockInterface));
@@ -153,12 +182,12 @@ TEST_F(PluginFixture, callApiFunctions)
   // Verify that the calls are forwarded to the interface
   plugin.name();
   plugin.version();
-  plugin.shutdown();
+  instance.shutdown();
 }
 
 TEST_F(PluginFixture, castToInternalInterface)
 {
-  Plugin::Ptr ptr(&plugin, &nullDeleter);
+  PluginInstance::Ptr ptr(&instance, &nullDeleter);
 
   EXPECT_FALSE(plugin_internal_cast<UnImplementedInterface>(ptr));
   EXPECT_EQ(plugin_internal_cast<InternalPluginInterface>(ptr).get(),
@@ -181,7 +210,7 @@ TEST_F(PluginFixture, lifeTimeOfCastedObject)
   {
     boost::shared_ptr<InternalPluginInterface> interface;
     {
-      Plugin::Ptr ptr(&plugin, &countingNullDeleter);
+      PluginInstance::Ptr ptr(&instance, &countingNullDeleter);
       interface = plugin_internal_cast<InternalPluginInterface>(ptr);
     }
     EXPECT_EQ(0, DeleteCount);
@@ -192,25 +221,25 @@ TEST_F(PluginFixture, lifeTimeOfCastedObject)
 
 TEST_F(PluginFixture, create)
 {
-  EXPECT_FALSE(plugin.myIsCreated);
-  EXPECT_TRUE(plugin.create());
-  EXPECT_TRUE(plugin.myIsCreated);
+  EXPECT_FALSE(instance.myIsCreated);
+  EXPECT_TRUE(instance.create());
+  EXPECT_TRUE(instance.myIsCreated);
 }
 
 struct CallbackData
 {
   bool myCalled;
-  const Plugin* myPlugin;
+  const PluginInstance* myInstance;
   pthread_t myThreadId;
 
-  CallbackData() : myCalled(false), myPlugin(NULL), myThreadId(0) { }
+  CallbackData() : myCalled(false), myInstance(NULL), myThreadId(0) { }
 };
 
 static CallbackData InitCallbackData;
-static void initCallback(const Plugin& plugin)
+static void initCallback(const PluginInstance& instance)
 {
   InitCallbackData.myCalled = true;
-  InitCallbackData.myPlugin = &plugin;
+  InitCallbackData.myInstance = &instance;
   InitCallbackData.myThreadId = ::pthread_self();
 }
 
@@ -219,26 +248,26 @@ TEST_F(PluginFixture, init)
   EXPECT_CALL(myMockInterface, init(1, _));
   InitCallbackData = CallbackData();
 
-  plugin.init(0, NULL, &initCallback);
+  instance.init(0, NULL, &initCallback);
 
   EXPECT_TRUE(InitCallbackData.myCalled);
-  EXPECT_EQ(&plugin, InitCallbackData.myPlugin);
+  EXPECT_EQ(&instance, InitCallbackData.myInstance);
   EXPECT_TRUE(myThread->isThread(InitCallbackData.myThreadId));
 }
 
 static CallbackData StartCallbackData;
-static void startCallback(const Plugin& plugin)
+static void startCallback(const PluginInstance& instance)
 {
   StartCallbackData.myCalled = true;
-  StartCallbackData.myPlugin = &plugin;
+  StartCallbackData.myInstance = &instance;
   StartCallbackData.myThreadId = ::pthread_self();
 }
 
 static CallbackData ExitCallbackData;
-static void exitCallback(const Plugin& plugin)
+static void exitCallback(const PluginInstance& instance)
 {
   ExitCallbackData.myCalled = true;
-  ExitCallbackData.myPlugin = &plugin;
+  ExitCallbackData.myInstance = &instance;
   ExitCallbackData.myThreadId = ::pthread_self();
 }
 
@@ -250,15 +279,15 @@ TEST_F(PluginFixture, run)
   StartCallbackData = CallbackData();
   ExitCallbackData = CallbackData();
 
-  plugin.run(&startCallback, &exitCallback);
-  EXPECT_EQ(5, plugin.joinThread());
+  instance.run(&startCallback, &exitCallback);
+  EXPECT_EQ(5, instance.joinThread());
 
   EXPECT_TRUE(StartCallbackData.myCalled);
-  EXPECT_EQ(&plugin, StartCallbackData.myPlugin);
+  EXPECT_EQ(&instance, StartCallbackData.myInstance);
   EXPECT_TRUE(::pthread_equal(myPluginThreadId, StartCallbackData.myThreadId));
 
   EXPECT_TRUE(ExitCallbackData.myCalled);
-  EXPECT_EQ(&plugin, ExitCallbackData.myPlugin);
+  EXPECT_EQ(&instance, ExitCallbackData.myInstance);
   EXPECT_TRUE(::pthread_equal(myPluginThreadId, ExitCallbackData.myThreadId));
 }
 

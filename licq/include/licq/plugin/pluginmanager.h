@@ -26,13 +26,14 @@
 
 #include "generalplugin.h"
 #include "protocolplugin.h"
-
+#include "protocolplugininstance.h"
 
 namespace Licq
 {
 class Event;
 class PluginSignal;
 class ProtocolSignal;
+class USerId;
 
 typedef std::list<std::string> StringList;
 
@@ -103,6 +104,29 @@ public:
    */
   virtual
   ProtocolPlugin::Ptr getProtocolPlugin(unsigned long protocolId) const = 0;
+
+  /**
+   * Get the protocol instance that is used for the given owner id.
+   *
+   * @param ownerId Owner to get protocol instance for.
+   * @return Pointer to the ProtocolPlugin (if found) or an empty pointer if
+   *         owner is invalid.
+   */
+  virtual ProtocolPluginInstance::Ptr
+  getProtocolInstance(const UserId& ownerId) const = 0;
+
+  /**
+   * Get a protocol instance that is used for the given protocol id.
+   *
+   * This method should only be used when it doesn't matter witch protocol
+   * instance is returned, or if the protocol only supports one instance.
+   *
+   * @param protocolId Protocol id to get protocol instance for.
+   * @return Pointer to the ProtocolPlugin (if found) or an empty pointer if
+   *         protocol id is unknown.
+   */
+  virtual ProtocolPluginInstance::Ptr
+  getProtocolInstance(unsigned long protocolId) const = 0;
 
   /**
    * Load and start the general plugin @a name.

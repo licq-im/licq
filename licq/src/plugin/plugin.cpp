@@ -20,45 +20,19 @@
 #include "plugin.h"
 
 #include <licq/plugin/pluginfactory.h>
-#include <licq/plugin/plugininterface.h>
-
-#include <cassert>
-#include <cstdlib>
-#include <cstring>
-#include <unistd.h>
-
-// From licq.cpp
-extern char** global_argv;
+#include <licq/thread/mutexlocker.h>
 
 using namespace LicqDaemon;
-using namespace std;
 
-Plugin::Plugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread)
-  : myId(id),
-    myLibrary(lib),
-    myThread(thread),
-    myIsRunning(false),
-    myArgc(0),
-    myArgv(NULL),
-    myArgvCopy(NULL),
-    myInitCallback(NULL),
-    myStartCallback(NULL),
-    myExitCallback(NULL)
+Plugin::Plugin(DynamicLibrary::Ptr lib)
+  : myLibrary(lib)
 {
   // Empty
 }
 
 Plugin::~Plugin()
 {
-  for (int i = 0; i < myArgc; ++i)
-    ::free(myArgv[i]);
-  delete[] myArgv;
-  delete[] myArgvCopy;
-}
-
-int Plugin::id() const
-{
-  return myId;
+  // Empty
 }
 
 std::string Plugin::name() const
@@ -76,121 +50,19 @@ std::string Plugin::libraryName() const
   return myLibrary->getName();
 }
 
-boost::shared_ptr<Licq::PluginInterface> Plugin::internalInterface()
+void Plugin::registerInstance(boost::weak_ptr<PluginInstance> instance)
 {
-  // Create a shared_ptr that keeps this object alive at least until the
-  // returned pointer goes out of scope.
-  return boost::shared_ptr<Licq::PluginInterface>(
-      shared_from_this(), interface().get());
-}
+  Licq::MutexLocker locker(myMutex);
 
-bool Plugin::isThread(const pthread_t& thread) const
-{
-  return myThread->isThread(thread);
-}
-
-bool Plugin::create()
-{
-  myThread->createPlugin(&createThreadEntry, this);
-  return !! interface();
-}
-
-bool Plugin::init(int argc, char** argv, void (*callback)(const Plugin&))
-{
-  assert(myInitCallback == NULL);
-
-  const size_t size = argc + 2;
-
-  myArgv = new char*[size];
-  myArgvCopy = new char*[size];
-
-  myArgv[size - 1] = NULL;
-
-  myArgv[0] = ::strdup(global_argv[0]);
-
-  for (int i = 0; i < argc; ++i)
-    myArgv[i + 1] = ::strdup(argv[i]);
-
-  myArgc = argc + 1;
-
-  // We need to create a copy of myArgv and pass that to the plugin, since
-  // e.g. KDE changes the pointers in argv (e.g. to strip the path in argv[0])
-  // and that messes up free, causing SIGSEGV in the destructor.
-  ::memcpy(myArgvCopy, myArgv, size * sizeof(char*));
-
-  myInitCallback = callback;
-  return myThread->initPlugin(&initThreadEntry, this);
-}
-
-void Plugin::run(void (*startCallback)(const Plugin&),
-                 void (*exitCallback)(const Plugin&))
-{
-  assert(myStartCallback == NULL && myExitCallback == NULL);
-  myStartCallback = startCallback;
-  myExitCallback = exitCallback;
-
-  myThread->startPlugin(&startThreadEntry, this);
-}
-
-void Plugin::shutdown()
-{
-  interface()->shutdown();
-  myIsRunning = false;
-}
-
-int Plugin::joinThread()
-{
-  void* result = myThread->join();
-  if (result != NULL && result != PTHREAD_CANCELED)
+  // Clean up stale entries
+  for (std::vector< boost::weak_ptr<PluginInstance> >::iterator it =
+           myInstances.begin(); it != myInstances.end();)
   {
-    int* retval = static_cast<int*>(result);
-    int value = *retval;
-    delete retval;
-    return value;
+    if (!it->lock())
+      it = myInstances.erase(it);
+    else
+      ++it;
   }
 
-  return -1;
-}
-
-void Plugin::cancelThread()
-{
-  myThread->cancel();
-}
-
-void Plugin::createThreadEntry(void* plugin)
-{
-  Plugin* thisPlugin = static_cast<Plugin*>(plugin);
-  thisPlugin->createInterface();
-}
-
-bool Plugin::initThreadEntry(void* plugin)
-{
-  Plugin* thisPlugin = static_cast<Plugin*>(plugin);
-
-  if (thisPlugin->myInitCallback)
-    thisPlugin->myInitCallback(*thisPlugin);
-
-  // Set optind to 0 so plugins can use getopt
-  optind = 0;
-
-  return thisPlugin->interface()->init(
-      thisPlugin->myArgc, thisPlugin->myArgvCopy);
-}
-
-void* Plugin::startThreadEntry(void* plugin)
-{
-  Plugin* thisPlugin = static_cast<Plugin*>(plugin);
-
-  if (thisPlugin->myStartCallback != NULL)
-    (*thisPlugin->myStartCallback)(*thisPlugin);
-
-  thisPlugin->myIsRunning = true;
-
-  int* retval = new int;
-  *retval = thisPlugin->interface()->run();
-
-  if (thisPlugin->myExitCallback != NULL)
-    (*thisPlugin->myExitCallback)(*thisPlugin);
-
-  return retval;
+  myInstances.push_back(instance);
 }
