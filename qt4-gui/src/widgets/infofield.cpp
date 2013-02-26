@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2009 Licq developers
+ * Copyright (C) 2007-2009, 2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,6 +53,12 @@ void InfoField::setText(const char* data)
 void InfoField::setText(unsigned long data)
 {
   setText(QString::number(data));
+}
+
+void InfoField::setText(QString text)
+{
+  QLineEdit::setText(text);
+  setCursorPosition(0);
 }
 
 void InfoField::setDateTime(uint timestamp)

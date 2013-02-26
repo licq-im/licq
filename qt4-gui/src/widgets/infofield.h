@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2009 Licq developers
+ * Copyright (C) 1999-2009, 2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,8 +64,12 @@ public:
    */
   void setText(unsigned long data);
 
-  // Don't hide base setText which takes QString
-  using QLineEdit::setText;
+  /**
+   * Set text
+   *
+   * @param text New value for field
+   */
+  void setText(QString text);
 
   /**
    * Set field to a timestamp
