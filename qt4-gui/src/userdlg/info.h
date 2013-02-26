@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2000-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@ namespace LicqQtGui
 class InfoField;
 class MLEdit;
 class MLView;
+class SkinnableLabel;
 class SpecialSpinBox;
 class TimeZoneEdit;
 class UserDlg;
@@ -387,6 +388,8 @@ private:
   InfoField* nfoAlias;
   InfoField* nfoIp;
   InfoField* nfoUin;
+  SkinnableLabel* myProtocolLabel;
+  InfoField* nfoOwner;
   InfoField* nfoCity;
   InfoField* nfoState;
   InfoField* nfoZipCode;

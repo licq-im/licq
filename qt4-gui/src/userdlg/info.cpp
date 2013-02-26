@@ -62,6 +62,7 @@
 #include "widgets/infofield.h"
 #include "widgets/mledit.h"
 #include "widgets/mlview.h"
+#include "widgets/skinnablelabel.h"
 #include "widgets/specialspinbox.h"
 #include "widgets/timezoneedit.h"
 #include "userdlg.h"
@@ -144,13 +145,22 @@ QWidget* UserPages::Info::createPageGeneral(QWidget* parent)
   myPageGeneralLayout = new QVBoxLayout(w);
   myPageGeneralLayout->setContentsMargins(0, 0, 0, 0);
 
-  unsigned short CR = 0;
+  int CR = -1;
 
   myGeneralBox = new QGroupBox(tr("General Information"));
   QGridLayout* lay = new QGridLayout(myGeneralBox);
   lay->setColumnMinimumWidth(2, 10);
 
-  lay->addWidget(new QLabel(tr("Alias:")), CR, 0);
+  if (!m_bOwner)
+  {
+    lay->addWidget(new QLabel(tr("Account:")), ++CR, 0);
+    nfoOwner = new InfoField(true);
+    lay->addWidget(nfoOwner, CR, 1);
+    myProtocolLabel = new SkinnableLabel();
+    lay->addWidget(myProtocolLabel, CR, 3);
+  }
+
+  lay->addWidget(new QLabel(tr("Alias:")), ++CR, 0);
   nfoAlias = new InfoField(false);
   lay->addWidget(nfoAlias, CR, 1);
 
@@ -259,7 +269,20 @@ QWidget* UserPages::Info::createPageGeneral(QWidget* parent)
 void UserPages::Info::loadPageGeneral(const Licq::User* u)
 {
   if (!m_bOwner)
+  {
     chkKeepAliasOnUpdate->setChecked(u->KeepAliasOnUpdate());
+    nfoOwner->setText(myUserId.ownerId().accountId().c_str());
+
+    Licq::ProtocolPluginInstance::Ptr instance =
+        Licq::gPluginManager.getProtocolInstance(myUserId.ownerId());
+    if (instance)
+    {
+      myProtocolLabel->setText(
+          QString::fromLocal8Bit(instance->plugin()->name().c_str()));
+      myProtocolLabel->setPrependPixmap(
+          IconManager::instance()->iconForProtocol(myPpid));
+    }
+  }
   nfoUin->setText(myId);
   nfoAlias->setText(QString::fromUtf8(u->getAlias().c_str()));
   nfoFirstName->setText(QString::fromUtf8(u->getFirstName().c_str()));
