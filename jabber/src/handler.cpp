@@ -115,7 +115,7 @@ void Handler::onUserAdded(
     const string& id, const string& name, const std::list<string>& groups,
     bool awaitingAuthorization)
 {
-  TRACE();
+  TRACE("%s (%s)", id.c_str(), name.c_str());
 
   UserId userId(myOwnerId, id);
   bool wasAdded = false;
