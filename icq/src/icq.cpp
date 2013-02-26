@@ -128,6 +128,7 @@ void IcqProtocol::initialize()
 
   // Services
   m_xBARTService = NULL;
+  thread_ping = thread_updateusers = thread_ssbiservice = 0;
 
   // Start up our threads
   pthread_mutex_init(&mutex_runningevents, NULL);
@@ -141,57 +142,6 @@ void IcqProtocol::initialize()
 
 bool IcqProtocol::start()
 {
-  int nResult = 0;
-
-  DcSocket* s = new DcSocket();
-  m_nTCPSocketDesc = gDaemon.StartTCPServer(s);
-  if (m_nTCPSocketDesc == -1)
-  {
-    gLog.error(tr("Unable to allocate TCP port for local server (No ports available)!"));
-    return false;
-  }
-  gSocketManager.AddSocket(s);
-  bool useBart = false;
-  {
-    OwnerWriteGuard o(myOwnerId);
-    if (o.isLocked())
-    {
-      o->SetIntIp(s->getLocalIpInt());
-      o->SetPort(s->getLocalPort());
-      useBart = o->useBart();
-    }
-  }
-  CPacket::SetLocalPort(s->getLocalPort());
-  gSocketManager.DropSocket(s);
-
-  gLog.info(tr("Spawning daemon threads"));
-
-  nResult = pthread_create(&thread_ping, NULL, &Ping_tep, this);
-  if (nResult != 0)
-  {
-    gLog.error(tr("Unable to start ping thread: %s."), strerror(nResult));
-    return false;
-  }
-  
-  nResult = pthread_create(&thread_updateusers, NULL, &UpdateUsers_tep, this);
-  if (nResult != 0)
-  {
-    gLog.error(tr("Unable to start users update thread: %s."), strerror(nResult));
-    return false;
-  }
-
-  if (useBart)
-  {
-    m_xBARTService = new COscarService(ICQ_SNACxFAM_BART);
-    nResult = pthread_create(&thread_ssbiservice, NULL,
-                             &OscarServiceSendQueue_tep, m_xBARTService);
-    if (nResult != 0)
-    {
-      gLog.error(tr("Unable to start BART service thread: %s."), strerror(nResult));
-      return false;
-    }
-  }
-
   MonitorSockets_func();
 
   // Cancel the ping thread

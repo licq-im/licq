@@ -1417,6 +1417,7 @@ void IcqProtocol::logon(const Licq::UserId& ownerId, unsigned logonStatus)
     gLog.warning(tr("Attempt to logon while already logged or logging on, logoff and try again."));
     return;
   }
+  bool useBart;
   {
     OwnerReadGuard o(ownerId);
     if (!o.isLocked())
@@ -1430,7 +1431,61 @@ void IcqProtocol::logon(const Licq::UserId& ownerId, unsigned logonStatus)
       return;
     }
 
+    useBart = o->useBart();
     m_nDesiredStatus = addStatusFlags(icqStatusFromStatus(logonStatus), *o);
+  }
+
+  if (m_nTCPSocketDesc == -1)
+  {
+    DcSocket* s = new DcSocket();
+    m_nTCPSocketDesc = gDaemon.StartTCPServer(s);
+    if (m_nTCPSocketDesc == -1)
+    {
+      gLog.error(tr("Unable to allocate TCP port for local server (No ports available)!"));
+      return;
+    }
+    gSocketManager.AddSocket(s);
+    {
+      OwnerWriteGuard o(ownerId);
+      o->SetIntIp(s->getLocalIpInt());
+      o->SetPort(s->getLocalPort());
+    }
+    CPacket::SetLocalPort(s->getLocalPort());
+    gSocketManager.DropSocket(s);
+  }
+
+  gLog.info(tr("Spawning daemon threads"));
+
+  if (!thread_ping)
+  {
+    int result = pthread_create(&thread_ping, NULL, &Ping_tep, this);
+    if (result != 0)
+    {
+      gLog.error(tr("Unable to start ping thread: %s."), strerror(result));
+      return;
+    }
+  }
+
+  if (!thread_updateusers)
+  {
+    int result = pthread_create(&thread_updateusers, NULL, &UpdateUsers_tep, this);
+    if (result != 0)
+    {
+      gLog.error(tr("Unable to start users update thread: %s."), strerror(result));
+      return;
+    }
+  }
+
+  if (useBart && m_xBARTService == NULL)
+  {
+    m_xBARTService = new COscarService(ICQ_SNACxFAM_BART);
+    int result = pthread_create(&thread_ssbiservice, NULL,
+                             &OscarServiceSendQueue_tep, m_xBARTService);
+    if (result != 0)
+    {
+      gLog.error(tr("Unable to start BART service thread: %s."), strerror(result));
+      return;
+    }
   }
 
   myOwnerId = ownerId;
