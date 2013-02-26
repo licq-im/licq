@@ -56,20 +56,19 @@ public:
   /**
    * Create the plugin instance
    *
+   * @param callback Called in the thread just before the instance is created
    * @return True if the plugin was created successfully
    */
-  bool create();
+  bool create(void (*callback)(const PluginInstance&));
 
   /**
    * Initialize the plugin
    *
    * @param argc Number of command line parameters
    * @param argv Command line parameters
-   * @param callback Called in the thread just before init is called
    * @return True if initialization was successful
    */
-  bool init(int argc, char** argv,
-            void (*callback)(const PluginInstance&));
+  bool init(int argc, char** argv);
 
   /**
    * Run the plugin
@@ -125,7 +124,7 @@ private:
   char** myArgv;
   char** myArgvCopy;
 
-  void (*myInitCallback)(const PluginInstance&);
+  void (*myCreateCallback)(const PluginInstance&);
   void (*myStartCallback)(const PluginInstance&);
   void (*myExitCallback)(const PluginInstance&);
 };

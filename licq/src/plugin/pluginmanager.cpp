@@ -64,8 +64,8 @@ Licq::PluginManager& Licq::gPluginManager(LicqDaemon::gPluginManager);
 namespace
 {
 
-// Called in the plugin's thread just before the init function
-static void initPluginCallback(const PluginInstance& instance)
+// Called in the plugin's thread just before creating the instance
+static void createPluginCallback(const PluginInstance& instance)
 {
   string name;
 
@@ -177,12 +177,12 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
 
     // Create the plugin instance
     GeneralPluginInstance::Ptr instance = plugin->createInstance(
-        getNewPluginId());
+        getNewPluginId(), &createPluginCallback);
     if (!instance)
       throw std::exception();
 
     // Let the plugin initialize itself
-    if (!instance->init(argc, argv, &initPluginCallback))
+    if (!instance->init(argc, argv))
     {
       gLog.error(tr("Failed to initialize plugin (%s)"),
           plugin->name().c_str());
@@ -430,8 +430,8 @@ Owner* PluginManager::createProtocolOwner(const UserId& id)
   }
 
   ProtocolPluginInstance::Ptr instance = plugin->createInstance(
-      getNewPluginId(), id);
-  if (!instance || !instance->init(0, NULL, &initPluginCallback))
+      getNewPluginId(), id, &createPluginCallback);
+  if (!instance || !instance->init(0, NULL))
   {
     gLog.error(tr("Failed to create and initialize protocol instance"
                   " for %s"), id.toString().c_str());

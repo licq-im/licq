@@ -47,7 +47,8 @@ public:
                 PluginThread::Ptr thread);
   ~GeneralPlugin();
 
-  boost::shared_ptr<GeneralPluginInstance> createInstance(int id);
+  boost::shared_ptr<GeneralPluginInstance> createInstance(
+      int id, void (*callback)(const PluginInstance&));
 
   boost::shared_ptr<Licq::GeneralPluginFactory> generalFactory();
 

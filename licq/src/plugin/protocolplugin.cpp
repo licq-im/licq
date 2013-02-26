@@ -45,7 +45,8 @@ ProtocolPlugin::~ProtocolPlugin()
 }
 
 boost::shared_ptr<ProtocolPluginInstance>
-ProtocolPlugin::createInstance(int id, const Licq::UserId& ownerId)
+ProtocolPlugin::createInstance(int id, const Licq::UserId& ownerId,
+                               void (*callback)(const PluginInstance&))
 {
   PluginThread::Ptr thread;
   if (myMainThread)
@@ -59,7 +60,7 @@ ProtocolPlugin::createInstance(int id, const Licq::UserId& ownerId)
           boost::dynamic_pointer_cast<ProtocolPlugin>(shared_from_this()),
           thread);
 
-  if (instance->create())
+  if (instance->create(callback))
     registerInstance(instance);
   else
     instance.reset();

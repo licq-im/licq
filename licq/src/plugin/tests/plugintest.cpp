@@ -265,13 +265,6 @@ TEST_F(PluginFixture, lifeTimeOfCastedInstance)
   EXPECT_EQ(1, DeleteCount);
 }
 
-TEST_F(PluginFixture, create)
-{
-  EXPECT_FALSE(instance.myIsCreated);
-  EXPECT_TRUE(instance.create());
-  EXPECT_TRUE(instance.myIsCreated);
-}
-
 struct CallbackData
 {
   bool myCalled;
@@ -281,24 +274,31 @@ struct CallbackData
   CallbackData() : myCalled(false), myInstance(NULL), myThreadId(0) { }
 };
 
-static CallbackData InitCallbackData;
-static void initCallback(const PluginInstance& instance)
+static CallbackData CreateCallbackData;
+static void createCallback(const PluginInstance& instance)
 {
-  InitCallbackData.myCalled = true;
-  InitCallbackData.myInstance = &instance;
-  InitCallbackData.myThreadId = ::pthread_self();
+  CreateCallbackData.myCalled = true;
+  CreateCallbackData.myInstance = &instance;
+  CreateCallbackData.myThreadId = ::pthread_self();
+}
+
+TEST_F(PluginFixture, create)
+{
+  CreateCallbackData = CallbackData();
+  EXPECT_FALSE(instance.myIsCreated);
+
+  EXPECT_TRUE(instance.create(&createCallback));
+  EXPECT_TRUE(instance.myIsCreated);
+
+  EXPECT_TRUE(CreateCallbackData.myCalled);
+  EXPECT_EQ(&instance, CreateCallbackData.myInstance);
+  EXPECT_TRUE(myThread->isThread(CreateCallbackData.myThreadId));
 }
 
 TEST_F(PluginFixture, init)
 {
   EXPECT_CALL(myMockInterface, init(1, _));
-  InitCallbackData = CallbackData();
-
-  instance.init(0, NULL, &initCallback);
-
-  EXPECT_TRUE(InitCallbackData.myCalled);
-  EXPECT_EQ(&instance, InitCallbackData.myInstance);
-  EXPECT_TRUE(myThread->isThread(InitCallbackData.myThreadId));
+  instance.init(0, NULL);
 }
 
 static CallbackData StartCallbackData;

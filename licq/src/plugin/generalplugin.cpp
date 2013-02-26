@@ -43,7 +43,8 @@ GeneralPlugin::~GeneralPlugin()
   // Empty
 }
 
-boost::shared_ptr<GeneralPluginInstance> GeneralPlugin::createInstance(int id)
+boost::shared_ptr<GeneralPluginInstance> GeneralPlugin::createInstance(
+    int id, void (*callback)(const PluginInstance&))
 {
   assert(myThread);
 
@@ -53,7 +54,7 @@ boost::shared_ptr<GeneralPluginInstance> GeneralPlugin::createInstance(int id)
           myThread);
   myThread.reset();
 
-  if (instance->create())
+  if (instance->create(callback))
     registerInstance(instance);
   else
     instance.reset();

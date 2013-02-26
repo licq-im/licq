@@ -50,7 +50,8 @@ public:
   ~ProtocolPlugin();
 
   boost::shared_ptr<ProtocolPluginInstance> createInstance(
-      int id, const Licq::UserId& ownerId);
+      int id, const Licq::UserId& ownerId,
+      void (*callback)(const PluginInstance&));
   void setStarted() { myIsStarted = true; }
   bool isStarted() const { return myIsStarted; }
 

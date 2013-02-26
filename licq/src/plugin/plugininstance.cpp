@@ -40,7 +40,7 @@ PluginInstance::PluginInstance(
     myArgc(0),
     myArgv(NULL),
     myArgvCopy(NULL),
-    myInitCallback(NULL),
+    myCreateCallback(NULL),
     myStartCallback(NULL),
     myExitCallback(NULL)
 {
@@ -73,17 +73,17 @@ bool PluginInstance::isThread(const pthread_t& thread) const
   return myThread->isThread(thread);
 }
 
-bool PluginInstance::create()
+bool PluginInstance::create(void (*callback)(const PluginInstance&))
 {
+  assert(myCreateCallback == NULL);
+  myCreateCallback = callback;
+
   myThread->createPlugin(&createThreadEntry, this);
   return !! interface();
 }
 
-bool PluginInstance::init(
-    int argc, char** argv, void (*callback)(const PluginInstance&))
+bool PluginInstance::init(int argc, char** argv)
 {
-  assert(myInitCallback == NULL);
-
   const size_t size = argc + 2;
 
   myArgv = new char*[size];
@@ -103,7 +103,6 @@ bool PluginInstance::init(
   // and that messes up free, causing SIGSEGV in the destructor.
   ::memcpy(myArgvCopy, myArgv, size * sizeof(char*));
 
-  myInitCallback = callback;
   return myThread->initPlugin(&initThreadEntry, this);
 }
 
@@ -145,15 +144,16 @@ void PluginInstance::cancelThread()
 void PluginInstance::createThreadEntry(void* plugin)
 {
   PluginInstance* thisPlugin = static_cast<PluginInstance*>(plugin);
+
+  if (thisPlugin->myCreateCallback)
+    thisPlugin->myCreateCallback(*thisPlugin);
+
   thisPlugin->createInterface();
 }
 
 bool PluginInstance::initThreadEntry(void* plugin)
 {
   PluginInstance* thisPlugin = static_cast<PluginInstance*>(plugin);
-
-  if (thisPlugin->myInitCallback)
-    thisPlugin->myInitCallback(*thisPlugin);
 
   // Set optind to 0 so plugins can use getopt
   optind = 0;

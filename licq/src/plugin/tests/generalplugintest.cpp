@@ -89,7 +89,7 @@ struct GeneralPluginFixture : public ::testing::Test
         .WillOnce(Return(&myMockInterface));
     EXPECT_CALL(myMockFactory, destroyPlugin(&myMockInterface));
 
-    EXPECT_TRUE(instance.create());
+    EXPECT_TRUE(instance.create(NULL));
   }
 
   ~GeneralPluginFixture()
