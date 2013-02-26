@@ -131,6 +131,9 @@ Client::~Client()
     myClient.disconnect();
   }
 
+  // Avoid memory leak in gloox
+  myClient.removePresenceExtension(gloox::ExtVCardUpdate);
+
   delete mySessionManager;
 }
 
