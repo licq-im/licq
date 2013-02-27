@@ -623,6 +623,13 @@ bool UserManager::removeOwner(const Licq::UserId& userId)
   SaveGroups();
   myGroupListMutex.unlockWrite();
 
+  // Remove user list section from users.conf
+  Licq::IniFile usersConf("users.conf");
+  usersConf.loadFile();
+  string ppidStr = Licq::protocolId_toString(userId.protocolId());
+  usersConf.removeSection(userId.accountId() + "." + ppidStr);
+  usersConf.writeFile();
+
   gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,
       PluginSignal::ListOwnerRemoved, userId));
 
