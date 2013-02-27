@@ -505,14 +505,16 @@ OwnerData::OwnerData(const Licq::UserId& userId, const QString& protoName,
   unsigned long myPpid = userId.protocolId();
   myUseAwayMessage = ((sendFunctions & Licq::ProtocolPlugin::CanHoldStatusMsg) != 0);
 
+  QString ownerCaption = QString("%1 (%2)").arg(protoName).arg(userId.accountId().c_str());
+
   // System sub menu
-  myOwnerAdmMenu = new QMenu(protoName);
+  myOwnerAdmMenu = new QMenu(ownerCaption);
   myOwnerAdmInfoAction = myOwnerAdmMenu->addAction(tr("&Info..."), this, SLOT(viewInfo()));
   myOwnerAdmHistoryAction = myOwnerAdmMenu->addAction(tr("View &History..."), this, SLOT(viewHistory()));
   myOwnerAdmSettingsAction = myOwnerAdmMenu->addAction(tr("&Settings..."), this, SLOT(showSettingsDlg()));
 
   // Status sub menu
-  myStatusMenu = new QMenu(protoName);
+  myStatusMenu = new QMenu(ownerCaption);
   myStatusActions = new QActionGroup(this);
   connect(myStatusActions, SIGNAL(triggered(QAction*)), SLOT(setStatus(QAction*)));
  #define ADD_STATUS(var, status, cond) \
