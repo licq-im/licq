@@ -399,20 +399,21 @@ void UserManager::saveUserList(const UserId& ownerId)
   int count = 0;
   for (UserMap::const_iterator i = myUsers.begin(); i != myUsers.end(); ++i)
   {
+    if (i->first.ownerId() != ownerId)
+      continue;
+
     i->second->lockRead();
     bool temporary = i->second->NotInList();
-    string accountId = i->second->accountId();
-    unsigned long ppid = i->second->protocolId();
     i->second->unlockRead();
 
     // Only save users for this owner that's been permanently added
-    if (temporary || ppid != ownerId.protocolId())
+    if (temporary)
       continue;
     ++count;
 
     char key[20];
     sprintf(key, "User%i", count);
-    usersConf.set(key, accountId);
+    usersConf.set(key, i->first.accountId());
   }
   usersConf.set("NumUsers", count);
 
