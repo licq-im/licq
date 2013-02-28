@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1220,7 +1220,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, const string& m
       }
 
       Licq::EventMsg* e = new Licq::EventMsg(
-          (isUtf8 ? message : Licq::gTranslator.fromUtf8(message, u->userEncoding())),
+          (isUtf8 ? message : Licq::gTranslator.toUtf8(message, u->userEncoding())),
           Licq::EventMsg::TimeNow, nFlags);
     e->SetColor(fore, back);
 
