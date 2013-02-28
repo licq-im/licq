@@ -1265,7 +1265,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, const string& m
       }
 
       Licq::EventMsg* e = new Licq::EventMsg(
-          (isUtf8 ? message : Licq::gTranslator.fromUtf8(message, u->userEncoding())),
+          (isUtf8 ? message : Licq::gTranslator.toUtf8(message, u->userEncoding())),
           Licq::EventMsg::TimeNow, nFlags);
     e->SetColor(fore, back);
 
