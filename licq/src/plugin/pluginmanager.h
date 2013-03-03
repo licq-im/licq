@@ -57,6 +57,9 @@ public:
   /// Send shutdown signal to all the plugins
   void shutdownAllPlugins();
 
+  /// Shutdown specific protocol instance
+  void shutdownProtocolInstance(const Licq::UserId& ownerId);
+
   /// Notify the manager that a plugin has exited
   void pluginHasExited(unsigned short id);
 

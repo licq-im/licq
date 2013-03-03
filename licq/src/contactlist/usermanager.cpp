@@ -622,6 +622,8 @@ bool UserManager::removeOwner(const Licq::UserId& userId)
   SaveGroups();
   myGroupListMutex.unlockWrite();
 
+  gPluginManager.shutdownProtocolInstance(userId);
+
   gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,
       PluginSignal::ListOwnerRemoved, userId));
 

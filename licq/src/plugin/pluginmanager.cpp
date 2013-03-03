@@ -293,6 +293,16 @@ void PluginManager::shutdownAllPlugins()
   }
 }
 
+void PluginManager::shutdownProtocolInstance(const Licq::UserId& ownerId)
+{
+  MutexLocker protocolLocker(myProtocolPluginsMutex);
+  BOOST_FOREACH(ProtocolPluginInstance::Ptr instance, myProtocolInstances)
+  {
+    if (instance->ownerId() == ownerId)
+      instance->shutdown();
+  }
+}
+
 void PluginManager::pluginHasExited(unsigned short id)
 {
   MutexLocker locker(myExitListMutex);
