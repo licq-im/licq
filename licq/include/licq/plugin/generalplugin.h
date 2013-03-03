@@ -20,6 +20,7 @@
 #ifndef LICQ_GENERALPLUGIN_H
 #define LICQ_GENERALPLUGIN_H
 
+#include "generalplugininstance.h"
 #include "plugin.h"
 
 namespace Licq
@@ -44,14 +45,9 @@ public:
   /// to BASE_DIR
   virtual std::string configFile() const = 0;
 
-  /// Get the plugin's status.
-  virtual bool isEnabled() const = 0;
-
-  /// Ask the plugin to enable itself
-  virtual void enable() = 0;
-
-  /// Ask the plugin to disable itself
-  virtual void disable() = 0;
+  /// Get the plugin instance for this plugin. May be NULL if the instance has
+  /// exited.
+  virtual GeneralPluginInstance::Ptr instance() const = 0;
 
 protected:
   /// Destructor

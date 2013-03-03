@@ -18,6 +18,7 @@
  */
 
 #include "rms.h"
+#include "pluginversion.h"
 
 #include <boost/foreach.hpp>
 #include <cctype>
@@ -48,8 +49,6 @@
 #include <licq/protocolmanager.h>
 #include <licq/translator.h>
 #include <licq/userevents.h>
-
-#include "pluginversion.h"
 
 using namespace std;
 using Licq::UserId;
@@ -178,9 +177,10 @@ static const unsigned short NUM_COMMANDS = sizeof(commands)/sizeof(*commands);
 /*---------------------------------------------------------------------------
  * CLicqRMS::Constructor
  *-------------------------------------------------------------------------*/
-CLicqRMS::CLicqRMS()
+CLicqRMS::CLicqRMS(const std::string& configFile)
   : m_bEnabled(true),
-    myPort(0)
+    myPort(0),
+    myConfigFile(configFile)
 {
   licqRMS = this;
   server = NULL;
@@ -209,16 +209,6 @@ void CLicqRMS::Shutdown()
     Licq::gLogService.unregisterLogSink(myLogSink);
 }
 
-string CLicqRMS::name() const
-{
-  return "RMS";
-}
-
-string CLicqRMS::version() const
-{
-  return PLUGIN_VERSION_STRING;
-}
-
 bool CLicqRMS::init(int argc, char** argv)
 {
   //char *LocaleVal = new char;
@@ -228,13 +218,10 @@ bool CLicqRMS::init(int argc, char** argv)
 
   // parse command line for arguments
   int i = 0;
-  while ( (i = getopt(argc, argv, "hdp:")) > 0)
+  while ( (i = getopt(argc, argv, "dp:")) > 0)
   {
     switch (i)
     {
-    case 'h':  // help
-      puts(usage().c_str());
-      return false;
     case 'd': // enable
       m_bEnabled = false;
       break;
@@ -253,7 +240,7 @@ int CLicqRMS::run()
 {
   setSignalMask(Licq::PluginSignal::SignalAll);
 
-  Licq::IniFile conf(configFile());
+  Licq::IniFile conf(myConfigFile);
   if (conf.loadFile())
   {
     conf.setSection("RMS");
@@ -321,28 +308,6 @@ int CLicqRMS::run()
 
   Shutdown();
   return 0;
-}
-
-void CLicqRMS::destructor()
-{
-  delete this;
-}
-
-string CLicqRMS::description() const
-{
-  return "Licq remote management server";
-}
-
-string CLicqRMS::usage() const
-{
-  return "Usage:  Licq [options] -p rms -- [ -h ] [ -d ]\n"
-      "         -h          : help\n"
-      "         -d          : start disabled\n";
-}
-
-string CLicqRMS::configFile() const
-{
-  return "licq_rms.conf";
 }
 
 bool CLicqRMS::isEnabled() const
@@ -549,8 +514,8 @@ CRMSClient::CRMSClient(Licq::TCPSocket* sin)
 
   gLog.info("Client connected from %s", sock.getRemoteIpString().c_str());
   fs = fdopen(sock.Descriptor(), "r+");
-  fprintf(fs, "Licq Remote Management Server v%s\n"
-      "%d Enter your UIN:\n", licqRMS->version().c_str(), CODE_ENTERxUIN);
+  fprintf(fs, "Licq Remote Management Server v" PLUGIN_VERSION_STRING "\n"
+      "%d Enter your UIN:\n", CODE_ENTERxUIN);
   fflush(fs);
 
   m_szCheckId = 0;
@@ -1341,7 +1306,7 @@ int CRMSClient::Process_SMS_number()
 int CRMSClient::Process_SMS_message()
 {
   Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+      Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
   if (!icq)
     return fflush(fs);
 

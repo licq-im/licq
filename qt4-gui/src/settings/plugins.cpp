@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2012-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,16 +41,17 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::Settings::Plugins */
 
-static Licq::GeneralPlugin::Ptr getGeneralPlugin(int id)
+static Licq::GeneralPluginInstance::Ptr getGeneralPluginInstance(int id)
 {
   Licq::GeneralPluginsList plugins;
   Licq::gPluginManager.getGeneralPluginsList(plugins);
   BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
   {
-    if (plugin->id() == id)
-      return plugin;
+    Licq::GeneralPluginInstance::Ptr instance = plugin->instance();
+    if (instance && instance->id() == id)
+      return instance;
   }
-  return Licq::GeneralPlugin::Ptr();
+  return Licq::GeneralPluginInstance::Ptr();
 }
 
 Settings::Plugins::Plugins(SettingsDlg* parent)
@@ -116,14 +117,18 @@ void Settings::Plugins::updatePluginList()
   Licq::gPluginManager.getGeneralPluginsList(plugins);
   BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
   {
+    Licq::GeneralPluginInstance::Ptr instance = plugin->instance();
+    if (!instance)
+      continue;
+
     QTreeWidgetItem* item = new QTreeWidgetItem(myPluginsList);
     item->setText(0, plugin->name().c_str());
     item->setText(1, plugin->version().c_str());
-    item->setText(2, plugin->isEnabled() ? tr("Yes") : tr("No"));
+    item->setText(2, instance->isEnabled() ? tr("Yes") : tr("No"));
     item->setText(3, plugin->description().c_str());
 
-    item->setData(0, Qt::UserRole, plugin->id());
-    item->setData(2, Qt::UserRole, plugin->isEnabled());
+    item->setData(0, Qt::UserRole, instance->id());
+    item->setData(2, Qt::UserRole, instance->isEnabled());
   }
 
   // Get list of available (not loaded) plugins
@@ -174,11 +179,11 @@ void Settings::Plugins::unloadPlugin()
     return;
 
   int index = item->data(0, Qt::UserRole).toInt();
-  Licq::GeneralPlugin::Ptr plugin = getGeneralPlugin(index);
-  if (plugin.get() == NULL)
+  Licq::GeneralPluginInstance::Ptr instance = getGeneralPluginInstance(index);
+  if (!instance)
     return;
 
-  Licq::gPluginManager.unloadGeneralPlugin(plugin);
+  Licq::gPluginManager.unloadGeneralPlugin(instance->plugin());
 
   QTimer::singleShot(1000, this, SLOT(updatePluginList()));
 }
@@ -190,11 +195,11 @@ void Settings::Plugins::enablePlugin()
     return;
 
   int index = item->data(0, Qt::UserRole).toInt();
-  Licq::GeneralPlugin::Ptr plugin = getGeneralPlugin(index);
-  if (plugin.get() == NULL)
+  Licq::GeneralPluginInstance::Ptr instance = getGeneralPluginInstance(index);
+  if (!instance)
     return;
 
-  plugin->enable();
+  instance->enable();
 
   QTimer::singleShot(1000, this, SLOT(updatePluginList()));
 }
@@ -206,11 +211,11 @@ void Settings::Plugins::disablePlugin()
     return;
 
   int index = item->data(0, Qt::UserRole).toInt();
-  Licq::GeneralPlugin::Ptr plugin = getGeneralPlugin(index);
-  if (plugin.get() == NULL)
+  Licq::GeneralPluginInstance::Ptr instance = getGeneralPluginInstance(index);
+  if (!instance)
     return;
 
-  plugin->disable();
+  instance->disable();
 
   QTimer::singleShot(1000, this, SLOT(updatePluginList()));
 }
@@ -228,9 +233,11 @@ void Settings::Plugins::pluginDoubleClicked(QTreeWidgetItem* item, int /* index 
   }
 
   int index = item->data(0, Qt::UserRole).toInt();
-  Licq::GeneralPlugin::Ptr plugin = getGeneralPlugin(index);
-  if (plugin.get() == NULL)
+  Licq::GeneralPluginInstance::Ptr instance = getGeneralPluginInstance(index);
+  if (!instance)
     return;
+
+  Licq::GeneralPlugin::Ptr plugin = instance->plugin();
 
   if (plugin->configFile().empty())
   {

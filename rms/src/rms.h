@@ -43,21 +43,15 @@ typedef std::list<unsigned long> TagList;
 class CLicqRMS : public Licq::GeneralPluginHelper, public Licq::MainLoopCallback
 {
 public:
-  CLicqRMS();
+  CLicqRMS(const std::string& configFile);
   ~CLicqRMS();
   void Shutdown();
 
   // From Licq::PluginInterface
-  std::string name() const;
-  std::string version() const;
   bool init(int argc, char** argv);
   int run();
-  void destructor();
 
   // From Licq::GeneralPluginInterface
-  std::string description() const;
-  std::string usage() const;
-  std::string configFile() const;
   bool isEnabled() const;
 
 protected:
@@ -79,6 +73,9 @@ protected:
   ClientList clients;
   Licq::PluginLogSink::Ptr myLogSink;
   Licq::MainLoop myMainLoop;
+
+private:
+  const std::string myConfigFile;
 
 public:
   void ProcessPipe();

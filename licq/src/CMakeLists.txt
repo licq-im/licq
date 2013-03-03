@@ -12,10 +12,13 @@ set(tested_SRCS
 
   plugin/generalplugin.cpp
   plugin/generalpluginhelper.cpp
+  plugin/generalplugininstance.cpp
   plugin/plugin.cpp
+  plugin/plugininstance.cpp
   plugin/pluginthread.cpp
   plugin/protocolplugin.cpp
   plugin/protocolpluginhelper.cpp
+  plugin/protocolplugininstance.cpp
 
   thread/condition.cpp
   thread/mutexlocker.cpp

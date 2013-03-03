@@ -17,32 +17,21 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <licq/plugin/generalplugininterface.h>
 #include "generalplugin.h"
+#include "generalplugininstance.h"
+
+#include <licq/plugin/generalpluginfactory.h>
+#include <licq/thread/mutexlocker.h>
+
+#include <boost/make_shared.hpp>
 
 using namespace LicqDaemon;
 
-static void destroyGeneralPluginInterface(Licq::GeneralPluginInterface* plugin)
-{
-  if (plugin != NULL)
-    plugin->destructor();
-}
-
 GeneralPlugin::GeneralPlugin(
-    int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
-    Licq::GeneralPluginInterface* (*factory)())
-  : Plugin(id, lib, thread),
+    DynamicLibrary::Ptr lib,
+    boost::shared_ptr<Licq::GeneralPluginFactory> factory)
+  : Plugin(lib),
     myFactory(factory)
-{
-  // Empty
-}
-
-GeneralPlugin::GeneralPlugin(
-    int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
-    boost::shared_ptr<Licq::GeneralPluginInterface> interface)
-  : Plugin(id, lib, thread),
-    myFactory(NULL),
-    myInterface(interface)
 {
   // Empty
 }
@@ -52,68 +41,52 @@ GeneralPlugin::~GeneralPlugin()
   // Empty
 }
 
+boost::shared_ptr<GeneralPluginInstance> GeneralPlugin::createInstance(
+    int id, PluginThread::Ptr thread)
+{
+  GeneralPluginInstance::Ptr instance =
+      boost::make_shared<GeneralPluginInstance>(
+          id, boost::dynamic_pointer_cast<GeneralPlugin>(shared_from_this()),
+          thread);
+
+  if (instance->create())
+    registerInstance(instance);
+  else
+    instance.reset();
+
+  return instance;
+}
+
+boost::shared_ptr<Licq::GeneralPluginFactory>
+GeneralPlugin::generalFactory()
+{
+  return myFactory;
+}
+
 std::string GeneralPlugin::description() const
 {
-  return myInterface->description();
+  return myFactory->description();
 }
 
 std::string GeneralPlugin::usage() const
 {
-  return myInterface->usage();
+  return myFactory->usage();
 }
 
 std::string GeneralPlugin::configFile() const
 {
-  return myInterface->configFile();
+  return myFactory->configFile();
 }
 
-bool GeneralPlugin::isEnabled() const
+Licq::GeneralPluginInstance::Ptr GeneralPlugin::instance() const
 {
-  return myInterface->isEnabled();
+  Licq::MutexLocker locker(myMutex);
+  assert(myInstances.size() == 1);
+  return boost::dynamic_pointer_cast<Licq::GeneralPluginInstance>(
+      myInstances.front().lock());
 }
 
-void GeneralPlugin::enable()
+boost::shared_ptr<const Licq::PluginFactory> GeneralPlugin::factory() const
 {
-  if (isRunning())
-    myInterface->enable();
-}
-
-void GeneralPlugin::disable()
-{
-  if (isRunning())
-    myInterface->disable();
-}
-
-bool GeneralPlugin::wantSignal(unsigned long signalType) const
-{
-  return myInterface->wantSignal(signalType);
-}
-
-void GeneralPlugin::pushSignal(
-    boost::shared_ptr<const Licq::PluginSignal> signal)
-{
-  if (isRunning())
-    myInterface->pushSignal(signal);
-}
-
-void GeneralPlugin::pushEvent(boost::shared_ptr<const Licq::Event> event)
-{
-  if (isRunning())
-    myInterface->pushEvent(event);
-}
-
-void GeneralPlugin::createInterface()
-{
-  assert(!myInterface);
-  myInterface.reset((*myFactory)(), &destroyGeneralPluginInterface);
-}
-
-boost::shared_ptr<Licq::PluginInterface> GeneralPlugin::interface()
-{
-  return myInterface;
-}
-
-boost::shared_ptr<const Licq::PluginInterface> GeneralPlugin::interface() const
-{
-  return myInterface;
+  return myFactory;
 }

@@ -42,8 +42,6 @@
 #include <licq/translator.h>
 #include <licq/userevents.h>
 
-#include "pluginversion.h"
-
 using std::string;
 using Licq::gLog;
 using Licq::gProtocolManager;
@@ -74,16 +72,6 @@ CLicqForwarder::~CLicqForwarder()
   delete tcp;
 }
 
-std::string CLicqForwarder::name() const
-{
-  return "Forwarder";
-}
-
-std::string CLicqForwarder::version() const
-{
-  return PLUGIN_VERSION_STRING;
-}
-
 bool CLicqForwarder::init(int argc, char** argv)
 {
   //char *LocaleVal = new char;
@@ -93,13 +81,10 @@ bool CLicqForwarder::init(int argc, char** argv)
 
   // parse command line for arguments
   int i = 0;
-  while ( (i = getopt(argc, argv, "hel:d")) > 0)
+  while ( (i = getopt(argc, argv, "el:d")) > 0)
   {
     switch (i)
     {
-      case 'h':  // help
-        puts(usage().c_str());
-        return false;
       case 'e': // enable
         myIsEnabled = true;
         break;
@@ -216,31 +201,6 @@ int CLicqForwarder::run()
     }
   }
   return 0;
-}
-
-void CLicqForwarder::destructor()
-{
-  delete this;
-}
-
-std::string CLicqForwarder::description() const
-{
-  return "Message forwarder";
-}
-
-std::string CLicqForwarder::usage() const
-{
-  return
-      "Usage:  Licq [options] -p forwarder -- [ -h ] [ -e ] [ -l <status> ] [ -d ]\n"
-      "         -h          : help\n"
-      "         -e          : start enabled\n"
-      "         -l <status> : log on at startup\n"
-      "         -d          : delete new messages after forwarding\n";
-}
-
-std::string CLicqForwarder::configFile() const
-{
-  return "licq_forwarder.conf";
 }
 
 bool CLicqForwarder::isEnabled() const

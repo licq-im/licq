@@ -51,8 +51,6 @@
 #include <licq/translator.h>
 #include <licq/userevents.h>
 
-#include "pluginversion.h"
-
 using namespace std;
 using Licq::UserId;
 using Licq::gLog;
@@ -79,16 +77,6 @@ CLicqAutoReply::~CLicqAutoReply()
 {
 }
 
-std::string CLicqAutoReply::name() const
-{
-  return "ICQ Auto Replyer";
-}
-
-std::string CLicqAutoReply::version() const
-{
-  return PLUGIN_VERSION_STRING;
-}
-
 bool CLicqAutoReply::init(int argc, char** argv)
 {
   //char *LocaleVal = new char;
@@ -98,13 +86,10 @@ bool CLicqAutoReply::init(int argc, char** argv)
 
   // parse command line for arguments
   int i = 0;
-  while ( (i = getopt(argc, argv, "dhel:")) > 0)
+  while ( (i = getopt(argc, argv, "del:")) > 0)
   {
     switch (i)
     {
-      case 'h':  // help
-        puts(usage().c_str());
-        return false;
       case 'e': // enable
         myIsEnabled = true;
         break;
@@ -184,31 +169,6 @@ int CLicqAutoReply::run()
   }
   gLog.info("Shutting down auto reply");
   return 0;
-}
-
-void CLicqAutoReply::destructor()
-{
-  delete this;
-}
-
-std::string CLicqAutoReply::description() const
-{
-  return "ICQ message Auto Replyer";
-}
-
-std::string CLicqAutoReply::usage() const
-{
-  return
-      "Usage:  Licq [options] -p autoreply -- [ -h ] [ -e ] [ -l <status> ] [ -d ]\n"
-      "         -h          : help\n"
-      "         -e          : start enabled\n"
-      "         -l <status> : log on at startup\n"
-      "         -d          : delete messages after auto-replying\n";
-}
-
-std::string CLicqAutoReply::configFile() const
-{
-  return "licq_autoreply.conf";
 }
 
 bool CLicqAutoReply::isEnabled() const

@@ -28,7 +28,6 @@
 #include <licq/version.h>
 
 #include "iface.h"
-#include "pluginversion.h"
 
 using namespace std;
 
@@ -36,16 +35,6 @@ AosdPlugin::AosdPlugin()
   : myBlocked(false)
 {
   // Empty
-}
-
-string AosdPlugin::name() const
-{
-  return "OSD";
-}
-
-string AosdPlugin::version() const
-{
-  return PLUGIN_VERSION_STRING;
 }
 
 int AosdPlugin::run()
@@ -100,34 +89,7 @@ int AosdPlugin::run()
   return 0;
 }
 
-void AosdPlugin::destructor()
-{
-  delete this;
-}
-
-string AosdPlugin::description() const
-{
-  return "OSD plugin based on libaosd";
-}
-
-string AosdPlugin::usage() const
-{
-  return "No CLI options exist.";
-}
-
-string AosdPlugin::configFile() const
-{
-  return "licq_aosd.ini";
-}
-
 bool AosdPlugin::isEnabled() const
 {
   return !myBlocked;
 }
-
-Licq::GeneralPluginInterface* AosdPluginFactory()
-{
-  return new AosdPlugin;
-}
-
-LICQ_GENERAL_PLUGIN_DATA(&AosdPluginFactory);

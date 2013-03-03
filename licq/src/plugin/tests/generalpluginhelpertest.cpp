@@ -32,14 +32,9 @@ class TestGeneralPluginHelper : public Licq::GeneralPluginHelper
 {
 public:
   // From Licq::PluginInterface
-  std::string name() const { return "test"; }
-  std::string version() const { return "1.0"; }
   int run() { return 0; }
-  void destructor() { }
 
   // From Licq::GeneralPluginInterface
-  std::string description() const { return "test plugin"; }
-  std::string usage() const { return ""; }
   bool isEnabled() const { return true; }
 
   // Make public
@@ -72,11 +67,6 @@ TEST_F(GeneralPluginHelperFixture, shutdown)
   EXPECT_EQ('X', getPipeChar());
 }
 
-TEST_F(GeneralPluginHelperFixture, configFile)
-{
-  EXPECT_EQ(std::string(), helper.configFile());
-}
-
 TEST_F(GeneralPluginHelperFixture, enable)
 {
   helper.enable();
@@ -103,7 +93,7 @@ TEST_F(GeneralPluginHelperFixture, popEmpty)
   EXPECT_TRUE(helper.popEvent() == NULL);
 }
 
-static void NullDeleter(void*) { /* Empty */ }
+static void nullDeleter(void*) { /* Empty */ }
 
 TEST_F(GeneralPluginHelperFixture, pushPopSignal)
 {
@@ -113,8 +103,8 @@ TEST_F(GeneralPluginHelperFixture, pushPopSignal)
   PluginSignal* signal1 = reinterpret_cast<PluginSignal*>(10);
   PluginSignal* signal2 = reinterpret_cast<PluginSignal*>(11);
 
-  helper.pushSignal(shared_ptr<PluginSignal>(signal1, &NullDeleter));
-  helper.pushSignal(shared_ptr<PluginSignal>(signal2, &NullDeleter));
+  helper.pushSignal(shared_ptr<PluginSignal>(signal1, &nullDeleter));
+  helper.pushSignal(shared_ptr<PluginSignal>(signal2, &nullDeleter));
 
   EXPECT_EQ('S', getPipeChar());
   EXPECT_EQ(signal1, helper.popSignal().get());
@@ -131,8 +121,8 @@ TEST_F(GeneralPluginHelperFixture, pushPopEvent)
   Event* event1 = reinterpret_cast<Event*>(10);
   Event* event2 = reinterpret_cast<Event*>(11);
 
-  helper.pushEvent(shared_ptr<Event>(event1, &NullDeleter));
-  helper.pushEvent(shared_ptr<Event>(event2, &NullDeleter));
+  helper.pushEvent(shared_ptr<Event>(event1, &nullDeleter));
+  helper.pushEvent(shared_ptr<Event>(event2, &nullDeleter));
 
   EXPECT_EQ('E', getPipeChar());
   EXPECT_EQ(event1, helper.popEvent().get());

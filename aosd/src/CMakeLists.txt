@@ -1,5 +1,6 @@
 set(aosd_SRCS
   conf.cpp
+  factory.cpp
   iface.cpp
   plugin.cpp
 )

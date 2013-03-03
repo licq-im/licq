@@ -20,7 +20,6 @@
 #include "icqprotocolplugin.h"
 
 #include <licq/logging/log.h>
-#include <licq/plugin/protocolplugin.h>
 #include <licq/protocolmanager.h>
 #include <licq/protocolsignal.h>
 #include <licq/version.h>
@@ -45,17 +44,7 @@ IcqProtocolPlugin::IcqProtocolPlugin()
 
 IcqProtocolPlugin::~IcqProtocolPlugin()
 {
-  // Empty
-}
-
-std::string IcqProtocolPlugin::name() const
-{
-  return "ICQ";
-}
-
-std::string IcqProtocolPlugin::version() const
-{
-  return LICQ_VERSION_STRING;
+  gIcqProtocolPlugin = NULL;
 }
 
 bool IcqProtocolPlugin::init(int /*argc*/, char** /*argv*/)
@@ -69,45 +58,6 @@ int IcqProtocolPlugin::run()
   if (!gIcqProtocol.start())
     return 1;
   return 0;
-}
-
-void IcqProtocolPlugin::destructor()
-{
-  delete this;
-}
-
-unsigned long IcqProtocolPlugin::protocolId() const
-{
-  return LICQ_PPID;
-}
-
-unsigned long IcqProtocolPlugin::capabilities() const
-{
-  using Licq::ProtocolPlugin;
-
-  return ProtocolPlugin::CanSendMsg
-      | ProtocolPlugin::CanSendUrl
-      | ProtocolPlugin::CanSendFile
-      | ProtocolPlugin::CanSendChat
-      | ProtocolPlugin::CanSendContact
-      | ProtocolPlugin::CanSendAuth
-      | ProtocolPlugin::CanSendAuthReq
-      | ProtocolPlugin::CanSendSms
-      | ProtocolPlugin::CanSendSecure
-      | ProtocolPlugin::CanSendDirect
-      | ProtocolPlugin::CanHoldStatusMsg
-      | ProtocolPlugin::CanVaryEncoding
-      | ProtocolPlugin::CanSingleGroup;
-}
-
-Licq::User* IcqProtocolPlugin::createUser(const Licq::UserId& id, bool temporary)
-{
-  return new User(id, temporary);
-}
-
-Licq::Owner* IcqProtocolPlugin::createOwner(const Licq::UserId& id)
-{
-  return new Owner(id);
 }
 
 std::string IcqProtocolPlugin::defaultServerHost() const
@@ -393,11 +343,3 @@ Licq::IcqChatManager* IcqProtocolPlugin::createChatManager(const Licq::UserId& u
 {
   return new ChatManager(userId);
 }
-
-
-Licq::ProtocolPluginInterface* IcqPluginFactory()
-{
-  return new LicqIcq::IcqProtocolPlugin;
-}
-
-LICQ_PROTOCOL_PLUGIN_DATA(&IcqPluginFactory);

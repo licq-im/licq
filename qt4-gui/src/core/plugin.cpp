@@ -17,9 +17,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "plugin.h"
-
 #include "config.h"
+
+#include "plugin.h"
 #include "pluginversion.h"
 
 #include <cstdio>
@@ -35,7 +35,6 @@
 # include <QStyleFactory>
 #endif
 
-#include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/logging/log.h>
 #include <licq/pluginsignal.h>
@@ -63,27 +62,8 @@ QtGuiPlugin::QtGuiPlugin()
   qRegisterMetaType< boost::shared_ptr<const Licq::Event> >();
 }
 
-std::string QtGuiPlugin::name() const
-{
-  return DISPLAY_PLUGIN_NAME;
-}
-
-std::string QtGuiPlugin::version() const
-{
-  return PLUGIN_VERSION_STRING;
-}
-
 bool QtGuiPlugin::init(int argc, char** argv)
 {
-  for (int i = 1; i < argc; i++)
-  {
-    if (strcmp(argv[i], "-h") == 0)
-    {
-      printf("%s\n", usage().c_str());
-      return false;
-    }
-  }
-
   if (qApp != NULL)
   {
     Licq::gLog.error("A Qt application is already loaded.\n"
@@ -143,48 +123,6 @@ void QtGuiPlugin::shutdown()
   emit pluginShutdown();
 }
 
-void QtGuiPlugin::destructor()
-{
-  delete this;
-}
-
-std::string QtGuiPlugin::description() const
-{
-#ifdef USE_KDE
-  return "KDE4 based GUI";
-#else
-  return "Qt4 based GUI";
-#endif
-}
-
-std::string QtGuiPlugin::usage() const
-{
-  static QString usage = QString(
-    "Usage:  Licq [options] -p %1 -- [-hdD] [-s skinname] [-i iconpack] [-e extendediconpack]"
-    "\n"
-    " -h : this help screen\n"
-    " -d : start hidden (dock icon only)\n"
-    " -D : disable dock icon for this session (does not affect dock icon settings)\n"
-    " -s : set the skin to use (must be in %2%3%4)\n"
-    " -i : set the icons to use (must be in %2%3%5)\n"
-    " -e : set the extended icons to use (must be in %2%3%6)"
-    )
-    .arg(PLUGIN_NAME)
-      .arg(Licq::gDaemon.baseDir().c_str())
-    .arg(QTGUI_DIR)
-    .arg(SKINS_DIR)
-    .arg(ICONS_DIR)
-    .arg(EXTICONS_DIR)
-    ;
-
-  return usage.toLatin1().constData();
-}
-
-std::string QtGuiPlugin::configFile() const
-{
-  return QTGUI_CONFIGFILE;
-}
-
 bool QtGuiPlugin::isEnabled() const
 {
   // Always enabled
@@ -216,10 +154,3 @@ void QtGuiPlugin::pushEvent(boost::shared_ptr<const Licq::Event> event)
 {
   emit pluginEvent(event);
 }
-
-Licq::GeneralPluginInterface* QtGuiPluginFactory()
-{
-  return new LicqQtGui::QtGuiPlugin;
-}
-
-LICQ_GENERAL_PLUGIN_DATA(&QtGuiPluginFactory);

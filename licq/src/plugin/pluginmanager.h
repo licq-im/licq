@@ -26,8 +26,10 @@
 
 #include "../utils/dynamiclibrary.h"
 #include "generalplugin.h"
+#include "generalplugininstance.h"
 #include "pluginthread.h"
 #include "protocolplugin.h"
+#include "protocolplugininstance.h"
 
 #include <licq/thread/mutex.h>
 
@@ -100,6 +102,10 @@ public:
   void getAvailableProtocolPlugins(Licq::StringList& plugins,
                                    bool includeLoaded = true) const;
   Licq::ProtocolPlugin::Ptr getProtocolPlugin(unsigned long protocolId) const;
+  Licq::ProtocolPluginInstance::Ptr getProtocolInstance(
+      const Licq::UserId& ownerId) const;
+  Licq::ProtocolPluginInstance::Ptr getProtocolInstance(
+      unsigned long protocolId) const;
 
   bool startGeneralPlugin(const std::string& name, int argc, char** argv);
   bool startProtocolPlugin(const std::string& name);
@@ -110,6 +116,9 @@ public:
   void pushProtocolSignal(Licq::ProtocolSignal* signal);
 
 private:
+  void getAvailablePlugins(Licq::StringList& plugins,
+                           const std::string& prefix) const;
+
   DynamicLibrary::Ptr loadPlugin(PluginThread::Ptr pluginThread,
                                  const std::string& name,
                                  const std::string& prefix);
@@ -117,23 +126,27 @@ private:
   bool verifyPluginVersion(const std::string& name, int version);
   int getNewPluginId();
 
-  void startPlugin(GeneralPlugin::Ptr plugin);
-  void startPlugin(ProtocolPlugin::Ptr plugin);
+  ProtocolPluginInstance::Ptr createProtocolInstance(
+      ProtocolPlugin::Ptr plugin,
+      PluginThread::Ptr thread = PluginThread::Ptr());
 
-  void getAvailablePlugins(Licq::StringList& plugins,
-                           const std::string& prefix) const;
+  void startInstance(GeneralPluginInstance::Ptr instance);
+  void startInstance(ProtocolPluginInstance::Ptr instance);
+
+  bool reapGeneralInstance(int exitId);
+  bool reapProtocolInstance(int exitId);
 
   int myNextPluginId;
   PluginThread::Ptr myGuiThread;
 
-  std::list<GeneralPlugin::Ptr> myGeneralPlugins;
   mutable Licq::Mutex myGeneralPluginsMutex;
+  std::list<GeneralPluginInstance::Ptr> myGeneralInstances;
 
-  std::list<ProtocolPlugin::Ptr> myProtocolPlugins;
   mutable Licq::Mutex myProtocolPluginsMutex;
+  std::list<ProtocolPluginInstance::Ptr> myProtocolInstances;
 
   Licq::Mutex myExitListMutex;
-  std::queue<unsigned short> myExitList;
+  std::queue<int> myExitList;
 };
 
 extern PluginManager gPluginManager;

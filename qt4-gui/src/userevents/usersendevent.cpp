@@ -945,7 +945,7 @@ void UserSendEvent::retrySend(const Licq::Event* e, unsigned flags)
   if (myUsers.front().protocolId() == LICQ_PPID)
   {
     icq = plugin_internal_cast<Licq::IcqProtocol>(
-        Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+        Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
   }
 
   switch (e->userEvent()->eventType())
@@ -1314,7 +1314,7 @@ void UserSendEvent::send()
     if (myUsers.front().protocolId() == LICQ_PPID)
     {
       icq = plugin_internal_cast<Licq::IcqProtocol>(
-          Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+          Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
     }
 
     switch (myType)

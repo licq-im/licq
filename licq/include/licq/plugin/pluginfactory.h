@@ -1,6 +1,9 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011, 2013 Licq developers
+ * Copyright (C) 2013 Licq Developers <licq-dev@googlegroups.com>
+ *
+ * Please refer to the COPYRIGHT file distributed with this source
+ * distribution for the names of the individual contributors.
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,14 +20,35 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <licq/plugin/generalplugininterface.h>
-#include <licq/version.h>
+#ifndef LICQ_PLUGINFACTORY_H
+#define LICQ_PLUGINFACTORY_H
 
-#include "rms.h"
+#include <string>
 
-Licq::GeneralPluginInterface* RmsPluginFactory()
+namespace Licq
 {
-  return new CLicqRMS;
-}
 
-LICQ_GENERAL_PLUGIN_DATA(&RmsPluginFactory);
+class PluginInterface;
+
+/**
+ * Base interface for plugin factories
+ */
+class PluginFactory
+{
+public:
+  /// Return the plugin's name
+  virtual std::string name() const = 0;
+
+  /// Return the plugin's version.
+  virtual std::string version() const = 0;
+
+  /// Called to destroy a plugin previously created by the factory
+  virtual void destroyPlugin(PluginInterface* plugin) = 0;
+
+protected:
+  virtual ~PluginFactory() { /* Empty */ }
+};
+
+} // namespace Licq
+
+#endif

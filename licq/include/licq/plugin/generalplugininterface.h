@@ -42,15 +42,7 @@ class PluginSignal;
 class GeneralPluginInterface : public PluginInterface
 {
 public:
-  /// Return the plugin's description
-  virtual std::string description() const = 0;
-
-  /// Return the plugin's usage instructions
-  virtual std::string usage() const = 0;
-
-  /// Return the path (relative to BASE_DIR) to the configuration file for the
-  /// plugin; or an empty string if none.
-  virtual std::string configFile() const = 0;
+  virtual ~GeneralPluginInterface() { /* Empty */ }
 
   /// Return true if the plugin is enabled
   virtual bool isEnabled() const = 0;
@@ -80,61 +72,8 @@ public:
    * event for later processing).
    */
   virtual void pushEvent(boost::shared_ptr<const Event> event) = 0;
-
-protected:
-  virtual ~GeneralPluginInterface() { /* Empty */ }
-};
-
-/**
- * This struct contains the initial data and functions needed by Licq to load a
- * plugin. Use the LICQ_GENERAL_PLUGIN_DATA macro to create it.
- */
-struct GeneralPluginData
-{
-  /// Magic value to identify an Licq plugin
-  char magic[4];
-
-  /// Version of Licq this plugin is built for
-  int licqVersion;
-
-  /**
-   * Pointer to a factory function that creates and returns an object that
-   * implements the GeneralPluginInterface interface.
-   *
-   * Note that the plugin should not be (fully) initialized by this. The init
-   * and run functions in Licq::Plugin will be called for this afterwards
-   *
-   */
-  GeneralPluginInterface* (*pluginFactory)();
 };
 
 } // namespace Licq
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/**
- * Each plugin must contain the following symbol
- *
- * When a plugin is first loaded, this pointer is fetched and used to get
- * the PluginData struct for the plugin.
- */
-extern Licq::GeneralPluginData LicqGeneralPluginData;
-
-#ifdef __cplusplus
-}
-#endif
-
-/*
- * Convenience macro to define plugin data in a plugin
- *
- * Note: <licq/version.h> must be included
- *
- * @param factory Pointer to the plugin factory function
- */
-#define LICQ_GENERAL_PLUGIN_DATA(factory) \
-  Licq::GeneralPluginData LicqGeneralPluginData = \
-  { {'L', 'i', 'c', 'q' }, LICQ_VERSION, factory }
 
 #endif

@@ -33,14 +33,7 @@ class TestProtocolPluginHelper : public Licq::ProtocolPluginHelper
 {
 public:
   // From Licq::PluginInterface
-  std::string name() const { return "test"; }
-  std::string version() const { return "1.0"; }
   int run() { return 0; }
-  void destructor() { }
-
-  // From Licq::ProtocolPluginInterface
-  unsigned long protocolId() const { return 0; }
-  unsigned long capabilities() const { return 0; }
 
   // Make public
   using ProtocolPluginHelper::getReadPipe;
@@ -75,7 +68,7 @@ TEST_F(ProtocolPluginHelperFixture, popEmpty)
   EXPECT_TRUE(helper.popSignal() == NULL);
 }
 
-static void NullDeleter(void*) { /* Empty */ }
+static void nullDeleter(void*) { /* Empty */ }
 
 TEST_F(ProtocolPluginHelperFixture, pushPopSignal)
 {
@@ -85,20 +78,14 @@ TEST_F(ProtocolPluginHelperFixture, pushPopSignal)
   ProtocolSignal* signal1 = reinterpret_cast<ProtocolSignal*>(10);
   ProtocolSignal* signal2 = reinterpret_cast<ProtocolSignal*>(11);
 
-  helper.pushSignal(shared_ptr<ProtocolSignal>(signal1, &NullDeleter));
-  helper.pushSignal(shared_ptr<ProtocolSignal>(signal2, &NullDeleter));
+  helper.pushSignal(shared_ptr<ProtocolSignal>(signal1, &nullDeleter));
+  helper.pushSignal(shared_ptr<ProtocolSignal>(signal2, &nullDeleter));
 
   EXPECT_EQ('S', getPipeChar());
   EXPECT_EQ(signal1, helper.popSignal().get());
 
   EXPECT_EQ('S', getPipeChar());
   EXPECT_EQ(signal2, helper.popSignal().get());
-}
-
-TEST_F(ProtocolPluginHelperFixture, createUserOwner)
-{
-  EXPECT_TRUE(helper.createUser(Licq::UserId(), false) == NULL);
-  EXPECT_TRUE(helper.createOwner(Licq::UserId()) == NULL);
 }
 
 } // namespace LicqTest

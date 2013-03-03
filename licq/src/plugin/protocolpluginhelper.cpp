@@ -62,19 +62,6 @@ void ProtocolPluginHelper::pushSignal(
   d->notify(PipeSignal);
 }
 
-Licq::User* ProtocolPluginHelper::createUser(
-    const UserId& /*id*/, bool /*temporary*/)
-{
-  // Let UserManager create it
-  return NULL;
-}
-
-Licq::Owner* ProtocolPluginHelper::createOwner(const UserId& /*id*/)
-{
-  // Let UserManager create it
-  return NULL;
-}
-
 ProtocolPluginHelper::ProtocolPluginHelper()
   : myPrivate(new Private)
 {

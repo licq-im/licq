@@ -40,16 +40,10 @@ public:
   ~CLicqAutoReply();
 
   // From Licq::PluginInterface
-  std::string name() const;
-  std::string version() const;
   bool init(int argc, char** argv);
   int run();
-  void destructor();
 
   // From Licq::GeneralPluginInterface
-  std::string description() const;
-  std::string usage() const;
-  std::string configFile() const;
   bool isEnabled() const;
 
 protected:

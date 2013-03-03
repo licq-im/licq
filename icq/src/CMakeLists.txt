@@ -2,6 +2,7 @@ set(icq_SRCS
   buffer.cpp
   chat.cpp
   codes.cpp
+  factory.cpp
   filetransfer.cpp
   icq-srv.cpp
   icq-tcp.cpp

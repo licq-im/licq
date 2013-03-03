@@ -21,6 +21,9 @@
 #define LICQ_PROTOCOLPLUGIN_H
 
 #include "plugin.h"
+#include "protocolplugininstance.h"
+
+#include <vector>
 
 namespace Licq
 {
@@ -31,6 +34,8 @@ namespace Licq
 class ProtocolPlugin : public virtual Plugin
 {
 public:
+  typedef std::vector<ProtocolPluginInstance::Ptr> Instances;
+
   enum Capabilities
   {
     CanSendMsg          = 1<<0,
@@ -61,6 +66,9 @@ public:
    * @return A mask of bits from Capabilities enum
    */
   virtual unsigned long capabilities() const = 0;
+
+  /// Get all instances that are active for this protocol
+  virtual Instances instances() const = 0;
 
 protected:
   /// Destructor

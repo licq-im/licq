@@ -37,7 +37,6 @@
 #include "msn.h"
 #include "msnpacket.h"
 #include "owner.h"
-#include "pluginversion.h"
 #include "user.h"
 
 using namespace std;
@@ -87,43 +86,6 @@ CMSN::~CMSN()
 {
   if (m_pPacketBuf)
     delete m_pPacketBuf;
-}
-
-std::string CMSN::name() const
-{
-  return "MSN";
-}
-
-std::string CMSN::version() const
-{
-  return PLUGIN_VERSION_STRING;
-}
-
-void CMSN::destructor()
-{
-  delete this;
-}
-
-unsigned long CMSN::protocolId() const
-{
-  return MSN_PPID;
-}
-
-unsigned long CMSN::capabilities() const
-{
-  return Licq::ProtocolPlugin::CanSendMsg |
-      Licq::ProtocolPlugin::CanSendAuth |
-      Licq::ProtocolPlugin::CanSendAuthReq;
-}
-
-Licq::User* CMSN::createUser(const Licq::UserId& id, bool temporary)
-{
-  return new User(id, temporary);
-}
-
-Licq::Owner* CMSN::createOwner(const Licq::UserId& id)
-{
-  return new Owner(id);
 }
 
 std::string CMSN::defaultServerHost() const
