@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2009 Licq developers
+ * Copyright (C) 1999-2009, 2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -142,7 +142,7 @@ MessageBox::MessageBox(QWidget* parent)
   QHBoxLayout* listLayout = new QHBoxLayout(myExtension);
   listLayout->setMargin(0);
   myMessageList = new QListWidget();
-  myMessageList->setFixedHeight(100); // This seems to be a good height
+  myMessageList->setMinimumHeight(100); // This seems to be a good height
   listLayout->addWidget(myMessageList);
 
   // Make the second horizontal layout for the buttons
