@@ -434,7 +434,7 @@ bool INetSocket::StartServer(unsigned int _nPort)
   }
 #endif
 
-  if (bind(myDescriptor, (struct sockaddr*)&myLocalAddr, addrlen) == -1)
+  if (::bind(myDescriptor, (struct sockaddr*)&myLocalAddr, addrlen) == -1)
   {
     myErrorType = ErrorErrno;
     ::close(myDescriptor);

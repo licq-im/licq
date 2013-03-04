@@ -517,7 +517,7 @@ void PluginManager::getAvailablePlugins(
   if (glob(pattern.c_str(), 0, NULL, &globbuf) != 0)
     return;
 
-  for (typeof(globbuf.gl_pathc) i = 0; i < globbuf.gl_pathc; ++i)
+  for (size_t i = 0; i < static_cast<size_t>(globbuf.gl_pathc); ++i)
   {
     std::string name = globbuf.gl_pathv[i];
     size_t pos = name.find_last_of('/');
