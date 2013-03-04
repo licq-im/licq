@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2012-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -213,9 +213,5 @@ private:
 };
 
 } // namespace LicqIcq
-
-typedef LicqIcq::ChatClient CChatClient;
-typedef Licq::IcqChatEvent CChatEvent;
-typedef LicqIcq::ChatManager CChatManager;
 
 #endif

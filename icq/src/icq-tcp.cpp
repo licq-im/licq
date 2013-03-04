@@ -1133,7 +1133,7 @@ int IcqProtocol::reverseConnectToUser(const Licq::UserId& userId, unsigned long 
    unsigned long nId, unsigned long nMsgID1, unsigned long nMsgID2)
 {
   FileTransferManager* ftm = FileTransferManager::FindByPort(nFailedPort);
-  CChatManager *cm = CChatManager::FindByPort(nFailedPort);
+  ChatManager *cm = ChatManager::FindByPort(nFailedPort);
 
   DcSocket* s = new DcSocket(userId);
   char buf[32];

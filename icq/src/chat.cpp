@@ -41,6 +41,7 @@ using namespace LicqIcq;
 using Licq::gDaemon;
 using Licq::gLog;
 using Licq::gTranslator;
+using Licq::IcqChatEvent;
 
 using Licq::CHAT_BACKSPACE;
 using Licq::CHAT_BEEP;
@@ -192,16 +193,16 @@ ChatClient::ChatClient(CBuffer &b)
   LoadFromBuffer(b);
 }
 
-ChatClient::ChatClient(const CChatClient &p)
+ChatClient::ChatClient(const ChatClient &p)
 {
   *this = p;
 }
 
-CChatClient::~CChatClient()
+ChatClient::~ChatClient()
 {
 }
 
-CChatClient& CChatClient::operator=(const CChatClient &p)
+ChatClient& ChatClient::operator=(const ChatClient &p)
 {
   if (this != &p)
   {
@@ -217,7 +218,7 @@ CChatClient& CChatClient::operator=(const CChatClient &p)
   return *this;
 }
 
-bool CChatClient::LoadFromBuffer(CBuffer &b)
+bool ChatClient::LoadFromBuffer(CBuffer &b)
 {
   m_nVersion = b.UnpackUnsignedLong();
   m_nPort = b.UnpackUnsignedShort();
@@ -234,7 +235,7 @@ bool CChatClient::LoadFromBuffer(CBuffer &b)
 }
 
 
-bool CChatClient::LoadFromHandshake_v2(CBuffer &b)
+bool ChatClient::LoadFromHandshake_v2(CBuffer &b)
 {
   b.Reset();
   b.unpackUInt16LE(); // Packet length
@@ -257,7 +258,7 @@ bool CChatClient::LoadFromHandshake_v2(CBuffer &b)
 }
 
 
-bool CChatClient::LoadFromHandshake_v4(CBuffer &b)
+bool ChatClient::LoadFromHandshake_v4(CBuffer &b)
 {
   b.Reset();
   b.unpackUInt16LE(); // Packet length
@@ -280,7 +281,7 @@ bool CChatClient::LoadFromHandshake_v4(CBuffer &b)
 }
 
 
-bool CChatClient::LoadFromHandshake_v6(CBuffer &b)
+bool ChatClient::LoadFromHandshake_v6(CBuffer &b)
 {
   CPacketTcp_Handshake_v6 hand(&b);
 
@@ -299,7 +300,7 @@ bool CChatClient::LoadFromHandshake_v6(CBuffer &b)
 }
 
 
-bool CChatClient::LoadFromHandshake_v7(CBuffer &b)
+bool ChatClient::LoadFromHandshake_v7(CBuffer &b)
 {
   CPacketTcp_Handshake_v7 hand(&b);
 
@@ -347,7 +348,7 @@ CPChat_ColorFont::CPChat_ColorFont(const string& localName, unsigned short nLoca
   m_nFontStyle = nFontStyle;
 
   m_nSize = 10 + localName.size() + 38 + fontFamily.size() + 4
-            + clientList.size() * (sizeof(CChatClient) + 2);
+            + clientList.size() * (sizeof(ChatClient) + 2);
   InitBuffer();
 
   buffer->PackUnsignedLong(0x65);
@@ -421,7 +422,7 @@ CPChat_ColorFont::CPChat_ColorFont(CBuffer &b)
   unsigned short nc = b.UnpackChar();
   for (unsigned short i = 0; i < nc; i++)
   {
-    chatClients.push_back(CChatClient(b));
+    chatClients.push_back(ChatClient(b));
   }
 
 }
@@ -664,16 +665,16 @@ Licq::IcqChatEvent::IcqChatEvent(unsigned char nCommand, Licq::IcqChatUser* u, c
 }
 
 
-CChatEvent::~CChatEvent()
+Licq::IcqChatEvent::~IcqChatEvent()
 {
   if (m_bLocked)
     pthread_mutex_unlock(&(dynamic_cast<ChatUser*>(m_pUser)->mutex));
 }
 
 //=====ChatManager===========================================================
-ChatManagerList CChatManager::cmList;
-pthread_mutex_t CChatManager::cmList_mutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t CChatManager::waiting_thread_cancel_mutex
+ChatManagerList ChatManager::cmList;
+pthread_mutex_t ChatManager::cmList_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t ChatManager::waiting_thread_cancel_mutex
                                                   = PTHREAD_MUTEX_INITIALIZER;
 
 Licq::IcqChatManager::~IcqChatManager()
@@ -700,7 +701,7 @@ ChatManager::ChatManager(const Licq::UserId& userId)
   pthread_mutex_unlock(&cmList_mutex);
 }
 
-void CChatManager::init(const string& fontFamily, unsigned char fontEncoding,
+void ChatManager::init(const string& fontFamily, unsigned char fontEncoding,
     unsigned char fontStyle, unsigned short fontSize, bool fontBold, bool fontItalic,
     bool fontUnderline, bool fontStrikeOut, int fr, int fg, int fb, int br, int bg, int bb)
 {
@@ -724,8 +725,8 @@ void CChatManager::init(const string& fontFamily, unsigned char fontEncoding,
 }
 
 
-//-----CChatManager::StartChatServer-----------------------------------------
-bool CChatManager::StartChatServer()
+//-----ChatManager::StartChatServer-----------------------------------------
+bool ChatManager::StartChatServer()
 {
   if (gDaemon.StartTCPServer(&chatServer) == -1)
   {
@@ -742,18 +743,18 @@ bool CChatManager::StartChatServer()
 
 
 
-bool CChatManager::StartAsServer()
+bool ChatManager::StartAsServer()
 {
   if (!StartChatServer())
   {
-    PushChatEvent(new CChatEvent(CHAT_ERRORxBIND, NULL));
+    PushChatEvent(new IcqChatEvent(CHAT_ERRORxBIND, NULL));
     return false;
   }
 
   // Create the socket manager thread
   if (pthread_create(&thread_chat, NULL, &ChatManager_tep, this) == -1)
   {
-    PushChatEvent(new CChatEvent(CHAT_ERRORxRESOURCES, NULL));
+    PushChatEvent(new IcqChatEvent(CHAT_ERRORxRESOURCES, NULL));
     return false;
   }
 
@@ -763,8 +764,8 @@ bool CChatManager::StartAsServer()
 }
 
 
-//-----CChatManager::StartAsClient-------------------------------------------
-void CChatManager::StartAsClient(unsigned short nPort)
+//-----ChatManager::StartAsClient-------------------------------------------
+void ChatManager::StartAsClient(unsigned short nPort)
 {
   if (!StartChatServer()) return;
 
@@ -772,21 +773,21 @@ void CChatManager::StartAsClient(unsigned short nPort)
     UserReadGuard u(myUserId);
     if (!u.isLocked())
       return;
-    m_pChatClient = new CChatClient(*u);
+    m_pChatClient = new ChatClient(*u);
     m_pChatClient->m_nPort = nPort;
   }
 
   // Create the socket manager thread
   if (pthread_create(&thread_chat, NULL, &ChatManager_tep, this) == -1)
   {
-    PushChatEvent(new CChatEvent(CHAT_ERRORxRESOURCES, NULL));
+    PushChatEvent(new IcqChatEvent(CHAT_ERRORxRESOURCES, NULL));
     return;
   }
 }
 
 
-//-----CChatManager::ConnectToChat-------------------------------------------
-bool CChatManager::ConnectToChat(CChatClient *c)
+//-----ChatManager::ConnectToChat-------------------------------------------
+bool ChatManager::ConnectToChat(ChatClient *c)
 {
   ChatUser* u = new ChatUser;
   u->m_pClient = c;
@@ -857,9 +858,9 @@ bool CChatManager::ConnectToChat(CChatClient *c)
   return bResult;
 }
 
-bool CChatManager::SendChatHandshake(ChatUser* u)
+bool ChatManager::SendChatHandshake(ChatUser* u)
 {
-  CChatClient *c = u->m_pClient;
+  ChatClient* c = u->m_pClient;
   char szUin[24];
   sprintf(szUin, "%lu", c->myUin);
   Licq::UserId userId(myUserId, szUin);
@@ -888,13 +889,13 @@ bool CChatManager::SendChatHandshake(ChatUser* u)
 }
 
 
-//-----CChatManager::AcceptReverseConnection---------------------------------
-void CChatManager::AcceptReverseConnection(DcSocket* s)
+//-----ChatManager::AcceptReverseConnection---------------------------------
+void ChatManager::AcceptReverseConnection(DcSocket* s)
 {
   ChatUser* u = new ChatUser;
   u->sock.TransferConnectionFrom(*s);
 
-  u->m_pClient = new CChatClient();
+  u->m_pClient = new ChatClient();
   u->m_pClient->m_nVersion = s->Version();
   u->m_pClient->myUin = atol(s->userId().accountId().c_str());
   u->m_pClient->m_nIp = s->getRemoteIpInt();
@@ -919,8 +920,8 @@ void CChatManager::AcceptReverseConnection(DcSocket* s)
 }
 
 
-//-----CChatManager::FindChatUser--------------------------------------------
-ChatUser* CChatManager::FindChatUser(int sd)
+//-----ChatManager::FindChatUser--------------------------------------------
+ChatUser* ChatManager::FindChatUser(int sd)
 {
   // Find the right user (possible race condition, but we ignore it for now)
   ChatUserList::iterator iter;
@@ -934,8 +935,8 @@ ChatUser* CChatManager::FindChatUser(int sd)
 }
 
 
-//-----CChatManager::ProcessPacket-------------------------------------------
-bool CChatManager::ProcessPacket(ChatUser* u)
+//-----ChatManager::ProcessPacket-------------------------------------------
+bool ChatManager::ProcessPacket(ChatUser* u)
 {
   if (!u->sock.RecvPacket())
   {
@@ -1083,7 +1084,7 @@ bool CChatManager::ProcessPacket(ChatUser* u)
       u->fontStyle = pin.FontStyle();
 
       u->state = CHAT_STATE_CONNECTED;
-      PushChatEvent(new CChatEvent(CHAT_CONNECTION, u));
+      PushChatEvent(new IcqChatEvent(CHAT_CONNECTION, u));
       break;
     }
 
@@ -1136,7 +1137,7 @@ bool CChatManager::ProcessPacket(ChatUser* u)
           }
           if (iter2 != chatUsers.end()) continue;
           // Connect to this user
-          CChatClient *p = new CChatClient(*iter);
+          ChatClient *p = new ChatClient(*iter);
           ConnectToChat(p);
         }
       }
@@ -1154,7 +1155,7 @@ bool CChatManager::ProcessPacket(ChatUser* u)
 
       // now we are done with the handshaking
       u->state = CHAT_STATE_CONNECTED;
-      PushChatEvent(new CChatEvent(CHAT_CONNECTION, u));
+      PushChatEvent(new IcqChatEvent(CHAT_CONNECTION, u));
       break;
     }
 
@@ -1172,12 +1173,12 @@ bool CChatManager::ProcessPacket(ChatUser* u)
 }
 
 
-//-----CChatManager::PopChatEvent--------------------------------------------
-CChatEvent *CChatManager::PopChatEvent()
+//-----ChatManager::PopChatEvent--------------------------------------------
+IcqChatEvent *ChatManager::PopChatEvent()
 {
   if (chatEvents.empty()) return NULL;
 
-  CChatEvent *e = chatEvents.front();
+  IcqChatEvent *e = chatEvents.front();
   chatEvents.pop_front();
 
   // Lock the user, will be unlocked in the event destructor
@@ -1191,8 +1192,8 @@ CChatEvent *CChatManager::PopChatEvent()
 }
 
 
-//-----CChatManager::PushChatEvent-------------------------------------------
-void CChatManager::PushChatEvent(CChatEvent *e)
+//-----ChatManager::PushChatEvent-------------------------------------------
+void ChatManager::PushChatEvent(IcqChatEvent *e)
 {
   chatEvents.push_back(e);
   myEventsPipe.putChar('*');
@@ -1213,8 +1214,8 @@ int ChatManager::Pipe()
   return myEventsPipe.getReadFd();
 }
 
-//-----CChatManager::ProcessRaw----------------------------------------------
-bool CChatManager::ProcessRaw(ChatUser* u)
+//-----ChatManager::ProcessRaw----------------------------------------------
+bool ChatManager::ProcessRaw(ChatUser* u)
 {
   Licq::Buffer buf;
   if (!u->sock.receive(buf))
@@ -1236,7 +1237,7 @@ bool CChatManager::ProcessRaw(ChatUser* u)
 }
 
 
-bool CChatManager::ProcessRaw_v2(ChatUser* u)
+bool ChatManager::ProcessRaw_v2(ChatUser* u)
 {
   char chatChar;
   while (u->chatQueue.size() > 0)
@@ -1246,7 +1247,7 @@ bool CChatManager::ProcessRaw_v2(ChatUser* u)
     {
       case CHAT_NEWLINE:   // new line
         // add to irc window
-        PushChatEvent(new CChatEvent(CHAT_NEWLINE, u,
+        PushChatEvent(new IcqChatEvent(CHAT_NEWLINE, u,
             gTranslator.toUtf8(u->myLinebuf, userEncoding(u))));
         u->myLinebuf.clear();
         u->chatQueue.pop_front();
@@ -1254,14 +1255,14 @@ bool CChatManager::ProcessRaw_v2(ChatUser* u)
 
       case CHAT_BEEP:  // beep
       {
-        PushChatEvent(new CChatEvent(CHAT_BEEP, u));
+        PushChatEvent(new IcqChatEvent(CHAT_BEEP, u));
         u->chatQueue.pop_front();
         break;
       }
 
       case CHAT_LAUGH:  // laugh
       {
-        PushChatEvent(new CChatEvent(CHAT_LAUGH, u));
+        PushChatEvent(new IcqChatEvent(CHAT_LAUGH, u));
         u->chatQueue.pop_front();
         break;
       }
@@ -1270,7 +1271,7 @@ bool CChatManager::ProcessRaw_v2(ChatUser* u)
       {
         if (u->myLinebuf.size() > 0)
           u->myLinebuf.erase(u->myLinebuf.size()-1);
-        PushChatEvent(new CChatEvent(CHAT_BACKSPACE, u));
+        PushChatEvent(new IcqChatEvent(CHAT_BACKSPACE, u));
         u->chatQueue.pop_front();
         break;
       }
@@ -1284,7 +1285,7 @@ bool CChatManager::ProcessRaw_v2(ChatUser* u)
         for (unsigned short i = 0; i < 5; i++)
           u->chatQueue.pop_front();
 
-        PushChatEvent(new CChatEvent(CHAT_COLORxFG, u));
+        PushChatEvent(new IcqChatEvent(CHAT_COLORxFG, u));
         break;
       }
 
@@ -1297,7 +1298,7 @@ bool CChatManager::ProcessRaw_v2(ChatUser* u)
         for (unsigned short i = 0; i < 5; i++)
           u->chatQueue.pop_front();
 
-        PushChatEvent(new CChatEvent(CHAT_COLORxBG, u));
+        PushChatEvent(new IcqChatEvent(CHAT_COLORxBG, u));
         break;
       }
       case CHAT_FONTxFAMILY: // change font type
@@ -1314,7 +1315,7 @@ bool CChatManager::ProcessRaw_v2(ChatUser* u)
          for (unsigned short i = 0; i < 3 + sizeFontName + 2; i++)
            u->chatQueue.pop_front();
 
-         PushChatEvent(new CChatEvent(CHAT_FONTxFAMILY, u));
+         PushChatEvent(new IcqChatEvent(CHAT_FONTxFAMILY, u));
          break;
       }
 
@@ -1331,7 +1332,7 @@ bool CChatManager::ProcessRaw_v2(ChatUser* u)
         for (unsigned short i = 0; i < 5; i++)
           u->chatQueue.pop_front();
 
-        PushChatEvent(new CChatEvent(CHAT_FONTxFACE, u));
+        PushChatEvent(new IcqChatEvent(CHAT_FONTxFACE, u));
         break;
       }
 
@@ -1347,14 +1348,14 @@ bool CChatManager::ProcessRaw_v2(ChatUser* u)
         for (unsigned short i = 0; i < 5; i++)
           u->chatQueue.pop_front();
 
-        PushChatEvent(new CChatEvent(CHAT_FONTxSIZE, u));
+        PushChatEvent(new IcqChatEvent(CHAT_FONTxSIZE, u));
         break;
       }
 
       case CHAT_FOCUSxIN:
       {
         u->focus = true;
-        PushChatEvent(new CChatEvent(CHAT_FOCUSxIN, u));
+        PushChatEvent(new IcqChatEvent(CHAT_FOCUSxIN, u));
         u->chatQueue.pop_front();
         break;
       }
@@ -1362,7 +1363,7 @@ bool CChatManager::ProcessRaw_v2(ChatUser* u)
       case CHAT_FOCUSxOUT:
       {
         u->focus = false;
-        PushChatEvent(new CChatEvent(CHAT_FOCUSxOUT, u));
+        PushChatEvent(new IcqChatEvent(CHAT_FOCUSxOUT, u));
         u->chatQueue.pop_front();
         break;
       }
@@ -1370,7 +1371,7 @@ bool CChatManager::ProcessRaw_v2(ChatUser* u)
       case CHAT_SLEEPxOFF:
       {
         u->sleep = false;
-        PushChatEvent(new CChatEvent(CHAT_SLEEPxOFF, u));
+        PushChatEvent(new IcqChatEvent(CHAT_SLEEPxOFF, u));
         u->chatQueue.pop_front();
         break;
       }
@@ -1378,7 +1379,7 @@ bool CChatManager::ProcessRaw_v2(ChatUser* u)
       case CHAT_SLEEPxON:
       {
         u->sleep = true;
-        PushChatEvent(new CChatEvent(CHAT_SLEEPxON, u));
+        PushChatEvent(new IcqChatEvent(CHAT_SLEEPxON, u));
         u->chatQueue.pop_front();
         break;
       }
@@ -1393,7 +1394,7 @@ bool CChatManager::ProcessRaw_v2(ChatUser* u)
         for (unsigned short i = 0; i < 4; i++)
           u->chatQueue.pop_front();
 
-        PushChatEvent(new CChatEvent(CHAT_KICK, u));
+        PushChatEvent(new IcqChatEvent(CHAT_KICK, u));
         break;
       }
 
@@ -1428,7 +1429,7 @@ bool CChatManager::ProcessRaw_v2(ChatUser* u)
           FinishKickVote(iter, false);
 
 
-        PushChatEvent(new CChatEvent(CHAT_KICKxYES, u));
+        PushChatEvent(new IcqChatEvent(CHAT_KICKxYES, u));
         break;
       }
 
@@ -1462,7 +1463,7 @@ bool CChatManager::ProcessRaw_v2(ChatUser* u)
         else if ((*iter)->nYes + (*iter)->nNo == (*iter)->nNumUsers)
           FinishKickVote(iter, false);
 
-        PushChatEvent(new CChatEvent(CHAT_KICKxNO, u));
+        PushChatEvent(new IcqChatEvent(CHAT_KICKxNO, u));
         break;
       }
 
@@ -1504,7 +1505,7 @@ bool CChatManager::ProcessRaw_v2(ChatUser* u)
         for (unsigned short i = 0; i < 6; i++)
           u->chatQueue.pop_front();
 
-        PushChatEvent(new CChatEvent(CHAT_KICKxFAIL, u));
+        PushChatEvent(new IcqChatEvent(CHAT_KICKxFAIL, u));
         break;
       }
 
@@ -1515,13 +1516,13 @@ bool CChatManager::ProcessRaw_v2(ChatUser* u)
         for (unsigned short i = 0; i < 2; i++)
           u->chatQueue.pop_front();
 
-        PushChatEvent(new CChatEvent(CHAT_KICKxYOU, u));
+        PushChatEvent(new IcqChatEvent(CHAT_KICKxYOU, u));
         break;
       }
 
       case CHAT_DISCONNECTIONxKICKED:
       {
-        PushChatEvent(new CChatEvent(CHAT_DISCONNECTIONxKICKED, u));
+        PushChatEvent(new IcqChatEvent(CHAT_DISCONNECTIONxKICKED, u));
         u->chatQueue.pop_front();
         break;
       }
@@ -1545,7 +1546,7 @@ bool CChatManager::ProcessRaw_v2(ChatUser* u)
 
           // Add to the users irc line buffer
           u->myLinebuf += tempStr;
-          PushChatEvent(new CChatEvent(CHAT_CHARACTER, u, gTranslator.toUtf8(tempStr, userEncoding(u))));
+          PushChatEvent(new IcqChatEvent(CHAT_CHARACTER, u, gTranslator.toUtf8(tempStr, userEncoding(u))));
         }
         else
         {
@@ -1560,7 +1561,7 @@ bool CChatManager::ProcessRaw_v2(ChatUser* u)
 }
 
 
-bool CChatManager::ProcessRaw_v6(ChatUser* u)
+bool ChatManager::ProcessRaw_v6(ChatUser* u)
 {
   char chatChar;
   unsigned long chatSize = 0;
@@ -1585,13 +1586,13 @@ bool CChatManager::ProcessRaw_v6(ChatUser* u)
       {
         case CHAT_BEEP:  // beep
         {
-          PushChatEvent(new CChatEvent(CHAT_BEEP, u));
+          PushChatEvent(new IcqChatEvent(CHAT_BEEP, u));
           break;
         }
 
         case CHAT_LAUGH:  // laugh
         {
-          PushChatEvent(new CChatEvent(CHAT_LAUGH, u));
+          PushChatEvent(new IcqChatEvent(CHAT_LAUGH, u));
           break;
         }
 
@@ -1601,7 +1602,7 @@ bool CChatManager::ProcessRaw_v6(ChatUser* u)
           u->colorFore[1] = u->chatQueue[1];
           u->colorFore[2] = u->chatQueue[2];
 
-          PushChatEvent(new CChatEvent(CHAT_COLORxFG, u));
+          PushChatEvent(new IcqChatEvent(CHAT_COLORxFG, u));
           break;
         }
 
@@ -1611,7 +1612,7 @@ bool CChatManager::ProcessRaw_v6(ChatUser* u)
           u->colorBack[1] = u->chatQueue[1];
           u->colorBack[2] = u->chatQueue[2];
 
-          PushChatEvent(new CChatEvent(CHAT_COLORxBG, u));
+          PushChatEvent(new IcqChatEvent(CHAT_COLORxBG, u));
           break;
         }
 
@@ -1623,7 +1624,7 @@ bool CChatManager::ProcessRaw_v6(ChatUser* u)
            u->fontEncoding = u->chatQueue[sizeFontName + 2];
            u->fontStyle = u->chatQueue[sizeFontName + 3];
 
-           PushChatEvent(new CChatEvent(CHAT_FONTxFAMILY, u));
+           PushChatEvent(new IcqChatEvent(CHAT_FONTxFAMILY, u));
            //the size includes the following character, so don't dequeue it
            chatSize--;
            break;
@@ -1637,7 +1638,7 @@ bool CChatManager::ProcessRaw_v6(ChatUser* u)
 
           u->fontFace = styleFont;
 
-          PushChatEvent(new CChatEvent(CHAT_FONTxFACE, u));
+          PushChatEvent(new IcqChatEvent(CHAT_FONTxFACE, u));
           break;
         }
 
@@ -1649,35 +1650,35 @@ bool CChatManager::ProcessRaw_v6(ChatUser* u)
                      (u->chatQueue[2] << 16) | (u->chatQueue[3] << 24);
           u->fontSize = sizeFont;
 
-          PushChatEvent(new CChatEvent(CHAT_FONTxSIZE, u));
+          PushChatEvent(new IcqChatEvent(CHAT_FONTxSIZE, u));
           break;
         }
 
         case CHAT_FOCUSxIN:
         {
           u->focus = true;
-          PushChatEvent(new CChatEvent(CHAT_FOCUSxIN, u));
+          PushChatEvent(new IcqChatEvent(CHAT_FOCUSxIN, u));
           break;
         }
 
         case CHAT_FOCUSxOUT:
         {
           u->focus = false;
-          PushChatEvent(new CChatEvent(CHAT_FOCUSxOUT, u));
+          PushChatEvent(new IcqChatEvent(CHAT_FOCUSxOUT, u));
           break;
         }
 
         case CHAT_SLEEPxOFF:
         {
           u->sleep = false;
-          PushChatEvent(new CChatEvent(CHAT_SLEEPxOFF, u));
+          PushChatEvent(new IcqChatEvent(CHAT_SLEEPxOFF, u));
           break;
         }
 
         case CHAT_SLEEPxON:
         {
           u->sleep = true;
-          PushChatEvent(new CChatEvent(CHAT_SLEEPxON, u));
+          PushChatEvent(new IcqChatEvent(CHAT_SLEEPxON, u));
           break;
         }
 
@@ -1689,7 +1690,7 @@ bool CChatManager::ProcessRaw_v6(ChatUser* u)
                        (u->chatQueue[2] << 16) | (u->chatQueue[3] << 24);
           u->nToKick = nUinToKick;
 
-          PushChatEvent(new CChatEvent(CHAT_KICK, u));
+          PushChatEvent(new IcqChatEvent(CHAT_KICK, u));
           break;
         }
 
@@ -1719,7 +1720,7 @@ bool CChatManager::ProcessRaw_v6(ChatUser* u)
           else if (((*iter)->nYes + (*iter)->nNo) == (*iter)->nNumUsers)
             FinishKickVote(iter, false);
 
-          PushChatEvent(new CChatEvent(CHAT_KICKxYES, u));
+          PushChatEvent(new IcqChatEvent(CHAT_KICKxYES, u));
           break;
         }
 
@@ -1749,7 +1750,7 @@ bool CChatManager::ProcessRaw_v6(ChatUser* u)
           else if (((*iter)->nYes + (*iter)->nNo) == (*iter)->nNumUsers)
             FinishKickVote(iter, false);
 
-          PushChatEvent(new CChatEvent(CHAT_KICKxNO, u));
+          PushChatEvent(new IcqChatEvent(CHAT_KICKxNO, u));
           break;
         }
 
@@ -1783,19 +1784,19 @@ bool CChatManager::ProcessRaw_v6(ChatUser* u)
         case CHAT_KICKxFAIL:
         {
           // The user was not kicked, a majority wasn't received
-          PushChatEvent(new CChatEvent(CHAT_KICKxFAIL, u));
+          PushChatEvent(new IcqChatEvent(CHAT_KICKxFAIL, u));
           break;
         }
 
         case CHAT_KICKxYOU:   // we were kicked
         {
-          PushChatEvent(new CChatEvent(CHAT_KICKxYOU, u));
+          PushChatEvent(new IcqChatEvent(CHAT_KICKxYOU, u));
           break;
         }
 
         case CHAT_DISCONNECTIONxKICKED:  // they disconnected cuz we were kicked
         {
-          PushChatEvent(new CChatEvent(CHAT_DISCONNECTIONxKICKED, u));
+          PushChatEvent(new IcqChatEvent(CHAT_DISCONNECTIONxKICKED, u));
           break;
         }
 
@@ -1824,7 +1825,7 @@ bool CChatManager::ProcessRaw_v6(ChatUser* u)
       {
         case CHAT_NEWLINE:   // new line
           // add to irc window
-          PushChatEvent(new CChatEvent(CHAT_NEWLINE, u, gTranslator.toUtf8(u->myLinebuf, userEncoding(u))));
+          PushChatEvent(new IcqChatEvent(CHAT_NEWLINE, u, gTranslator.toUtf8(u->myLinebuf, userEncoding(u))));
           u->myLinebuf.clear();
           u->chatQueue.pop_front();
           break;
@@ -1833,7 +1834,7 @@ bool CChatManager::ProcessRaw_v6(ChatUser* u)
         {
           if (u->myLinebuf.size() > 0)
             u->myLinebuf.erase(u->myLinebuf.size() - 1);
-          PushChatEvent(new CChatEvent(CHAT_BACKSPACE, u));
+          PushChatEvent(new IcqChatEvent(CHAT_BACKSPACE, u));
           u->chatQueue.pop_front();
           break;
         }
@@ -1851,7 +1852,7 @@ bool CChatManager::ProcessRaw_v6(ChatUser* u)
 
             // Add to the users irc line buffer
             u->myLinebuf += tempStr;
-            PushChatEvent(new CChatEvent(CHAT_CHARACTER, u, gTranslator.toUtf8(tempStr, userEncoding(u))));
+            PushChatEvent(new IcqChatEvent(CHAT_CHARACTER, u, gTranslator.toUtf8(tempStr, userEncoding(u))));
           }
           else
           {
@@ -1869,16 +1870,16 @@ bool CChatManager::ProcessRaw_v6(ChatUser* u)
 }
 
 
-//-----CChatManager::SendPacket----------------------------------------------
+//-----ChatManager::SendPacket----------------------------------------------
 /*
-void CChatManager::SendPacket(CPacket *p)
+void ChatManager::SendPacket(CPacket *p)
 {
   SendBuffer(p->getBuffer());
 }
 */
 
-//-----CChatManager::SendBuffer----------------------------------------------
-void CChatManager::SendBuffer(CBuffer *b, unsigned char cmd,
+//-----ChatManager::SendBuffer----------------------------------------------
+void ChatManager::SendBuffer(CBuffer *b, unsigned char cmd,
     const char* id, bool bNotIter)
 {
   ChatUserList::iterator iter;
@@ -1931,7 +1932,7 @@ void CChatManager::SendBuffer(CBuffer *b, unsigned char cmd,
 }
 
 
-bool CChatManager::SendBufferToClient(CBuffer *b, unsigned char cmd, ChatUser* u)
+bool ChatManager::SendBufferToClient(CBuffer *b, unsigned char cmd, ChatUser* u)
 {
   CBuffer b_out(128);
 
@@ -1967,7 +1968,7 @@ bool CChatManager::SendBufferToClient(CBuffer *b, unsigned char cmd, ChatUser* u
 }
 
 
-void CChatManager::SendBuffer_Raw(CBuffer *b)
+void ChatManager::SendBuffer_Raw(CBuffer *b)
 {
   ChatUserList::iterator iter;
   ChatUser* u = NULL;
@@ -1994,7 +1995,7 @@ void CChatManager::SendBuffer_Raw(CBuffer *b)
 }
 
 
-void CChatManager::SendNewline()
+void ChatManager::SendNewline()
 {
   CBuffer buf(1);
   buf.PackChar(CHAT_NEWLINE);
@@ -2002,7 +2003,7 @@ void CChatManager::SendNewline()
 }
 
 
-void CChatManager::SendBackspace()
+void ChatManager::SendBackspace()
 {
   CBuffer buf(1);
   buf.PackChar(CHAT_BACKSPACE);
@@ -2010,20 +2011,20 @@ void CChatManager::SendBackspace()
 }
 
 
-void CChatManager::SendBeep()
+void ChatManager::SendBeep()
 {
   CBuffer buf;
   SendBuffer(&buf, CHAT_BEEP);
 }
 
 
-void CChatManager::SendLaugh()
+void ChatManager::SendLaugh()
 {
   CBuffer buf;
   SendBuffer(&buf, CHAT_LAUGH);
 }
 
-void CChatManager::sendText(const string& text)
+void ChatManager::sendText(const string& text)
 {
   CBuffer buf(text.size());
   buf.pack(gTranslator.fromUtf8(text, getEncoding(m_nFontEncoding)));
@@ -2031,7 +2032,7 @@ void CChatManager::sendText(const string& text)
 }
 
 
-void CChatManager::SendKick(const char* id)
+void ChatManager::SendKick(const char* id)
 {
   unsigned long _nUin = strtoul(id, NULL, 10);
 
@@ -2053,7 +2054,7 @@ void CChatManager::SendKick(const char* id)
 }
 
 
-void CChatManager::SendKickNoVote(const char *id)
+void ChatManager::SendKickNoVote(const char *id)
 {
   Licq::UserId userId(myUserId, id);
   unsigned long _nUin = strtoul(id, NULL, 10);
@@ -2092,7 +2093,7 @@ void CChatManager::SendKickNoVote(const char *id)
 // but what if more than one person has been asked to be kicked by
 // different people?  It shouldn't send a reply to everyone..
 // Mirabilis ICQ just ignores it if it's not expecting it, i believe
-void CChatManager::SendVoteYes(unsigned long _nUin)
+void ChatManager::SendVoteYes(unsigned long _nUin)
 {
   CBuffer buf(4);
   buf.PackUnsignedLong(_nUin);
@@ -2100,7 +2101,7 @@ void CChatManager::SendVoteYes(unsigned long _nUin)
 }
 
 
-void CChatManager::SendVoteNo(unsigned long _nUin)
+void ChatManager::SendVoteNo(unsigned long _nUin)
 {
   CBuffer buf(4);
   buf.PackUnsignedLong(_nUin);
@@ -2108,7 +2109,7 @@ void CChatManager::SendVoteNo(unsigned long _nUin)
 }
 
 
-void CChatManager::FocusIn()
+void ChatManager::FocusIn()
 {
   CBuffer buf;
   SendBuffer(&buf, CHAT_FOCUSxIN);
@@ -2117,7 +2118,7 @@ void CChatManager::FocusIn()
 }
 
 
-void CChatManager::FocusOut()
+void ChatManager::FocusOut()
 {
   CBuffer buf;
   SendBuffer(&buf, CHAT_FOCUSxOUT);
@@ -2126,7 +2127,7 @@ void CChatManager::FocusOut()
 }
 
 
-void CChatManager::Sleep(bool s)
+void ChatManager::Sleep(bool s)
 {
   CBuffer buf;
   SendBuffer(&buf, s ? CHAT_SLEEPxON : CHAT_SLEEPxOFF);
@@ -2135,7 +2136,7 @@ void CChatManager::Sleep(bool s)
 }
 
 
-void CChatManager::changeFontFamily(const string& fontFamily, unsigned char enc,
+void ChatManager::changeFontFamily(const string& fontFamily, unsigned char enc,
                                     unsigned char style)
 {
   //CPChat_ChangeFontFamily p(fontFamily);
@@ -2153,7 +2154,7 @@ void CChatManager::changeFontFamily(const string& fontFamily, unsigned char enc,
 }
 
 
-void CChatManager::ChangeFontSize(unsigned short s)
+void ChatManager::ChangeFontSize(unsigned short s)
 {
   //CPChat_ChangeFontSize p(s);
   //SendPacket(&p);
@@ -2166,7 +2167,7 @@ void CChatManager::ChangeFontSize(unsigned short s)
 }
 
 
-void CChatManager::ChangeFontFace(bool b, bool i, bool u, bool s)
+void ChatManager::ChangeFontFace(bool b, bool i, bool u, bool s)
 {
   //CPChat_ChangeFontFace p(b, i, u);
   //SendPacket(&p);
@@ -2183,7 +2184,7 @@ void CChatManager::ChangeFontFace(bool b, bool i, bool u, bool s)
 }
 
 
-void CChatManager::ChangeColorFg(int r, int g, int b)
+void ChatManager::ChangeColorFg(int r, int g, int b)
 {
   //CPChat_ChangeColorFg p(r, g, b);
   //SendPacket(&p);
@@ -2201,7 +2202,7 @@ void CChatManager::ChangeColorFg(int r, int g, int b)
 }
 
 
-void CChatManager::ChangeColorBg(int r, int g, int b)
+void ChatManager::ChangeColorBg(int r, int g, int b)
 {
   //CPChat_ChangeColorBg p(r, g, b);
   //SendPacket(&p);
@@ -2219,8 +2220,8 @@ void CChatManager::ChangeColorBg(int r, int g, int b)
 }
 
 
-//----CChatManager::CloseChat------------------------------------------------
-void CChatManager::CloseChat()
+//----ChatManager::CloseChat------------------------------------------------
+void ChatManager::CloseChat()
 {
   // Close the chat thread
   // We must do it before trying to close the socket to avoid
@@ -2242,15 +2243,15 @@ void CChatManager::CloseChat()
     chatUsersClosed.push_back(u);
     chatUsers.pop_front();
     // Alert the plugin
-    PushChatEvent(new CChatEvent(CHAT_DISCONNECTION, u));
+    PushChatEvent(new IcqChatEvent(CHAT_DISCONNECTION, u));
   }
 
   sockman.CloseSocket(chatServer.Descriptor(), false, false);
 }
 
 
-//----CChatManager::FinishKickVote-------------------------------------------
-void CChatManager::FinishKickVote(VoteInfoList::iterator iter, bool bPassed)
+//----ChatManager::FinishKickVote-------------------------------------------
+void ChatManager::FinishKickVote(VoteInfoList::iterator iter, bool bPassed)
 {
   char voteId[16];
   snprintf(voteId, 16, "%lu", (*iter)->nUin);
@@ -2296,8 +2297,8 @@ void CChatManager::FinishKickVote(VoteInfoList::iterator iter, bool bPassed)
 }
 
 
-//----CChatManager::CloseClient----------------------------------------------
-void CChatManager::CloseClient(ChatUser* u)
+//----ChatManager::CloseClient----------------------------------------------
+void ChatManager::CloseClient(ChatUser* u)
 {
   // Remove the user from the user list
   ChatUserList::iterator iter;
@@ -2314,12 +2315,12 @@ void CChatManager::CloseClient(ChatUser* u)
   }
 
   // Alert the plugin
-  PushChatEvent(new CChatEvent(CHAT_DISCONNECTION, u));
+  PushChatEvent(new IcqChatEvent(CHAT_DISCONNECTION, u));
 }
 
 
-//-----CChatManager::ClientsStr----------------------------------------------
-string CChatManager::clientsString() const
+//-----ChatManager::ClientsStr----------------------------------------------
+string ChatManager::clientsString() const
 {
   string sz;
 
@@ -2336,7 +2337,7 @@ string CChatManager::clientsString() const
   return sz;
 }
 
-string CChatManager::getEncoding(int chatEncoding)
+string ChatManager::getEncoding(int chatEncoding)
 {
   switch (chatEncoding) {
     case Licq::ENCODING_ANSI: return "CP 1252";
@@ -2355,14 +2356,14 @@ string CChatManager::getEncoding(int chatEncoding)
   }
 }
 
-string CChatManager::userEncoding(const ChatUser* u)
+string ChatManager::userEncoding(const ChatUser* u)
 {
   return getEncoding(u->fontEncoding);
 }
 
 void* LicqIcq::ChatManager_tep(void* arg)
 {
-  CChatManager *chatman = (CChatManager *)arg;
+  ChatManager *chatman = (ChatManager *)arg;
 
   fd_set f;
   int l, nSocketsAvailable, nCurrentSocket;
@@ -2371,7 +2372,7 @@ void* LicqIcq::ChatManager_tep(void* arg)
   {
     if (!chatman->ConnectToChat(chatman->m_pChatClient))
     {
-      chatman->PushChatEvent(new CChatEvent(CHAT_ERRORxCONNECT, NULL));
+      chatman->PushChatEvent(new IcqChatEvent(CHAT_ERRORxCONNECT, NULL));
       return NULL;
     }
     chatman->m_pChatClient = 0;
@@ -2420,7 +2421,7 @@ void* LicqIcq::ChatManager_tep(void* arg)
           else
           {
             ChatUser* u = new ChatUser;
-            u->m_pClient = new CChatClient;
+            u->m_pClient = new ChatClient;
 
             if (chatman->chatServer.RecvConnection(u->sock))
             {
@@ -2482,7 +2483,7 @@ void* LicqIcq::ChatWaitForSignal_tep(void* arg)
   pthread_detach(pthread_self());
 
   struct SChatReverseConnectInfo *rc = (struct SChatReverseConnectInfo *)arg;
-  pthread_mutex_t *cancel_mutex = &CChatManager::waiting_thread_cancel_mutex;
+  pthread_mutex_t *cancel_mutex = &ChatManager::waiting_thread_cancel_mutex;
 
   pthread_mutex_lock(cancel_mutex);
   pthread_cleanup_push(ChatWaitForSignal_cleanup, arg);
@@ -2503,7 +2504,7 @@ void* LicqIcq::ChatWaitForSignal_tep(void* arg)
   if (bConnected || !rc->bTryDirect)
   {
     if (!bConnected && rc->m->chatUsers.empty())
-      rc->m->PushChatEvent(new CChatEvent(CHAT_ERRORxCONNECT, NULL));
+      rc->m->PushChatEvent(new IcqChatEvent(CHAT_ERRORxCONNECT, NULL));
 
 
     pthread_mutex_lock(&rc->m->thread_list_mutex);
@@ -2588,7 +2589,7 @@ void* LicqIcq::ChatWaitForSignal_tep(void* arg)
   pthread_cleanup_pop(0);
 
   if (rc->m->chatUsers.empty())
-    rc->m->PushChatEvent(new CChatEvent(CHAT_ERRORxCONNECT, NULL));
+    rc->m->PushChatEvent(new IcqChatEvent(CHAT_ERRORxCONNECT, NULL));
 
   pthread_mutex_lock(&rc->m->thread_list_mutex);
   ThreadList::iterator iter2;
@@ -2619,14 +2620,14 @@ void LicqIcq::ChatWaitForSignal_cleanup(void* arg)
   delete rc->u->m_pClient;
   delete rc->u;
   delete rc;
-  pthread_mutex_unlock(&CChatManager::waiting_thread_cancel_mutex);
+  pthread_mutex_unlock(&ChatManager::waiting_thread_cancel_mutex);
 }
 
-CChatManager *CChatManager::FindByPort(unsigned short p)
+ChatManager *ChatManager::FindByPort(unsigned short p)
 {
   pthread_mutex_lock(&cmList_mutex);
   ChatManagerList::iterator iter;
-  CChatManager *cm = NULL;
+  ChatManager *cm = NULL;
   for (iter = cmList.begin(); iter != cmList.end(); ++iter)
   {
     if ( (*iter)->LocalPort() == p)
@@ -2640,7 +2641,7 @@ CChatManager *CChatManager::FindByPort(unsigned short p)
 }
 
 
-CChatManager::~CChatManager()
+ChatManager::~ChatManager()
 {
   // cancel all waiting threads first
   pthread_mutex_lock(&waiting_thread_cancel_mutex);
@@ -2668,7 +2669,7 @@ CChatManager::~CChatManager()
   }
 
   // Delete any pending events
-  CChatEvent *e = NULL;
+  IcqChatEvent *e = NULL;
   while (chatEvents.size() > 0)
   {
     e = chatEvents.front();
