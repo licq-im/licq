@@ -93,6 +93,7 @@ public:
 private:
   bool isOwnerOnline(const Licq::UserId& userId);
 
+  using ProtocolPluginHelper::pushSignal;
   void pushSignal(Licq::ProtocolSignal* signal);
 
   friend class Factory;
