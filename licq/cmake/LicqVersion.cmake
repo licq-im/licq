@@ -7,7 +7,6 @@ set(LICQ_VERSION_MAJOR 1)          # 0 <= major   <= 64
 set(LICQ_VERSION_MINOR 8)          # 0 <= minor   <= 99
 set(LICQ_VERSION_RELEASE 0)        # 0 <= release <=  9
 set(LICQ_VERSION_EXTRA "-dev")     # Any string
-set(LICQ_VERSION_PLUGIN_ABI 0)     # Increase when breaking plugin ABI
 
 # When building from a git clone, set the extra version to the HEAD revision,
 # replacing any existing value.
@@ -42,7 +41,6 @@ set(licq_new_version
 #define LICQ_VERSION_RELEASE ${LICQ_VERSION_RELEASE}
 #define LICQ_VERSION_EXTRA \"${LICQ_VERSION_EXTRA}\"
 #define LICQ_VERSION_STRING \"${LICQ_VERSION_MAJOR}.${LICQ_VERSION_MINOR}.${LICQ_VERSION_RELEASE}${LICQ_VERSION_EXTRA}\"
-#define LICQ_VERSION_PLUGIN_ABI ${LICQ_VERSION_PLUGIN_ABI}
 
 #endif
 ")
