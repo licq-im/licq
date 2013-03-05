@@ -451,7 +451,7 @@ void UserMenu::send(QAction* action)
   Licq::IcqProtocol::Ptr icq;
   if (myPpid == LICQ_PPID)
     icq = plugin_internal_cast<Licq::IcqProtocol>(
-        Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
+        Licq::gPluginManager.getProtocolInstance(myUserId.ownerId()));
 
   switch (index)
   {

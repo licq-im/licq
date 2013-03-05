@@ -109,7 +109,7 @@ RandomChatDlg::~RandomChatDlg()
 void RandomChatDlg::okPressed()
 {
   Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
+      Licq::gPluginManager.getProtocolInstance(myOwnerId));
   if (!icq)
     return;
 

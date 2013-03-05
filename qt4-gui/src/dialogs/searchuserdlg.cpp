@@ -63,7 +63,7 @@ SearchUserDlg::SearchUserDlg(const Licq::UserId& ownerId)
   setWindowTitle(tr("Licq - User Search"));
 
   Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
+      Licq::gPluginManager.getProtocolInstance(ownerId));
   if (!icq)
   {
     close();
@@ -240,7 +240,7 @@ void SearchUserDlg::startSearch()
   unsigned short maxs[7] = {0, 22, 29, 39, 49, 59, 120};
 
   Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
+      Licq::gPluginManager.getProtocolInstance(myOwnerId));
   if (!icq)
     return;
 

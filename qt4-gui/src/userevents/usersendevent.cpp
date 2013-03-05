@@ -935,17 +935,17 @@ void UserSendEvent::changeEventType(int type)
 
 void UserSendEvent::retrySend(const Licq::Event* e, unsigned flags)
 {
-  QString accountId = myUsers.front().accountId().c_str();
+  const Licq::UserId& frontUserId(myUsers.front());
 
   unsigned long icqEventTag = 0;
   mySendServerCheck->setChecked((flags & Licq::ProtocolSignal::SendDirect) == 0);
   myUrgentCheck->setChecked(flags & Licq::ProtocolSignal::SendUrgent);
 
   Licq::IcqProtocol::Ptr icq;
-  if (myUsers.front().protocolId() == LICQ_PPID)
+  if (frontUserId.protocolId() == LICQ_PPID)
   {
     icq = plugin_internal_cast<Licq::IcqProtocol>(
-        Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
+        Licq::gPluginManager.getProtocolInstance(frontUserId.ownerId()));
   }
 
   switch (e->userEvent()->eventType())
@@ -954,7 +954,7 @@ void UserSendEvent::retrySend(const Licq::Event* e, unsigned flags)
     {
       bool userOffline = true;
       {
-        Licq::UserReadGuard u(myUsers.front());
+        Licq::UserReadGuard u(frontUserId);
         if (u.isLocked())
           userOffline = !u->isOnline();
       }
@@ -1006,7 +1006,7 @@ void UserSendEvent::retrySend(const Licq::Event* e, unsigned flags)
           messageRaw = ue->message().c_str();
         }
 
-        icqEventTag = gProtocolManager.sendMessage(myUsers.front(), messageRaw.data(),
+        icqEventTag = gProtocolManager.sendMessage(frontUserId, messageRaw.data(),
             flags, &myIcqColor);
 
         myEventTag.push_back(icqEventTag);
@@ -1023,7 +1023,7 @@ void UserSendEvent::retrySend(const Licq::Event* e, unsigned flags)
     {
       const Licq::EventUrl* ue = dynamic_cast<const Licq::EventUrl*>(e->userEvent());
 
-      icqEventTag = gProtocolManager.sendUrl(myUsers.front(), ue->url(),
+      icqEventTag = gProtocolManager.sendUrl(frontUserId, ue->url(),
           ue->description(), flags, &myIcqColor);
 
       break;
@@ -1045,7 +1045,7 @@ void UserSendEvent::retrySend(const Licq::Event* e, unsigned flags)
       if (users.empty())
         break;
 
-      icqEventTag = icq->icqSendContactList(myUsers.front(), users, flags, &myIcqColor);
+      icqEventTag = icq->icqSendContactList(frontUserId, users, flags, &myIcqColor);
       break;
     }
 
@@ -1055,7 +1055,7 @@ void UserSendEvent::retrySend(const Licq::Event* e, unsigned flags)
         break;
 
       const Licq::EventChat* ue = dynamic_cast<const Licq::EventChat*>(e->userEvent());
-      icqEventTag = icq->icqChatRequest(myUsers.front(),
+      icqEventTag = icq->icqChatRequest(frontUserId,
           ue->reason(), flags, ue->clients(), ue->Port());
       break;
     }
@@ -1066,7 +1066,7 @@ void UserSendEvent::retrySend(const Licq::Event* e, unsigned flags)
       list<string> filelist(ue->FileList());
 
       //TODO in the daemon
-      icqEventTag = gProtocolManager.fileTransferPropose(myUsers.front(),
+      icqEventTag = gProtocolManager.fileTransferPropose(frontUserId,
           ue->filename(), ue->fileDescription(), filelist, flags);
 
       break;
@@ -1078,7 +1078,7 @@ void UserSendEvent::retrySend(const Licq::Event* e, unsigned flags)
         break;
 
       const Licq::EventSms* ue = dynamic_cast<const Licq::EventSms*>(e->userEvent());
-      icqEventTag = icq->icqSendSms(myUsers.front(), ue->number(), ue->message());
+      icqEventTag = icq->icqSendSms(frontUserId, ue->number(), ue->message());
       break;
     }
 
@@ -1155,6 +1155,8 @@ void UserSendEvent::userUpdated(const Licq::UserId& userId, unsigned long subSig
 
 void UserSendEvent::send()
 {
+  const Licq::UserId& frontUserId(myUsers.front());
+
   if (myType == MessageEvent || myType == SmsEvent)
   {
     // don't let the user send empty messages
@@ -1188,7 +1190,7 @@ void UserSendEvent::send()
   bool secure = false;;
   bool offline = true;
   {
-    Licq::UserReadGuard u(myUsers.front());
+    Licq::UserReadGuard u(frontUserId);
     if (u.isLocked())
     {
       secure = u->Secure() || u->AutoSecure();
@@ -1203,7 +1205,7 @@ void UserSendEvent::send()
             "Send anyway?")))
       return;
 
-    Licq::UserWriteGuard u(myUsers.front());
+    Licq::UserWriteGuard u(frontUserId);
     if (u.isLocked())
       u->SetAutoSecure(false);
   }
@@ -1215,7 +1217,7 @@ void UserSendEvent::send()
 
   if (myType != ContactEvent)
     connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
-  gProtocolManager.sendTypingNotification(myUsers.front(), false, myConvoId);
+  gProtocolManager.sendTypingNotification(frontUserId, false, myConvoId);
 
   StringList contacts;
   Licq::UserId userId;
@@ -1295,7 +1297,7 @@ void UserSendEvent::send()
       }
 
       unsigned long icqEventTag = gProtocolManager.sendMessage(
-          myUsers.front(),
+          frontUserId,
           messageRaw.data(),
           flags,
           &myIcqColor,
@@ -1311,17 +1313,16 @@ void UserSendEvent::send()
     unsigned long icqEventTag = 0;
 
     Licq::IcqProtocol::Ptr icq;
-    if (myUsers.front().protocolId() == LICQ_PPID)
+    if (frontUserId.protocolId() == LICQ_PPID)
     {
       icq = plugin_internal_cast<Licq::IcqProtocol>(
-          Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
+          Licq::gPluginManager.getProtocolInstance(frontUserId.ownerId()));
     }
 
     switch (myType)
     {
       case UrlEvent:
-        icqEventTag = gProtocolManager.sendUrl(
-            myUsers.front(),
+        icqEventTag = gProtocolManager.sendUrl(frontUserId,
             myUrlEdit->text().toUtf8().constData(),
             myMessageEdit->toPlainText().toUtf8().data(),
             flags,
@@ -1331,8 +1332,7 @@ void UserSendEvent::send()
       case ContactEvent:
         if (icq == NULL)
           return;
-        icqEventTag = icq->icqSendContactList(
-            myUsers.front(),
+        icqEventTag = icq->icqSendContactList(frontUserId,
             contacts,
             flags,
             &myIcqColor);
@@ -1341,7 +1341,7 @@ void UserSendEvent::send()
       case ChatEvent:
         if (icq == NULL)
           return;
-        icqEventTag = icq->icqChatRequest( myUsers.front(),
+        icqEventTag = icq->icqChatRequest(frontUserId,
             myMessageEdit->toPlainText().toUtf8().data(), flags,
             myChatClients.toUtf8().data(), myChatPort);
         break;
@@ -1349,7 +1349,7 @@ void UserSendEvent::send()
       case FileEvent:
         //TODO in daemon
         icqEventTag = gProtocolManager.fileTransferPropose(
-            myUsers.front(),
+            frontUserId,
             QFile::encodeName(myFileEdit->text()).data(),
             myMessageEdit->toPlainText().toUtf8().data(),
             myFileList,
@@ -1359,7 +1359,7 @@ void UserSendEvent::send()
       case SmsEvent:
         if (icq == NULL)
           return;
-        icqEventTag = icq->icqSendSms(myUsers.front(),
+        icqEventTag = icq->icqSendSms(frontUserId,
             mySmsPhoneEdit->text().toUtf8().constData(),
             myMessageEdit->toPlainText().toUtf8().data());
         break;

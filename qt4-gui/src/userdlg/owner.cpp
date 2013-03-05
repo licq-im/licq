@@ -279,7 +279,7 @@ unsigned long UserPages::Owner::send(UserDlg::UserPage page)
   if (myProtocolId == LICQ_PPID)
   {
     Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-        Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
+        Licq::gPluginManager.getProtocolInstance(myUserId));
     if (!icq)
       return 0;
 
