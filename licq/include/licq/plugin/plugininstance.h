@@ -52,20 +52,20 @@ protected:
 
 /**
  * Function to cast a plugin instance to a plugin specific interface to get
- * access to methods that only apply for a specific plugin. To e.g. get access
- * to ICQ specific methods, do:
+ * access to methods that only apply for a specific plugin instance. To
+ * e.g. get access to ICQ specific methods, do:
  * @code
  * Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
- *     Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
+ *     Licq::gPluginManager.getProtocolInstance(myIcqOwner));
  * if (icq)
  *   icq->icqSendSms(...);
  * @endcode
  */
 template <typename T>
-inline boost::shared_ptr<T> plugin_internal_cast(PluginInstance::Ptr plugin)
+inline boost::shared_ptr<T> plugin_internal_cast(PluginInstance::Ptr instance)
 {
-  return plugin
-      ? boost::dynamic_pointer_cast<T>(plugin->internalInterface())
+  return instance
+      ? boost::dynamic_pointer_cast<T>(instance->internalInterface())
       : boost::shared_ptr<T>();
 }
 

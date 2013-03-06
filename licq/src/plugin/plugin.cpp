@@ -50,6 +50,14 @@ std::string Plugin::libraryName() const
   return myLibrary->getName();
 }
 
+boost::shared_ptr<Licq::PluginFactory> Plugin::internalFactory()
+{
+  // Create a shared_ptr that keeps this object alive at least until the
+  // returned pointer goes out of scope.
+  return boost::shared_ptr<Licq::PluginFactory>(
+      shared_from_this(), factory().get());
+}
+
 void Plugin::registerInstance(boost::weak_ptr<PluginInstance> instance)
 {
   Licq::MutexLocker locker(myMutex);

@@ -59,6 +59,7 @@ public:
 
 protected:
   // From Plugin
+  boost::shared_ptr<Licq::PluginFactory> factory();
   boost::shared_ptr<const Licq::PluginFactory> factory() const;
 
 private:

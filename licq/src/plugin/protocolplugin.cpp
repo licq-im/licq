@@ -101,6 +101,11 @@ Licq::Owner* ProtocolPlugin::createOwner(const Licq::UserId& id)
   return myFactory->createOwner(id);
 }
 
+boost::shared_ptr<Licq::PluginFactory> ProtocolPlugin::factory()
+{
+  return myFactory;
+}
+
 boost::shared_ptr<const Licq::PluginFactory> ProtocolPlugin::factory() const
 {
   return myFactory;

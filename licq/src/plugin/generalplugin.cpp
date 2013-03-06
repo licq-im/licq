@@ -86,6 +86,11 @@ Licq::GeneralPluginInstance::Ptr GeneralPlugin::instance() const
       myInstances.front().lock());
 }
 
+boost::shared_ptr<Licq::PluginFactory> GeneralPlugin::factory()
+{
+  return myFactory;
+}
+
 boost::shared_ptr<const Licq::PluginFactory> GeneralPlugin::factory() const
 {
   return myFactory;

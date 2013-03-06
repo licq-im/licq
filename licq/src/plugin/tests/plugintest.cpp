@@ -43,11 +43,13 @@ using ::testing::Return;
 namespace LicqTest
 {
 
-// Two dummy interfaces
-class InternalPluginInterface { };
+// Dummy interfaces
+class InternalFactoryInterface { };
+class InternalInstanceInterface { };
 class UnImplementedInterface { };
 
-class MockPluginFactory : public Licq::PluginFactory
+class MockPluginFactory : public Licq::PluginFactory,
+                          public InternalFactoryInterface
 {
 public:
   MOCK_CONST_METHOD0(name, std::string());
@@ -56,7 +58,7 @@ public:
 };
 
 class MockPlugin : public Licq::PluginInterface,
-                   public InternalPluginInterface
+                   public InternalInstanceInterface
 {
 public:
   MOCK_METHOD2(init, bool(int argc, char** argv));
@@ -77,6 +79,7 @@ public:
     // Empty
   }
 
+  // From Plugin
   boost::shared_ptr<Licq::PluginFactory> factory()
   {
     return myFactory;
@@ -111,8 +114,16 @@ public:
 
   ~TestPluginInstance()
   {
+    destroyInstance();
+  }
+
+  // For test
+  void destroyInstance()
+  {
     if (myInterface)
       myPlugin->factory()->destroyPlugin(myInterface.get());
+    myInterface.reset();
+    myPlugin.reset();
   }
 
 protected:
@@ -185,12 +196,23 @@ TEST_F(PluginFixture, callApiFunctions)
   instance.shutdown();
 }
 
-TEST_F(PluginFixture, castToInternalInterface)
+TEST_F(PluginFixture, castToInternalFactoryInterface)
+{
+  Plugin::Ptr ptr(&plugin, &nullDeleter);
+
+  EXPECT_FALSE(plugin_internal_cast<UnImplementedInterface>(ptr));
+  EXPECT_FALSE(plugin_internal_cast<InternalInstanceInterface>(ptr));
+  EXPECT_EQ(plugin_internal_cast<InternalFactoryInterface>(ptr).get(),
+            &myMockFactory);
+}
+
+TEST_F(PluginFixture, castToInternalInstanceInterface)
 {
   PluginInstance::Ptr ptr(&instance, &nullDeleter);
 
   EXPECT_FALSE(plugin_internal_cast<UnImplementedInterface>(ptr));
-  EXPECT_EQ(plugin_internal_cast<InternalPluginInterface>(ptr).get(),
+  EXPECT_FALSE(plugin_internal_cast<InternalFactoryInterface>(ptr));
+  EXPECT_EQ(plugin_internal_cast<InternalInstanceInterface>(ptr).get(),
             &myMockInterface);
 }
 
@@ -200,18 +222,42 @@ void countingNullDeleter(void*)
   DeleteCount += 1;
 }
 
-TEST_F(PluginFixture, lifeTimeOfCastedObject)
+TEST_F(PluginFixture, lifeTimeOfCastedFactory)
 {
   DeleteCount = 0;
+
+  // Make the instance drop the plugin shared_ptr
+  instance.destroyInstance();
 
   // The plugin should not be "deleted" until both the plugin and the interface
   // has gone out of scope.
 
   {
-    boost::shared_ptr<InternalPluginInterface> interface;
+    boost::shared_ptr<InternalFactoryInterface> factory;
+    {
+      Plugin::Ptr ptr(&plugin, &countingNullDeleter);
+      factory = plugin_internal_cast<InternalFactoryInterface>(ptr);
+      EXPECT_EQ(ptr.use_count(), factory.use_count());
+    }
+    EXPECT_EQ(0, DeleteCount);
+  }
+
+  EXPECT_EQ(1, DeleteCount);
+}
+
+TEST_F(PluginFixture, lifeTimeOfCastedInstance)
+{
+  DeleteCount = 0;
+
+  // The instance should not be "deleted" until both the instance and the
+  // interface has gone out of scope.
+
+  {
+    boost::shared_ptr<InternalInstanceInterface> interface;
     {
       PluginInstance::Ptr ptr(&instance, &countingNullDeleter);
-      interface = plugin_internal_cast<InternalPluginInterface>(ptr);
+      interface = plugin_internal_cast<InternalInstanceInterface>(ptr);
+      EXPECT_EQ(ptr.use_count(), interface.use_count());
     }
     EXPECT_EQ(0, DeleteCount);
   }

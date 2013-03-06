@@ -20,6 +20,8 @@
 #ifndef LICQ_PLUGIN_H
 #define LICQ_PLUGIN_H
 
+#include "pluginfactory.h"
+
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <string>
@@ -48,8 +50,48 @@ public:
 protected:
   /// Destructor
   virtual ~Plugin() { }
+
+  virtual boost::shared_ptr<PluginFactory> internalFactory() = 0;
+  template <typename T> friend boost::shared_ptr<T> plugin_internal_cast(Ptr);
 };
 
+/**
+ * Function to cast a plugin to a plugin specific interface to get access to
+ * methods that only apply for a specific plugin. To e.g. get access to ICQ
+ * specific methods, do:
+ * @code
+ * Licq::IcqPlugin::Ptr icq = plugin_internal_cast<Licq::IcqPlugin>(
+ *     Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+ * if (icq)
+ *   icq->categories(...);
+ * @endcode
+ */
+template <typename T>
+inline boost::shared_ptr<T> plugin_internal_cast(Plugin::Ptr plugin)
+{
+  return plugin
+      ? boost::dynamic_pointer_cast<T>(plugin->internalFactory())
+      : boost::shared_ptr<T>();
+}
+
+// plugin_internal_cast<>() is not supposed to be used to cast to
+// PluginFactory, GeneralPluginFactory or ProtocolPluginFactory; only to
+// plugin specific interfaces.
+
+template <> inline boost::shared_ptr<PluginFactory>
+plugin_internal_cast<PluginFactory>(Plugin::Ptr);
+
+class GeneralPluginFactory;
+template <> boost::shared_ptr<GeneralPluginFactory>
+plugin_internal_cast<GeneralPluginFactory>(Plugin::Ptr);
+
+class ProtocolPluginFactory;
+template <> boost::shared_ptr<ProtocolPluginFactory>
+plugin_internal_cast<ProtocolPluginFactory>(Plugin::Ptr);
+
 } // namespace Licq
+
+// Make available in global namespace
+using Licq::plugin_internal_cast;
 
 #endif

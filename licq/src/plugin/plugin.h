@@ -29,11 +29,6 @@
 #include <boost/weak_ptr.hpp>
 #include <vector>
 
-namespace Licq
-{
-class PluginFactory;
-}
-
 namespace LicqDaemon
 {
 
@@ -52,8 +47,10 @@ public:
   std::string name() const;
   std::string version() const;
   std::string libraryName() const;
+  boost::shared_ptr<Licq::PluginFactory> internalFactory();
 
 protected:
+  virtual boost::shared_ptr<Licq::PluginFactory> factory() = 0;
   virtual boost::shared_ptr<const Licq::PluginFactory> factory() const = 0;
 
   void registerInstance(boost::weak_ptr<PluginInstance> instance);
