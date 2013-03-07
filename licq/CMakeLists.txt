@@ -143,6 +143,10 @@ include(cmake/LicqVersion.cmake)
 find_package(Doxygen)
 
 if (DOXYGEN_FOUND)
+  if (NOT DOXYGEN_DOT_FOUND)
+    message(SEND_ERROR "Need the dot program to build documentation")
+  endif (NOT DOXYGEN_DOT_FOUND)
+
   set(DOXY_CONFIG ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
   message(STATUS "Generating ${DOXY_CONFIG}")
