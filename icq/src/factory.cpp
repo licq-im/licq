@@ -20,8 +20,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include "factory.h"
+
 #include <licq/plugin/protocolplugin.h>
-#include <licq/plugin/protocolpluginfactory.h>
 #include <licq/version.h>
 
 #include "icqprotocolplugin.h"
@@ -29,24 +30,28 @@
 #include "pluginversion.h"
 #include "user.h"
 
-namespace LicqIcq
-{
+using namespace LicqIcq;
 
-class Factory : public Licq::ProtocolPluginFactory
-{
-public:
-  // From Licq::PluginFactory
-  std::string name() const { return "ICQ"; }
-  std::string version() const { return PLUGIN_VERSION_STRING; }
-  void destroyPlugin(Licq::PluginInterface* plugin) { delete plugin; }
 
-  // From Licq::ProtocolPluginFactory
-  unsigned long protocolId() const { return ICQ_PPID; }
-  unsigned long capabilities() const;
-  Licq::ProtocolPluginInterface* createPlugin();
-  Licq::User* createUser(const Licq::UserId& id, bool temporary);
-  Licq::Owner* createOwner(const Licq::UserId& id);
-};
+std::string Factory::name() const
+{
+  return "ICQ";
+}
+
+std::string Factory::version() const
+{
+  return PLUGIN_VERSION_STRING;
+}
+
+void Factory::destroyPlugin(Licq::PluginInterface* plugin)
+{
+  delete plugin;
+}
+
+unsigned long Factory::protocolId() const
+{
+  return ICQ_PPID;
+}
 
 unsigned long Factory::capabilities() const
 {
@@ -82,7 +87,6 @@ Licq::Owner* Factory::createOwner(const Licq::UserId& id)
   return new Owner(id);
 }
 
-} // namespace LicqIcq
 
 static Licq::ProtocolPluginFactory* createFactory()
 {
