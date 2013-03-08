@@ -47,6 +47,7 @@
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/icq/icq.h>
+#include <licq/icq/icqdata.h>
 #include <licq/icq/owner.h>
 #include <licq/icq/user.h>
 #include <licq/plugin/pluginmanager.h>
@@ -189,8 +190,8 @@ QWidget* UserPages::Info::createPageGeneral(QWidget* parent)
 
   if (myPpid == LICQ_PPID)
   {
-    Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-        Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
+    Licq::IcqData::Ptr icq = plugin_internal_cast<Licq::IcqData>(
+        Licq::gPluginManager.getProtocolPlugin(ICQ_PPID));
 
     lay->addWidget(new QLabel(tr("Email 2:")), ++CR, 0);
     nfoEmailSecondary = new InfoField(false);
@@ -283,8 +284,8 @@ void UserPages::Info::loadPageGeneral(const Licq::User* u)
   if (myPpid != LICQ_PPID)
     return;
 
-  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
+  Licq::IcqData::Ptr icq = plugin_internal_cast<Licq::IcqData>(
+      Licq::gPluginManager.getProtocolPlugin(ICQ_PPID));
   if (!icq)
     return;
 
@@ -329,8 +330,8 @@ void UserPages::Info::savePageGeneral(Licq::User* u)
   if (myPpid != LICQ_PPID)
     return;
 
-  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
+  Licq::IcqData::Ptr icq = plugin_internal_cast<Licq::IcqData>(
+      Licq::gPluginManager.getProtocolPlugin(ICQ_PPID));
   if (!icq)
     return;
 
@@ -437,8 +438,8 @@ QWidget* UserPages::Info::createPageMore(QWidget* parent)
     cmbLanguage[2] = new QComboBox();
     lay->addWidget(cmbLanguage[2], CR, 1);
 
-    Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-        Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
+    Licq::IcqData::Ptr icq = plugin_internal_cast<Licq::IcqData>(
+        Licq::gPluginManager.getProtocolPlugin(ICQ_PPID));
     if (icq)
     {
       for (unsigned short i = 0; i < 3; i++)
@@ -480,8 +481,8 @@ QWidget* UserPages::Info::createPageMore(QWidget* parent)
 
 void UserPages::Info::loadPageMore(const Licq::User* u)
 {
-  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
+  Licq::IcqData::Ptr icq = plugin_internal_cast<Licq::IcqData>(
+      Licq::gPluginManager.getProtocolPlugin(ICQ_PPID));
   if (!icq)
     return;
 
@@ -620,8 +621,8 @@ void UserPages::Info::savePageMore(Licq::User* u)
   u->setUserInfoString("Homepage", nfoHomepage->text().toLocal8Bit().constData());
   if (m_bOwner)
   {
-    Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-        Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
+    Licq::IcqData::Ptr icq = plugin_internal_cast<Licq::IcqData>(
+        Licq::gPluginManager.getProtocolPlugin(ICQ_PPID));
     if (!icq)
       return;
 
@@ -753,8 +754,8 @@ void UserPages::Info::updateMore2Info(Licq::UserCat cat, const Licq::UserCategor
   while (QTreeWidgetItem* lvChild = lviMore2Top[cat]->takeChild(0))
     delete lvChild;
 
-  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
+  Licq::IcqData::Ptr icq = plugin_internal_cast<Licq::IcqData>(
+      Licq::gPluginManager.getProtocolPlugin(ICQ_PPID));
   if (!icq)
     return;
 
@@ -813,8 +814,8 @@ void UserPages::Info::savePageMore2(Licq::IcqUser* u)
 
 QWidget* UserPages::Info::createPageWork(QWidget* parent)
 {
-  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
+  Licq::IcqData::Ptr icq = plugin_internal_cast<Licq::IcqData>(
+      Licq::gPluginManager.getProtocolPlugin(ICQ_PPID));
 
   QWidget* w = new QWidget(parent);
   myPageWorkLayout = new QVBoxLayout(w);
@@ -904,8 +905,8 @@ QWidget* UserPages::Info::createPageWork(QWidget* parent)
 
 void UserPages::Info::loadPageWork(const Licq::User* u)
 {
-  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
+  Licq::IcqData::Ptr icq = plugin_internal_cast<Licq::IcqData>(
+      Licq::gPluginManager.getProtocolPlugin(ICQ_PPID));
   if (!icq)
     return;
 
@@ -951,8 +952,8 @@ void UserPages::Info::loadPageWork(const Licq::User* u)
 
 void UserPages::Info::savePageWork(Licq::User* u)
 {
-  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
+  Licq::IcqData::Ptr icq = plugin_internal_cast<Licq::IcqData>(
+      Licq::gPluginManager.getProtocolPlugin(ICQ_PPID));
   if (!icq)
     return;
 
@@ -1084,8 +1085,8 @@ void UserPages::Info::loadPagePhoneBook(const Licq::IcqUser* u)
 
 void UserPages::Info::updatePhoneBook()
 {
-  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
+  Licq::IcqData::Ptr icq = plugin_internal_cast<Licq::IcqData>(
+      Licq::gPluginManager.getProtocolPlugin(ICQ_PPID));
   if (!icq)
     return;
 
@@ -1491,7 +1492,7 @@ unsigned long UserPages::Info::retrieve(UserDlg::UserPage page)
     if (myPpid != LICQ_PPID)
       return 0;
     Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-        Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
+        Licq::gPluginManager.getProtocolInstance(myUserId.ownerId()));
     icqEventTag = icq->icqRequestPluginInfo(
         myUserId, Licq::IcqProtocol::PluginPhoneBook);
   }
@@ -1533,12 +1534,15 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
   unsigned long icqEventTag = 0;
 
   Licq::IcqProtocol::Ptr icq;
+  Licq::IcqData::Ptr icqdata;
   if (myPpid == LICQ_PPID)
   {
     icq = plugin_internal_cast<Licq::IcqProtocol>(
-        Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
+        Licq::gPluginManager.getProtocolInstance(myUserId));
     if (!icq)
       return 0;
+    icqdata = plugin_internal_cast<Licq::IcqData>(
+        Licq::gPluginManager.getProtocolPlugin(ICQ_PPID));
   }
 
   switch (page)
@@ -1560,9 +1564,9 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
           (spnBirthYear->value() == spnBirthYear->minimum() ? 0 : spnBirthYear->value()),
           spnBirthMonth->value(),
           spnBirthDay->value(),
-          icq->getLanguageByIndex(cmbLanguage[0]->currentIndex())->nCode,
-          icq->getLanguageByIndex(cmbLanguage[1]->currentIndex())->nCode,
-          icq->getLanguageByIndex(cmbLanguage[2]->currentIndex())->nCode);
+          icqdata->getLanguageByIndex(cmbLanguage[0]->currentIndex())->nCode,
+          icqdata->getLanguageByIndex(cmbLanguage[1]->currentIndex())->nCode,
+          icqdata->getLanguageByIndex(cmbLanguage[2]->currentIndex())->nCode);
       break;
 
     case UserDlg::More2Page:
@@ -1572,9 +1576,9 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
 
     case UserDlg::WorkPage:
       i = cmbCompanyCountry->currentIndex();
-      cc = icq->getCountryByIndex(i)->nCode;
+      cc = icqdata->getCountryByIndex(i)->nCode;
       i = cmbCompanyOccupation->currentIndex();
-      occupation = icq->getOccupationByIndex(i)->nCode;
+      occupation = icqdata->getOccupationByIndex(i)->nCode;
       icqEventTag = icq->icqSetWorkInfo(myUserId,
           nfoCompanyCity->text().toUtf8().constData(),
           nfoCompanyState->text().toUtf8().constData(),

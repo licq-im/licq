@@ -24,7 +24,7 @@
 #include <QGridLayout>
 #include <QLineEdit>
 
-#include <licq/icq/icq.h>
+#include <licq/icq/icqdata.h>
 #include <licq/icq/user.h>
 #include <licq/plugin/pluginmanager.h>
 
@@ -42,8 +42,8 @@ EditCategoryDlg::EditCategoryDlg(Licq::UserCat cat, const Licq::UserCategoryMap&
 
   QString title = "Licq - Edit @ Category";
 
-  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
+  Licq::IcqData::Ptr icq = plugin_internal_cast<Licq::IcqData>(
+      Licq::gPluginManager.getProtocolPlugin(ICQ_PPID));
   if (!icq)
   {
     close();
@@ -138,8 +138,8 @@ EditCategoryDlg::EditCategoryDlg(Licq::UserCat cat, const Licq::UserCategoryMap&
 
 void EditCategoryDlg::ok()
 {
-  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolInstance(LICQ_PPID));
+  Licq::IcqData::Ptr icq = plugin_internal_cast<Licq::IcqData>(
+      Licq::gPluginManager.getProtocolPlugin(ICQ_PPID));
   if (!icq)
   {
     close();
