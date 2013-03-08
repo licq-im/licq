@@ -530,18 +530,6 @@ Licq::ProtocolPluginInstance::Ptr PluginManager::getProtocolInstance(
   return Licq::ProtocolPluginInstance::Ptr();
 }
 
-Licq::ProtocolPluginInstance::Ptr PluginManager::getProtocolInstance(
-    unsigned long protocolId) const
-{
-  MutexLocker locker(myProtocolPluginsMutex);
-  BOOST_FOREACH(ProtocolPluginInstance::Ptr instance, myProtocolInstances)
-  {
-    if (instance->ownerId().protocolId() == protocolId)
-      return instance;
-  }
-  return Licq::ProtocolPluginInstance::Ptr();
-}
-
 bool PluginManager::
 startGeneralPlugin(const std::string& name, int argc, char** argv)
 {

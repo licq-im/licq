@@ -116,19 +116,6 @@ public:
   getProtocolInstance(const UserId& ownerId) const = 0;
 
   /**
-   * Get a protocol instance that is used for the given protocol id.
-   *
-   * This method should only be used when it doesn't matter witch protocol
-   * instance is returned, or if the protocol only supports one instance.
-   *
-   * @param protocolId Protocol id to get protocol instance for.
-   * @return Pointer to the ProtocolPlugin (if found) or an empty pointer if
-   *         protocol id is unknown.
-   */
-  virtual ProtocolPluginInstance::Ptr
-  getProtocolInstance(unsigned long protocolId) const = 0;
-
-  /**
    * Load and start the general plugin @a name.
    *
    * @param name The plugin to start. May be an absolute path to an plugin or a
