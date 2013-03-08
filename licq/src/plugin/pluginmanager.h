@@ -107,8 +107,6 @@ public:
   Licq::ProtocolPlugin::Ptr getProtocolPlugin(unsigned long protocolId) const;
   Licq::ProtocolPluginInstance::Ptr getProtocolInstance(
       const Licq::UserId& ownerId) const;
-  Licq::ProtocolPluginInstance::Ptr getProtocolInstance(
-      unsigned long protocolId) const;
 
   bool startGeneralPlugin(const std::string& name, int argc, char** argv);
   bool startProtocolPlugin(const std::string& name);
