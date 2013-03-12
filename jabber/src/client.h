@@ -34,6 +34,7 @@
 #include <gloox/vcardhandler.h>
 
 #include <licq/mainloop.h>
+#include <licq/thread/mutex.h>
 
 #include "handler.h"
 
@@ -135,6 +136,8 @@ public:
                          gloox::StanzaError error);
 
 private:
+  static Licq::Mutex myGlooxMutex;
+
   // Licq::MainLoopCallback
   void rawFileEvent(int fd, int revents);
   void timeoutEvent(int id);

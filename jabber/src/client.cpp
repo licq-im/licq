@@ -36,6 +36,7 @@
 #include <licq/daemon.h>
 #include <licq/logging/log.h>
 #include <licq/licqversion.h>
+#include <licq/thread/mutexlocker.h>
 
 #define TRACE_FORMAT "Client::%s: "
 #define TRACE_ARGS __func__
@@ -48,6 +49,7 @@ using Licq::gLog;
 using std::string;
 
 static const time_t PING_TIMEOUT = 60;
+Licq::Mutex Client::myGlooxMutex;
 
 GlooxClient::GlooxClient(const gloox::JID& jid, const string& password) :
   gloox::Client(jid, password)
@@ -153,6 +155,13 @@ void Client::setPassword(const string& password)
 
 bool Client::connect(unsigned status)
 {
+  // When having multiple accounts connecting at the same time, gloox can
+  // SIGSEGV: TLSDefault::init returns false (probably thread race), making
+  // ClientBase::getDefaultEncryption delete the TLSDefault instance which
+  // deletes GnuTLSBase. The destructor for GnuTLSBase calls cleanup() which
+  // does gnutls_bye(*m_session, ...). But m_session == NULL...
+  Licq::MutexLocker locker(myGlooxMutex);
+
   changeStatus(status, false);
   if (!myClient.connect(false))
     return false;
