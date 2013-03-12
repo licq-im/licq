@@ -105,6 +105,21 @@ struct IsPluginInstance
   }
 };
 
+struct IsProtocolPlugin
+{
+  unsigned long myProtocolId;
+  IsProtocolPlugin(unsigned long ppid) : myProtocolId(ppid) { }
+  bool operator()(const ProtocolPlugin::Ptr& protocol)
+  {
+    return protocol->protocolId() == myProtocolId;
+  }
+  bool operator()(const pair<Licq::UserId,
+                             ProtocolPluginInstance::Ptr>& instance)
+  {
+    return instance.second->plugin()->protocolId() == myProtocolId;
+  }
+};
+
 } // namespace
 
 PluginManager::PluginManager() :
@@ -226,11 +241,10 @@ loadProtocolPlugin(const std::string& name, bool keep)
     {
       // Check if we already got a plugin for this protocol
       MutexLocker protocolLocker(myProtocolPluginsMutex);
-      BOOST_FOREACH(ProtocolPlugin::Ptr other, myProtocolPlugins)
-      {
-        if (other->protocolId() == factory->protocolId())
-          throw std::exception();
-      }
+      if (find_if(myProtocolPlugins.begin(), myProtocolPlugins.end(),
+                  IsProtocolPlugin(factory->protocolId()))
+          != myProtocolPlugins.end())
+        throw std::exception();
     }
 
     ProtocolPlugin::Ptr plugin =
@@ -389,14 +403,12 @@ User* PluginManager::createProtocolUser(const UserId& id, bool temporary)
   ProtocolPlugin::Ptr plugin;
   {
     MutexLocker locker(myProtocolPluginsMutex);
-    BOOST_FOREACH(ProtocolPlugin::Ptr it, myProtocolPlugins)
-    {
-      if (it->protocolId() == id.protocolId())
-      {
-        plugin = it;
-        break;
-      }
-    }
+    list<ProtocolPlugin::Ptr>::iterator it = find_if(
+        myProtocolPlugins.begin(), myProtocolPlugins.end(), 
+        IsProtocolPlugin(id.protocolId()));
+
+    assert(it != myProtocolPlugins.end());
+    plugin = *it;
   }
 
   return plugin->createUser(id, temporary);
@@ -409,16 +421,13 @@ Owner* PluginManager::createProtocolOwner(const UserId& id)
   ProtocolPlugin::Ptr plugin;
   {
     MutexLocker locker(myProtocolPluginsMutex);
-    BOOST_FOREACH(ProtocolPlugin::Ptr it, myProtocolPlugins)
-    {
-      if (it->protocolId() == id.protocolId())
-      {
-        plugin = it;
-        break;
-      }
-    }
+    list<ProtocolPlugin::Ptr>::iterator it = find_if(
+        myProtocolPlugins.begin(), myProtocolPlugins.end(), 
+        IsProtocolPlugin(id.protocolId()));
+
+    assert(it != myProtocolPlugins.end());
+    plugin = *it;
   }
-  assert(plugin);
 
   ProtocolPluginInstance::Ptr instance = plugin->createInstance(
       getNewPluginId(), id);
@@ -523,11 +532,12 @@ Licq::ProtocolPlugin::Ptr PluginManager::getProtocolPlugin(
     unsigned long protocolId) const
 {
   MutexLocker locker(myProtocolPluginsMutex);
-  BOOST_FOREACH(ProtocolPlugin::Ptr plugin, myProtocolPlugins)
-  {
-    if (plugin->protocolId() == protocolId)
-      return plugin;
-  }
+  list<ProtocolPlugin::Ptr>::const_iterator it = find_if(
+      myProtocolPlugins.begin(), myProtocolPlugins.end(), 
+      IsProtocolPlugin(protocolId));
+  if (it != myProtocolPlugins.end())
+    return *it;
+
   return Licq::ProtocolPlugin::Ptr();
 }
 
@@ -785,12 +795,10 @@ bool PluginManager::reapProtocolInstance(int exitId)
     MutexLocker locker(myProtocolPluginsMutex);
 
     // See if there is any more instances of this protocol
-    BOOST_FOREACH(ProtocolOwnerInstances::value_type other,
-                  myProtocolInstances)
-    {
-      if (other.second->plugin()->protocolId() == protocolId)
-        return true;
-    }
+    if (find_if(myProtocolInstances.begin(), myProtocolInstances.end(),
+                IsProtocolPlugin(protocolId))
+        != myProtocolInstances.end())
+      return true;
 
     // If the plugin has been removed from the list we got a request to unload
     // the plugin and as this is the final instance, we must then notify
