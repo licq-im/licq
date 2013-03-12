@@ -21,8 +21,7 @@
 #define LICQDAEMON_PLUGINMANAGER_H
 
 #include <licq/plugin/pluginmanager.h>
-
-#include <queue>
+#include <licq/thread/mutex.h>
 
 #include "../utils/dynamiclibrary.h"
 #include "generalplugin.h"
@@ -31,7 +30,7 @@
 #include "protocolplugin.h"
 #include "protocolplugininstance.h"
 
-#include <licq/thread/mutex.h>
+#include <queue>
 
 namespace LicqDaemon
 {
@@ -61,7 +60,7 @@ public:
   void shutdownProtocolInstance(const Licq::UserId& ownerId);
 
   /// Notify the manager that a plugin has exited
-  void pluginHasExited(unsigned short id);
+  void pluginHasExited(int id);
 
   /**
    * Remove a plugin that has exited
@@ -141,9 +140,11 @@ private:
   PluginThread::Ptr myGuiThread;
 
   mutable Licq::Mutex myGeneralPluginsMutex;
+  std::list<GeneralPlugin::Ptr> myGeneralPlugins;
   std::list<GeneralPluginInstance::Ptr> myGeneralInstances;
 
   mutable Licq::Mutex myProtocolPluginsMutex;
+  std::list<ProtocolPlugin::Ptr> myProtocolPlugins;
   std::list<ProtocolPluginInstance::Ptr> myProtocolInstances;
 
   Licq::Mutex myExitListMutex;

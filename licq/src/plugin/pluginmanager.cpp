@@ -91,6 +91,16 @@ static void exitPluginCallback(const PluginInstance& instance)
   gPluginManager.pluginHasExited(instance.id());
 }
 
+struct IsPluginInstance
+{
+  int myId;
+  IsPluginInstance(int id) : myId(id) { }
+  bool operator()(const PluginInstance::Ptr& instance)
+  {
+    return instance->id() == myId;
+  }
+};
+
 } // namespace
 
 PluginManager::PluginManager() :
@@ -143,6 +153,9 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
     GeneralPlugin::Ptr plugin =
         boost::make_shared<GeneralPlugin>(lib, factory);
 
+    if (!keep)
+      return plugin;
+
     // Create the plugin instance
     GeneralPluginInstance::Ptr instance = plugin->createInstance(
         getNewPluginId(), pluginThread);
@@ -157,9 +170,9 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
       throw std::exception();
     }
 
-    if (keep)
     {
       MutexLocker generalLocker(myGeneralPluginsMutex);
+      myGeneralPlugins.push_back(plugin);
       myGeneralInstances.push_back(instance);
     }
     return plugin;
@@ -209,15 +222,18 @@ loadProtocolPlugin(const std::string& name, bool keep)
     {
       // Check if we already got a plugin for this protocol
       MutexLocker protocolLocker(myProtocolPluginsMutex);
-      BOOST_FOREACH(ProtocolPluginInstance::Ptr proto, myProtocolInstances)
+      BOOST_FOREACH(ProtocolPlugin::Ptr other, myProtocolPlugins)
       {
-        if (proto->plugin()->protocolId() == factory->protocolId())
+        if (other->protocolId() == factory->protocolId())
           throw std::exception();
       }
     }
 
     ProtocolPlugin::Ptr plugin =
         boost::make_shared<ProtocolPlugin>(lib, factory);
+
+    if (!keep)
+      return plugin;
 
     // Create the plugin instance
     ProtocolPluginInstance::Ptr instance = createProtocolInstance(
@@ -226,9 +242,9 @@ loadProtocolPlugin(const std::string& name, bool keep)
     if (!instance)
       throw std::exception();
 
-    if (keep)
     {
       MutexLocker protocolLocker(myProtocolPluginsMutex);
+      myProtocolPlugins.push_back(plugin);
       myProtocolInstances.push_back(instance);
     }
 
@@ -257,8 +273,8 @@ void PluginManager::startAllPlugins()
   set<unsigned long> ppids;
   {
     MutexLocker protocolLocker(myProtocolPluginsMutex);
-    BOOST_FOREACH(ProtocolPluginInstance::Ptr instance, myProtocolInstances)
-      ppids.insert(instance->plugin()->protocolId());
+    BOOST_FOREACH(ProtocolPlugin::Ptr plugin, myProtocolPlugins)
+      ppids.insert(plugin->protocolId());
   }
 
   // Must call loadProtocol without holding mutex
@@ -284,12 +300,14 @@ void PluginManager::shutdownAllPlugins()
     MutexLocker generalLocker(myGeneralPluginsMutex);
     BOOST_FOREACH(GeneralPluginInstance::Ptr instance, myGeneralInstances)
       instance->shutdown();
+    myGeneralPlugins.clear();
   }
 
   {
     MutexLocker protocolLocker(myProtocolPluginsMutex);
     BOOST_FOREACH(ProtocolPluginInstance::Ptr instance, myProtocolInstances)
       instance->shutdown();
+    myProtocolPlugins.clear();
   }
 }
 
@@ -303,7 +321,7 @@ void PluginManager::shutdownProtocolInstance(const Licq::UserId& ownerId)
   }
 }
 
-void PluginManager::pluginHasExited(unsigned short id)
+void PluginManager::pluginHasExited(int id)
 {
   MutexLocker locker(myExitListMutex);
   myExitList.push(id);
@@ -368,20 +386,20 @@ size_t PluginManager::pluginCount() const
 
 User* PluginManager::createProtocolUser(const UserId& id, bool temporary)
 {
-  ProtocolPluginInstance::Ptr instance;
+  ProtocolPlugin::Ptr plugin;
   {
     MutexLocker locker(myProtocolPluginsMutex);
-    BOOST_FOREACH(ProtocolPluginInstance::Ptr it, myProtocolInstances)
+    BOOST_FOREACH(ProtocolPlugin::Ptr it, myProtocolPlugins)
     {
-      if (it->plugin()->protocolId() == id.protocolId())
+      if (it->protocolId() == id.protocolId())
       {
-        instance = it;
+        plugin = it;
         break;
       }
     }
   }
 
-  return instance->plugin()->createUser(id, temporary);
+  return plugin->createUser(id, temporary);
 }
 
 Owner* PluginManager::createProtocolOwner(const UserId& id)
@@ -428,23 +446,20 @@ void PluginManager::
 getGeneralPluginsList(Licq::GeneralPluginsList& plugins) const
 {
   plugins.clear();
+
   MutexLocker locker(myGeneralPluginsMutex);
-  BOOST_FOREACH(GeneralPluginInstance::Ptr instance, myGeneralInstances)
-    plugins.push_back(instance->plugin());
+  copy(myGeneralPlugins.begin(), myGeneralPlugins.end(),
+       back_inserter(plugins));
 }
 
 void PluginManager::
 getProtocolPluginsList(Licq::ProtocolPluginsList& plugins) const
 {
-  std::set<ProtocolPlugin::Ptr> protocols;
-  {
-    MutexLocker locker(myProtocolPluginsMutex);
-    BOOST_FOREACH(ProtocolPluginInstance::Ptr instance, myProtocolInstances)
-      protocols.insert(instance->plugin());
-  }
-
   plugins.clear();
-  std::copy(protocols.begin(), protocols.end(), std::back_inserter(plugins));
+
+  MutexLocker locker(myProtocolPluginsMutex);
+  copy(myProtocolPlugins.begin(), myProtocolPlugins.end(),
+       back_inserter(plugins));
 }
 
 void PluginManager::getAvailableGeneralPlugins(
@@ -455,9 +470,9 @@ void PluginManager::getAvailableGeneralPlugins(
   if (!includeLoaded)
   {
     MutexLocker locker(myGeneralPluginsMutex);
-    BOOST_FOREACH(GeneralPluginInstance::Ptr instance, myGeneralInstances)
+    BOOST_FOREACH(GeneralPlugin::Ptr plugin, myGeneralPlugins)
     {
-      string name = instance->plugin()->libraryName();
+      string name = plugin->libraryName();
       size_t pos = name.find_last_of('/');
       name.erase(0, pos+6);
       name.erase(name.size() - 3);
@@ -474,9 +489,9 @@ void PluginManager::getAvailableProtocolPlugins(
   if (!includeLoaded)
   {
     MutexLocker locker(myProtocolPluginsMutex);
-    BOOST_FOREACH(ProtocolPluginInstance::Ptr instance, myProtocolInstances)
+    BOOST_FOREACH(ProtocolPlugin::Ptr plugin, myProtocolPlugins)
     {
-      string name = instance->plugin()->libraryName();
+      string name = plugin->libraryName();
       size_t pos = name.find_last_of('/');
       name.erase(0, pos+10);
       name.erase(name.size() - 3);
@@ -510,10 +525,10 @@ Licq::ProtocolPlugin::Ptr PluginManager::getProtocolPlugin(
     unsigned long protocolId) const
 {
   MutexLocker locker(myProtocolPluginsMutex);
-  BOOST_FOREACH(ProtocolPluginInstance::Ptr instance, myProtocolInstances)
+  BOOST_FOREACH(ProtocolPlugin::Ptr plugin, myProtocolPlugins)
   {
-    if (instance->plugin()->protocolId() == protocolId)
-      return instance->plugin();
+    if (plugin->protocolId() == protocolId)
+      return plugin;
   }
   return Licq::ProtocolPlugin::Ptr();
 }
@@ -560,10 +575,21 @@ bool PluginManager::startProtocolPlugin(const std::string& name)
   return true;
 }
 
-void PluginManager::unloadGeneralPlugin(Licq::GeneralPlugin::Ptr plugin)
+void PluginManager::unloadGeneralPlugin(Licq::GeneralPlugin::Ptr licqPlugin)
 {
-  if (!plugin)
-    return;
+  GeneralPlugin::Ptr plugin;
+  {
+    MutexLocker locker(myGeneralPluginsMutex);
+    list<GeneralPlugin::Ptr>::iterator it = find(
+        myGeneralPlugins.begin(), myGeneralPlugins.end(), licqPlugin);
+    if (it == myGeneralPlugins.end())
+      return;
+
+    plugin = *it;
+    // Remove the plugin from the list so that the plugin is unloaded once the
+    // instance has stopped.
+    myGeneralPlugins.erase(it);
+  }
 
   GeneralPluginInstance::Ptr instance =
       boost::dynamic_pointer_cast<GeneralPluginInstance>(plugin->instance());
@@ -571,21 +597,45 @@ void PluginManager::unloadGeneralPlugin(Licq::GeneralPlugin::Ptr plugin)
     instance->shutdown();
 }
 
-void PluginManager::unloadProtocolPlugin(Licq::ProtocolPlugin::Ptr plugin)
+void PluginManager::unloadProtocolPlugin(Licq::ProtocolPlugin::Ptr licqPlugin)
 {
-  if (!plugin)
-    return;
-  
- // Check with user manager first if unloading is allowed
-  if (!gUserManager.allowUnloadProtocol(plugin->protocolId()))
-    return;
+  ProtocolPlugin::Ptr plugin;
+  {
+    MutexLocker locker(myProtocolPluginsMutex);
+    list<ProtocolPlugin::Ptr>::iterator it = find(
+        myProtocolPlugins.begin(), myProtocolPlugins.end(), licqPlugin);
+    if (it == myProtocolPlugins.end())
+      return;
+
+    plugin = *it;
+
+    // Check with user manager first if unloading is allowed
+    if (!gUserManager.allowUnloadProtocol(plugin->protocolId()))
+      return;
+
+    // Remove the plugin from the list so that the plugin is unloaded once all
+    // instances have stopped.
+    myProtocolPlugins.erase(it);
+  }
 
   gUserManager.unloadProtocol(plugin->protocolId());
 
-  // Shutdown all instances
   ProtocolPlugin::Instances instances = plugin->instances();
-  BOOST_FOREACH(Licq::ProtocolPluginInstance::Ptr instance, instances)
-    boost::dynamic_pointer_cast<ProtocolPluginInstance>(instance)->shutdown();
+
+  // Notify plugins about the removed protocol here if there wasn't any running
+  // instance left. Otherwise the signal will be sent once the last instance
+  // has exited.
+  if (instances.empty())
+  {
+    pushPluginSignal(new Licq::PluginSignal(
+        Licq::PluginSignal::SignalRemoveProtocol, plugin->protocolId()));
+  }
+  else
+  {
+    // Shutdown all instances
+    BOOST_FOREACH(Licq::ProtocolPluginInstance::Ptr instance, instances)
+      boost::dynamic_pointer_cast<ProtocolPluginInstance>(instance)->shutdown();
+  }
 }
 
 DynamicLibrary::Ptr PluginManager::loadPlugin(
@@ -704,77 +754,79 @@ void PluginManager::startInstance(ProtocolPluginInstance::Ptr instance)
 
 bool PluginManager::reapGeneralInstance(int exitId)
 {
-  MutexLocker locker(myGeneralPluginsMutex);
-
   GeneralPluginInstance::Ptr instance;
-  for (list<GeneralPluginInstance::Ptr>::iterator it =
-           myGeneralInstances.begin();
-       it != myGeneralInstances.end(); ++it)
   {
-    if ((*it)->id() == exitId)
-    {
-      instance = *it;
-      myGeneralInstances.erase(it);
-      break;
-    }
+    MutexLocker locker(myGeneralPluginsMutex);
+
+    list<GeneralPluginInstance::Ptr>::iterator it = find_if(
+        myGeneralInstances.begin(), myGeneralInstances.end(),
+        IsPluginInstance(exitId));
+    if (it == myGeneralInstances.end())
+      return false;
+
+    instance = *it;
+    myGeneralInstances.erase(it);
+
+    // Unloads the plugin in case the instance exited on its own
+    myGeneralPlugins.remove(instance->plugin());
   }
-
-  if (!instance)
-    return false;
-
-  Plugin::Ptr plugin = instance->plugin();
 
   int result = instance->joinThread();
   gLog.info(tr("Plugin %s exited with code %d"),
-      plugin->name().c_str(), result);
+      instance->plugin()->name().c_str(), result);
 
   return true;
 }
 
 bool PluginManager::reapProtocolInstance(int exitId)
 {
-  MutexLocker locker(myProtocolPluginsMutex);
-
   ProtocolPluginInstance::Ptr instance;
-  for (list<ProtocolPluginInstance::Ptr>::iterator it =
-           myProtocolInstances.begin();
-       it != myProtocolInstances.end(); ++it)
   {
-    if ((*it)->id() == exitId)
-    {
-      instance = *it;
-      myProtocolInstances.erase(it);
-      break;
-    }
-  }
+    MutexLocker locker(myProtocolPluginsMutex);
 
-  if (!instance)
-    return false;
+    list<ProtocolPluginInstance::Ptr>::iterator it = find_if(
+        myProtocolInstances.begin(), myProtocolInstances.end(),
+        IsPluginInstance(exitId));
+    if (it == myProtocolInstances.end())
+      return false;
+
+    instance = *it;
+    myProtocolInstances.erase(it);
+  }
 
   ProtocolPlugin::Ptr plugin = instance->plugin();
 
   int result = instance->joinThread();
-  gLog.info(tr("Protocol plugin %s (id %d; owner %s) exited with code %d"),
+  gLog.info(tr("Protocol %s instance %d (owner %s) exited with code %d"),
       plugin->name().c_str(), exitId, instance->ownerId().accountId().c_str(),
       result);
 
   const unsigned long protocolId = plugin->protocolId();
 
-  // See if there is any more instances of this protocol
-  for (list<ProtocolPluginInstance::Ptr>::iterator it =
-           myProtocolInstances.begin();
-       it != myProtocolInstances.end(); ++it)
   {
-    if ((*it)->plugin()->protocolId() == protocolId)
-      return true;
+    MutexLocker locker(myProtocolPluginsMutex);
+
+    // See if there is any more instances of this protocol
+    BOOST_FOREACH(ProtocolPluginInstance::Ptr other, myProtocolInstances)
+    {
+      if (other->plugin()->protocolId() == protocolId)
+        return true;
+    }
+
+    // If the plugin has been removed from the list we got a request to unload
+    // the plugin and as this is the final instance, we must then notify
+    // plugins about the removed protocol.
+    if (find(myProtocolPlugins.begin(), myProtocolPlugins.end(), plugin)
+        == myProtocolPlugins.end())
+    {
+      pushPluginSignal(new Licq::PluginSignal(
+          Licq::PluginSignal::SignalRemoveProtocol, protocolId));
+
+      // Needs to be done here in case the instance was shut down by
+      // shutdownAllPlugins
+      gUserManager.unloadProtocol(protocolId);
+    }
   }
-
-  // Should already been done, but if protocol exited by itself clean it up here
-  gUserManager.unloadProtocol(protocolId);
-
-  // Notify plugins about the removed protocol
-  pushPluginSignal(new Licq::PluginSignal(
-      Licq::PluginSignal::SignalRemoveProtocol, protocolId));
 
   return true;
 }

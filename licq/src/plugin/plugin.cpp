@@ -19,6 +19,7 @@
 
 #include "plugin.h"
 
+#include <licq/logging/log.h>
 #include <licq/plugin/pluginfactory.h>
 #include <licq/thread/mutexlocker.h>
 
@@ -27,12 +28,12 @@ using namespace LicqDaemon;
 Plugin::Plugin(DynamicLibrary::Ptr lib)
   : myLibrary(lib)
 {
-  // Empty
+  Licq::gLog.debug("Loading plugin %s", libraryName().c_str());
 }
 
 Plugin::~Plugin()
 {
-  // Empty
+  Licq::gLog.debug("Unloading plugin %s", libraryName().c_str());
 }
 
 std::string Plugin::name() const
