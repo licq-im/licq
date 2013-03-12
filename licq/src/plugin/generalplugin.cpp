@@ -29,9 +29,11 @@ using namespace LicqDaemon;
 
 GeneralPlugin::GeneralPlugin(
     DynamicLibrary::Ptr lib,
-    boost::shared_ptr<Licq::GeneralPluginFactory> factory)
+    boost::shared_ptr<Licq::GeneralPluginFactory> factory,
+    PluginThread::Ptr thread)
   : Plugin(lib),
-    myFactory(factory)
+    myFactory(factory),
+    myThread(thread)
 {
   // Empty
 }
@@ -41,13 +43,15 @@ GeneralPlugin::~GeneralPlugin()
   // Empty
 }
 
-boost::shared_ptr<GeneralPluginInstance> GeneralPlugin::createInstance(
-    int id, PluginThread::Ptr thread)
+boost::shared_ptr<GeneralPluginInstance> GeneralPlugin::createInstance(int id)
 {
+  assert(myThread);
+
   GeneralPluginInstance::Ptr instance =
       boost::make_shared<GeneralPluginInstance>(
           id, boost::dynamic_pointer_cast<GeneralPlugin>(shared_from_this()),
-          thread);
+          myThread);
+  myThread.reset();
 
   if (instance->create())
     registerInstance(instance);

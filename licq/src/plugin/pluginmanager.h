@@ -30,6 +30,7 @@
 #include "protocolplugin.h"
 #include "protocolplugininstance.h"
 
+#include <map>
 #include <queue>
 
 namespace LicqDaemon
@@ -106,7 +107,6 @@ public:
   Licq::ProtocolPlugin::Ptr getProtocolPlugin(unsigned long protocolId) const;
   Licq::ProtocolPluginInstance::Ptr getProtocolInstance(
       const Licq::UserId& ownerId) const;
-
   bool startGeneralPlugin(const std::string& name, int argc, char** argv);
   bool startProtocolPlugin(const std::string& name);
   void unloadGeneralPlugin(Licq::GeneralPlugin::Ptr plugin);
@@ -126,10 +126,6 @@ private:
   bool verifyPluginVersion(const std::string& name, int version);
   int getNewPluginId();
 
-  ProtocolPluginInstance::Ptr createProtocolInstance(
-      ProtocolPlugin::Ptr plugin,
-      PluginThread::Ptr thread = PluginThread::Ptr());
-
   void startInstance(GeneralPluginInstance::Ptr instance);
   void startInstance(ProtocolPluginInstance::Ptr instance);
 
@@ -145,7 +141,9 @@ private:
 
   mutable Licq::Mutex myProtocolPluginsMutex;
   std::list<ProtocolPlugin::Ptr> myProtocolPlugins;
-  std::list<ProtocolPluginInstance::Ptr> myProtocolInstances;
+  typedef std::map<Licq::UserId, ProtocolPluginInstance::Ptr>
+  ProtocolOwnerInstances;
+  ProtocolOwnerInstances myProtocolInstances;
 
   Licq::Mutex myExitListMutex;
   std::queue<int> myExitList;

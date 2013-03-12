@@ -46,16 +46,20 @@ public:
   typedef boost::shared_ptr<ProtocolPluginInstance> Ptr;
 
   ProtocolPluginInstance(
-      int id, ProtocolPlugin::Ptr plugin, PluginThread::Ptr thread);
+      int id, const Licq::UserId& ownerId, ProtocolPlugin::Ptr plugin,
+      PluginThread::Ptr thread);
   ~ProtocolPluginInstance();
 
   ProtocolPlugin::Ptr plugin() { return myPlugin; }
+
+  // From PluginInstance
+  void run(void (*startCallback)(const PluginInstance&),
+           void (*exitCallback)(const PluginInstance&));
 
   // From Licq::ProtocolPluginInstance
   boost::shared_ptr<Licq::ProtocolPlugin> plugin() const;
   const Licq::UserId& ownerId() const { return myOwnerId; }
 
-  void setOwnerId(const Licq::UserId& ownerId) { myOwnerId = ownerId; }
   void pushSignal(boost::shared_ptr<const Licq::ProtocolSignal> signal);
 
 protected:
@@ -65,9 +69,9 @@ protected:
   boost::shared_ptr<const Licq::PluginInterface> interface() const;
 
 private:
+  Licq::UserId myOwnerId;
   ProtocolPlugin::Ptr myPlugin;
   boost::shared_ptr<Licq::ProtocolPluginInterface> myInterface;
-  Licq::UserId myOwnerId;
 };
 
 } // namespace LicqDaemon

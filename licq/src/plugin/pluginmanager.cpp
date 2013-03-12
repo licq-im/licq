@@ -99,6 +99,10 @@ struct IsPluginInstance
   {
     return instance->id() == myId;
   }
+  bool operator()(const pair<Licq::UserId, PluginInstance::Ptr>& instance)
+  {
+    return instance.second->id() == myId;
+  }
 };
 
 } // namespace
@@ -151,14 +155,14 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
         (*pluginData->createFactory)(), pluginData->destroyFactory);
 
     GeneralPlugin::Ptr plugin =
-        boost::make_shared<GeneralPlugin>(lib, factory);
+        boost::make_shared<GeneralPlugin>(lib, factory, pluginThread);
 
     if (!keep)
       return plugin;
 
     // Create the plugin instance
     GeneralPluginInstance::Ptr instance = plugin->createInstance(
-        getNewPluginId(), pluginThread);
+        getNewPluginId());
     if (!instance)
       throw std::exception();
 
@@ -230,22 +234,14 @@ loadProtocolPlugin(const std::string& name, bool keep)
     }
 
     ProtocolPlugin::Ptr plugin =
-        boost::make_shared<ProtocolPlugin>(lib, factory);
+        boost::make_shared<ProtocolPlugin>(lib, factory, pluginThread);
 
     if (!keep)
       return plugin;
 
-    // Create the plugin instance
-    ProtocolPluginInstance::Ptr instance = createProtocolInstance(
-        plugin, pluginThread);
-
-    if (!instance)
-      throw std::exception();
-
     {
       MutexLocker protocolLocker(myProtocolPluginsMutex);
       myProtocolPlugins.push_back(plugin);
-      myProtocolInstances.push_back(instance);
     }
 
     // Let the plugins know about the new protocol plugin
@@ -289,8 +285,9 @@ void PluginManager::startAllPlugins()
 
   {
     MutexLocker protocolLocker(myProtocolPluginsMutex);
-    BOOST_FOREACH(ProtocolPluginInstance::Ptr instance, myProtocolInstances)
-      startInstance(instance);
+    BOOST_FOREACH(ProtocolOwnerInstances::value_type instance,
+                  myProtocolInstances)
+      startInstance(instance.second);
   }
 }
 
@@ -305,8 +302,9 @@ void PluginManager::shutdownAllPlugins()
 
   {
     MutexLocker protocolLocker(myProtocolPluginsMutex);
-    BOOST_FOREACH(ProtocolPluginInstance::Ptr instance, myProtocolInstances)
-      instance->shutdown();
+    BOOST_FOREACH(ProtocolOwnerInstances::value_type instance,
+                  myProtocolInstances)
+      instance.second->shutdown();
     myProtocolPlugins.clear();
   }
 }
@@ -314,11 +312,9 @@ void PluginManager::shutdownAllPlugins()
 void PluginManager::shutdownProtocolInstance(const Licq::UserId& ownerId)
 {
   MutexLocker protocolLocker(myProtocolPluginsMutex);
-  BOOST_FOREACH(ProtocolPluginInstance::Ptr instance, myProtocolInstances)
-  {
-    if (instance->ownerId() == ownerId)
-      instance->shutdown();
-  }
+  ProtocolOwnerInstances::iterator it = myProtocolInstances.find(ownerId);
+  if (it != myProtocolInstances.end())
+    it->second->shutdown();
 }
 
 void PluginManager::pluginHasExited(int id)
@@ -358,16 +354,20 @@ void PluginManager::cancelAllPlugins()
                    instance->plugin()->name().c_str());
       instance->cancelThread();
     }
+    myGeneralInstances.clear();
   }
 
   {
     MutexLocker locker(myProtocolPluginsMutex);
-    BOOST_FOREACH(ProtocolPluginInstance::Ptr instance, myProtocolInstances)
+    BOOST_FOREACH(ProtocolOwnerInstances::value_type instance,
+                  myProtocolInstances)
     {
       gLog.warning(tr("Protocol plugin %s (id %d) failed to exit"),
-                   instance->plugin()->name().c_str(), instance->id());
-      instance->cancelThread();
+                   instance.second->plugin()->name().c_str(),
+                   instance.second->id());
+      instance.second->cancelThread();
     }
+    myProtocolInstances.clear();
   }
 }
 
@@ -404,42 +404,40 @@ User* PluginManager::createProtocolUser(const UserId& id, bool temporary)
 
 Owner* PluginManager::createProtocolOwner(const UserId& id)
 {
-  ProtocolPluginInstance::Ptr instance;
+  gLog.debug("Create new protocol instance for %s", id.toString().c_str());
+
+  ProtocolPlugin::Ptr plugin;
   {
     MutexLocker locker(myProtocolPluginsMutex);
-    BOOST_FOREACH(ProtocolPluginInstance::Ptr it, myProtocolInstances)
+    BOOST_FOREACH(ProtocolPlugin::Ptr it, myProtocolPlugins)
     {
-      if (it->plugin()->protocolId() == id.protocolId())
+      if (it->protocolId() == id.protocolId())
       {
-        if (!it->ownerId().isValid())
-        {
-          gLog.debug("Setting owner %s for existing protocol instance %d",
-                     id.toString().c_str(), it->id());
-          it->setOwnerId(id);
-          locker.unlock();
-          return it->plugin()->createOwner(id);
-        }
-        else
-          instance = it;
+        plugin = it;
+        break;
       }
     }
   }
+  assert(plugin);
 
-  gLog.debug("Create new protocol instance for %s", id.toString().c_str());
-
-  const bool isRunning = instance->isRunning();
-
-  instance = createProtocolInstance(instance->plugin());
-  instance->setOwnerId(id);
+  ProtocolPluginInstance::Ptr instance = plugin->createInstance(
+      getNewPluginId(), id);
+  if (!instance || !instance->init(0, NULL, &initPluginCallback))
+  {
+    gLog.error(tr("Failed to create and initialize protocol instance"
+                  " for %s"), id.toString().c_str());
+    return NULL;
+  }
 
   {
     MutexLocker locker(myProtocolPluginsMutex);
-    myProtocolInstances.push_back(instance);
-    if (isRunning)
+    assert(myProtocolInstances.find(id) == myProtocolInstances.end());
+    myProtocolInstances.insert(make_pair(instance->ownerId(), instance));
+    if (plugin->isStarted())
       startInstance(instance);
   }
 
-  return instance->plugin()->createOwner(id);
+  return plugin->createOwner(id);
 }
 
 void PluginManager::
@@ -537,11 +535,10 @@ Licq::ProtocolPluginInstance::Ptr PluginManager::getProtocolInstance(
     const Licq::UserId& ownerId) const
 {
   MutexLocker locker(myProtocolPluginsMutex);
-  BOOST_FOREACH(ProtocolPluginInstance::Ptr instance, myProtocolInstances)
-  {
-    if (instance->ownerId() == ownerId)
-      return instance;
-  }
+  ProtocolOwnerInstances::const_iterator it =
+      myProtocolInstances.find(ownerId);
+  if (it != myProtocolInstances.end())
+    return it->second;
   return Licq::ProtocolPluginInstance::Ptr();
 }
 
@@ -715,25 +712,6 @@ int PluginManager::getNewPluginId()
   return myNextPluginId++;
 }
 
-ProtocolPluginInstance::Ptr PluginManager::createProtocolInstance(
-    ProtocolPlugin::Ptr plugin, PluginThread::Ptr thread)
-{
-  if (!thread)
-    thread = boost::make_shared<PluginThread>();
-
-  ProtocolPluginInstance::Ptr instance = plugin->createInstance(
-      getNewPluginId(), thread);
-
-  if (instance && !instance->init(0, NULL, &initPluginCallback))
-  {
-    gLog.error(tr("Failed to initialize protocol plugin (%s)"),
-               plugin->name().c_str());
-    instance.reset();
-  }
-
-  return instance;
-}
-
 void PluginManager::startInstance(GeneralPluginInstance::Ptr instance)
 {
   Licq::GeneralPlugin::Ptr plugin = instance->plugin();
@@ -784,13 +762,13 @@ bool PluginManager::reapProtocolInstance(int exitId)
   {
     MutexLocker locker(myProtocolPluginsMutex);
 
-    list<ProtocolPluginInstance::Ptr>::iterator it = find_if(
+    ProtocolOwnerInstances::iterator it = find_if(
         myProtocolInstances.begin(), myProtocolInstances.end(),
         IsPluginInstance(exitId));
     if (it == myProtocolInstances.end())
       return false;
 
-    instance = *it;
+    instance = it->second;
     myProtocolInstances.erase(it);
   }
 
@@ -807,9 +785,10 @@ bool PluginManager::reapProtocolInstance(int exitId)
     MutexLocker locker(myProtocolPluginsMutex);
 
     // See if there is any more instances of this protocol
-    BOOST_FOREACH(ProtocolPluginInstance::Ptr other, myProtocolInstances)
+    BOOST_FOREACH(ProtocolOwnerInstances::value_type other,
+                  myProtocolInstances)
     {
-      if (other->plugin()->protocolId() == protocolId)
+      if (other.second->plugin()->protocolId() == protocolId)
         return true;
     }
 
@@ -864,13 +843,11 @@ void PluginManager::pushProtocolSignal(Licq::ProtocolSignal* rawSignal)
   const Licq::UserId ownerId = signal->userId().ownerId();
 
   MutexLocker locker(myProtocolPluginsMutex);
-  BOOST_FOREACH(ProtocolPluginInstance::Ptr instance, myProtocolInstances)
+  ProtocolOwnerInstances::iterator it = myProtocolInstances.find(ownerId);
+  if (it != myProtocolInstances.end())
   {
-    if (instance->ownerId() == ownerId)
-    {
-      instance->pushSignal(signal);
-      return;
-    }
+    it->second->pushSignal(signal);
+    return;
   }
 
   gLog.error(tr("Invalid protocol plugin requested (%s)"),

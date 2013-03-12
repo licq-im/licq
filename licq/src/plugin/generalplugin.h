@@ -43,11 +43,11 @@ public:
   typedef boost::shared_ptr<GeneralPlugin> Ptr;
 
   GeneralPlugin(DynamicLibrary::Ptr lib,
-                boost::shared_ptr<Licq::GeneralPluginFactory> factory);
+                boost::shared_ptr<Licq::GeneralPluginFactory> factory,
+                PluginThread::Ptr thread);
   ~GeneralPlugin();
 
-  boost::shared_ptr<GeneralPluginInstance> createInstance(
-      int id, PluginThread::Ptr thread);
+  boost::shared_ptr<GeneralPluginInstance> createInstance(int id);
 
   boost::shared_ptr<Licq::GeneralPluginFactory> generalFactory();
 
@@ -64,6 +64,7 @@ protected:
 
 private:
   boost::shared_ptr<Licq::GeneralPluginFactory> myFactory;
+  PluginThread::Ptr myThread;
 };
 
 } // namespace LicqDaemon

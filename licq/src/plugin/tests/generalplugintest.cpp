@@ -81,7 +81,7 @@ struct GeneralPluginFixture : public ::testing::Test
     myLib(new DynamicLibrary("")),
     myThread(new PluginThread()),
     plugin(myLib, boost::shared_ptr<MockGeneralPluginFactory>(
-               &myMockFactory, &nullDeleter)),
+               &myMockFactory, &nullDeleter), myThread),
     instance(1, boost::shared_ptr<GeneralPlugin>(&plugin, &nullDeleter),
              myThread)
   {

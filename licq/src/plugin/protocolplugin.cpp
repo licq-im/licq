@@ -29,9 +29,12 @@ using namespace LicqDaemon;
 
 ProtocolPlugin::ProtocolPlugin(
     DynamicLibrary::Ptr lib,
-    boost::shared_ptr<Licq::ProtocolPluginFactory> factory)
+    boost::shared_ptr<Licq::ProtocolPluginFactory> factory,
+    PluginThread::Ptr thread)
   : Plugin(lib),
-    myFactory(factory)
+    myFactory(factory),
+    myMainThread(thread),
+    myIsStarted(false)
 {
   // Empty
 }
@@ -41,12 +44,19 @@ ProtocolPlugin::~ProtocolPlugin()
   // Empty
 }
 
-boost::shared_ptr<ProtocolPluginInstance> ProtocolPlugin::createInstance(
-    int id, PluginThread::Ptr thread)
+boost::shared_ptr<ProtocolPluginInstance>
+ProtocolPlugin::createInstance(int id, const Licq::UserId& ownerId)
 {
+  PluginThread::Ptr thread;
+  if (myMainThread)
+    thread.swap(myMainThread);
+  else
+    thread = boost::make_shared<PluginThread>();
+
   ProtocolPluginInstance::Ptr instance =
       boost::make_shared<ProtocolPluginInstance>(
-          id, boost::dynamic_pointer_cast<ProtocolPlugin>(shared_from_this()),
+          id, ownerId,
+          boost::dynamic_pointer_cast<ProtocolPlugin>(shared_from_this()),
           thread);
 
   if (instance->create())

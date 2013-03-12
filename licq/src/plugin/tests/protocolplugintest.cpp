@@ -79,8 +79,9 @@ struct ProtocolPluginFixture : public ::testing::Test
     myLib(new DynamicLibrary("")),
     myThread(new PluginThread()),
     plugin(myLib, boost::shared_ptr<MockProtocolPluginFactory>(
-               &myMockFactory, &nullDeleter)),
-    instance(1, boost::shared_ptr<ProtocolPlugin>(&plugin, &nullDeleter),
+               &myMockFactory, &nullDeleter), myThread),
+    instance(1, Licq::UserId(),
+             boost::shared_ptr<ProtocolPlugin>(&plugin, &nullDeleter),
              myThread)
   {
     EXPECT_CALL(myMockFactory, createPlugin())

@@ -30,8 +30,10 @@ using namespace LicqDaemon;
 static void nullDeleter(void*) { /* Empty */ }
 
 ProtocolPluginInstance::ProtocolPluginInstance(
-    int id, ProtocolPlugin::Ptr plugin, PluginThread::Ptr thread)
+    int id, const Licq::UserId& ownerId, ProtocolPlugin::Ptr plugin,
+    PluginThread::Ptr thread)
   : PluginInstance(id, thread),
+    myOwnerId(ownerId),
     myPlugin(plugin)
 {
   // Empty
@@ -41,6 +43,13 @@ ProtocolPluginInstance::~ProtocolPluginInstance()
 {
   if (myInterface)
     myPlugin->protocolFactory()->destroyPlugin(myInterface.get());
+}
+
+void ProtocolPluginInstance::run(void (*startCallback)(const PluginInstance&),
+                                 void (*exitCallback)(const PluginInstance&))
+{
+  myPlugin->setStarted();
+  PluginInstance::run(startCallback, exitCallback);
 }
 
 boost::shared_ptr<Licq::ProtocolPlugin> ProtocolPluginInstance::plugin() const
