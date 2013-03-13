@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq Developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,8 +22,9 @@
 #include <gtest/gtest.h>
 #include <string>
 
-using namespace std;
 using Licq::IniFile;
+using std::list;
+using std::string;
 
 namespace LicqTest {
 

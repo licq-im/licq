@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2011 Licq developers
+ * Copyright (C) 1998-2011, 2013 Licq developers <licq-dev@googlegroups.com>
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
@@ -30,10 +30,9 @@
 static int  base64_length(int len);
 static void base64_encode(const char *s, char *store, int length);
 
-using namespace std;
 using Licq::Proxy;
 using Licq::HttpProxy;
-
+using std::string;
 
 Proxy::Proxy()
 {

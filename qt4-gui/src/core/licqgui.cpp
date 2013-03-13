@@ -121,7 +121,6 @@ extern "C"
 #include "systemmenu.h"
 #include "usermenu.h"
 
-using namespace std;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::LicqGui */
 using Licq::SarManager;
@@ -130,6 +129,8 @@ using Licq::gLog;
 using Licq::gSarManager;
 using Licq::gPluginManager;
 using Licq::gProtocolManager;
+using std::list;
+using std::map;
 
 #if defined(USE_SCRNSAVER)
 static XErrorHandler old_handler = 0;

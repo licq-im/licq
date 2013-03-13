@@ -36,7 +36,6 @@
 #include <KDE/KMessageBox>
 #endif
 
-using namespace std;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::MessageBox */
 

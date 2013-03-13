@@ -44,12 +44,12 @@
 #include "owner.h"
 #include "user.h"
 
-using namespace std;
 using namespace LicqIcq;
 using Licq::UserId;
 using Licq::gLog;
 using Licq::gTranslator;
-
+using std::list;
+using std::string;
 
 //=====TCP===================================================================
 static unsigned char client_check_data[] = {

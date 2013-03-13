@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,11 +43,12 @@
 
 #include "gettext.h"
 
-using namespace std;
 using Licq::Utility;
 using Licq::UtilityInternalWindow;
 using Licq::UtilityManager;
 using Licq::UtilityUserField;
+using std::string;
+using std::vector;
 
 Licq::UtilityManager Licq::gUtilityManager;
 

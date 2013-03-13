@@ -57,9 +57,10 @@ void* MonitorSockets_func();
 void* UpdateUsers_tep(void* p);
 }
 
-using namespace std;
 using namespace LicqIcq;
 using Licq::gLog;
+using std::list;
+using std::string;
 
 void cleanup_mutex(void *m)
 {

@@ -36,12 +36,12 @@
 #include "socket.h"
 #include "user.h"
 
-using namespace std;
 using namespace LicqIcq;
 using Licq::gDaemon;
 using Licq::gLog;
 using Licq::gTranslator;
 using Licq::IcqChatEvent;
+using std::string;
 
 using Licq::CHAT_BACKSPACE;
 using Licq::CHAT_BEEP;

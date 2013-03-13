@@ -30,8 +30,8 @@
 #include "msn_constants.h"
 #include "pluginversion.h"
 
-using namespace std;
 using namespace LicqMsn;
+using std::string;
 
 static inline bool is_base64(unsigned char c)
 {

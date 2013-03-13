@@ -47,7 +47,6 @@
 #include "owner.h"
 #include "user.h"
 
-using namespace std;
 using namespace LicqIcq;
 using Licq::Group;
 using Licq::StringList;
@@ -57,6 +56,8 @@ using Licq::UserId;
 using Licq::gLog;
 using Licq::gTranslator;
 using Licq::gUserManager;
+using std::string;
+using std::list;
 
 // TODO: Remove when no longer needed
 typedef Licq::User ICQUser;

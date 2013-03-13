@@ -41,7 +41,6 @@
 
 #include "user.h"
 
-using namespace std;
 using namespace LicqMsn;
 using Licq::UserId;
 using Licq::Conversation;
@@ -50,7 +49,7 @@ using Licq::gConvoManager;
 using Licq::gLog;
 using Licq::gOnEventManager;
 using Licq::gUserManager;
-
+using std::string;
 
 void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer* packet,
     Licq::TCPSocket* sock)

@@ -43,14 +43,13 @@
 #include "owner.h"
 #include "user.h"
 
-using namespace std;
 using namespace LicqMsn;
 using Licq::OnEventData;
 using Licq::UserId;
 using Licq::gLog;
 using Licq::gOnEventManager;
 using Licq::gUserManager;
-
+using std::string;
 
 void CMSN::ProcessServerPacket(CMSNBuffer *packet)
 {

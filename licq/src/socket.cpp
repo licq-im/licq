@@ -65,13 +65,12 @@ extern "C" {
 
 #include "gettext.h"
 
-
-using namespace std;
 using Licq::Buffer;
 using Licq::INetSocket;
 using Licq::TCPSocket;
 using Licq::UDPSocket;
 using Licq::UserId;
+using std::string;
 
 char* Licq::ip_ntoa(unsigned long in, char *buf)
 {

@@ -37,10 +37,12 @@ extern char *hebrev (const char* pszStr);
 }
 #endif
 
-using namespace std;
 using Licq::User;
 using Licq::UserEvent;
 using Licq::UserId;
+using std::list;
+using std::string;
+using std::stringstream;
 
 int UserEvent::s_nId = 1;
 

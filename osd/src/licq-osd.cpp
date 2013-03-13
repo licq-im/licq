@@ -44,18 +44,11 @@
 #include "my_xosd.h"
 #include "licq_osd.conf.h"
 
-using namespace std;
 using Licq::User;
 using Licq::UserId;
 using Licq::gLog;
 using Licq::gUserManager;
-
-//#if CVSLICQ==1
-//#warning compiling for licq>=1.2.8
-//#else
-//#undef CVSLICQ
-//#warning compiling for licq<1.2.8
-//#endif
+using std::string;
 
 #define _(String) gettext (String)
 
@@ -102,8 +95,6 @@ time_t disabletimer=0;
 bool Online;
 bool Enabled;
 bool Configured=false; // is the xosd display initialized?
-
-using namespace std;
 
 OsdPlugin::OsdPlugin()
 {

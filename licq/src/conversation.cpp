@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@
 
 #include <licq/thread/mutexlocker.h>
 
-using namespace std;
 using namespace LicqDaemon;
 using Licq::MutexLocker;
 using Licq::UserId;
@@ -176,7 +175,7 @@ Licq::Conversation* ConversationManager::getFromSocket(int socketId)
 Licq::Conversation* ConversationManager::getFromUser(const UserId& userId)
 {
   MutexLocker lock(myMutex);
-  map<int, Conversation*>::iterator i;
+  std::map<int, Conversation*>::iterator i;
   for (i = myConversations.begin(); i != myConversations.end(); ++i)
     if (i->second->hasUser(userId))
       return i->second;

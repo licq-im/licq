@@ -39,10 +39,11 @@
 #include "owner.h"
 #include "user.h"
 
-using namespace std;
 using namespace LicqMsn;
 using Licq::gConvoManager;
 using Licq::gLog;
+using std::list;
+using std::string;
 
 #ifndef HAVE_STRNDUP
 

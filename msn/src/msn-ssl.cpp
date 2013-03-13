@@ -30,10 +30,10 @@
 #include <list>
 #include <vector>
 
-using namespace std;
 using namespace LicqMsn;
 using Licq::UserId;
 using Licq::gLog;
+using std::string;
 
 static string urlencode(const string& str)
 {

@@ -41,11 +41,12 @@
 
 #define MAX_HISTORY_MSG_SIZE 8192
 
-using namespace std;
 using Licq::UserId;
 using Licq::gLog;
 using Licq::gTranslator;
 using LicqDaemon::UserHistory;
+using std::list;
+using std::string;
 
 UserHistory::UserHistory(const Licq::UserId& userId)
   : myUserId(userId)

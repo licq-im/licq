@@ -32,10 +32,12 @@
 
 #include "daemon.h"
 
-using namespace std;
 using namespace LicqDaemon;
 using Licq::UserId;
 using Licq::gUserManager;
+using std::list;
+using std::map;
+using std::string;
 
 const char* const Licq::OnEventData::Default = "default";
 

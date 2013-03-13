@@ -30,8 +30,8 @@
 
 #include "conf.h"
 
-using namespace std;
 using Licq::gUserManager;
+using std::string;
 
 Iface::Iface()
 {

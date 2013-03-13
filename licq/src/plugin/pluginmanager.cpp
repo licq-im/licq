@@ -45,6 +45,7 @@
 #include "../daemon.h"
 #include "../utils/dynamiclibrary.h"
 
+using namespace LicqDaemon;
 using Licq::MutexLocker;
 using Licq::Owner;
 using Licq::StringList;
@@ -52,8 +53,8 @@ using Licq::User;
 using Licq::UserId;
 using Licq::gLog;
 using Licq::gLogService;
-using namespace LicqDaemon;
-using namespace std;
+using std::list;
+using std::string;
 
 // Declare global PluginManager (internal for daemon)
 LicqDaemon::PluginManager LicqDaemon::gPluginManager;
@@ -99,7 +100,7 @@ struct IsPluginInstance
   {
     return instance->id() == myId;
   }
-  bool operator()(const pair<Licq::UserId, PluginInstance::Ptr>& instance)
+  bool operator()(const std::pair<Licq::UserId, PluginInstance::Ptr>& instance)
   {
     return instance.second->id() == myId;
   }
@@ -113,8 +114,8 @@ struct IsProtocolPlugin
   {
     return protocol->protocolId() == myProtocolId;
   }
-  bool operator()(const pair<Licq::UserId,
-                             ProtocolPluginInstance::Ptr>& instance)
+  bool operator()(const std::pair<Licq::UserId,
+                                  ProtocolPluginInstance::Ptr>& instance)
   {
     return instance.second->plugin()->protocolId() == myProtocolId;
   }
@@ -280,7 +281,7 @@ loadProtocolPlugin(const std::string& name, bool keep)
 
 void PluginManager::startAllPlugins()
 {
-  set<unsigned long> ppids;
+  std::set<unsigned long> ppids;
   {
     MutexLocker protocolLocker(myProtocolPluginsMutex);
     BOOST_FOREACH(ProtocolPlugin::Ptr plugin, myProtocolPlugins)
@@ -441,7 +442,7 @@ Owner* PluginManager::createProtocolOwner(const UserId& id)
   {
     MutexLocker locker(myProtocolPluginsMutex);
     assert(myProtocolInstances.find(id) == myProtocolInstances.end());
-    myProtocolInstances.insert(make_pair(instance->ownerId(), instance));
+    myProtocolInstances.insert(std::make_pair(instance->ownerId(), instance));
     if (plugin->isStarted())
       startInstance(instance);
   }

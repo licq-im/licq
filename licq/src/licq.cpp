@@ -59,9 +59,10 @@
 #include "fifo.h"
 #endif
 
-using namespace std;
 using Licq::GeneralPlugin;
 using Licq::ProtocolPlugin;
+using Licq::gLog;
+using Licq::gUtilityManager;
 using LicqDaemon::Daemon;
 using LicqDaemon::PluginManager;
 using LicqDaemon::gDaemon;
@@ -75,8 +76,8 @@ using LicqDaemon::gSarManager;
 using LicqDaemon::gPluginManager;
 using LicqDaemon::gStatistics;
 using LicqDaemon::gUserManager;
-using Licq::gLog;
-using Licq::gUtilityManager;
+using std::list;
+using std::string;
 
 /*-----Start OpenSSL code--------------------------------------------------*/
 

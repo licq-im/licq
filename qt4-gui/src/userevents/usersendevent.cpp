@@ -96,12 +96,16 @@
 #include "selectemoticon.h"
 #include "usereventtabdlg.h"
 
-using namespace std;
+using namespace LicqQtGui;
+/* TRANSLATOR LicqQtGui::UserSendEvent */
 using Licq::StringList;
 using Licq::gProtocolManager;
 using Licq::gConvoManager;
-using namespace LicqQtGui;
-/* TRANSLATOR LicqQtGui::UserSendEvent */
+using std::list;
+using std::make_pair;
+using std::pair;
+using std::string;
+using std::vector;
 
 typedef pair<const Licq::UserEvent*, Licq::UserId> messagePair;
 

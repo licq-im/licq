@@ -51,7 +51,6 @@
 #include <licq/translator.h>
 #include <licq/userevents.h>
 
-using namespace std;
 using Licq::UserId;
 using Licq::gLog;
 using Licq::gProtocolManager;
@@ -300,7 +299,7 @@ void CLicqAutoReply::processUserEvent(const UserId& userId, unsigned long nId)
 
 bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const Licq::UserEvent* event)
 {
-  string command = myProgram + " ";
+  std::string command = myProgram + " ";
   {
     Licq::UserReadGuard u(userId);
     command += u->usprintf(myArguments);

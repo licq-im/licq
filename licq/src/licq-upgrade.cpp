@@ -39,13 +39,15 @@
 
 #include "gettext.h"
 
-using namespace std;
 using Licq::IniFile;
 using Licq::gDaemon;
 using Licq::gLog;
+using std::exception;
+using std::list;
+using std::map;
+using std::string;
 
 typedef map<string, string> StringMap;
-
 
 // Helper function to rename a file
 static void file_rename(const string& from, const string& to, bool missingok = false)

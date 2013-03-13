@@ -33,7 +33,6 @@
 #include "daemon.h"
 #include "gettext.h"
 
-using namespace std;
 using namespace LicqDaemon;
 using Licq::OwnerReadGuard;
 using Licq::OwnerWriteGuard;
@@ -45,7 +44,8 @@ using Licq::UserWriteGuard;
 using Licq::gLog;
 using Licq::gPluginManager;
 using Licq::gUserManager;
-
+using std::list;
+using std::string;
 
 // Declare global PluginManager (internal for daemon)
 LicqDaemon::ProtocolManager LicqDaemon::gProtocolManager;

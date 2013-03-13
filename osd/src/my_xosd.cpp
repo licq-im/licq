@@ -1,7 +1,7 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
  * Copyright (C) 2003-2005 Martin Maurer (martinmaurer@gmx.at)
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2010, 2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 #include <unistd.h>
 #define _(String) gettext (String)
 
-using namespace std;
+using std::string;
 
 extern void log(int mode, const char *message);
 

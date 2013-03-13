@@ -58,7 +58,6 @@
 #include "socket.h"
 #include "user.h"
 
-using namespace std;
 using namespace LicqIcq;
 using Licq::Daemon;
 using Licq::IcqPluginActive;
@@ -71,7 +70,8 @@ using Licq::gDaemon;
 using Licq::gLog;
 using Licq::gOnEventManager;
 using Licq::gTranslator;
-
+using std::list;
+using std::string;
 
 void IcqProtocol::icqSendMessage(const Licq::ProtoSendMessageSignal* ps)
 {
@@ -374,7 +374,7 @@ void IcqProtocol::icqSendContactList(const ProtoSendContactsSignal* ps)
 
   string userEncoding = getUserEncoding(userId);
 
-  stringstream buf;
+  std::stringstream buf;
   buf << users.size() << '\xFE';
   Licq::EventContactList::ContactList vc;
 

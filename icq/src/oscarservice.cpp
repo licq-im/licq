@@ -44,10 +44,10 @@
 #include "socket.h"
 #include "user.h"
 
-using namespace std;
 using namespace LicqIcq;
 using Licq::gLog;
 using Licq::gDaemon;
+using std::string;
 
 COscarService::COscarService(unsigned short Fam)
 {

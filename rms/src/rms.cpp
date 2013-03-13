@@ -50,12 +50,12 @@
 #include <licq/translator.h>
 #include <licq/userevents.h>
 
-using namespace std;
 using Licq::UserId;
 using Licq::gLog;
 using Licq::gPluginManager;
 using Licq::gProtocolManager;
 using Licq::gUserManager;
+using std::string;
 
 CLicqRMS *licqRMS = NULL;
 

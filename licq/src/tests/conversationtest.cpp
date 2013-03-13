@@ -21,10 +21,10 @@
 
 #include <gtest/gtest.h>
 
-using namespace std;
 using Licq::UserId;
 using LicqDaemon::Conversation;
 using LicqDaemon::gConvoManager;
+using std::string;
 
 // Dummy normalizer so Licq::UserId becomes usable even though it isn't currently tested
 string Licq::UserId::normalizeId(const string& accountId, unsigned long /* ppid */)

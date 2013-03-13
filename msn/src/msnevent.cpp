@@ -33,10 +33,10 @@
 #include <licq/pluginsignal.h>
 #include <licq/socket.h>
 
-using namespace std;
 using namespace LicqMsn;
 using Licq::UserId;
 using Licq::gLog;
+using std::string;
 
 CMSNDataEvent::CMSNDataEvent(CMSN *p)
 {

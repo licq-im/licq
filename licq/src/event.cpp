@@ -29,7 +29,6 @@
 #include <licq/userevents.h>
 #include <licq/logging/log.h>
 
-using namespace std;
 using Licq::Event;
 using Licq::ProtocolSignal;
 using Licq::UserId;

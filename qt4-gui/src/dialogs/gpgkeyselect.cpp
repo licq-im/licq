@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2005-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2005-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,10 +38,9 @@
 #include <licq/gpghelper.h>
 #include <licq/pluginsignal.h>
 
-
 #include "helpers/support.h"
 
-using namespace std;
+using std::list;
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::GPGKeySelect */
@@ -249,7 +248,7 @@ void KeyView::initKeyList()
   maxItemVal = -1;
   maxItem = NULL;
 
-  auto_ptr<list<Licq::GpgKey> > keyList(Licq::gGpgHelper.getKeyList());
+  std::auto_ptr<list<Licq::GpgKey> > keyList(Licq::gGpgHelper.getKeyList());
   list<Licq::GpgKey>::const_iterator i;
   for (i = keyList->begin(); i != keyList->end(); ++i)
   {

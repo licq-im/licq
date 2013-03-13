@@ -54,7 +54,6 @@
 #include "socket.h"
 #include "user.h"
 
-using namespace std;
 using namespace LicqIcq;
 using Licq::Daemon;
 using Licq::IcqPluginActive;
@@ -67,7 +66,9 @@ using Licq::gLog;
 using Licq::gOnEventManager;
 using Licq::gPluginManager;
 using Licq::gTranslator;
-
+using std::list;
+using std::string;
+using std::vector;
 
 // list of plugins we currently support
 const struct PluginList IcqProtocol::info_plugins[] =

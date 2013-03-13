@@ -51,13 +51,13 @@ const unsigned short FT_STATE_RECEIVINGxFILE = 6;
 const unsigned short FT_STATE_SENDINGxFILE = 7;
 const unsigned short FT_STATE_CONFIRMINGxFILE = 8;
 
-using namespace std;
 using namespace LicqIcq;
 using Licq::IcqFileTransferEvent;
 using Licq::Log;
 using Licq::gDaemon;
 using Licq::gLog;
-
+using std::list;
+using std::string;
 
 //=====FILE==================================================================
 

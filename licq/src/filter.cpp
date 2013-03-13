@@ -27,11 +27,11 @@
 #include <boost/foreach.hpp>
 #include <boost/regex.hpp>
 
-using namespace std;
 using namespace LicqDaemon;
 using Licq::FilterRule;
 using Licq::FilterRules;
 using Licq::UserEvent;
+using std::string;
 
 // Declare global FilterManager (internal for daemon)
 LicqDaemon::FilterManager LicqDaemon::gFilterManager;

@@ -61,7 +61,6 @@
 #include "socket.h"
 #include "user.h"
 
-using namespace std;
 using namespace LicqIcq;
 using Licq::Daemon;
 using Licq::IcqPluginActive;
@@ -76,6 +75,8 @@ using Licq::gLog;
 using Licq::gPluginManager;
 using Licq::gOnEventManager;
 using Licq::gTranslator;
+using std::list;
+using std::string;
 
 //-----icqAddUser----------------------------------------------------------
 void IcqProtocol::icqAddUser(const Licq::UserId& userId, bool _bAuthRequired)

@@ -29,8 +29,6 @@
 
 #include "iface.h"
 
-using namespace std;
-
 AosdPlugin::AosdPlugin()
   : myBlocked(false)
 {
