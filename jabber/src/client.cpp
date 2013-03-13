@@ -124,7 +124,12 @@ Client::Client(Licq::MainLoop& mainLoop, const Licq::UserId& ownerId,
 Client::~Client()
 {
   myVCardManager.cancelVCardOperations(this);
-  myClient.disconnect();
+
+  {
+    // Lock is needed here to protect the calls to gnutls_global_init
+    Licq::MutexLocker locker(myGlooxMutex);
+    myClient.disconnect();
+  }
 
   delete mySessionManager;
 }
