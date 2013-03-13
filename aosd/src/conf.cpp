@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2010, 2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,82 +21,93 @@
 
 #include <licq/inifile.h>
 
+template <typename T, typename U>
+static void getOrSet(Licq::IniFile& conf, const std::string& key,
+                     T& value, const U& defaultValue)
+{
+  if (!conf.get(key, value, defaultValue))
+    conf.set(key, value);
+}
+
+template <typename T, typename U>
+static void getOrSetWithLimit(Licq::IniFile& conf, const std::string& key,
+                              T& value, const U& defaultValue, const U& limit)
+{
+  unsigned int temp;
+  if (!conf.get(key, temp, static_cast<unsigned int>(defaultValue))
+      || temp > static_cast<unsigned int>(limit))
+  {
+    temp = defaultValue;
+    conf.set(key, temp);
+  }
+
+  value = static_cast<T>(temp);
+}
+
 void Conf::loadConfig()
 {
-  unsigned int tmp;
   Licq::IniFile conf("licq_aosd.ini");
   conf.loadFile();
 
-#define GET(key, dst, def); \
-  if (!conf.get((key), (dst), (def))) \
-    conf.set((key), (dst));
-
-#define GETTMP(key, dst, def, limit) \
-  GET((key), tmp, static_cast<unsigned int>((def))); \
-  if (tmp > static_cast<unsigned int>((limit))) \
-  { \
-    tmp = (dst) = (def); \
-    conf.set((key), tmp); \
-  } \
-  else \
-    (dst) = static_cast<typeof((dst))>(tmp);
-
   conf.setSection("Appearance");
 
-  GET("Font", font, "");
-  GET("MarkSecureMessages", markSecure, true);
+  getOrSet(conf, "Font", font, "");
+  getOrSet(conf, "MarkSecureMessages", markSecure, true);
 
   conf.setSection("Colouring");
 
-  GET("Background", backColor, "");
-  GET("Message", textColor, "yellow");
-  GET("Control", textControlColor, "gray");
-  GET("Shadow", shadowColor, "black");
-  GETTMP("BackOpacity", backOpacity, 0, 255);
-  GETTMP("TextOpacity", textOpacity, 255, 255);
-  GETTMP("ShadowOpacity", shadowOpacity, 255, 255);
+  getOrSet(conf, "Background", backColor, "");
+  getOrSet(conf, "Message", textColor, "yellow");
+  getOrSet(conf, "Control", textControlColor, "gray");
+  getOrSet(conf, "Shadow", shadowColor, "black");
+  getOrSetWithLimit(conf, "BackOpacity", backOpacity, 0, 255);
+  getOrSetWithLimit(conf, "TextOpacity", textOpacity, 255, 255);
+  getOrSetWithLimit(conf, "ShadowOpacity", shadowOpacity, 255, 255);
 
   conf.setSection("Geometry");
 
-  GETTMP("HPosition", posHorizontal, COORDINATE_MINIMUM, COORDINATE_MAXIMUM);
-  GETTMP("VPosition", posVertical, COORDINATE_MINIMUM, COORDINATE_MAXIMUM);
+  getOrSetWithLimit(conf, "HPosition", posHorizontal,
+                    COORDINATE_MINIMUM, COORDINATE_MAXIMUM);
+  getOrSetWithLimit(conf, "VPosition", posVertical,
+                    COORDINATE_MINIMUM, COORDINATE_MAXIMUM);
 
-  GET("HOffset", offsetHorizontal, 0);
-  GET("VOffset", offsetVertical, 0);
+  getOrSet(conf, "HOffset", offsetHorizontal, 0);
+  getOrSet(conf, "VOffset", offsetVertical, 0);
 
-  GET("HMargin", marginHorizontal, 0);
-  GET("VMargin", marginVertical, 0);
+  getOrSet(conf, "HMargin", marginHorizontal, 0);
+  getOrSet(conf, "VMargin", marginVertical, 0);
 
-  GET("ShadowOffset", shadowOffset, 2);
-  GET("Width", wrapWidth, 0);
-  GET("Lines", maxLines, 0);
+  getOrSet(conf, "ShadowOffset", shadowOffset, 2);
+  getOrSet(conf, "Width", wrapWidth, 0);
+  getOrSet(conf, "Lines", maxLines, 0);
 
   conf.setSection("Timing");
 
-  GET("FadeIn", fadeIn, 150);
-  GET("FadeFull", fadeFull, 3000);
-  GET("FadeOut", fadeOut, 150);
-  GET("DelayPerCharacter", delayPerChar, 0);
+  getOrSet(conf, "FadeIn", fadeIn, 150);
+  getOrSet(conf, "FadeFull", fadeFull, 3000);
+  getOrSet(conf, "FadeOut", fadeOut, 150);
+  getOrSet(conf, "DelayPerCharacter", delayPerChar, 0);
 
   conf.setSection("Behavior");
 
-  GET("Wait", wait, true);
-  GET("MouseActive", mouseActive, true);
-  GET("QuietTimeout", quietTimeout, 0);
+  getOrSet(conf, "Wait", wait, true);
+  getOrSet(conf, "MouseActive", mouseActive, true);
+  getOrSet(conf, "QuietTimeout", quietTimeout, 0);
 
   conf.setSection("Filtering");
 
-  GETTMP("ShowLogonLogoff", logonLogoff, GROUP_TYPE_ALL, GROUP_TYPE_ALL);
-  GETTMP("ShowStatusChange", statusChange, GROUP_TYPE_ALL, GROUP_TYPE_ALL);
-  GETTMP("ShowAutoResponseCheck", autoResponse, GROUP_TYPE_ALL, GROUP_TYPE_ALL);
-  GETTMP("ShowMessages", showMessage, GROUP_TYPE_ALL, GROUP_TYPE_ALL);
+  getOrSetWithLimit(conf, "ShowLogonLogoff", logonLogoff,
+                    GROUP_TYPE_ALL, GROUP_TYPE_ALL);
+  getOrSetWithLimit(conf, "ShowStatusChange", statusChange,
+                    GROUP_TYPE_ALL, GROUP_TYPE_ALL);
+  getOrSetWithLimit(conf, "ShowAutoResponseCheck", autoResponse,
+                    GROUP_TYPE_ALL, GROUP_TYPE_ALL);
+  getOrSetWithLimit(conf, "ShowMessages", showMessage,
+                    GROUP_TYPE_ALL, GROUP_TYPE_ALL);
 
-  GET("ShowMessagesNotification", notifyOnly, false);
-  GET("ShowInModes", ownerModes, "");
-  GET("ShowMsgsInModes", ownerModesMsg, "");
-
-#undef GET
-#undef GETTMP
+  getOrSet(conf, "ShowMessagesNotification", notifyOnly, false);
+  getOrSet(conf, "ShowInModes", ownerModes, "");
+  getOrSet(conf, "ShowMsgsInModes", ownerModesMsg, "");
 
   conf.writeFile();
 }
