@@ -791,6 +791,7 @@ bool PluginManager::reapProtocolInstance(int exitId)
 
   const unsigned long protocolId = plugin->protocolId();
 
+  bool isPluginUnloaded = false;
   {
     MutexLocker locker(myProtocolPluginsMutex);
 
@@ -805,14 +806,17 @@ bool PluginManager::reapProtocolInstance(int exitId)
     // plugins about the removed protocol.
     if (find(myProtocolPlugins.begin(), myProtocolPlugins.end(), plugin)
         == myProtocolPlugins.end())
-    {
-      pushPluginSignal(new Licq::PluginSignal(
-          Licq::PluginSignal::SignalRemoveProtocol, protocolId));
+      isPluginUnloaded = true;
+  }
 
-      // Needs to be done here in case the instance was shut down by
-      // shutdownAllPlugins
-      gUserManager.unloadProtocol(protocolId);
-    }
+  if (isPluginUnloaded)
+  {
+    pushPluginSignal(new Licq::PluginSignal(
+        Licq::PluginSignal::SignalRemoveProtocol, protocolId));
+
+    // Needs to be done here in case the instance was shut down by
+    // shutdownAllPlugins
+    gUserManager.unloadProtocol(protocolId);
   }
 
   return true;
