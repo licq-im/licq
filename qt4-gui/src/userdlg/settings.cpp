@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2008-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2008-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -273,7 +273,7 @@ void UserPages::Settings::load(const Licq::User* user)
   myNewUserCheck->setChecked(user->NewUser());
 
   unsigned int ppid = user->protocolId();
-  bool isIcq = (ppid == LICQ_PPID);
+  bool isIcq = (ppid == ICQ_PPID);
   myUseRealIpCheck->setEnabled(isIcq);
   myStatusNoneRadio->setEnabled(isIcq);
   myStatusOnlineRadio->setEnabled(isIcq);

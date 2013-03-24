@@ -28,9 +28,6 @@
 #define MSN_PPID 0x4D534E5F     // "MSN_" (MSN)
 #define JABBER_PPID 0x584D5050  // "XMPP" (Jabber)
 
-// Old constant, will be removed when no longer used
-#define LICQ_PPID ICQ_PPID
-
 namespace Licq
 {
 

@@ -378,7 +378,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
   if (!u->isUser())
   {
     headTo = "To: " + u->getAlias() + " <" + mySmtpTo + ">";
-    if (u->protocolId() == LICQ_PPID)
+    if (u->protocolId() == ICQ_PPID)
     {
       headFrom = "From: ICQ System Message <support@icq.com>";
       headReplyTo = "Reply-To: Mirabilis <support@icq.com>";
@@ -394,7 +394,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
       Licq::OwnerReadGuard o(u->id().ownerId());
       headTo = "To: " + o->getAlias() + " <" + mySmtpTo + ">";
     }
-    if (u->protocolId() == LICQ_PPID)
+    if (u->protocolId() == ICQ_PPID)
       headFrom = "From: \"" + u->getAlias() + "\" <" + u->accountId() + "@pager.icq.com>";
     else
       headFrom = "From: \"" + u->getAlias() + "\" <" + u->getEmail() + ">";

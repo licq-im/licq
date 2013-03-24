@@ -79,7 +79,7 @@ UserPages::Info::Info(bool isOwner, unsigned long protocolId, UserDlg* parent)
 {
   parent->addPage(UserDlg::GeneralPage, createPageGeneral(parent),
       tr("Info"));
-  if (myPpid == LICQ_PPID)
+  if (myPpid == ICQ_PPID)
   {
     parent->addPage(UserDlg::MorePage, createPageMore(parent),
         tr("More"), UserDlg::GeneralPage);
@@ -104,7 +104,7 @@ void UserPages::Info::load(const Licq::User* user)
   myId = user->accountId().c_str();
 
   loadPageGeneral(user);
-  if (myPpid == LICQ_PPID)
+  if (myPpid == ICQ_PPID)
   {
     const Licq::IcqUser* icquser = dynamic_cast<const Licq::IcqUser*>(user);
     loadPageMore(user);
@@ -120,7 +120,7 @@ void UserPages::Info::load(const Licq::User* user)
 void UserPages::Info::apply(Licq::User* user)
 {
   savePageGeneral(user);
-  if (myPpid == LICQ_PPID)
+  if (myPpid == ICQ_PPID)
   {
     Licq::IcqUser* icquser = dynamic_cast<Licq::IcqUser*>(user);
     savePageMore(user);
@@ -198,7 +198,7 @@ QWidget* UserPages::Info::createPageGeneral(QWidget* parent)
   nfoEmailPrimary = new InfoField(false);
   lay->addWidget(nfoEmailPrimary, CR, 1, 1, 4);
 
-  if (myPpid == LICQ_PPID)
+  if (myPpid == ICQ_PPID)
   {
     Licq::IcqData::Ptr icq = plugin_internal_cast<Licq::IcqData>(
         Licq::gPluginManager.getProtocolPlugin(ICQ_PPID));
@@ -304,7 +304,7 @@ void UserPages::Info::loadPageGeneral(const Licq::User* u)
   nfoStatus->setText(u->statusString().c_str());
   nfoEmailPrimary->setText(QString::fromUtf8(u->getUserInfoString("Email1").c_str()));
 
-  if (myPpid != LICQ_PPID)
+  if (myPpid != ICQ_PPID)
     return;
 
   Licq::IcqData::Ptr icq = plugin_internal_cast<Licq::IcqData>(
@@ -350,7 +350,7 @@ void UserPages::Info::savePageGeneral(Licq::User* u)
   u->setUserInfoString("LastName", nfoLastName->text().toUtf8().constData());
   u->setUserInfoString("Email1", nfoEmailPrimary->text().toUtf8().constData());
 
-  if (myPpid != LICQ_PPID)
+  if (myPpid != ICQ_PPID)
     return;
 
   Licq::IcqData::Ptr icq = plugin_internal_cast<Licq::IcqData>(
@@ -1512,7 +1512,7 @@ unsigned long UserPages::Info::retrieve(UserDlg::UserPage page)
   unsigned long icqEventTag;
   if (page == UserDlg::PhonePage)
   {
-    if (myPpid != LICQ_PPID)
+    if (myPpid != ICQ_PPID)
       return 0;
     Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
         Licq::gPluginManager.getProtocolInstance(myUserId.ownerId()));
@@ -1558,7 +1558,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
 
   Licq::IcqProtocol::Ptr icq;
   Licq::IcqData::Ptr icqdata;
-  if (myPpid == LICQ_PPID)
+  if (myPpid == ICQ_PPID)
   {
     icq = plugin_internal_cast<Licq::IcqProtocol>(
         Licq::gPluginManager.getProtocolInstance(myUserId));
@@ -1571,7 +1571,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
   switch (page)
   {
     case UserDlg::GeneralPage:
-      if (myPpid == LICQ_PPID)
+      if (myPpid == ICQ_PPID)
         icq->icqSetEmailInfo(myUserId,
             nfoEmailSecondary->text().toUtf8().constData(),
             nfoEmailOld->text().toUtf8().constData());
@@ -1721,7 +1721,7 @@ void UserPages::Info::userUpdated(const Licq::User* user, unsigned long subSigna
   switch (subSignal)
   {
     case Licq::PluginSignal::UserInfo:
-      if (myPpid == LICQ_PPID)
+      if (myPpid == ICQ_PPID)
       {
         const Licq::IcqUser* icquser = dynamic_cast<const Licq::IcqUser*>(user);
         loadPageMore(user);

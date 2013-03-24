@@ -301,7 +301,7 @@ void SystemMenu::addOwner(const Licq::UserId& userId)
   QMenu* ownerStatus = newOwner->getStatusMenu();
   myOwnerAdmMenu->addMenu(ownerAdmin);
   myStatusMenu->insertMenu(myStatusSeparator, ownerStatus);
-  if (ppid == LICQ_PPID)
+  if (ppid == ICQ_PPID)
   {
     myStatusMenu->insertMenu(myIcqFollowMeSeparator, newOwner->getIcqFollowMeMenu());
     myUserAdmMenu->insertAction(myUserAdmActionSeparator, newOwner->getIcqUserSearchAction());
@@ -422,7 +422,7 @@ void SystemMenu::updateAllUsers()
   {
     const Licq::UserId& ownerId(owner->id());
 
-    if (ownerId.protocolId() == LICQ_PPID)
+    if (ownerId.protocolId() == ICQ_PPID)
     {
       Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
           Licq::gPluginManager.getProtocolInstance(ownerId));
@@ -445,7 +445,7 @@ void SystemMenu::updateAllUsersInGroup()
   {
     const Licq::UserId& ownerId(owner->id());
 
-    if (ownerId.protocolId() == LICQ_PPID)
+    if (ownerId.protocolId() == ICQ_PPID)
     {
       Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
           Licq::gPluginManager.getProtocolInstance(ownerId));
@@ -554,7 +554,7 @@ OwnerData::OwnerData(const Licq::UserId& userId, const QString& protoName,
   }
 #undef ADD_STATUS
 
-  if (myUserId.protocolId() == LICQ_PPID)
+  if (myUserId.protocolId() == ICQ_PPID)
   {
     // Sub menu Follow Me
     myIcqFollowMeMenu = new QMenu(tr("ICQ Phone \"Follow Me\""));

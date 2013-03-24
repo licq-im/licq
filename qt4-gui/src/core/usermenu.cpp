@@ -295,7 +295,7 @@ void UserMenu::aboutToShowMenu()
   }
 
   unsigned long sendFuncs = u->protocolCapabilities();
-  bool isIcq = myPpid == LICQ_PPID;
+  bool isIcq = myPpid == ICQ_PPID;
 
   mySendActions[SendMessage]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendMsg);
   mySendActions[SendUrl]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendUrl);
@@ -449,7 +449,7 @@ void UserMenu::send(QAction* action)
   int index = action->data().toInt();
 
   Licq::IcqProtocol::Ptr icq;
-  if (myPpid == LICQ_PPID)
+  if (myPpid == ICQ_PPID)
     icq = plugin_internal_cast<Licq::IcqProtocol>(
         Licq::gPluginManager.getProtocolInstance(myUserId.ownerId()));
 
@@ -468,27 +468,27 @@ void UserMenu::send(QAction* action)
       break;
 
     case RequestUpdateInfoPlugin:
-      if (myPpid == LICQ_PPID && icq != NULL)
+      if (icq != NULL)
         icq->icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginInfoList, true);
       break;
 
     case RequestUpdateStatusPlugin:
-      if (myPpid == LICQ_PPID && icq != NULL)
+      if (icq != NULL)
         icq->icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginStatusList, true);
       break;
 
     case RequestPhoneFollowMeStatus:
-      if (myPpid == LICQ_PPID && icq != NULL)
+      if (icq != NULL)
         icq->icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginPhoneFollowMe, true);
       break;
 
     case RequestIcqphoneStatus:
-      if (myPpid == LICQ_PPID && icq != NULL)
+      if (icq != NULL)
         icq->icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginIcqPhone, true);
       break;
 
     case RequestFileServerStatus:
-      if (myPpid == LICQ_PPID && icq != NULL)
+      if (icq != NULL)
         icq->icqRequestPluginInfo(myUserId, Licq::IcqProtocol::PluginSharedFiles, true);
       break;
 

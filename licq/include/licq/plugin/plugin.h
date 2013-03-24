@@ -61,7 +61,7 @@ protected:
  * specific methods, do:
  * @code
  * Licq::IcqPlugin::Ptr icq = plugin_internal_cast<Licq::IcqPlugin>(
- *     Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+ *     Licq::gPluginManager.getProtocolPlugin(ICQ_PPID));
  * if (icq)
  *   icq->categories(...);
  * @endcode

@@ -52,7 +52,7 @@ UserPages::Owner::Owner(unsigned long protocolId, UserDlg* parent)
   parent->addPage(UserDlg::OwnerPage, createPageSettings(parent),
       tr("Settings"));
 
-  if (myProtocolId == LICQ_PPID)
+  if (myProtocolId == ICQ_PPID)
   {
     parent->addPage(UserDlg::OwnerSecurityPage, createPageIcqSecurity(parent),
         tr("ICQ Security"), UserDlg::OwnerPage);
@@ -122,7 +122,7 @@ QWidget* UserPages::Owner::createPageSettings(QWidget* parent)
 
 
   QGroupBox* icqBox = NULL;
-  if (myProtocolId == LICQ_PPID)
+  if (myProtocolId == ICQ_PPID)
   {
     icqBox = new QGroupBox(tr("ICQ"));
     QGridLayout* icqLayout = new QGridLayout(icqBox);
@@ -227,7 +227,7 @@ void UserPages::Owner::load(const Licq::User* user)
   myAutoLogonCombo->setCurrentIndex(item);
   myAutoLogonInvisibleCheck->setChecked(owner->startupStatus() & User::InvisibleStatus);
 
-  if (myProtocolId == LICQ_PPID)
+  if (myProtocolId == ICQ_PPID)
   {
     const Licq::IcqOwner* icqowner = dynamic_cast<const Licq::IcqOwner*>(owner);
     mySSListCheck->setChecked(icqowner->useServerContactList());
@@ -263,7 +263,7 @@ void UserPages::Owner::apply(Licq::User* user)
     status |= User::InvisibleStatus;
   owner->setStartupStatus(status);
 
-  if (myProtocolId == LICQ_PPID)
+  if (myProtocolId == ICQ_PPID)
   {
     Licq::IcqOwner* icqowner = dynamic_cast<Licq::IcqOwner*>(owner);
     icqowner->setReconnectAfterUinClash(myReconnectAfterUinClashCheck->isChecked());
@@ -276,7 +276,7 @@ void UserPages::Owner::apply(Licq::User* user)
 
 unsigned long UserPages::Owner::send(UserDlg::UserPage page)
 {
-  if (myProtocolId == LICQ_PPID)
+  if (myProtocolId == ICQ_PPID)
   {
     Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
         Licq::gPluginManager.getProtocolInstance(myUserId));

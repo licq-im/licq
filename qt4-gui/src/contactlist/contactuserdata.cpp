@@ -171,7 +171,7 @@ void ContactUserData::update(const Licq::User* u, unsigned long subSignal)
     myInVisibleList = u->VisibleList();
   }
 
-  if (myUserId.protocolId() == LICQ_PPID)
+  if (myUserId.protocolId() == ICQ_PPID)
   {
     const Licq::IcqUser* icquser = dynamic_cast<const Licq::IcqUser*>(u);
 

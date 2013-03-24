@@ -165,8 +165,7 @@ bool IcqProtocol::start()
 
 void IcqProtocol::processSignal(const Licq::ProtocolSignal* s)
 {
-  if (s->userId().protocolId() != LICQ_PPID)
-    return;
+  assert(s->userId().protocolId() == ICQ_PPID);
   // TODO: Unless signal is Logon also make sure s->userId() belongs to myOwnerId
 
   switch (s->signal())

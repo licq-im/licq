@@ -909,7 +909,7 @@ void* LicqIcq::MonitorSockets_func()
         // Process the packet if the buffer is full
         if (tcp->RecvBufferFull())
         {
-          if (tcp->userId().protocolId() != LICQ_PPID)
+          if (tcp->userId().protocolId() != ICQ_PPID)
             r = gIcqProtocol.ProcessTcpHandshake(tcp);
           else
             r = gIcqProtocol.ProcessTcpPacket(tcp);

@@ -4869,7 +4869,7 @@ void IcqProtocol::ProcessAuthFam(Buffer& packet, unsigned short nSubtype)
       gLog.info(tr("Received new uin: %lu"), nNewUin);
       char szUin[14];
       snprintf(szUin, sizeof(szUin), "%lu", nNewUin);
-      Licq::UserId ownerId(LICQ_PPID, szUin);
+      Licq::UserId ownerId(ICQ_PPID, szUin);
       Licq::gUserManager.addOwner(ownerId);
 
       bool added = false;
@@ -4951,7 +4951,7 @@ void IcqProtocol::ProcessAuthFam(Buffer& packet, unsigned short nSubtype)
       gLog.info(tr("Received verification image."));
       gPluginManager.pushPluginSignal(new Licq::PluginSignal(
           Licq::PluginSignal::SignalVerifyImage,
-          0, Licq::UserId(), LICQ_PPID));
+          0, Licq::UserId(), ICQ_PPID));
       break;
     }
 

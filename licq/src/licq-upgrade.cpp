@@ -687,7 +687,7 @@ static void upgradeLicq18_updateQt4Gui(StringMap& owners)
     sprintf(key, "Floaty%i.", i);
     string keyStr(key);
     unsigned long ppid;
-    guiConf.get(keyStr + "Ppid", ppid, LICQ_PPID);
+    guiConf.get(keyStr + "Ppid", ppid, ICQ_PPID);
     string userIdStr;
     guiConf.get(keyStr + "Uin", userIdStr);
     if (ppid == 0 || userIdStr.empty())

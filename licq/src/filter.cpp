@@ -65,7 +65,7 @@ void FilterManager::getDefaultRules(FilterRules& rules)
 
   // Ignore reoccuring spam messages that are sent as ICQ Authorization Requests
   rule.isEnabled = true;
-  rule.protocolId = LICQ_PPID;
+  rule.protocolId = ICQ_PPID;
   rule.eventMask = 1<<UserEvent::TypeAuthRequest;
   rule.action = FilterRule::ActionIgnore;
   rule.expression = "(\xD0\xBF|\xD0\x9F)\xD1\x80\xD0\xB8\xD0\xB2\xD0\xB5\xD1\x82(\xD0\xB8\xD0\xBA)? =\\)";

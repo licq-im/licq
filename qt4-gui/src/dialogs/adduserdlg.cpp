@@ -127,7 +127,7 @@ void AddUserDlg::ok()
   if (userId.isValid())
     added = Licq::gUserManager.addUser(userId, true, true, group);
 
-  if (added && notify && userId.protocolId() == LICQ_PPID)
+  if (added && notify && userId.protocolId() == ICQ_PPID)
   {
     Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
         Licq::gPluginManager.getProtocolInstance(userId.ownerId()));

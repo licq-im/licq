@@ -94,7 +94,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(const Licq::UserId& userId, bool fetch, QWidget* 
     connect(gGuiSignalManager, SIGNAL(doneUserFcn(const Licq::Event*)),
         SLOT(doneEvent(const Licq::Event*)));
 
-    if (myUserId.protocolId() == LICQ_PPID)
+    if (myUserId.protocolId() == ICQ_PPID)
     {
       Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
           Licq::gPluginManager.getProtocolInstance(myUserId.ownerId()));
@@ -164,7 +164,7 @@ void ShowAwayMsgDlg::doneEvent(const Licq::Event* e)
        e->ExtendedAck()->response().c_str() :
        u->autoResponse().c_str());
 
-    if (u->protocolId() == LICQ_PPID && QString(u->accountId().c_str())[0].isLetter())
+    if (u->protocolId() == ICQ_PPID && QString(u->accountId().c_str())[0].isLetter())
     {
       // Strip HTML
       QRegExp regExp("<.*>");

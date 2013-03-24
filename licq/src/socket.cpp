@@ -738,7 +738,7 @@ bool TCPSocket::SSL_Pending()
 bool TCPSocket::SecureConnect()
 {
   pthread_mutex_init(&mutex_ssl, NULL);
-  if (myUserId.protocolId() == LICQ_PPID)
+  if (myUserId.protocolId() == ICQ_PPID)
     m_p_SSL = SSL_new(gSSL_CTX);
   else
     m_p_SSL = SSL_new(gSSL_CTX_NONICQ);
@@ -774,7 +774,7 @@ bool TCPSocket::SecureListen()
 {
   pthread_mutex_init(&mutex_ssl, NULL);
 
-  if (myUserId.protocolId() == LICQ_PPID)
+  if (myUserId.protocolId() == ICQ_PPID)
     m_p_SSL = SSL_new(gSSL_CTX);
   else
     m_p_SSL = SSL_new(gSSL_CTX_NONICQ);

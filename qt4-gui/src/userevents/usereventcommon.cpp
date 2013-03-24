@@ -404,7 +404,7 @@ void UserEventCommon::updateTyping()
   // MSN needs this, ICQ/AIM doesn't send additional packets
   // This does need to be verified with the official AIM client, there is a
   // packet for it, but ICQ isn't using it apparently.
-  if (myPpid == LICQ_PPID || myUsers.empty())
+  if (myPpid == ICQ_PPID || myUsers.empty())
     return;
 
   //FIXME Which user?

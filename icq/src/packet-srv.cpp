@@ -2413,7 +2413,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
       continue;
     }
 
-    if (u->protocolId() != LICQ_PPID)
+    if (u->protocolId() != ICQ_PPID)
     {
       gLog.warning(tr("Trying to export non ICQ user %s to ICQ server."),
           i->toString().c_str());
@@ -2921,7 +2921,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const string& name, unsigned shor
     Licq::UserListGuard userList(ownerId);
     BOOST_FOREACH(const Licq::User* user, **userList)
     {
-      if (user->protocolId() != LICQ_PPID)
+      if (user->protocolId() != ICQ_PPID)
         continue;
       UserReadGuard pUser(dynamic_cast<const User*>(user));
       if (pUser->GetGSID() == nGSID)
@@ -2968,7 +2968,7 @@ void CPU_UpdateToServerList::init(const std::string& name, unsigned short _nType
         Licq::UserListGuard userList;
         BOOST_FOREACH(const Licq::User* user, **userList)
         {
-          if (user->protocolId() != LICQ_PPID)
+          if (user->protocolId() != ICQ_PPID)
             continue;
           UserReadGuard pUser(dynamic_cast<const User*>(user));
           if (pUser->GetGSID() == nGSID)

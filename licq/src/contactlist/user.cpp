@@ -243,7 +243,7 @@ void User::Private::loadLicqInfo()
 
   if (myUser->myServerGroup > -1)
   {
-    if (!myConf.get("ServerGroup", myUser->myServerGroup, 0) && myId.protocolId() == LICQ_PPID)
+    if (!myConf.get("ServerGroup", myUser->myServerGroup, 0) && myId.protocolId() == ICQ_PPID)
     {
       unsigned gsid;
       myConf.get("GSID", gsid, 0);
@@ -1209,7 +1209,7 @@ string UserId::normalizeId(const string& accountId, unsigned long ppid)
 
   // TODO Make the protocol plugin normalize the accountId
   // For AIM, account id is case insensitive and spaces should be ignored
-  if (ppid == LICQ_PPID && !accountId.empty() && !isdigit(accountId[0]))
+  if (ppid == ICQ_PPID && !accountId.empty() && !isdigit(accountId[0]))
   {
     boost::erase_all(realId, " ");
     boost::to_lower(realId);
@@ -1569,7 +1569,7 @@ unsigned long Licq::protocolId_fromString(const std::string& s)
 {
   // Known names (case insensitive compare) and raw string versions of protocol id
   if (boost::iequals(s, "ICQ") || s == "ICQ_" || s == "Licq")
-    return LICQ_PPID;
+    return ICQ_PPID;
   if (boost::iequals(s, "MSN") || s == "MSN_")
     return MSN_PPID;
   if (boost::iequals(s, "Jabber") || s == "XMPP")

@@ -412,7 +412,7 @@ void HistoryView::addMsg(const Licq::UserEvent* event, const Licq::UserId& uid)
       if (event->isReceiver())
       {
         contactName = QString::fromUtf8(u->getAlias().c_str());
-        if (myPpid == LICQ_PPID)
+        if (myPpid == ICQ_PPID)
           for (int x = 0; x < myId.length(); ++x)
             if (!myId.at(x).isDigit())
             {

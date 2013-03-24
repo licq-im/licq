@@ -946,7 +946,7 @@ void UserSendEvent::retrySend(const Licq::Event* e, unsigned flags)
   myUrgentCheck->setChecked(flags & Licq::ProtocolSignal::SendUrgent);
 
   Licq::IcqProtocol::Ptr icq;
-  if (frontUserId.protocolId() == LICQ_PPID)
+  if (frontUserId.protocolId() == ICQ_PPID)
   {
     icq = plugin_internal_cast<Licq::IcqProtocol>(
         Licq::gPluginManager.getProtocolInstance(frontUserId.ownerId()));
@@ -1317,7 +1317,7 @@ void UserSendEvent::send()
     unsigned long icqEventTag = 0;
 
     Licq::IcqProtocol::Ptr icq;
-    if (frontUserId.protocolId() == LICQ_PPID)
+    if (frontUserId.protocolId() == ICQ_PPID)
     {
       icq = plugin_internal_cast<Licq::IcqProtocol>(
           Licq::gPluginManager.getProtocolInstance(frontUserId.ownerId()));
@@ -1397,9 +1397,7 @@ void UserSendEvent::sendBase()
   if (myEventTag.size() != 0)
     icqEventTag = myEventTag.front();
 
-  unsigned long myPpid = myUsers.front().protocolId();
-
-  if (icqEventTag != 0 || myPpid != LICQ_PPID)
+  if (icqEventTag != 0 || myUsers.front().protocolId() != ICQ_PPID)
   {
     bool via_server = mySendServerCheck->isChecked();
     myProgressMsg = tr("Sending ");
@@ -1878,7 +1876,7 @@ void UserSendEvent::textChangedTimeout()
   {
     myTempMessage = str;
     // Hack to not keep sending the typing notification to ICQ
-    if (myPpid != LICQ_PPID)
+    if (myPpid != ICQ_PPID)
       gProtocolManager.sendTypingNotification(myUsers.front(), true, myConvoId);
   }
   else

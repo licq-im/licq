@@ -172,7 +172,7 @@ void OwnerManagerDlg::updateList()
   BOOST_FOREACH(std::string protocol, unloadedProtocols)
   {
     // Guess protocol id based on name (default is same as ICQ)
-    unsigned long ppid = LICQ_PPID;
+    unsigned long ppid = ICQ_PPID;
     if (protocol == "msn")
       ppid = MSN_PPID;
     else if (protocol == "jabber")
@@ -218,7 +218,7 @@ void OwnerManagerDlg::listSelectionChanged()
       Licq::ProtocolPlugin::Ptr plugin = Licq::gPluginManager.getProtocolPlugin(protocolId);
       bool mayAdd = (!hasChildren || (plugin->capabilities() & Licq::ProtocolPlugin::CanMultipleOwners));
       myAddButton->setEnabled(mayAdd);
-      myRegisterButton->setEnabled(mayAdd && (protocolId == LICQ_PPID || protocolId == MSN_PPID));
+      myRegisterButton->setEnabled(mayAdd && (protocolId == ICQ_PPID || protocolId == MSN_PPID));
       myModifyButton->setEnabled(false);
       myRemoveButton->setEnabled(!hasChildren);
       break;
@@ -298,7 +298,7 @@ void OwnerManagerDlg::registerOwner(unsigned long protocolId)
 {
   switch (protocolId)
   {
-    case LICQ_PPID:
+    case ICQ_PPID:
       gLicqGui->viewUrl("https://www.icq.com/join");
       break;
     case MSN_PPID:

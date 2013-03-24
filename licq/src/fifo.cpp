@@ -376,7 +376,7 @@ static int fifo_sms(int argc, const char *const *argv)
     return 0;
   }
 
-  if (userId.protocolId() != LICQ_PPID )
+  if (userId.protocolId() != ICQ_PPID)
   {
     gLog.info(tr("%s `%s': bad protocol. ICQ only allowed"), L_FIFOxSTR, argv[0]);
     return 0;
@@ -414,7 +414,7 @@ static int fifo_sms_number(int argc, const char *const *argv)
 
   Licq::UserId ownerId;
   {
-    Licq::OwnerListGuard ownerList(LICQ_PPID);
+    Licq::OwnerListGuard ownerList(ICQ_PPID);
     if (ownerList->empty())
       return -1;
     ownerId = (*ownerList->begin())->id();
@@ -545,11 +545,11 @@ static int fifo_setpicture(int argc, const char* const* argv)
     }
     Licq::gUserManager.notifyUserUpdated(owner->id(), Licq::PluginSignal::UserPicture);
 
-    Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-        Licq::gPluginManager.getProtocolInstance(owner->id()));
-
-    if (owner->id().protocolId() == LICQ_PPID && icq)
+    if (owner->id().protocolId() == ICQ_PPID)
     {
+      Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+          Licq::gPluginManager.getProtocolInstance(owner->id()));
+
       icq->icqUpdateInfoTimestamp(
           owner->id(), Licq::IcqProtocol::PluginPicture);
     }
