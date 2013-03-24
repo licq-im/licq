@@ -50,7 +50,6 @@ public:
   MOCK_METHOD0(createPlugin, Licq::ProtocolPluginInterface*());
   MOCK_METHOD2(createUser, Licq::User*(const Licq::UserId& id, bool temporary));
   MOCK_METHOD1(createOwner, Licq::Owner*(const Licq::UserId& id));
-  
 };
 
 class MockProtocolPlugin : public Licq::ProtocolPluginInterface

@@ -404,7 +404,7 @@ User* PluginManager::createProtocolUser(const UserId& id, bool temporary)
   {
     MutexLocker locker(myProtocolPluginsMutex);
     list<ProtocolPlugin::Ptr>::iterator it = find_if(
-        myProtocolPlugins.begin(), myProtocolPlugins.end(), 
+        myProtocolPlugins.begin(), myProtocolPlugins.end(),
         IsProtocolPlugin(id.protocolId()));
 
     assert(it != myProtocolPlugins.end());
@@ -422,7 +422,7 @@ Owner* PluginManager::createProtocolOwner(const UserId& id)
   {
     MutexLocker locker(myProtocolPluginsMutex);
     list<ProtocolPlugin::Ptr>::iterator it = find_if(
-        myProtocolPlugins.begin(), myProtocolPlugins.end(), 
+        myProtocolPlugins.begin(), myProtocolPlugins.end(),
         IsProtocolPlugin(id.protocolId()));
 
     assert(it != myProtocolPlugins.end());
@@ -533,7 +533,7 @@ Licq::ProtocolPlugin::Ptr PluginManager::getProtocolPlugin(
 {
   MutexLocker locker(myProtocolPluginsMutex);
   list<ProtocolPlugin::Ptr>::const_iterator it = find_if(
-      myProtocolPlugins.begin(), myProtocolPlugins.end(), 
+      myProtocolPlugins.begin(), myProtocolPlugins.end(),
       IsProtocolPlugin(protocolId));
   if (it != myProtocolPlugins.end())
     return *it;
