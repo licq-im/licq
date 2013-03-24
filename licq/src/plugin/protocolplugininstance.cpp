@@ -48,7 +48,6 @@ ProtocolPluginInstance::~ProtocolPluginInstance()
 void ProtocolPluginInstance::run(void (*startCallback)(const PluginInstance&),
                                  void (*exitCallback)(const PluginInstance&))
 {
-  myPlugin->setStarted();
   PluginInstance::run(startCallback, exitCallback);
 }
 

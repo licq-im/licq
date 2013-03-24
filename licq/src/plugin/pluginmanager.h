@@ -134,6 +134,7 @@ private:
 
   int myNextPluginId;
   PluginThread::Ptr myGuiThread;
+  bool myIsProtocolsStarted;
 
   mutable Licq::Mutex myGeneralPluginsMutex;
   std::list<GeneralPlugin::Ptr> myGeneralPlugins;

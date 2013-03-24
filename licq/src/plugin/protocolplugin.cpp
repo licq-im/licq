@@ -33,8 +33,7 @@ ProtocolPlugin::ProtocolPlugin(
     PluginThread::Ptr thread)
   : Plugin(lib),
     myFactory(factory),
-    myMainThread(thread),
-    myIsStarted(false)
+    myMainThread(thread)
 {
   // Empty
 }

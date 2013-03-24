@@ -134,7 +134,8 @@ struct IsProtocolPlugin
 } // namespace
 
 PluginManager::PluginManager() :
-  myNextPluginId(1)
+  myNextPluginId(1),
+  myIsProtocolsStarted(false)
 {
   // Empty
 }
@@ -313,6 +314,7 @@ void PluginManager::startAllPlugins()
     BOOST_FOREACH(ProtocolOwnerInstances::value_type instance,
                   myProtocolInstances)
       startInstance(instance.second);
+    myIsProtocolsStarted = true;
   }
 }
 
@@ -453,7 +455,7 @@ Owner* PluginManager::createProtocolOwner(const UserId& id)
     MutexLocker locker(myProtocolPluginsMutex);
     assert(myProtocolInstances.find(id) == myProtocolInstances.end());
     myProtocolInstances.insert(std::make_pair(instance->ownerId(), instance));
-    if (plugin->isStarted())
+    if (myIsProtocolsStarted)
       startInstance(instance);
   }
 

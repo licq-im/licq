@@ -52,8 +52,6 @@ public:
   boost::shared_ptr<ProtocolPluginInstance> createInstance(
       int id, const Licq::UserId& ownerId,
       void (*callback)(const PluginInstance&));
-  void setStarted() { myIsStarted = true; }
-  bool isStarted() const { return myIsStarted; }
 
   boost::shared_ptr<Licq::ProtocolPluginFactory> protocolFactory();
 
@@ -73,7 +71,6 @@ protected:
 private:
   boost::shared_ptr<Licq::ProtocolPluginFactory> myFactory;
   PluginThread::Ptr myMainThread;
-  bool myIsStarted;
 };
 
 } // namespace LicqDaemon
