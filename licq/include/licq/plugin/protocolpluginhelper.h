@@ -49,12 +49,6 @@ public:
   /// Queues the signal and writes PipeSignal to the pipe
   void pushSignal(boost::shared_ptr<const ProtocolSignal> signal);
 
-  /// Returns NULL to make UserManager create a Licq::User
-  User* createUser(const UserId& id, bool temporary);
-
-  // Returns NULL to make UserManager create a Licq::Owner
-  Owner* createOwner(const UserId& id);
-
 protected:
   ProtocolPluginHelper();
 

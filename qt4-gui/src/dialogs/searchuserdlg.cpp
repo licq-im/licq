@@ -37,6 +37,7 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
 #include <licq/icq/icq.h>
+#include <licq/icq/icqdata.h>
 #include <licq/plugin/pluginmanager.h>
 
 #include "contactlist/contactlist.h"
@@ -62,8 +63,8 @@ SearchUserDlg::SearchUserDlg(const Licq::UserId& ownerId)
   setAttribute(Qt::WA_DeleteOnClose, true);
   setWindowTitle(tr("Licq - User Search"));
 
-  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  Licq::IcqData::Ptr icq = plugin_internal_cast<Licq::IcqData>(
+      Licq::gPluginManager.getProtocolPlugin(ICQ_PPID));
   if (!icq)
   {
     close();
@@ -240,9 +241,11 @@ void SearchUserDlg::startSearch()
   unsigned short maxs[7] = {0, 22, 29, 39, 49, 59, 120};
 
   Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+      Licq::gPluginManager.getProtocolInstance(myOwnerId));
   if (!icq)
     return;
+  Licq::IcqData::Ptr icqdata = plugin_internal_cast<Licq::IcqData>(
+      Licq::gPluginManager.getProtocolPlugin(ICQ_PPID));
 
   foundView->clear();
   for (int i = 0; i < foundView->columnCount(); i++)
@@ -265,10 +268,10 @@ void SearchUserDlg::startSearch()
         mins[cmbAge->currentIndex()],
         maxs[cmbAge->currentIndex()],
         cmbGender->currentIndex(),
-        icq->getCategoryByIndex(Licq::IcqCatTypeLanguage, cmbLanguage->currentIndex())->nCode,
+        icqdata->getCategoryByIndex(Licq::IcqCatTypeLanguage, cmbLanguage->currentIndex())->nCode,
         edtCity->text().toUtf8().constData(),
         edtState->text().toUtf8().constData(),
-        icq->getCountryByIndex(cmbCountry->currentIndex())->nCode,
+        icqdata->getCountryByIndex(cmbCountry->currentIndex())->nCode,
         edtCoName->text().toUtf8().constData(),
         edtCoDept->text().toUtf8().constData(),
         edtCoPos->text().toUtf8().constData(),

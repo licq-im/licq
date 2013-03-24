@@ -630,6 +630,8 @@ bool UserManager::removeOwner(const Licq::UserId& userId)
   usersConf.removeSection(userId.accountId() + "." + ppidStr);
   usersConf.writeFile();
 
+  gPluginManager.shutdownProtocolInstance(userId);
+
   gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,
       PluginSignal::ListOwnerRemoved, userId));
 

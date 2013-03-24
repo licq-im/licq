@@ -20,13 +20,15 @@
 #ifndef LICQDAEMON_PROTOCOLPLUGIN_H
 #define LICQDAEMON_PROTOCOLPLUGIN_H
 
-#include <licq/plugin/protocolplugin.h>
 #include "plugin.h"
+#include "pluginthread.h"
+
+#include <licq/plugin/protocolplugin.h>
 
 namespace Licq
 {
 class Owner;
-class ProtocolPluginInterface;
+class ProtocolPluginFactory;
 class ProtocolSignal;
 class User;
 class UserId;
@@ -35,35 +37,42 @@ class UserId;
 namespace LicqDaemon
 {
 
+class ProtocolPluginInstance;
+
 class ProtocolPlugin : public Plugin, public Licq::ProtocolPlugin
 {
 public:
   typedef boost::shared_ptr<ProtocolPlugin> Ptr;
 
-  ProtocolPlugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
-                 Licq::ProtocolPluginInterface* (*factory)());
-  // Constructor for unit tests
-  ProtocolPlugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
-                 boost::shared_ptr<Licq::ProtocolPluginInterface> interface);
+  ProtocolPlugin(DynamicLibrary::Ptr lib,
+                 boost::shared_ptr<Licq::ProtocolPluginFactory> factory,
+                 PluginThread::Ptr thread);
   ~ProtocolPlugin();
+
+  boost::shared_ptr<ProtocolPluginInstance> createInstance(
+      int id, const Licq::UserId& ownerId);
+  void setStarted() { myIsStarted = true; }
+  bool isStarted() const { return myIsStarted; }
+
+  boost::shared_ptr<Licq::ProtocolPluginFactory> protocolFactory();
 
   // From Licq::ProtocolPlugin
   unsigned long protocolId() const;
   unsigned long capabilities() const;
+  Instances instances() const;
 
-  void pushSignal(boost::shared_ptr<const Licq::ProtocolSignal> signal);
   Licq::User* createUser(const Licq::UserId& id, bool temporary);
   Licq::Owner* createOwner(const Licq::UserId& id);
 
 protected:
   // From Plugin
-  void createInterface();
-  boost::shared_ptr<Licq::PluginInterface> interface();
-  boost::shared_ptr<const Licq::PluginInterface> interface() const;
+  boost::shared_ptr<Licq::PluginFactory> factory();
+  boost::shared_ptr<const Licq::PluginFactory> factory() const;
 
 private:
-  Licq::ProtocolPluginInterface* (*myFactory)();
-  boost::shared_ptr<Licq::ProtocolPluginInterface> myInterface;
+  boost::shared_ptr<Licq::ProtocolPluginFactory> myFactory;
+  PluginThread::Ptr myMainThread;
+  bool myIsStarted;
 };
 
 } // namespace LicqDaemon

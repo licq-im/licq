@@ -20,7 +20,7 @@
 #ifndef LICQ_PLUGIN_H
 #define LICQ_PLUGIN_H
 
-#include "plugininterface.h"
+#include "pluginfactory.h"
 
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
@@ -35,11 +35,8 @@ namespace Licq
 class Plugin : private boost::noncopyable
 {
 public:
-  /// A smart pointer to a Plugin instance
+  /// A smart pointer to a Plugin
   typedef boost::shared_ptr<Plugin> Ptr;
-
-  /// Get the plugin's unique id.
-  virtual int id() const = 0;
 
   /// Get the plugin's name.
   virtual std::string name() const = 0;
@@ -54,7 +51,7 @@ protected:
   /// Destructor
   virtual ~Plugin() { }
 
-  virtual boost::shared_ptr<PluginInterface> internalInterface() = 0;
+  virtual boost::shared_ptr<PluginFactory> internalFactory() = 0;
   template <typename T> friend boost::shared_ptr<T> plugin_internal_cast(Ptr);
 };
 
@@ -63,34 +60,34 @@ protected:
  * methods that only apply for a specific plugin. To e.g. get access to ICQ
  * specific methods, do:
  * @code
- * Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+ * Licq::IcqPlugin::Ptr icq = plugin_internal_cast<Licq::IcqPlugin>(
  *     Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
  * if (icq)
- *   icq->icqSendSms(...);
+ *   icq->categories(...);
  * @endcode
  */
 template <typename T>
 inline boost::shared_ptr<T> plugin_internal_cast(Plugin::Ptr plugin)
 {
   return plugin
-      ? boost::dynamic_pointer_cast<T>(plugin->internalInterface())
+      ? boost::dynamic_pointer_cast<T>(plugin->internalFactory())
       : boost::shared_ptr<T>();
 }
 
 // plugin_internal_cast<>() is not supposed to be used to cast to
-// PluginInterface, GeneralPluginInterface or ProtocolPluginInterface; only to
+// PluginFactory, GeneralPluginFactory or ProtocolPluginFactory; only to
 // plugin specific interfaces.
 
-template <> inline boost::shared_ptr<PluginInterface>
-plugin_internal_cast<PluginInterface>(Plugin::Ptr);
+template <> inline boost::shared_ptr<PluginFactory>
+plugin_internal_cast<PluginFactory>(Plugin::Ptr);
 
-class GeneralPluginInterface;
-template <> boost::shared_ptr<GeneralPluginInterface>
-plugin_internal_cast<GeneralPluginInterface>(Plugin::Ptr);
+class GeneralPluginFactory;
+template <> boost::shared_ptr<GeneralPluginFactory>
+plugin_internal_cast<GeneralPluginFactory>(Plugin::Ptr);
 
-class ProtocolPluginInterface;
-template <> boost::shared_ptr<ProtocolPluginInterface>
-plugin_internal_cast<ProtocolPluginInterface>(Plugin::Ptr);
+class ProtocolPluginFactory;
+template <> boost::shared_ptr<ProtocolPluginFactory>
+plugin_internal_cast<ProtocolPluginFactory>(Plugin::Ptr);
 
 } // namespace Licq
 

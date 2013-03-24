@@ -1,7 +1,7 @@
 set(jabber_SRCS
   client.cpp
+  factory.cpp
   handler.cpp
-  jabberplugin.cpp
   owner.cpp
   plugin.cpp
   sessionmanager.cpp

@@ -410,7 +410,7 @@ void UserViewEvent::read2()
   if (myCurrentEvent == NULL)
     return;
 
-  QString accountId = myUsers.front().accountId().c_str();
+  const Licq::UserId& frontUserId(myUsers.front());
 
   switch (myCurrentEvent->eventType())
   {
@@ -422,7 +422,7 @@ void UserViewEvent::read2()
     case Licq::UserEvent::TypeChat:  // accept a chat request
     {
       Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-          Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+          Licq::gPluginManager.getProtocolInstance(frontUserId.ownerId()));
       if (!icq)
         return;
 
@@ -430,13 +430,12 @@ void UserViewEvent::read2()
       myRead2Button->setEnabled(false);
       myRead3Button->setEnabled(false);
       Licq::EventChat* c = dynamic_cast<Licq::EventChat*>(myCurrentEvent);
-      ChatDlg* chatDlg = new ChatDlg(myUsers.front());
+      ChatDlg* chatDlg = new ChatDlg(frontUserId);
       if (c->Port() != 0)  // Joining a multiparty chat (we connect to them)
       {
         // FIXME: must have been done in CICQDaemon
         if (chatDlg->StartAsClient(c->Port()))
-          icq->icqChatRequestAccept(
-              myUsers.front(),
+          icq->icqChatRequestAccept(frontUserId,
               0, c->clients(), c->Sequence(),
               c->MessageID()[0], c->MessageID()[1], c->IsDirect());
       }
@@ -444,8 +443,7 @@ void UserViewEvent::read2()
       {
         // FIXME: must have been done in CICQDaemon
         if (chatDlg->StartAsServer())
-          icq->icqChatRequestAccept(
-              myUsers.front(),
+          icq->icqChatRequestAccept(frontUserId,
               chatDlg->LocalPort(), c->clients(), c->Sequence(),
               c->MessageID()[0], c->MessageID()[1], c->IsDirect());
       }
@@ -458,12 +456,11 @@ void UserViewEvent::read2()
       myRead2Button->setEnabled(false);
       myRead3Button->setEnabled(false);
       Licq::EventFile* f = dynamic_cast<Licq::EventFile*>(myCurrentEvent);
-      FileDlg* fileDlg = new FileDlg(myUsers.front());
+      FileDlg* fileDlg = new FileDlg(frontUserId);
 
       if (fileDlg->ReceiveFiles())
         // FIXME: must have been done in CICQDaemon
-        gProtocolManager.fileTransferAccept(
-            myUsers.front(),
+        gProtocolManager.fileTransferAccept(frontUserId,
             fileDlg->LocalPort(), f->Sequence(), f->MessageID()[0], f->MessageID()[1],
             f->fileDescription(), f->filename(), f->FileSize(), !f->IsDirect());
       break;
@@ -483,7 +480,7 @@ void UserViewEvent::read3()
   if (myCurrentEvent == NULL)
     return;
 
-  QString accountId = myUsers.front().accountId().c_str();
+  const Licq::UserId& frontUserId(myUsers.front());
 
   switch (myCurrentEvent->eventType())
   {
@@ -497,12 +494,12 @@ void UserViewEvent::read3()
 
     case Licq::UserEvent::TypeChat:  // refuse a chat request
     {
-      RefuseDlg* r = new RefuseDlg(myUsers.front(), tr("Chat"), this);
+      RefuseDlg* r = new RefuseDlg(frontUserId, tr("Chat"), this);
 
       if (r->exec())
       {
         Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-            Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+            Licq::gPluginManager.getProtocolInstance(frontUserId.ownerId()));
         if (!icq)
           return;
 
@@ -512,7 +509,7 @@ void UserViewEvent::read3()
         myRead3Button->setEnabled(false);
 
         // FIXME: must have been done in CICQDaemon
-        icq->icqChatRequestRefuse(myUsers.front(),
+        icq->icqChatRequestRefuse(frontUserId,
             r->RefuseMessage().toUtf8().data(), myCurrentEvent->Sequence(),
             c->MessageID()[0], c->MessageID()[1], c->IsDirect());
       }
@@ -522,7 +519,7 @@ void UserViewEvent::read3()
 
     case Licq::UserEvent::TypeFile:  // refuse a file transfer
     {
-      RefuseDlg* r = new RefuseDlg(myUsers.front(), tr("File Transfer"), this);
+      RefuseDlg* r = new RefuseDlg(frontUserId, tr("File Transfer"), this);
 
       if (r->exec())
       {
@@ -532,7 +529,7 @@ void UserViewEvent::read3()
         myRead3Button->setEnabled(false);
 
         // FIXME: must have been done in CICQDaemon
-        gProtocolManager.fileTransferRefuse(myUsers.front(),
+        gProtocolManager.fileTransferRefuse(frontUserId,
             r->RefuseMessage().toUtf8().data(), myCurrentEvent->Sequence(),
             f->MessageID()[0], f->MessageID()[1], !f->IsDirect());
       }
@@ -554,29 +551,28 @@ void UserViewEvent::read4()
   if (myCurrentEvent == NULL)
     return;
 
-  QString accountId = myUsers.front().accountId().c_str();
+  const Licq::UserId& frontUserId(myUsers.front());
 
   switch (myCurrentEvent->eventType())
   {
     case Licq::UserEvent::TypeMessage:
-      gLicqGui->showEventDialog(ChatEvent, myUsers.front());
+      gLicqGui->showEventDialog(ChatEvent, frontUserId);
       break;
 
     case Licq::UserEvent::TypeChat:  // join to current chat
     {
       Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-          Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+          Licq::gPluginManager.getProtocolInstance(frontUserId.ownerId()));
       if (!icq)
         return;
 
       Licq::EventChat* c = dynamic_cast<Licq::EventChat*>(myCurrentEvent);
       if (c->Port() != 0)  // Joining a multiparty chat (we connect to them)
       {
-        ChatDlg* chatDlg = new ChatDlg(myUsers.front());
+        ChatDlg* chatDlg = new ChatDlg(frontUserId);
         // FIXME: must have been done in CICQDaemon
         if (chatDlg->StartAsClient(c->Port()))
-          icq->icqChatRequestAccept(
-              myUsers.front(),
+          icq->icqChatRequestAccept(frontUserId,
               0, c->clients(), c->Sequence(), c->MessageID()[0], c->MessageID()[1], c->IsDirect());
       }
       else  // single party (other side connects to us)
@@ -585,8 +581,7 @@ void UserViewEvent::read4()
         JoinChatDlg* j = new JoinChatDlg(this);
         // FIXME: must have been done in CICQDaemon
         if (j->exec() && (chatDlg = j->JoinedChat()) != NULL)
-          icq->icqChatRequestAccept(
-              myUsers.front(),
+          icq->icqChatRequestAccept(frontUserId,
               chatDlg->LocalPort(), c->clients(), c->Sequence(), c->MessageID()[0], c->MessageID()[1], c->IsDirect());
         delete j;
       }

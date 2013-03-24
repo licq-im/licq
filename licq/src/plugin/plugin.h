@@ -20,118 +20,48 @@
 #ifndef LICQDAEMON_PLUGIN_H
 #define LICQDAEMON_PLUGIN_H
 
-#include <licq/plugin/plugin.h>
-
 #include "utils/dynamiclibrary.h"
-#include "pluginthread.h"
+
+#include <licq/plugin/plugin.h>
+#include <licq/thread/mutex.h>
 
 #include <boost/enable_shared_from_this.hpp>
-
-namespace Licq
-{
-class PluginInterface;
-}
+#include <boost/weak_ptr.hpp>
+#include <vector>
 
 namespace LicqDaemon
 {
+
+class PluginInstance;
 
 class Plugin : public virtual Licq::Plugin,
                public boost::enable_shared_from_this<Plugin>
 {
 public:
-  Plugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread);
+  typedef boost::shared_ptr<Plugin> Ptr;
+
+  Plugin(DynamicLibrary::Ptr lib);
   ~Plugin();
 
   // From Licq::Plugin
-  int id() const;
   std::string name() const;
   std::string version() const;
   std::string libraryName() const;
-  boost::shared_ptr<Licq::PluginInterface> internalInterface();
-
-  /**
-   * Check if a thread belongs to this plugin
-   *
-   * @param thread Thread to test
-   * @return True if thread is the main thread for this plugin
-   */
-  bool isThread(const pthread_t& thread) const;
-
-  /**
-   * Create the plugin instance
-   *
-   * @return True if the plugin was created successfully
-   */
-  bool create();
-
-  /**
-   * Initialize the plugin
-   *
-   * @param argc Number of command line parameters
-   * @param argv Command line parameters
-   * @param callback Called in the thread just before init is called
-   * @return True if initialization was successful
-   */
-  bool init(int argc, char** argv, void (*callback)(const Plugin&));
-
-  /**
-   * Run the plugin
-   *
-   * @param startCallback Called in the thread just before run is called
-   * @param exitCallback Called in the thread just after run returns
-   */
-  void run(void (*startCallback)(const Plugin&),
-           void (*exitCallback)(const Plugin&));
-
-  /**
-   * Tell a plugin to shut down
-   */
-  void shutdown();
-
-  /**
-   * Wait for the plugin to stop
-   *
-   * @return Exit code from plugin thread
-   */
-  int joinThread();
-
-  /**
-   * Cancel the plugin's thread
-   */
-  void cancelThread();
-
-  // For use by unit test
-  void setIsRunning(bool running) { myIsRunning = running; }
+  boost::shared_ptr<Licq::PluginFactory> internalFactory();
 
 protected:
-  virtual void createInterface() = 0;
-  virtual boost::shared_ptr<Licq::PluginInterface> interface() = 0;
-  virtual boost::shared_ptr<const Licq::PluginInterface> interface() const = 0;
+  virtual boost::shared_ptr<Licq::PluginFactory> factory() = 0;
+  virtual boost::shared_ptr<const Licq::PluginFactory> factory() const = 0;
 
-  bool isRunning() const { return myIsRunning; }
+  void registerInstance(boost::weak_ptr<PluginInstance> instance);
+
+  mutable Licq::Mutex myMutex;
+  std::vector< boost::weak_ptr<PluginInstance> > myInstances;
 
 private:
-  /// Entry point for creating plugin in plugin's thread
-  static void createThreadEntry(void* plugin);
-
-  /// Entry point for calling init() in plugin's thread
-  static bool initThreadEntry(void* plugin);
-
-  /// Entry point for calling run() in plugin's thread
-  static void* startThreadEntry(void* plugin);
-
-  const int myId;
   DynamicLibrary::Ptr myLibrary;
-  PluginThread::Ptr myThread;
-  bool myIsRunning;
-
   int myArgc;
   char** myArgv;
-  char** myArgvCopy;
-
-  void (*myInitCallback)(const Plugin&);
-  void (*myStartCallback)(const Plugin&);
-  void (*myExitCallback)(const Plugin&);
 };
 
 } // namespace LicqDaemon

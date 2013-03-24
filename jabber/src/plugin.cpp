@@ -25,7 +25,6 @@
 #include "client.h"
 #include "owner.h"
 #include "plugin.h"
-#include "pluginversion.h"
 #include "sessionmanager.h"
 #include "user.h"
 #include "vcard.h"
@@ -57,49 +56,11 @@ Plugin::~Plugin()
   delete myClient;
 }
 
-string Plugin::name() const
-{
-  return "Jabber";
-}
-
-string Plugin::version() const
-{
-  return PLUGIN_VERSION_STRING;
-}
-
 int Plugin::run()
 {
   myMainLoop.addRawFile(getReadPipe(), this);
   myMainLoop.run();
   return 0;
-}
-
-void Plugin::destructor()
-{
-  delete this;
-}
-
-unsigned long Plugin::protocolId() const
-{
-  return JABBER_PPID;
-}
-
-unsigned long Plugin::capabilities() const
-{
-  return Licq::ProtocolPlugin::CanSendMsg
-      | Licq::ProtocolPlugin::CanHoldStatusMsg
-      | Licq::ProtocolPlugin::CanSendAuth
-      | Licq::ProtocolPlugin::CanSendAuthReq;
-}
-
-Licq::User* Plugin::createUser(const Licq::UserId& id, bool temporary)
-{
-  return new User(id, temporary);
-}
-
-Licq::Owner* Plugin::createOwner(const Licq::UserId& id)
-{
-  return new Owner(id);
 }
 
 void Plugin::rawFileEvent(int fd, int /*revents*/)

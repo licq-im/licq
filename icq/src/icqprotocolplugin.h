@@ -26,6 +26,8 @@
 namespace LicqIcq
 {
 
+class Factory;
+
 class IcqProtocolPlugin : public Licq::ProtocolPluginHelper, public Licq::IcqProtocol
 {
 public:
@@ -38,17 +40,8 @@ public:
   using Licq::ProtocolPluginHelper::getReadPipe;
 
   // From Licq::PluginInterface
-  std::string name() const;
-  std::string version() const;
   bool init(int argc, char** argv);
   int run();
-  void destructor();
-
-  // From Licq::ProtocolPluginInterface
-  unsigned long protocolId() const;
-  unsigned long capabilities() const;
-  Licq::User* createUser(const Licq::UserId& id, bool temporary);
-  Licq::Owner* createOwner(const Licq::UserId& id);
 
   std::string defaultServerHost() const;
   int defaultServerPort() const;
@@ -97,21 +90,12 @@ public:
   Licq::IcqFileTransferManager* createFileTransferManager(const Licq::UserId& userId);
   Licq::IcqChatManager* createChatManager(const Licq::UserId& userId);
 
-  const struct Licq::IcqCategory* getCategoryByCode(enum Licq::IcqCategoryType type, unsigned short code);
-  const struct Licq::IcqCategory* getCategoryByIndex(enum Licq::IcqCategoryType type, unsigned short index);
-  const struct Licq::IcqCategory* getCategoryByName(enum Licq::IcqCategoryType type, const char* name);
-  const struct Licq::IcqCountry* getCountryByCode(unsigned short countryCode);
-  const struct Licq::IcqCountry* getCountryByIndex(unsigned short index);
-  const struct Licq::IcqCountry* getCountryByName(const char* name);
-  const struct Licq::IcqProvider* getProviderByGateway(const char* gateway);
-  const struct Licq::IcqProvider* getProviderByIndex(unsigned short index);
-  const struct Licq::IcqProvider* getProviderByName(const char* name);
-
 private:
   bool isOwnerOnline(const Licq::UserId& userId);
 
   void pushSignal(Licq::ProtocolSignal* signal);
 
+  friend class Factory;
   ~IcqProtocolPlugin();
 };
 

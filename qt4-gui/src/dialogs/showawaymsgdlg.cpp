@@ -97,7 +97,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(const Licq::UserId& userId, bool fetch, QWidget* 
     if (myUserId.protocolId() == LICQ_PPID)
     {
       Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-          Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+          Licq::gPluginManager.getProtocolInstance(myUserId.ownerId()));
       if (icq)
         icqEventTag = icq->icqFetchAutoResponse(myUserId);
     }

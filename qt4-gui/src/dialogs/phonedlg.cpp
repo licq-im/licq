@@ -30,7 +30,7 @@
 #include <QPixmap>
 #include <QPushButton>
 
-#include <licq/icq/icq.h>
+#include <licq/icq/icqdata.h>
 #include <licq/icq/user.h>
 #include <licq/plugin/pluginmanager.h>
 
@@ -53,8 +53,8 @@ EditPhoneDlg::EditPhoneDlg(QWidget* parent, const struct Licq::PhoneBookEntry* p
 
   m_nEntry = nEntry;
 
-  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+  Licq::IcqData::Ptr icq = plugin_internal_cast<Licq::IcqData>(
+      Licq::gPluginManager.getProtocolPlugin(ICQ_PPID));
   if (!icq)
   {
     close();

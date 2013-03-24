@@ -89,16 +89,7 @@ public:
   ~CMSN();
 
   // From Licq::PluginInterface
-  std::string name() const;
-  std::string version() const;
   int run();
-  void destructor();
-
-  // From Licq::ProtocolPluginInterface
-  unsigned long protocolId() const;
-  unsigned long capabilities() const;
-  Licq::User* createUser(const Licq::UserId& id, bool temporary);
-  Licq::Owner* createOwner(const Licq::UserId& id);
 
   std::string defaultServerHost() const;
   int defaultServerPort() const;

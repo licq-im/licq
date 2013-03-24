@@ -20,52 +20,51 @@
 #ifndef LICQDAEMON_GENERALPLUGIN_H
 #define LICQDAEMON_GENERALPLUGIN_H
 
-#include <licq/plugin/generalplugin.h>
 #include "plugin.h"
+#include "pluginthread.h"
+
+#include <licq/plugin/generalplugin.h>
 
 namespace Licq
 {
 class Event;
-class GeneralPluginInterface;
+class GeneralPluginFactory;
 class PluginSignal;
 }
 
 namespace LicqDaemon
 {
 
+class GeneralPluginInstance;
+
 class GeneralPlugin : public Plugin, public Licq::GeneralPlugin
 {
 public:
   typedef boost::shared_ptr<GeneralPlugin> Ptr;
 
-  GeneralPlugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
-                Licq::GeneralPluginInterface* (*factory)());
-  // Constructor for unit tests
-  GeneralPlugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread,
-                boost::shared_ptr<Licq::GeneralPluginInterface> interface);
+  GeneralPlugin(DynamicLibrary::Ptr lib,
+                boost::shared_ptr<Licq::GeneralPluginFactory> factory,
+                PluginThread::Ptr thread);
   ~GeneralPlugin();
+
+  boost::shared_ptr<GeneralPluginInstance> createInstance(int id);
+
+  boost::shared_ptr<Licq::GeneralPluginFactory> generalFactory();
 
   // From Licq::GeneralPlugin
   std::string description() const;
   std::string usage() const;
   std::string configFile() const;
-  bool isEnabled() const;
-  void enable();
-  void disable();
-
-  bool wantSignal(unsigned long signalType) const;
-  void pushSignal(boost::shared_ptr<const Licq::PluginSignal> signal);
-  void pushEvent(boost::shared_ptr<const Licq::Event> event);
+  Licq::GeneralPluginInstance::Ptr instance() const;
 
 protected:
   // From Plugin
-  void createInterface();
-  boost::shared_ptr<Licq::PluginInterface> interface();
-  boost::shared_ptr<const Licq::PluginInterface> interface() const;
+  boost::shared_ptr<Licq::PluginFactory> factory();
+  boost::shared_ptr<const Licq::PluginFactory> factory() const;
 
 private:
-  Licq::GeneralPluginInterface* (*myFactory)();
-  boost::shared_ptr<Licq::GeneralPluginInterface> myInterface;
+  boost::shared_ptr<Licq::GeneralPluginFactory> myFactory;
+  PluginThread::Ptr myThread;
 };
 
 } // namespace LicqDaemon

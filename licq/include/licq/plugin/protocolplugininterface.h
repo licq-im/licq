@@ -30,10 +30,7 @@
 namespace Licq
 {
 
-class Owner;
 class ProtocolSignal;
-class User;
-class UserId;
 
 /**
  * Interface for protocol plugins implementing support for an IM protocol
@@ -44,15 +41,7 @@ class UserId;
 class ProtocolPluginInterface : public PluginInterface
 {
 public:
-  /// Return the protocol's unique identifier
-  virtual unsigned long protocolId() const = 0;
-
-  /**
-   * Return the protocol plugin's supported features
-   *
-   * @return A mask of bits from Capabilities enum
-   */
-  virtual unsigned long capabilities() const = 0;
+  virtual ~ProtocolPluginInterface() { /* Empty */ }
 
   /**
    * Pushes a signal to the plugin.
@@ -61,82 +50,8 @@ public:
    * signal for later processing).
    */
   virtual void pushSignal(boost::shared_ptr<const ProtocolSignal> signal) = 0;
-
-  /**
-   * Create a user object
-   *
-   * Called by UserManager when users are loaded or added.
-   *
-   * @param id User id
-   * @param temporary True if user isn't permanently added to contact list
-   * @return A newly created Licq::User object or a subclass of the same.
-   */
-  virtual User* createUser(const UserId& id, bool temporary) = 0;
-
-  /**
-   * Create an owner object
-   *
-   * Called by UserManager when owner is loaded or added.
-   *
-   * @param id User id of owner
-   * @return A newly created Licq::Owner object or a subclass of the same.
-   */
-  virtual Owner* createOwner(const UserId& id) = 0;
-
-protected:
-  virtual ~ProtocolPluginInterface() { /* Empty */ }
-};
-
-/**
- * This struct contains the initial data and functions needed by Licq
- * to load a protocol plugin.
- */
-struct ProtocolPluginData
-{
-  /// Magic value to identify an Licq protocol
-  char magic[4];
-
-  /// Version of Licq this plugin is built for
-  int licqVersion;
-
-  /**
-   * Pointer to a factory function that creates and returns an object that
-   * implements the ProtocolPluginInterface interface.
-   *
-   * Note that the protocol should not be (fully) initialized by this. The init
-   * and run functions in Licq::Plugin will be called for this afterwards
-   *
-   */
-  ProtocolPluginInterface* (*pluginFactory)();
 };
 
 } // namespace Licq
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/**
- * Each protocol must contain the following symbol
- *
- * When a protocol is first loaded, this pointer is fetched and used to get
- * the ProtocolPluginData struct for the plugin.
- */
-extern Licq::ProtocolPluginData LicqProtocolPluginData;
-
-#ifdef __cplusplus
-}
-#endif
-
-/*
- * Convenience macro to define protocol data in a plugin
- *
- * Note: <licq/version.h> must be included
- *
- * @param factory Pointer to the protocol factory function
- */
-#define LICQ_PROTOCOL_PLUGIN_DATA(factory) \
-  Licq::ProtocolPluginData LicqProtocolPluginData = \
-  { {'L', 'i', 'c', 'q' }, LICQ_VERSION, factory }
 
 #endif

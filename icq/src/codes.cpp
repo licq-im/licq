@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "icqprotocolplugin.h"
+#include "factory.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -288,7 +288,7 @@ static const struct Licq::IcqCountry gCountries[Licq::NUM_COUNTRIES] =
   { tr_NOOP("Zimbabwe"), 263, 263, 243 }
 };
 
-const struct Licq::IcqCountry* IcqProtocolPlugin::getCountryByCode(unsigned short _nCountryCode)
+const struct Licq::IcqCountry* Factory::getCountryByCode(unsigned short _nCountryCode)
 {
    // do a simple linear search as there aren't too many countries
    unsigned short i = 0;
@@ -297,13 +297,13 @@ const struct Licq::IcqCountry* IcqProtocolPlugin::getCountryByCode(unsigned shor
    return &gCountries[i];
 }
 
-const struct Licq::IcqCountry* IcqProtocolPlugin::getCountryByIndex(unsigned short _nIndex)
+const struct Licq::IcqCountry* Factory::getCountryByIndex(unsigned short _nIndex)
 {
    if (_nIndex >= Licq::NUM_COUNTRIES) return NULL;
    return (&gCountries[_nIndex]);
 }
 
-const struct Licq::IcqCountry* IcqProtocolPlugin::getCountryByName(const char *_szName)
+const struct Licq::IcqCountry* Factory::getCountryByName(const char *_szName)
 {
    unsigned short i = 0;
    while (i < Licq::NUM_COUNTRIES && strcasecmp(gCountries[i].szName, _szName)) i++;
@@ -3519,7 +3519,7 @@ static const struct IcqCategory* getCategory(unsigned *count, Licq::IcqCategoryT
   }
 }
 
-const struct IcqCategory* IcqProtocolPlugin::getCategoryByCode(Licq::IcqCategoryType type, unsigned short code)
+const struct IcqCategory* Factory::getCategoryByCode(Licq::IcqCategoryType type, unsigned short code)
 {
   unsigned count;
   const struct IcqCategory* catlist = getCategory(&count, type);
@@ -3533,7 +3533,7 @@ const struct IcqCategory* IcqProtocolPlugin::getCategoryByCode(Licq::IcqCategory
    return &catlist[i];
 }
 
-const struct IcqCategory* IcqProtocolPlugin::getCategoryByIndex(Licq::IcqCategoryType type, unsigned short index)
+const struct IcqCategory* Factory::getCategoryByIndex(Licq::IcqCategoryType type, unsigned short index)
 {
   unsigned count;
   const struct IcqCategory* catlist = getCategory(&count, type);
@@ -3542,7 +3542,7 @@ const struct IcqCategory* IcqProtocolPlugin::getCategoryByIndex(Licq::IcqCategor
    return (&catlist[index]);
 }
 
-const struct IcqCategory* IcqProtocolPlugin::getCategoryByName(Licq::IcqCategoryType type, const char* name)
+const struct IcqCategory* Factory::getCategoryByName(Licq::IcqCategoryType type, const char* name)
 {
   unsigned count;
   const struct IcqCategory* catlist = getCategory(&count, type);
@@ -3592,7 +3592,7 @@ static const struct Licq::IcqProvider gProviders[Licq::NUM_PROVIDERS] =
   { tr_NOOP("(USA) WebLink Wireless (PageMart) (Advanced)"), tr_NOOP("@airmessage.net"), 31 }
 };
 
-const struct Licq::IcqProvider* IcqProtocolPlugin::getProviderByGateway(const char *_szGateway)
+const struct Licq::IcqProvider* Factory::getProviderByGateway(const char *_szGateway)
 {
    unsigned short i = 0;
    while (i < Licq::NUM_PROVIDERS && strcasecmp(gProviders[i].szGateway, _szGateway))
@@ -3601,13 +3601,13 @@ const struct Licq::IcqProvider* IcqProtocolPlugin::getProviderByGateway(const ch
    return &gProviders[i];
 }
 
-const struct Licq::IcqProvider* IcqProtocolPlugin::getProviderByIndex(unsigned short _nIndex)
+const struct Licq::IcqProvider* Factory::getProviderByIndex(unsigned short _nIndex)
 {
    if (_nIndex >= Licq::NUM_PROVIDERS) return NULL;
    return (&gProviders[_nIndex]);
 }
 
-const struct Licq::IcqProvider* IcqProtocolPlugin::getProviderByName(const char *_szName)
+const struct Licq::IcqProvider* Factory::getProviderByName(const char *_szName)
 {
    unsigned short i = 0;
    while (i < Licq::NUM_PROVIDERS && strcasecmp(gProviders[i].szName, _szName)) i++;

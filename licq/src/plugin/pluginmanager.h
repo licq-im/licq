@@ -21,15 +21,17 @@
 #define LICQDAEMON_PLUGINMANAGER_H
 
 #include <licq/plugin/pluginmanager.h>
-
-#include <queue>
+#include <licq/thread/mutex.h>
 
 #include "../utils/dynamiclibrary.h"
 #include "generalplugin.h"
+#include "generalplugininstance.h"
 #include "pluginthread.h"
 #include "protocolplugin.h"
+#include "protocolplugininstance.h"
 
-#include <licq/thread/mutex.h>
+#include <map>
+#include <queue>
 
 namespace LicqDaemon
 {
@@ -55,8 +57,11 @@ public:
   /// Send shutdown signal to all the plugins
   void shutdownAllPlugins();
 
+  /// Shutdown specific protocol instance
+  void shutdownProtocolInstance(const Licq::UserId& ownerId);
+
   /// Notify the manager that a plugin has exited
-  void pluginHasExited(unsigned short id);
+  void pluginHasExited(int id);
 
   /**
    * Remove a plugin that has exited
@@ -100,7 +105,8 @@ public:
   void getAvailableProtocolPlugins(Licq::StringList& plugins,
                                    bool includeLoaded = true) const;
   Licq::ProtocolPlugin::Ptr getProtocolPlugin(unsigned long protocolId) const;
-
+  Licq::ProtocolPluginInstance::Ptr getProtocolInstance(
+      const Licq::UserId& ownerId) const;
   bool startGeneralPlugin(const std::string& name, int argc, char** argv);
   bool startProtocolPlugin(const std::string& name);
   void unloadGeneralPlugin(Licq::GeneralPlugin::Ptr plugin);
@@ -110,6 +116,9 @@ public:
   void pushProtocolSignal(Licq::ProtocolSignal* signal);
 
 private:
+  void getAvailablePlugins(Licq::StringList& plugins,
+                           const std::string& prefix) const;
+
   DynamicLibrary::Ptr loadPlugin(PluginThread::Ptr pluginThread,
                                  const std::string& name,
                                  const std::string& prefix);
@@ -117,23 +126,27 @@ private:
   bool verifyPluginVersion(const std::string& name, int version);
   int getNewPluginId();
 
-  void startPlugin(GeneralPlugin::Ptr plugin);
-  void startPlugin(ProtocolPlugin::Ptr plugin);
+  void startInstance(GeneralPluginInstance::Ptr instance);
+  void startInstance(ProtocolPluginInstance::Ptr instance);
 
-  void getAvailablePlugins(Licq::StringList& plugins,
-                           const std::string& prefix) const;
+  bool reapGeneralInstance(int exitId);
+  bool reapProtocolInstance(int exitId);
 
   int myNextPluginId;
   PluginThread::Ptr myGuiThread;
 
-  std::list<GeneralPlugin::Ptr> myGeneralPlugins;
   mutable Licq::Mutex myGeneralPluginsMutex;
+  std::list<GeneralPlugin::Ptr> myGeneralPlugins;
+  std::list<GeneralPluginInstance::Ptr> myGeneralInstances;
 
-  std::list<ProtocolPlugin::Ptr> myProtocolPlugins;
   mutable Licq::Mutex myProtocolPluginsMutex;
+  std::list<ProtocolPlugin::Ptr> myProtocolPlugins;
+  typedef std::map<Licq::UserId, ProtocolPluginInstance::Ptr>
+  ProtocolOwnerInstances;
+  ProtocolOwnerInstances myProtocolInstances;
 
   Licq::Mutex myExitListMutex;
-  std::queue<unsigned short> myExitList;
+  std::queue<int> myExitList;
 };
 
 extern PluginManager gPluginManager;

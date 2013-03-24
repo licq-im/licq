@@ -337,7 +337,7 @@ ChatDlg::ChatDlg(const Licq::UserId& userId, QWidget* parent)
     style |= Licq::STYLE_VARIABLExPITCH;
 
   Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+      Licq::gPluginManager.getProtocolInstance(userId.ownerId()));
   if (!icq)
   {
     close();

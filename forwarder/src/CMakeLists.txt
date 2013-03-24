@@ -1,7 +1,7 @@
 set(forwarder_SRCS
   default_config.cpp
+  factory.cpp
   forwarder.cpp
-  main.cpp
 )
 
 # Read default configuration, escape quotes and generate a cpp file

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2013 Licq Developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -20,14 +20,40 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <licq/plugin/protocolplugininterface.h>
-#include <licq/version.h>
+#ifndef LICQ_GENERALPLUGININSTANCE_H
+#define LICQ_GENERALPLUGININSTANCE_H
 
-#include "plugin.h"
+#include "plugininstance.h"
 
-Licq::ProtocolPluginInterface* JabberPluginFactory()
+namespace Licq
 {
-  return new LicqJabber::Plugin;
-}
 
-LICQ_PROTOCOL_PLUGIN_DATA(&JabberPluginFactory);
+class GeneralPlugin;
+
+/**
+ * Represents an instance of a loaded general plugin.
+ */
+class GeneralPluginInstance : public virtual PluginInstance
+{
+public:
+  typedef boost::shared_ptr<GeneralPluginInstance> Ptr;
+
+  /// Get the plugin for this instance
+  virtual boost::shared_ptr<GeneralPlugin> plugin() const = 0;
+
+  /// Get the plugin's status.
+  virtual bool isEnabled() const = 0;
+
+  /// Ask the plugin to enable itself
+  virtual void enable() = 0;
+
+  /// Ask the plugin to disable itself
+  virtual void disable() = 0;
+
+protected:
+  virtual ~GeneralPluginInstance() { /* Empty */ }
+};
+
+} // namespace Licq
+
+#endif

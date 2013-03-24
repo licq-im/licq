@@ -383,7 +383,7 @@ static int fifo_sms(int argc, const char *const *argv)
   }
 
   Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+      Licq::gPluginManager.getProtocolInstance(userId.ownerId()));
   if (!icq)
     return -1;
 
@@ -421,7 +421,7 @@ static int fifo_sms_number(int argc, const char *const *argv)
   }
 
   Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
+      Licq::gPluginManager.getProtocolInstance(ownerId));
   if (!icq)
     return -1;
 
@@ -532,9 +532,6 @@ static int fifo_setpicture(int argc, const char* const* argv)
     }
   }
 
-  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolPlugin(LICQ_PPID));
-
   Licq::OwnerListGuard ownerList(protocolId);
   BOOST_FOREACH(Licq::Owner* owner, **ownerList)
   {
@@ -547,6 +544,10 @@ static int fifo_setpicture(int argc, const char* const* argv)
       o->save(Licq::Owner::SavePictureInfo);
     }
     Licq::gUserManager.notifyUserUpdated(owner->id(), Licq::PluginSignal::UserPicture);
+
+    Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
+        Licq::gPluginManager.getProtocolInstance(owner->id()));
+
     if (owner->id().protocolId() == LICQ_PPID && icq)
     {
       icq->icqUpdateInfoTimestamp(
@@ -628,7 +629,7 @@ static int fifo_plugin_list(int /* argc */, const char* const* /* argv */)
 
   BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
   {
-    gLog.info("[%3d] %s\n", plugin->id(), plugin->name().c_str());
+    gLog.info("%s\n", plugin->name().c_str());
   }
   return 0;
 }
@@ -678,7 +679,7 @@ static int fifo_proto_plugin_list(int /* argc */, const char* const* /* argv */)
 
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
   {
-    gLog.info("[%3d] %s\n", plugin->id(), plugin->name().c_str());
+    gLog.info("%s\n", plugin->name().c_str());
   }
   return 0;
 }

@@ -28,15 +28,9 @@ public:
   AosdPlugin();
 
   // From Licq::PluginInterface
-  std::string name() const;
-  std::string version() const;
   int run();
-  void destructor();
 
   // From Licq::GeneralPluginInterface
-  std::string description() const;
-  std::string usage() const;
-  std::string configFile() const;
   bool isEnabled() const;
 
 private:
