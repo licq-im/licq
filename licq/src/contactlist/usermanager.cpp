@@ -365,11 +365,11 @@ void UserManager::saveOwnerList()
     {
       ++count;
 
-      char key[14];
-      sprintf(key, "Owner%d.Id", count);
+      char key[64];
+      snprintf(key, sizeof(key), "Owner%d.Id", count);
       licqConf.set(key, ownerId.accountId());
 
-      sprintf(key, "Owner%d.Protocol", count);
+      snprintf(key, sizeof(key), "Owner%d.Protocol", count);
       licqConf.set(key, Licq::protocolId_toString(ownerId.protocolId()));
     }
   }
