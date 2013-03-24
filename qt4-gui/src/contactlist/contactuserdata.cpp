@@ -327,7 +327,7 @@ void ContactUserData::updateExtendedStatus()
   if (myStatusInvisible)
     myExtendedStatus |= ContactListModel::InvisibleStatus;
 
-  if (myStatusTyping && myUserId.protocolId() == LICQ_PPID)
+  if (myStatusTyping)
     myExtendedStatus |= ContactListModel::TypingStatus;
 
   if (myPhoneFollowMeStatus == Licq::IcqPluginActive)
