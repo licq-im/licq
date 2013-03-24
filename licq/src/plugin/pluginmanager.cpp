@@ -17,6 +17,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include "config.h"
+
 #include "pluginmanager.h"
 #include "gettext.h"
 
@@ -40,6 +42,10 @@
 #include <cerrno>
 #include <iterator>
 #include <glob.h>
+
+#if HAVE_PRCTL
+#include <sys/prctl.h>
+#endif
 
 #include "../contactlist/usermanager.h"
 #include "../daemon.h"
@@ -85,6 +91,10 @@ static void createPluginCallback(const PluginInstance& instance)
 
   std::transform(name.begin(), name.end(), name.begin(), ::tolower);
   gLogService.createThreadLog(name);
+
+#if HAVE_PRCTL && defined(PR_SET_NAME)
+  prctl(PR_SET_NAME, name.c_str());
+#endif
 }
 
 static void exitPluginCallback(const PluginInstance& instance)
