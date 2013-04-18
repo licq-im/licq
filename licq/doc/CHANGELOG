@@ -16,16 +16,20 @@ o Plugin API: New API with support for multiple plugin instances
 o Support for multiple owners for MSN and Jabber
 
 
+New in 1.7.2
+o Fixed some memory leaks
+o ICQ: Some non-UTF8 messages were converted from UTF8 instead of to
+o Qt4-Gui: Contact list only showed typing icon for ICQ contacts
+
+
 New in 1.7.1
 o Fix a deadlock happening if log messages were flooding
 o Handle line breaks for URL field in history files
 o ICQ: Fix parsing of buddy icon data to not break on long fields
-o ICQ: Some non-UTF8 messages were converted from UTF8 instead of to
 o Qt4-Gui: Show authorization request dialog when adding a user
 o Qt4-Gui: Better logic for setting away message on non-ICQ account
 o Qt4-Gui: Dock icon could show offline even if one account was online
 o Qt4-Gui: Floaties could appear as empty windows
-o Qt4-Gui: Contact list only showed typing icon for ICQ contacts
 
 
 New in 1.7.0
