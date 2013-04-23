@@ -87,7 +87,7 @@ void FilterManager::initialize()
   {
     // Failed to read configuration, setup defaults
     getDefaultRules(myRules);
-    saveRules();
+    saveRules(0);
     return;
   }
 
@@ -95,7 +95,7 @@ void FilterManager::initialize()
   int numrules;
   conf.get("NumRules", numrules);
 
-  for (int i = 0; i < numrules; ++i)
+  for (int i = 1; i <= numrules; ++i)
   {
     char key[20];
     FilterRule rule;
@@ -127,12 +127,13 @@ void FilterManager::getRules(FilterRules& rules)
 void FilterManager::setRules(const FilterRules& newRules)
 {
   Licq::MutexLocker lock(myDataMutex);
+  int oldCount = myRules.size();
   myRules = newRules;
 
-  saveRules();
+  saveRules(oldCount);
 }
 
-void FilterManager::saveRules()
+void FilterManager::saveRules(int oldCount)
 {
   Licq::IniFile conf("filter.conf");
   conf.loadFile();
@@ -144,6 +145,7 @@ void FilterManager::saveRules()
   {
     char key[20];
 
+    ++i;
     sprintf(key, "Rule%i.enabled", i);
     conf.set(key, rule.isEnabled);
     sprintf(key, "Rule%i.protocol", i);
@@ -154,9 +156,25 @@ void FilterManager::saveRules()
     conf.set(key, rule.expression);
     sprintf(key, "Rule%i.action", i);
     conf.set(key, rule.action);
-
-    ++i;
   }
+
+  // Remove old entries
+  while (i < oldCount)
+  {
+    char key[20];
+    ++i;
+    sprintf(key, "Rule%i.enabled", i);
+    conf.unset(key);
+    sprintf(key, "Rule%i.protocol", i);
+    conf.unset(key);
+    sprintf(key, "Rule%i.events", i);
+    conf.unset(key);
+    sprintf(key, "Rule%i.expression", i);
+    conf.unset(key);
+    sprintf(key, "Rule%i.action", i);
+    conf.unset(key);
+  }
+
   conf.writeFile();
 }
 

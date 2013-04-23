@@ -629,6 +629,7 @@ static void upgradeLicq18_updateOnevent(StringMap& owners, IniFile& licqConf)
 
 /*-----------------------------------------------------------------------------
  * Migrate filter configuration to use protocol name instead of ppid constant
+ * Also renumber to start on 1 instead of 0
  *---------------------------------------------------------------------------*/
 static void upgradeLicq18_updateFilter()
 {
@@ -637,19 +638,38 @@ static void upgradeLicq18_updateFilter()
   filterConf.setSection("eventfilter");
   int numFilters;
   filterConf.get("NumRules", numFilters, 0);
-  for (int i = 1; i <= numFilters; ++i)
+  for (int i = numFilters; i > 0; --i)
   {
     char key[16];
-    sprintf(key, "Rule%i.protocol", i);
+    sprintf(key, "Rule%i", i-1);
+    string oldKey(key);
+    sprintf(key, "Rule%i", i);
+    string newKey(key);
+
     unsigned long ppid;
-    filterConf.get(key, ppid, 0);
+    filterConf.get(oldKey + ".protocol", ppid, 0);
     if (ppid == 0x4C696371)
       ppid = ICQ_PPID;
-    filterConf.set(key, ppid == 0 ? "" : Licq::protocolId_toString(ppid));
+    filterConf.set(newKey + ".protocol", ppid == 0 ? "" : Licq::protocolId_toString(ppid));
+
+    bool b; unsigned long ul; string s;
+    filterConf.get(oldKey + ".enabled", b);
+    filterConf.set(newKey + ".enabled", b);
+    filterConf.get(oldKey + ".events", ul);
+    filterConf.set(newKey + ".events", ul);
+    filterConf.get(oldKey + ".expression", s);
+    filterConf.set(newKey + ".expression", s);
+    filterConf.get(oldKey + ".action", ul);
+    filterConf.set(newKey + ".action", ul);
   }
 
-  if (numFilters > 0)
-    filterConf.writeFile();
+  filterConf.unset("Rule0.enabled");
+  filterConf.unset("Rule0.protocol");
+  filterConf.unset("Rule0.events");
+  filterConf.unset("Rule0.expression");
+  filterConf.unset("Rule0.action");
+
+  filterConf.writeFile();
 }
 
 /*-----------------------------------------------------------------------------
