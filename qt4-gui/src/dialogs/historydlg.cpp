@@ -200,13 +200,16 @@ HistoryDlg::HistoryDlg(const Licq::UserId& userId, QWidget* parent)
 
     if (!myUserId.isOwner())
       myContactName = QString::fromUtf8(u->getAlias().c_str());
-    QString myId = u->accountId().c_str();
-    for (int x = 0; x < myId.length(); x++)
+    if (u->protocolId() == ICQ_PPID)
     {
-      if (!myId[x].isDigit())
+      QString myId = u->accountId().c_str();
+      for (int x = 0; x < myId.length(); x++)
       {
-        myUseHtml = true;
-        break;
+        if (!myId[x].isDigit())
+        {
+          myUseHtml = true;
+          break;
+        }
       }
     }
   }

@@ -261,7 +261,7 @@ UserSendEvent::UserSendEvent(int type, const Licq::UserId& userId, QWidget* pare
           historyCount++;
         }
 
-        bool bUseHTML = !isdigit(u->accountId()[1]);
+        bool bUseHTML = u->protocolId() == ICQ_PPID && !isdigit(u->accountId()[0]);
         QString contactName = QString::fromUtf8(u->getAlias().c_str());
         QString ownerName;
         {

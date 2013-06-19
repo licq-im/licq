@@ -1021,7 +1021,7 @@ QWidget* UserPages::Info::createPageAbout(QWidget* parent)
 
 void UserPages::Info::loadPageAbout(const Licq::User* u)
 {
-  bool bUseHTML = myId[0].isLetter();
+  bool bUseHTML = myPpid == ICQ_PPID && !myId[0].isDigit();
 
   QString aboutstr = QString::fromUtf8(u->getUserInfoString("About").c_str());
   aboutstr.replace(QRegExp("\r"), "");
