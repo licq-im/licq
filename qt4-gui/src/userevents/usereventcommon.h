@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2007-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,7 +119,6 @@ protected:
   QAction* myPopupNextMessage;
   InfoField* myTimezone;
   QTimer* myTimeTimer;
-  QTimer* myTypingTimer;
 
   void flashTaskbar();
   void updateWidgetInfo(const Licq::User* u);
@@ -159,7 +158,6 @@ protected slots:
   void showUserInfo();
   void switchSecurity();
   void updateTime();
-  void updateTyping();
   void showUserMenu();
   void showEncodingsMenu();
   void updatedUser(const Licq::UserId& userId, unsigned long subSignal, int argument, unsigned long cid);

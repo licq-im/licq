@@ -128,7 +128,6 @@ UserEventCommon::UserEventCommon(const Licq::UserId& userId, QWidget* parent, co
     mySecure->setEnabled(false);
 
   myTimeTimer = NULL;
-  myTypingTimer = NULL;
 
   QString userEncoding;
   {
@@ -260,11 +259,6 @@ void UserEventCommon::setTyping(bool isTyping)
 {
   if (isTyping)
   {
-    if (myTypingTimer->isActive())
-      myTypingTimer->stop();
-    myTypingTimer->setSingleShot(true);
-    myTypingTimer->start(10000);
-
     QPalette p = myTimezone->palette();
     p.setColor(myTimezone->backgroundRole(), Config::Chat::instance()->tabTypingColor());
     myTimezone->setPalette(p);
@@ -296,12 +290,6 @@ void UserEventCommon::updateWidgetInfo(const Licq::User* u)
       connect(myTimeTimer, SIGNAL(timeout()), SLOT(updateTime()));
       myTimeTimer->start(3000);
     }
-  }
-
-  if (myTypingTimer == NULL)
-  {
-    myTypingTimer = new QTimer(this);
-    connect(myTypingTimer, SIGNAL(timeout()), SLOT(updateTyping()));
   }
 
   if (u->Secure())
@@ -397,23 +385,6 @@ void UserEventCommon::updateTime()
   QDateTime t;
   t.setTime_t(time(NULL) + myRemoteTimeOffset);
   myTimezone->setText(t.time().toString());
-}
-
-void UserEventCommon::updateTyping()
-{
-  // MSN needs this, ICQ/AIM doesn't send additional packets
-  // This does need to be verified with the official AIM client, there is a
-  // packet for it, but ICQ isn't using it apparently.
-  if (myPpid == ICQ_PPID || myUsers.empty())
-    return;
-
-  //FIXME Which user?
-  Licq::UserWriteGuard u(myUsers.front());
-  u->setIsTyping(false);
-  myTimezone->setPalette(QPalette());
-  UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
-  if (Config::Chat::instance()->tabbedChatting() && tabDlg != NULL)
-    tabDlg->updateTabLabel(*u);
 }
 
 void UserEventCommon::showUserMenu()

@@ -1875,9 +1875,6 @@ void UserSendEvent::textChangedTimeout()
   if (str != myTempMessage)
   {
     myTempMessage = str;
-    // Hack to not keep sending the typing notification to ICQ
-    if (myPpid != ICQ_PPID)
-      gProtocolManager.sendTypingNotification(myUsers.front(), true, myConvoId);
   }
   else
   {
