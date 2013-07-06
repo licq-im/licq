@@ -9,6 +9,7 @@ o Auto-Reply: Apply startup status to all owners
 o Fifo: Don't hang if data doesn't end with a line break
 o Forwarder: Apply startup status to all owners
 o ICQ: Moved from daemon and built as separate protocol plugin
+o MSN: Moved MSN specfic typing notification logic from Qt4-Gui
 o Qt4-Gui: Ask for missing password before trying to log on
 o RMS: Apply auto response changes to all owners
 o Plugin API: New API with separate interfaces

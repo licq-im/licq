@@ -37,6 +37,7 @@ namespace Licq
 class Event;
 class INetSocket;
 class TCPSocket;
+class User;
 }
 
 namespace LicqMsn
@@ -82,6 +83,15 @@ struct SStartMessage
 
 typedef std::list<SStartMessage*> StartList;
 
+struct TypingTimeout
+{
+  int timeoutId;
+  Licq::UserId userId;
+  unsigned long convoId;
+};
+
+typedef std::list<TypingTimeout> TypingTimeoutList;
+
 class CMSN : public Licq::ProtocolPluginHelper, public Licq::MainLoopCallback
 {
 public:
@@ -114,6 +124,7 @@ private:
       Licq::TCPSocket* sock);
 
   // Network functions
+  void sendServerPing();
   void SendPacket(CMSNPacket *);
   void Send_SB_Packet(const Licq::UserId& userId, CMSNPacket* p, Licq::TCPSocket* sock,
       bool bDelete = true);
@@ -160,6 +171,36 @@ private:
    */
   void killConversation(Licq::TCPSocket* sock);
 
+  /**
+   * Get a unique id for scheudling a timeout callback
+   */
+  int getNextTimeoutId();
+
+  /**
+   * Update typing status for a user
+   *
+   * @param u User object
+   * @param typing New typing status
+   * @param cid Conversation id
+   */
+  void setIsTyping(Licq::User* u, bool typing, unsigned long cid);
+
+  /**
+   * Update our typing status towards a user
+   *
+   * @param u User object
+   * @param typing New typing status
+   * @param cid Conversation id
+   */
+  void sendIsTyping(const Licq::UserId& userId, bool typing, unsigned long cid);
+
+  /**
+   * Handle timeouts for typing notifications
+   *
+   * @param id Timeout id from mainloop
+   */
+  void typingTimeout(int id);
+
   // Variables
   Licq::UserId myOwnerId;
   Licq::MainLoop myMainLoop;
@@ -173,7 +214,10 @@ private:
   StartList m_lStart;
   bool m_bWaitingPingReply,
        m_bCanPing;
-  
+  TypingTimeoutList myUserTypingTimeouts;
+  TypingTimeoutList myOwnerTypingTimeouts;
+  int myNextTimeoutId;
+
   // Server variables
   unsigned myStatus;
   unsigned long m_nSessionStart;

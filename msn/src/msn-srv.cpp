@@ -740,7 +740,7 @@ void CMSN::MSNGetDisplayPicture(const Licq::UserId& userId, const string &strMSN
   MSNSendInvitation(userId, pGetMSNDP);
 }
 
-void CMSN::timeoutEvent(int /*id*/)
+void CMSN::sendServerPing()
 {
   if (m_bWaitingPingReply)
   {

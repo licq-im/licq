@@ -431,8 +431,7 @@ void CMSN::ProcessSignal(const Licq::ProtocolSignal* s)
     {
       const Licq::ProtoTypingNotificationSignal* sig =
           dynamic_cast<const Licq::ProtoTypingNotificationSignal*>(s);
-      if (sig->active())
-        MSNSendTypingNotification(sig->userId(), sig->convoId());
+      sendIsTyping(sig->userId(), sig->active(), sig->convoId());
       break;
     }
     case Licq::ProtocolSignal::SignalSendMessage:
@@ -549,6 +548,14 @@ void CMSN::closeSocket(Licq::TCPSocket* sock, bool clearUser)
   }
 
   delete sock;
+}
+
+void CMSN::timeoutEvent(int id)
+{
+  if (id == 0)
+    sendServerPing();
+  else
+    typingTimeout(id);
 }
 
 void CMSN::WaitDataEvent(CMSNDataEvent *_pEvent)

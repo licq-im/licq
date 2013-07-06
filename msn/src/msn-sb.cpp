@@ -127,12 +127,7 @@ void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer* packet,
         packet->SkipRN();
         Licq::UserWriteGuard u(userId);
         if (u.isLocked())
-        {
-          u->setIsTyping(true);
-          Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
-              Licq::PluginSignal::SignalUser,
-              Licq::PluginSignal::UserTyping, u->id(), SocketToCID(nSock)));
-        }
+          setIsTyping(*u, true, SocketToCID(nSock));
       }
       else if (strncmp(strType.c_str(), "text/plain", 10) == 0)
       {
@@ -144,7 +139,7 @@ void CMSN::ProcessSBPacket(const Licq::UserId& socketUserId, CMSNBuffer* packet,
         Licq::EventMsg* e = new Licq::EventMsg(msg, time(0), 0, SocketToCID(nSock));
         Licq::UserWriteGuard u(userId);
         if (u.isLocked())
-          u->setIsTyping(false);
+          setIsTyping(*u, false, SocketToCID(nSock));
         if (Licq::gDaemon.addUserEvent(*u, e))
           gOnEventManager.performOnEvent(OnEventData::OnEventMessage, *u);
       }
@@ -653,11 +648,124 @@ void CMSN::killConversation(Licq::TCPSocket* sock)
       // Remove user from the conversation
       convo->removeUser(userId);
 
-      // Clear socket from user if it's still is associated with this conversation
+      sendIsTyping(userId, false, convoId);
+
       UserWriteGuard u(userId);
-      if (u.isLocked() && u->normalSocketDesc() == sock)
-        u->clearNormalSocketDesc();
+      if (u.isLocked())
+      {
+        setIsTyping(*u, false, convoId);
+
+        // Clear socket from user if it's still is associated with this conversation
+        if (u->normalSocketDesc() == sock)
+          u->clearNormalSocketDesc();
+      }
     }
     gConvoManager.remove(convoId);
+  }
+}
+
+int CMSN::getNextTimeoutId()
+{
+  // If no id is in use, reset the counter
+  if (myUserTypingTimeouts.empty() && myOwnerTypingTimeouts.empty())
+    myNextTimeoutId = 1;
+
+  return myNextTimeoutId++;
+}
+
+void CMSN::setIsTyping(Licq::User* u, bool typing, unsigned long cid)
+{
+  if (u->isTyping() != typing)
+  {
+    u->setIsTyping(typing);
+    Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+        Licq::PluginSignal::SignalUser, Licq::PluginSignal::UserTyping, u->id(), cid));
+  }
+
+  // Check if there already exist a timeout timer for this user
+  for (TypingTimeoutList::iterator i = myUserTypingTimeouts.begin();
+      i != myUserTypingTimeouts.end(); ++i)
+  {
+    if ((*i).convoId != cid || (*i).userId != u->id())
+      continue;
+
+    // Found a timeout for previous change, no longer relevant
+    myMainLoop.removeTimeout((*i).timeoutId);
+    myUserTypingTimeouts.erase(i);
+    break;
+  }
+
+  // Setup timeout to clear typing status if we don't receive any update
+  if (typing)
+  {
+    TypingTimeout t;
+    t.timeoutId = getNextTimeoutId();
+    t.convoId = cid;
+    t.userId = u->id();
+    myUserTypingTimeouts.push_back(t);
+    myMainLoop.addTimeout(10000, this, t.timeoutId, true);
+  }
+}
+
+void CMSN::sendIsTyping(const Licq::UserId& userId, bool typing, unsigned long cid)
+{
+  // Check if there exist a timeout timer for this user
+  for (TypingTimeoutList::iterator i = myOwnerTypingTimeouts.begin();
+      i != myOwnerTypingTimeouts.end(); ++i)
+  {
+    if ((*i).convoId != cid || (*i).userId != userId)
+      continue;
+
+    // Found a timeout for previous notification, no longer relevant
+    myMainLoop.removeTimeout((*i).timeoutId);
+    myOwnerTypingTimeouts.erase(i);
+    break;
+  }
+
+  if (typing)
+  {
+    // Send (the first) typing notification
+    MSNSendTypingNotification(userId, cid);
+
+    // Setup timer to resend typing notification regulary while active
+    TypingTimeout t;
+    t.timeoutId = getNextTimeoutId();
+    t.convoId = cid;
+    t.userId = userId;
+    myOwnerTypingTimeouts.push_back(t);
+    myMainLoop.addTimeout(5000, this, t.timeoutId, false);
+  }
+}
+
+void CMSN::typingTimeout(int id)
+{
+  for (TypingTimeoutList::iterator i = myUserTypingTimeouts.begin();
+      i != myUserTypingTimeouts.end(); ++i)
+  {
+    if ((*i).timeoutId != id)
+      continue;
+
+    // Haven't received a typing notification for some time, clear status
+    UserWriteGuard u((*i).userId);
+    if (u.isLocked())
+    {
+      u->setIsTyping(false);
+      Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+          Licq::PluginSignal::SignalUser, Licq::PluginSignal::UserTyping,
+          u->id(), (*i).convoId));
+    }
+    myUserTypingTimeouts.erase(i);
+    return;
+  }
+
+  for (TypingTimeoutList::iterator i = myOwnerTypingTimeouts.begin();
+      i != myOwnerTypingTimeouts.end(); ++i)
+  {
+    if ((*i).timeoutId != id)
+      continue;
+
+    // Resend our typing notification
+    MSNSendTypingNotification((*i).userId, (*i).convoId);
+    return;
   }
 }
