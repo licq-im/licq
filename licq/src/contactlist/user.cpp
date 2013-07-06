@@ -603,7 +603,12 @@ void Licq::User::statusChanged(unsigned newStatus, time_t onlineSince)
       save(SaveLicqInfo);
     }
 
-    setIsTyping(false);
+    if (myIsTyping)
+    {
+      setIsTyping(false);
+      gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+          Licq::PluginSignal::SignalUser, Licq::PluginSignal::UserTyping, myId, 0));
+    }
     SetUserUpdated(false);
   }
   else
