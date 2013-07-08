@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010,2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2007-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ TEST(DynamicLibrary, getSymbol)
 {
   DynamicLibrary libm(LIBM);
 
-  double (*cos)(double);
+  double (*cos)(double) = NULL;
   ASSERT_NO_THROW(libm.getSymbol("cos", &cos));
   EXPECT_NEAR(cos(3.14), -1.0, 0.01);
 }
@@ -73,7 +73,7 @@ TEST(DynamicLibrary, loadSelf)
 {
   DynamicLibrary self("");
 
-  int (*testfuncSymbol)();
+  int (*testfuncSymbol)() = NULL;
   ASSERT_NO_THROW(self.getSymbol("testfunc", &testfuncSymbol));
   EXPECT_TRUE(testfunc == testfuncSymbol);
   EXPECT_EQ(42, testfuncSymbol());
