@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,8 +87,6 @@ private:
   std::string myRejectFile;
   unsigned myErrorTypes;
   std::string myErrorFile;
-
-  pthread_t thread_shutdown;
 
   Licq::IniFile myLicqConf;
   Licq::Mutex myLicqConfMutex;

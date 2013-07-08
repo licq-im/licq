@@ -60,8 +60,6 @@ protected:
 
 private:
   DynamicLibrary::Ptr myLibrary;
-  int myArgc;
-  char** myArgv;
 };
 
 } // namespace LicqDaemon
