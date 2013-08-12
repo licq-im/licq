@@ -1,12 +1,12 @@
 # Belrussian translation for Licq OSD plugin package.
-# Copyright (C) 2005-2012 Licq Developers <licq-dev@googlegroups.com>
+# Copyright (C) 2005-2013 Licq Developers <licq-dev@googlegroups.com>
 # This file is distributed under the same license as the Licq OSD plugin package.
 # Alexey Ivaniuk aka Varjat <varjat@gmail.com>, 2005.
 msgid ""
 msgstr ""
 "Project-Id-Version: Licq OSD plugin ver. 1.3.2 \n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2012-10-03 17:53+0200\n"
+"POT-Creation-Date: 2013-08-12 17:27+0200\n"
 "PO-Revision-Date: 2006-01-25 10:43GMT+2\n"
 "Last-Translator: Alexey Ivaniuk aka Varjat <varjat@gmail.com>\n"
 "Language-Team: Belarussian <i18n@mova.org>\n"
@@ -15,23 +15,23 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/licq-osd.cpp:598
+#: src/licq-osd.cpp:538
 msgid " changed status to: "
 msgstr " змяніў статус: "
 
-#: src/licq-osd.cpp:540
+#: src/licq-osd.cpp:480
 msgid " checked your auto-response"
 msgstr " праглядзеў аўтаматычны адказ"
 
-#: src/licq-osd.cpp:585
+#: src/licq-osd.cpp:525
 msgid " logged off"
 msgstr " пакінуў сетку"
 
-#: src/licq-osd.cpp:583
+#: src/licq-osd.cpp:523
 msgid " logged on"
 msgstr " з'явіўся ў сетцы"
 
-#: src/licq-osd.cpp:567
+#: src/licq-osd.cpp:507
 msgid "Message from "
 msgstr "Паведамленьне ад "
 
@@ -43,39 +43,39 @@ msgstr "Сістэмнае"
 msgid "XOSD plugin initialized"
 msgstr "Плагін XOSD ініцыялізаваны"
 
-#: src/licq-osd.cpp:608
+#: src/licq-osd.cpp:548
 msgid "away"
 msgstr "адсутнічаю"
 
-#: src/licq-osd.cpp:602
+#: src/licq-osd.cpp:542
 msgid "do not disturb"
 msgstr "не турбаваць"
 
-#: src/licq-osd.cpp:610
+#: src/licq-osd.cpp:550
 msgid "free for chat"
 msgstr "згодны паразмаўляць"
 
-#: src/licq-osd.cpp:614
+#: src/licq-osd.cpp:554
 msgid "idle"
 msgstr ""
 
-#: src/licq-osd.cpp:612
+#: src/licq-osd.cpp:552
 msgid "invisible"
 msgstr "нябачны"
 
-#: src/licq-osd.cpp:606
+#: src/licq-osd.cpp:546
 msgid "not available"
 msgstr "нядасягальны"
 
-#: src/licq-osd.cpp:604
+#: src/licq-osd.cpp:544
 msgid "occupied"
 msgstr "заняты"
 
-#: src/licq-osd.cpp:600
+#: src/licq-osd.cpp:540
 msgid "offline"
 msgstr "выключаны"
 
-#: src/licq-osd.cpp:616
+#: src/licq-osd.cpp:556
 msgid "online"
 msgstr "у сетцы"
 

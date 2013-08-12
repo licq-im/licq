@@ -1,5 +1,5 @@
 # Romanian translation for Licq OSD plugin package.
-# Copyright (C) 2003-2012 Licq Developers <licq-dev@googlegroups.com>
+# Copyright (C) 2003-2013 Licq Developers <licq-dev@googlegroups.com>
 # This file is distributed under the same license as the Licq OSD plugin package.
 # George Homorozeanu <george_homorozeanu@yahoo.de>, 2003.
 #
@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: licq_osd_plugin 1.2.7.3\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2012-10-03 17:53+0200\n"
+"POT-Creation-Date: 2013-08-12 17:27+0200\n"
 "PO-Revision-Date: 2003-06-27 21:16+0200\n"
 "Last-Translator: George Homorozeanu <george_homorozeanu@yahoo.de>\n"
 "Language-Team: Romanian <ro@li.org>\n"
@@ -18,23 +18,23 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: src/licq-osd.cpp:598
+#: src/licq-osd.cpp:538
 msgid " changed status to: "
 msgstr " si-a modificat starea in: "
 
-#: src/licq-osd.cpp:540
+#: src/licq-osd.cpp:480
 msgid " checked your auto-response"
 msgstr " verifica-ti functia de auto-raspuns"
 
-#: src/licq-osd.cpp:585
+#: src/licq-osd.cpp:525
 msgid " logged off"
 msgstr " sa delogat"
 
-#: src/licq-osd.cpp:583
+#: src/licq-osd.cpp:523
 msgid " logged on"
 msgstr " sa logat"
 
-#: src/licq-osd.cpp:567
+#: src/licq-osd.cpp:507
 msgid "Message from "
 msgstr "Mesaj de la "
 
@@ -46,39 +46,39 @@ msgstr "Sistem"
 msgid "XOSD plugin initialized"
 msgstr "XOSD plugin initializat"
 
-#: src/licq-osd.cpp:608
+#: src/licq-osd.cpp:548
 msgid "away"
 msgstr "absent"
 
-#: src/licq-osd.cpp:602
+#: src/licq-osd.cpp:542
 msgid "do not disturb"
 msgstr "nu deranjati"
 
-#: src/licq-osd.cpp:610
+#: src/licq-osd.cpp:550
 msgid "free for chat"
 msgstr "liber pentru chat"
 
-#: src/licq-osd.cpp:614
+#: src/licq-osd.cpp:554
 msgid "idle"
 msgstr ""
 
-#: src/licq-osd.cpp:612
+#: src/licq-osd.cpp:552
 msgid "invisible"
 msgstr "invisibil"
 
-#: src/licq-osd.cpp:606
+#: src/licq-osd.cpp:546
 msgid "not available"
 msgstr "indisponibil"
 
-#: src/licq-osd.cpp:604
+#: src/licq-osd.cpp:544
 msgid "occupied"
 msgstr "ocupat"
 
-#: src/licq-osd.cpp:600
+#: src/licq-osd.cpp:540
 msgid "offline"
 msgstr "offline"
 
-#: src/licq-osd.cpp:616
+#: src/licq-osd.cpp:556
 msgid "online"
 msgstr "online"
 

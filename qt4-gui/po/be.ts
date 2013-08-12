@@ -71,26 +71,26 @@
     </message>
     <message>
         <location filename="../src/dialogs/adduserdlg.cpp" line="54"/>
-        <source>&amp;Protocol:</source>
-        <translation>&amp;Пратакол:</translation>
+        <source>&amp;Account:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/adduserdlg.cpp" line="75"/>
+        <location filename="../src/dialogs/adduserdlg.cpp" line="76"/>
         <source>&amp;User ID:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/adduserdlg.cpp" line="86"/>
+        <location filename="../src/dialogs/adduserdlg.cpp" line="87"/>
         <source>&amp;Notify user</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/adduserdlg.cpp" line="90"/>
+        <location filename="../src/dialogs/adduserdlg.cpp" line="91"/>
         <source>&amp;Request authorization</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/adduserdlg.cpp" line="64"/>
+        <location filename="../src/dialogs/adduserdlg.cpp" line="65"/>
         <source>&amp;Group:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -98,38 +98,38 @@
 <context>
     <name>LicqQtGui::AuthDlg</name>
     <message>
-        <location filename="../src/dialogs/authdlg.cpp" line="57"/>
+        <location filename="../src/dialogs/authdlg.cpp" line="58"/>
         <source>Licq - Request Authorization</source>
         <translation type="unfinished">Licq - Запыт аўтарызацыі</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/authdlg.cpp" line="58"/>
+        <location filename="../src/dialogs/authdlg.cpp" line="59"/>
         <source>Request</source>
         <translation type="unfinished">Запыт</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/authdlg.cpp" line="61"/>
+        <location filename="../src/dialogs/authdlg.cpp" line="62"/>
         <source>Licq - Grant Authorization</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/authdlg.cpp" line="62"/>
-        <location filename="../src/dialogs/authdlg.cpp" line="66"/>
+        <location filename="../src/dialogs/authdlg.cpp" line="63"/>
+        <location filename="../src/dialogs/authdlg.cpp" line="67"/>
         <source>Response</source>
         <translation type="unfinished">Адказ</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/authdlg.cpp" line="65"/>
+        <location filename="../src/dialogs/authdlg.cpp" line="66"/>
         <source>Licq - Refuse Authorization</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/authdlg.cpp" line="75"/>
-        <source>&amp;Protocol:</source>
-        <translation type="unfinished">&amp;Пратакол:</translation>
+        <location filename="../src/dialogs/authdlg.cpp" line="76"/>
+        <source>&amp;Account:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/authdlg.cpp" line="83"/>
+        <location filename="../src/dialogs/authdlg.cpp" line="84"/>
         <source>&amp;User ID:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -184,244 +184,244 @@ You can leave me a message.
 <context>
     <name>LicqQtGui::ChatDlg</name>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="116"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="118"/>
         <source>Licq - Chat</source>
         <translation>Licq - Размова</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="123"/>
-        <location filename="../src/dialogs/chatdlg.cpp" line="955"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="125"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="965"/>
         <source>Remote - Not connected</source>
         <translation>Адлеглы камп&apos;ютар не падключаны</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="162"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="164"/>
         <source>&amp;Audio</source>
         <translation>&amp;Аудыё</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="165"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="167"/>
         <source>&amp;Save Chat</source>
         <translation>&amp;Захаваць размову</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="167"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="169"/>
         <source>&amp;Close Chat</source>
         <translation>За&amp;чыніць размову</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="172"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="174"/>
         <source>&amp;Pane Mode</source>
         <translation>&amp;Панэльны рэжым</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="176"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="178"/>
         <source>&amp;IRC Mode</source>
         <translation>&amp;Рэжым IRC</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="160"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="162"/>
         <source>Chat</source>
         <translation>Размова</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="169"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="171"/>
         <source>Mode</source>
         <translation>Рэжым</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="188"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="190"/>
         <source>Ignore user settings</source>
         <translation>Ігнараваць наладкі карыстальніка</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="189"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="191"/>
         <source>Ignores user color settings</source>
         <translation>Ігнараваць наладкі колеру карыстальніка</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="193"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="195"/>
         <source>Beep</source>
         <translation>Гук</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="194"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="196"/>
         <source>Sends a Beep to all recipients</source>
         <translation>Дасылаць гук да ўсіх карыстальнікаў</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="199"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="201"/>
         <source>Foreground color</source>
         <translation>Колер друкаваньня</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="200"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="202"/>
         <source>Changes the foreground color</source>
         <translation>Зьмена колеру друкаваньня</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="206"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="208"/>
         <source>Background color</source>
         <translation>Колер задняга плану</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="207"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="209"/>
         <source>Changes the background color</source>
         <translation>Зьмена колеру задняга плану</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="232"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="234"/>
         <source>Bold</source>
         <translation>Патоўшчанае</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="233"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="235"/>
         <source>Toggles Bold font</source>
         <translation>Патоўшчанае друкаваньне</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="237"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="239"/>
         <source>Italic</source>
         <translation>Курсіў</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="238"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="240"/>
         <source>Toggles Italic font</source>
         <translation>Курсіўнае друкаваньне</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="242"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="244"/>
         <source>Underline</source>
         <translation>Падкрэсьленае</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="243"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="245"/>
         <source>Toggles Underline font</source>
         <translation>Падкрэсьленае друкаваньне</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="247"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="249"/>
         <source>StrikeOut</source>
         <translation>Перакрэсьленае</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="248"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="250"/>
         <source>Toggles StrikeOut font</source>
         <translation>Перакрэсьленае друкаваньне</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="290"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="292"/>
         <source>Default (UTF-8)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="292"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="294"/>
         <source>Western Europe (CP 1252)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="293"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="295"/>
         <source>Shift-JIS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="294"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="296"/>
         <source>Chinese (GBK)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="295"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="297"/>
         <source>Chinese Traditional (Big5)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="296"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="298"/>
         <source>Greek (CP 1253)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="297"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="299"/>
         <source>Turkish (CP 1254)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="298"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="300"/>
         <source>Hebrew (CP 1255)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="299"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="301"/>
         <source>Arabic (CP 1256)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="300"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="302"/>
         <source>Baltic (CP 1257)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="301"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="303"/>
         <source>Russian (CP 1251)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="302"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="304"/>
         <source>Thai (TIS-620)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="303"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="305"/>
         <source>Central European (CP 1250)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="307"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="309"/>
         <source>Set Encoding</source>
         <translation>Усталяваць кадоўку</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="360"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="370"/>
         <source>Local - %1</source>
         <translation>Лакальны - %1</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="586"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="596"/>
         <source>Remote - Waiting for joiners...</source>
         <translation>Адлеглы - Чаканьне далучаючыхся...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="596"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="606"/>
         <source>Remote - Connecting...</source>
         <translation>Адлеглы - Злучэньне...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="686"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="696"/>
         <source>Unable to bind to a port.
 See Network Window for details.</source>
         <translation>Немагчыма адчыніць порт.
 Глядзі акенца сеткі дзеля атрыманьня падрабязнасьцей.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="694"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="704"/>
         <source>Unable to connect to the remote chat.
 See Network Window for details.</source>
         <translation>Немагчыма далучыцца да адлеглай размовы.
 Глядзі акенца сеткі дзеля атрыманьня падрабязнасьцей.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="702"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="712"/>
         <source>Unable to create new thread.
 See Network Window for details.</source>
         <translation>Немагчыма адчыніць новы паток.
 Глядзі акенца сеткі дзеля атрыманьня падрабязнасьцей.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="715"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="725"/>
         <source>%1 closed connection.</source>
         <translation>%1 зачыніў злучэньне.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="770"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="780"/>
         <source>
 &lt;--BEEP--&gt;
 </source>
@@ -430,29 +430,29 @@ See Network Window for details.</source>
 </translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="771"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="781"/>
         <source>&gt; &lt;--BEEP--&gt;
 </source>
         <translation>&gt; &lt;--Гук!--&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="964"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="974"/>
         <source>Do you want to save the chat session?</source>
         <translation>Жадаеце захаваць гэтую сэсію размовы?</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="992"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="1002"/>
         <source>Licq - Chat %1</source>
         <translation>Licq - Размова %1</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="1026"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="1036"/>
         <source>/%1.chat</source>
         <translation>/%1.размова</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="1040"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="1050"/>
         <source>Failed to open file:
 %1</source>
         <translation>Немагчыма адчыніць файл:
@@ -528,112 +528,112 @@ See Network Window for details.</source>
 <context>
     <name>LicqQtGui::ContactUserData</name>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="713"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="719"/>
         <source>Birthday Today!</source>
         <translation>Сёньня Дзень народзінаў!</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="718"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="724"/>
         <source>Typing a message</source>
         <translation>Набірае паведамленьне</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="720"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="726"/>
         <source>Phone &amp;quot;Follow Me&amp;quot;: Available</source>
         <translation>Тэлефон &amp;quot;Кроч за мной&amp;quot;: Даступны</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="722"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="728"/>
         <source>Phone &amp;quot;Follow Me&amp;quot;: Busy</source>
         <translation>Тэлефон &amp;quot;Кроч за мной&amp;quot;: Заняты</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="725"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="731"/>
         <source>ICQphone: Available</source>
         <translation>ICQ-тэлефон: Даступны</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="727"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="733"/>
         <source>ICQphone: Busy</source>
         <translation>ICQ-тэлефон: Заняты</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="730"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="736"/>
         <source>File Server: Enabled</source>
         <translation>Файлавы паслужнік: Уключаны</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="734"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="740"/>
         <source>Secure connection</source>
         <translation>Бясьпечнае злучэньне</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="737"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="743"/>
         <source>Custom Auto Response</source>
         <translation>Карыстальніцкі аўтаматычны адказ</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="746"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="752"/>
         <source>Auto Response:</source>
         <translation>Аштаматычны адказ:</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="754"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="760"/>
         <source>E: </source>
         <translation>Пошта: </translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="758"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="764"/>
         <source>P: </source>
         <translation>Тэлефон: </translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="761"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="767"/>
         <source>C: </source>
         <translation>Маб. тэлефон: </translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="767"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="773"/>
         <source>F: </source>
         <translation>Факс: </translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="774"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="780"/>
         <source>Ip: </source>
         <translation>Адрас: </translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="786"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="792"/>
         <source>O: </source>
         <translation>У сетцы: </translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="790"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="796"/>
         <source>Logged In: </source>
         <translation>Увайшоў: </translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="793"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="799"/>
         <source>Away: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="796"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="802"/>
         <source>Idle: </source>
         <translation>Бяздзейнічае: </translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="799"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="805"/>
         <source>Local time: </source>
         <translation>Мясцовы час: </translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="802"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="808"/>
         <source>ID: </source>
         <translation>Нумар: </translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="740"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="746"/>
         <source>Awaiting authorization</source>
         <translation>Чакае аўтарызацыі</translation>
     </message>
@@ -689,22 +689,22 @@ You can leave me a message.</source>
 <context>
     <name>LicqQtGui::EditCategoryDlg</name>
     <message>
-        <location filename="../src/dialogs/editcategorydlg.cpp" line="80"/>
+        <location filename="../src/dialogs/editcategorydlg.cpp" line="89"/>
         <source>Unspecified</source>
         <translation>Не вызначаны</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editcategorydlg.cpp" line="52"/>
+        <location filename="../src/dialogs/editcategorydlg.cpp" line="61"/>
         <source>Personal Interests</source>
         <translation>Асабістыя зацікаўленасьці</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editcategorydlg.cpp" line="58"/>
+        <location filename="../src/dialogs/editcategorydlg.cpp" line="67"/>
         <source>Organization, Affiliation, Group</source>
         <translation>Установа, Філіял, Гурт</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editcategorydlg.cpp" line="64"/>
+        <location filename="../src/dialogs/editcategorydlg.cpp" line="73"/>
         <source>Past Background</source>
         <translation>Мінулае</translation>
     </message>
@@ -839,134 +839,134 @@ the group &apos;%1&apos;?</source>
 <context>
     <name>LicqQtGui::EditPhoneDlg</name>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="58"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="67"/>
         <source>Description:</source>
         <translation>Апісаньне:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="62"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="71"/>
         <source>Home Phone</source>
         <translation>Хатні тэлефон</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="63"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="72"/>
         <source>Work Phone</source>
         <translation>Працоўны тэлефон</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="64"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="73"/>
         <source>Private Cellular</source>
         <translation>Мабільны тэлефон</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="65"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="74"/>
         <source>Work Cellular</source>
         <translation>Працоўны мабільны тэлефон</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="66"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="75"/>
         <source>Home Fax</source>
         <translation>Хатні факс</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="67"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="76"/>
         <source>Work Fax</source>
         <translation>Працоўны факс</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="68"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="77"/>
         <source>Wireless Pager</source>
         <translation>Пэйджар</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="74"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="83"/>
         <source>Type:</source>
         <translation>Тып:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="79"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="88"/>
         <source>Phone</source>
         <translation>Тэлефон</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="80"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="89"/>
         <source>Cellular</source>
         <translation>Мабільны тэлефон</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="81"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="90"/>
         <source>Cellular SMS</source>
         <translation>SMS</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="82"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="91"/>
         <source>Fax</source>
         <translation>Факс</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="83"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="92"/>
         <source>Pager</source>
         <translation>Пэйджар</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="87"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="96"/>
         <source>Country:</source>
         <translation>Краіна:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="98"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="107"/>
         <source>Network #/Area code:</source>
         <translation>Код тэлефоннай сеткі/Код горада:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="104"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="113"/>
         <source>Number:</source>
         <translation>Нумар:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="110"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="119"/>
         <source>Extension:</source>
         <translation>Дадатковы:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="117"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="126"/>
         <source>Provider:</source>
         <translation>Аператар:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="120"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="129"/>
         <source>Custom</source>
         <translation>Іншы</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="126"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="135"/>
         <source>E-mail Gateway:</source>
         <translation>Паштовы шлюз:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="133"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="142"/>
         <source>Remove leading 0s from Area Code/Network #</source>
         <translation>Выдаліць пачатковыя нулі з кода сеткі/горада</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="141"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="150"/>
         <source>&amp;OK</source>
         <translation>&amp;Добра</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="145"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="154"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Скасаваць</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="174"/>
-        <location filename="../src/dialogs/phonedlg.cpp" line="184"/>
-        <location filename="../src/dialogs/phonedlg.cpp" line="210"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="183"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="193"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="219"/>
         <source>@</source>
         <translation>@</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/phonedlg.cpp" line="222"/>
+        <location filename="../src/dialogs/phonedlg.cpp" line="231"/>
         <source>Please enter a phone number</source>
         <translation>Калі ласка ўвядзіце нумар тэлефона</translation>
     </message>
@@ -987,125 +987,125 @@ the group &apos;%1&apos;?</source>
 <context>
     <name>LicqQtGui::FileDlg</name>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="62"/>
-        <location filename="../src/dialogs/filedlg.cpp" line="283"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="64"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="297"/>
         <source>Licq - File Transfer (%1)</source>
         <translation>Licq - Перадача файла (%1)</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="68"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="70"/>
         <source>Current:</source>
         <translation>Цякучы:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="77"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="79"/>
         <source>File name:</source>
         <translation>Імя файла:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="85"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="87"/>
         <source>File:</source>
         <translation>Файл:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="93"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="95"/>
         <source>Batch:</source>
         <translation>Прагрэс:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="100"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="102"/>
         <source>Time:</source>
         <translation>Час:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="110"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="112"/>
         <source>ETA:</source>
         <translation>Засталося:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="129"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="131"/>
         <source>&amp;Cancel Transfer</source>
         <translation>&amp;Скасаваць перадачу</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="141"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="155"/>
         <source>&amp;Open</source>
         <translation>А&amp;дчыніць</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="142"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="156"/>
         <source>O&amp;pen Dir</source>
         <translation>Ад&amp;чыніць каталёг</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="175"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="189"/>
         <source>File transfer cancelled.</source>
         <translation>Перадача файла скасавана.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="176"/>
-        <location filename="../src/dialogs/filedlg.cpp" line="348"/>
-        <location filename="../src/dialogs/filedlg.cpp" line="357"/>
-        <location filename="../src/dialogs/filedlg.cpp" line="367"/>
-        <location filename="../src/dialogs/filedlg.cpp" line="376"/>
-        <location filename="../src/dialogs/filedlg.cpp" line="386"/>
-        <location filename="../src/dialogs/filedlg.cpp" line="396"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="190"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="362"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="371"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="381"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="390"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="400"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="410"/>
         <source>Close</source>
         <translation>Зачыніць</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="234"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="248"/>
         <source>%1/%2</source>
         <translation>%1/%2</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="263"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="277"/>
         <source>Waiting for connection...</source>
         <translation>Чаканьне злучэньня...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="306"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="320"/>
         <source>Receiving file...</source>
         <translation>Атрыманьне файла...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="308"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="322"/>
         <source>Sending file...</source>
         <translation>Адпраўленьне файла...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="322"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="336"/>
         <source>Received %1 from %2 successfully.</source>
         <translation>Файл %1 атрыман ад %2 пасьпяхова.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="326"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="340"/>
         <source>Sent %1 to %2 successfully.</source>
         <translation>Файл %1 адасланы да %2 пасьпяхова.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="334"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="348"/>
         <source>File transfer complete.</source>
         <translation>Перадача файлаў скончана.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="335"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="349"/>
         <source>OK</source>
         <translation>Добра</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="349"/>
-        <location filename="../src/dialogs/filedlg.cpp" line="351"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="363"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="365"/>
         <source>Remote side disconnected.</source>
         <translation>Адлеглы бок не адказвае.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="358"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="372"/>
         <source>File I/O error: %1.</source>
         <translation>Памылка В/В: %1.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="360"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="374"/>
         <source>File I/O Error:
 %1
 
@@ -1116,120 +1116,120 @@ See Network Window for details.</source>
 Падрабязнасьці ў акенцы сеткі.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="368"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="382"/>
         <source>Handshaking error.
 </source>
         <translation>Памылка ўсталяваньня сувязі.
 </translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="370"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="384"/>
         <source>Handshake Error.
 See Network Window for details.</source>
         <translation>Памылка ўсталяваньня сувязі.
 Падрабязнасьці ў акенцы сеткі.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="377"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="391"/>
         <source>Connection error.
 </source>
         <translation>Памылка сувязі.
 </translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="380"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="394"/>
         <source>Unable to reach remote host.
 See Network Window for details.</source>
         <translation>Адлеглы камп&apos;ютар нядасягальны.
 Падрабязнасьці ў акенцы сеткі.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="387"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="401"/>
         <source>Bind error.
 </source>
         <translation>Памылка адчыненьня парта.
 </translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="390"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="404"/>
         <source>Unable to bind to a port.
 See Network Window for details.</source>
         <translation>Немагчыма адчыніць порт.
 Глядзі акенца сеткі дзеля атрыманьня падрабязнасцей.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="397"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="411"/>
         <source>Not enough resources.
 </source>
         <translation>Недастаткова рэсурсаў.
 </translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="400"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="414"/>
         <source>Unable to create a thread.
 See Network Window for details.</source>
         <translation>Немагчыма адчыніць паток.
 Падрабязнасьці ў акенцы сеткі.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="416"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="430"/>
         <source>Connecting to remote...</source>
         <translation>Злучэньне з адлеглым камп&apos;ютарам...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="429"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="443"/>
         <source>MB</source>
         <translation>МБ</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="433"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="447"/>
         <source>KB</source>
         <translation>КБ</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="437"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="451"/>
         <source>Bytes</source>
         <translation>Байтаў</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="441"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="455"/>
         <source>Byte</source>
         <translation>Байт</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="479"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="493"/>
         <source>File already exists and is at least as big as the incoming file.</source>
         <translation>Файл ужо йснуе і мае большы памер за йснуючы.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="479"/>
-        <location filename="../src/dialogs/filedlg.cpp" line="486"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="493"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="500"/>
         <source>Overwrite</source>
         <translation>Перазапісаць</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="479"/>
-        <location filename="../src/dialogs/filedlg.cpp" line="503"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="493"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="517"/>
         <source>Cancel</source>
         <translation>Скасаваць</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="486"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="500"/>
         <source>File already exists and appears incomplete.</source>
         <translation>Файл ужо йснуе але выглядае няпоўным.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="486"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="500"/>
         <source>Resume</source>
         <translation>Працягнуць</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="503"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="517"/>
         <source>Open error - unable to open file for writing.</source>
         <translation>Памылка пры адчыненьні файла - немагчыма адчыніць файл на запіс.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="503"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="517"/>
         <source>Retry</source>
         <translation>Паспрабаваць зноў</translation>
     </message>
@@ -1356,49 +1356,49 @@ Note: Multibyte characters are not handled so UTF8 characters will be handled as
 <context>
     <name>LicqQtGui::ForwardDlg</name>
     <message>
-        <location filename="../src/dialogs/forwarddlg.cpp" line="64"/>
+        <location filename="../src/dialogs/forwarddlg.cpp" line="63"/>
         <source>Message</source>
         <translation>Паведамленьне</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/forwarddlg.cpp" line="68"/>
+        <location filename="../src/dialogs/forwarddlg.cpp" line="67"/>
         <source>URL</source>
         <translation>Спасылка</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/forwarddlg.cpp" line="73"/>
+        <location filename="../src/dialogs/forwarddlg.cpp" line="72"/>
         <source>Unable to forward this message type (%s).</source>
         <translation type="unfinished">Немагчыма перанакіраваць гэты тып паведамленьня (%s).</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/forwarddlg.cpp" line="78"/>
+        <location filename="../src/dialogs/forwarddlg.cpp" line="77"/>
         <source>Forward %1 To User</source>
         <translation>Перанакіраваньне %1 да карыстальніка</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/forwarddlg.cpp" line="82"/>
+        <location filename="../src/dialogs/forwarddlg.cpp" line="81"/>
         <source>Drag the user to forward to here:</source>
         <translation>Перацягніце карыстальніка сюды дзеля перанакіраваньня:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/forwarddlg.cpp" line="89"/>
+        <location filename="../src/dialogs/forwarddlg.cpp" line="88"/>
         <source>&amp;Forward</source>
         <translation>П&amp;еранакіраваць</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/forwarddlg.cpp" line="93"/>
+        <location filename="../src/dialogs/forwarddlg.cpp" line="92"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Скасаваць</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/forwarddlg.cpp" line="116"/>
+        <location filename="../src/dialogs/forwarddlg.cpp" line="115"/>
         <source>Forwarded message:
 </source>
         <translation>Перанакіраванае паведамленьне:
 </translation>
     </message>
     <message>
-        <location filename="../src/dialogs/forwarddlg.cpp" line="124"/>
+        <location filename="../src/dialogs/forwarddlg.cpp" line="123"/>
         <source>Forwarded URL:
 </source>
         <translation>Перанакіраваная спасылка:
@@ -1452,37 +1452,37 @@ The key isn&apos;t deleted from your keyring.</source>
 <context>
     <name>LicqQtGui::GPGKeySelect</name>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="67"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="66"/>
         <source>Select GPG Key for %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="70"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="69"/>
         <source>Select a GPG key for user %1.</source>
         <translation>Вызначце GPG ключ адпаведна карыстальніку %1.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="73"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="72"/>
         <source>Current key: No key selected</source>
         <translation>Цякучы ключ: не абраны</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="75"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="74"/>
         <source>Current key: %1</source>
         <translation>Цякучы ключ: %1</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="78"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="77"/>
         <source>Use GPG encryption</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="85"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="84"/>
         <source>Filter:</source>
         <translation>Фільтр:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="105"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="104"/>
         <source>&amp;No Key</source>
         <translation>&amp;Без ключа</translation>
     </message>
@@ -1557,94 +1557,87 @@ The key isn&apos;t deleted from your keyring.</source>
 <context>
     <name>LicqQtGui::HistoryDlg</name>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="82"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="80"/>
         <source>&amp;Previous day</source>
         <translation>Пап&amp;ярэдні дзень</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="86"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="84"/>
         <source>&amp;Next day</source>
         <translation>&amp;Наступны дзень</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="97"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="95"/>
         <source>Search</source>
         <translation>Пошук</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="104"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="102"/>
         <source>Find:</source>
         <translation>Знайсьці:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="115"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="113"/>
         <source>Match &amp;case</source>
         <translation>Улічваць рэ&amp;гістр</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="117"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="115"/>
         <source>&amp;Regular expression</source>
         <translation>Рэгулярн&amp;ы выраз</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="122"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="120"/>
         <source>F&amp;ind previous</source>
         <translation>Зна&amp;йсьці папярэдні</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="127"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="125"/>
         <source>&amp;Find next</source>
         <translation>Знайс&amp;ьці наступны</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="151"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="149"/>
         <source>&amp;Menu</source>
         <translation>&amp;Мяню</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="287"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="174"/>
+        <source>Error loading history file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/historydlg.cpp" line="284"/>
         <source>INVALID USER</source>
         <translation>НЯВЕРНЫ КАРЫСТАЛЬНІК</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="297"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="294"/>
         <source>Licq - History </source>
         <translation>Licq - Гісторыя </translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="171"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="169"/>
         <source>Invalid user requested</source>
         <translation>Няспраўны запыт карыстальніка</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="177"/>
-        <source>Error loading history file: %1
-Description: %2</source>
-        <translation>Немагчыма прачытаць файл гісторыі: %1
-Апісаньне: %2</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="180"/>
-        <source>Sorry, history is disabled for this person</source>
-        <translation>Прабачце, гістрыя не вядзецца дзеля гэтага карыстальніка</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="185"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="179"/>
         <source>History is empty</source>
         <translation>Гісторыя адсутнічае</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="204"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="198"/>
         <source>server</source>
         <translation>паслужнік</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="468"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="465"/>
         <source>Search returned no matches</source>
         <translation>Нічога не знойдзена</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="475"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="472"/>
         <source>Search wrapped around</source>
         <translation>Недакладны пошук</translation>
     </message>
@@ -1695,7 +1688,7 @@ Description: %2</source>
 <context>
     <name>LicqQtGui::InfoField</name>
     <message>
-        <location filename="../src/widgets/infofield.cpp" line="61"/>
+        <location filename="../src/widgets/infofield.cpp" line="67"/>
         <source>Unknown</source>
         <translation>Не вядома</translation>
     </message>
@@ -1742,12 +1735,12 @@ Description: %2</source>
 <context>
     <name>LicqQtGui::KeyListItem</name>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="300"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="278"/>
         <source>Yes</source>
         <translation>Так</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="300"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="278"/>
         <source>No</source>
         <translation>Не</translation>
     </message>
@@ -1866,17 +1859,17 @@ Rebuild Licq with OpenSSL support.</source>
 <context>
     <name>LicqQtGui::KeyView</name>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="189"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="188"/>
         <source>Name</source>
         <translation>Імя</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="189"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="188"/>
         <source>EMail</source>
         <translation>Адрас</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="189"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="188"/>
         <source>ID</source>
         <translation>ключ</translation>
     </message>
@@ -1884,7 +1877,7 @@ Rebuild Licq with OpenSSL support.</source>
 <context>
     <name>LicqQtGui::LicqGui</name>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="629"/>
+        <location filename="../src/core/licqgui.cpp" line="643"/>
         <source>Are you sure you want to remove
 %1 (%2)
 from your contact list?</source>
@@ -1893,7 +1886,7 @@ from your contact list?</source>
 з Вашага сьпісу кантактаў?</translation>
     </message>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="265"/>
+        <location filename="../src/core/licqgui.cpp" line="267"/>
         <source>There was an error loading the default configuration file.
 Would you like to try loading the old one?</source>
         <translation>Падчас спробы прачытаць файл усталёвак здарылася памылка.
@@ -2000,42 +1993,42 @@ Would you like to try loading the old one?</source>
 <context>
     <name>LicqQtGui::MMSendDlg</name>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="92"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="93"/>
         <source>Multiple Recipient Message</source>
         <translation>Паведамленьне да некалькіх карыстальнікаў</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="106"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="107"/>
         <source>Multiple Recipient URL</source>
         <translation>Спасылка да некалькіх карыстальнікаў</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="118"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="119"/>
         <source>Multiple Recipient Contact List</source>
         <translation>Сьпіс кантактаў да некалькіх карыстальнікаў</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="136"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="137"/>
         <source>failed</source>
         <translation>Няўдала</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="137"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="138"/>
         <source>&amp;Close</source>
         <translation>З&amp;ачыніць</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="175"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="176"/>
         <source>Sending mass message to %1...</source>
         <translation>Шматкарыстальніцкае адпраўленьне паведамленьня да %1...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="241"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="243"/>
         <source>Sending mass URL to %1...</source>
         <translation>Шматкарыстальніцкае адпраўленьне спасылкі да %1...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="255"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="262"/>
         <source>Sending mass list to %1...</source>
         <translation>Шматкарыстальніцкае адпраўленьне сьпісу да %1...</translation>
     </message>
@@ -2043,27 +2036,27 @@ Would you like to try loading the old one?</source>
 <context>
     <name>LicqQtGui::MMUserView</name>
     <message>
-        <location filename="../src/views/mmuserview.cpp" line="61"/>
+        <location filename="../src/views/mmuserview.cpp" line="58"/>
         <source>Remove</source>
         <translation>Выдаліць</translation>
     </message>
     <message>
-        <location filename="../src/views/mmuserview.cpp" line="62"/>
+        <location filename="../src/views/mmuserview.cpp" line="59"/>
         <source>Crop</source>
         <translation>Сабраць</translation>
     </message>
     <message>
-        <location filename="../src/views/mmuserview.cpp" line="63"/>
+        <location filename="../src/views/mmuserview.cpp" line="60"/>
         <source>Clear</source>
         <translation>Ачысціць</translation>
     </message>
     <message>
-        <location filename="../src/views/mmuserview.cpp" line="65"/>
+        <location filename="../src/views/mmuserview.cpp" line="62"/>
         <source>Add Group</source>
         <translation>Дадаць гурт</translation>
     </message>
     <message>
-        <location filename="../src/views/mmuserview.cpp" line="66"/>
+        <location filename="../src/views/mmuserview.cpp" line="63"/>
         <source>Add All</source>
         <translation>Дадаць усіх</translation>
     </message>
@@ -2071,98 +2064,93 @@ Would you like to try loading the old one?</source>
 <context>
     <name>LicqQtGui::MainWindow</name>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="421"/>
+        <location filename="../src/core/mainwin.cpp" line="351"/>
         <source>System</source>
         <translation>Мяню</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="411"/>
+        <location filename="../src/core/mainwin.cpp" line="341"/>
         <source>&amp;System</source>
         <translation>&amp;Мяню</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="196"/>
+        <location filename="../src/core/mainwin.cpp" line="181"/>
         <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%c - &lt;/tt&gt;cellular number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%M - &lt;/tt&gt;# pending messages (if any)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%P - &lt;/tt&gt;Protocol&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="445"/>
+        <location filename="../src/core/mainwin.cpp" line="375"/>
         <source>Right click - User groups
 Double click - Show next message</source>
         <translation>Клік правай кнопкай мышы - групы карыстальнікаў
 Падвойны клік - праглядзець наступнае паведамленьне</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="457"/>
+        <location filename="../src/core/mainwin.cpp" line="387"/>
         <source>Right click - Status menu
 Double click - Set auto response</source>
         <translation>Клік правай кнопкай мышы - мяню стану
 Падвойны клік - усталяваць аўта-адказ</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="667"/>
-        <source>Error! No owner set</source>
-        <translation>Памылка! Уладар не вызначаны</translation>
-    </message>
-    <message>
-        <location filename="../src/core/mainwin.cpp" line="736"/>
+        <location filename="../src/core/mainwin.cpp" line="640"/>
         <source>SysMsg</source>
         <translation>СістПав</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="737"/>
+        <location filename="../src/core/mainwin.cpp" line="641"/>
         <source>System Message</source>
         <translation>Сістэмнае паведамленьне</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="745"/>
+        <location filename="../src/core/mainwin.cpp" line="649"/>
         <source>%1 msg%2</source>
         <translation>%1 пав-%2</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="745"/>
-        <location filename="../src/core/mainwin.cpp" line="746"/>
+        <location filename="../src/core/mainwin.cpp" line="649"/>
+        <location filename="../src/core/mainwin.cpp" line="650"/>
         <source> </source>
         <translation>е</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="745"/>
-        <location filename="../src/core/mainwin.cpp" line="746"/>
+        <location filename="../src/core/mainwin.cpp" line="649"/>
+        <location filename="../src/core/mainwin.cpp" line="650"/>
         <source>s</source>
         <translation>яў</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="746"/>
+        <location filename="../src/core/mainwin.cpp" line="650"/>
         <source>%1 message%2</source>
         <translation>%1 паведамленьн%2</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="762"/>
+        <location filename="../src/core/mainwin.cpp" line="666"/>
         <source>No msgs</source>
         <translation>0 пав</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="763"/>
+        <location filename="../src/core/mainwin.cpp" line="667"/>
         <source>No messages</source>
         <translation>Няма паведамленьняў</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1124"/>
+        <location filename="../src/core/mainwin.cpp" line="996"/>
         <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq %1 Plugin&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="695"/>
+        <location filename="../src/core/mainwin.cpp" line="599"/>
         <source>is online</source>
         <translation>у сетцы</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1141"/>
+        <location filename="../src/core/mainwin.cpp" line="1013"/>
         <source>Qt URL handling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1158"/>
+        <location filename="../src/core/mainwin.cpp" line="1030"/>
         <source>&lt;p&gt;For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2170,52 +2158,52 @@ Double click - Set auto response</source>
 <context>
     <name>LicqQtGui::MessageBox</name>
     <message>
-        <location filename="../src/core/messagebox.cpp" line="119"/>
-        <location filename="../src/core/messagebox.cpp" line="372"/>
+        <location filename="../src/core/messagebox.cpp" line="118"/>
+        <location filename="../src/core/messagebox.cpp" line="371"/>
         <source>Licq</source>
         <translation>Licq</translation>
     </message>
     <message>
-        <location filename="../src/core/messagebox.cpp" line="150"/>
+        <location filename="../src/core/messagebox.cpp" line="149"/>
         <source>&amp;List</source>
         <translation>Сьп&amp;іс</translation>
     </message>
     <message>
-        <location filename="../src/core/messagebox.cpp" line="153"/>
-        <location filename="../src/core/messagebox.cpp" line="197"/>
-        <location filename="../src/core/messagebox.cpp" line="337"/>
+        <location filename="../src/core/messagebox.cpp" line="152"/>
+        <location filename="../src/core/messagebox.cpp" line="196"/>
+        <location filename="../src/core/messagebox.cpp" line="336"/>
         <source>&amp;Next</source>
         <translation>&amp;Наступны</translation>
     </message>
     <message>
-        <location filename="../src/core/messagebox.cpp" line="155"/>
-        <location filename="../src/core/messagebox.cpp" line="202"/>
+        <location filename="../src/core/messagebox.cpp" line="154"/>
+        <location filename="../src/core/messagebox.cpp" line="201"/>
         <source>&amp;Ok</source>
         <translation>&amp;Добра</translation>
     </message>
     <message>
-        <location filename="../src/core/messagebox.cpp" line="208"/>
+        <location filename="../src/core/messagebox.cpp" line="207"/>
         <source>&amp;Clear All</source>
         <translation>А&amp;чысьціць усё</translation>
     </message>
     <message>
-        <location filename="../src/core/messagebox.cpp" line="209"/>
-        <location filename="../src/core/messagebox.cpp" line="333"/>
+        <location filename="../src/core/messagebox.cpp" line="208"/>
+        <location filename="../src/core/messagebox.cpp" line="332"/>
         <source>&amp;Next (%1)</source>
         <translation>&amp;Наступны (%1)</translation>
     </message>
     <message>
-        <location filename="../src/core/messagebox.cpp" line="358"/>
+        <location filename="../src/core/messagebox.cpp" line="357"/>
         <source>Licq Information</source>
         <translation>Licq Інфармацыя</translation>
     </message>
     <message>
-        <location filename="../src/core/messagebox.cpp" line="362"/>
+        <location filename="../src/core/messagebox.cpp" line="361"/>
         <source>Licq Warning</source>
         <translation>Licq Папярэджваньне</translation>
     </message>
     <message>
-        <location filename="../src/core/messagebox.cpp" line="366"/>
+        <location filename="../src/core/messagebox.cpp" line="365"/>
         <source>Licq Critical</source>
         <translation>Licq Памылка</translation>
     </message>
@@ -2447,57 +2435,52 @@ Double click - Set auto response</source>
 <context>
     <name>LicqQtGui::OwnerEditDlg</name>
     <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="50"/>
+        <location filename="../src/dialogs/ownereditdlg.cpp" line="88"/>
         <source>Edit Account</source>
         <translation>Рэдагаваньне ўліковага запісу</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="67"/>
+        <location filename="../src/dialogs/ownereditdlg.cpp" line="105"/>
         <source>Protocol default</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="69"/>
+        <location filename="../src/dialogs/ownereditdlg.cpp" line="107"/>
         <source>Auto</source>
         <translation type="unfinished">Аўтаматычна</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="81"/>
+        <location filename="../src/dialogs/ownereditdlg.cpp" line="119"/>
         <source>Protocol:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="82"/>
+        <location filename="../src/dialogs/ownereditdlg.cpp" line="120"/>
         <source>&amp;User ID:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="83"/>
+        <location filename="../src/dialogs/ownereditdlg.cpp" line="121"/>
         <source>&amp;Password:</source>
         <translation type="unfinished">&amp;Пароль:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="85"/>
+        <location filename="../src/dialogs/ownereditdlg.cpp" line="123"/>
         <source>&amp;Save Password</source>
         <translation type="unfinished">&amp;Захаваць пароль</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="88"/>
+        <location filename="../src/dialogs/ownereditdlg.cpp" line="126"/>
         <source>S&amp;erver:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="89"/>
+        <location filename="../src/dialogs/ownereditdlg.cpp" line="127"/>
         <source>P&amp;ort:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="106"/>
-        <source>Protocol plugin is not loaded.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="142"/>
+        <location filename="../src/dialogs/ownereditdlg.cpp" line="154"/>
         <source>User ID field cannot be empty.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2505,149 +2488,135 @@ Double click - Set auto response</source>
 <context>
     <name>LicqQtGui::OwnerManagerDlg</name>
     <message>
-        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="73"/>
+        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="72"/>
         <source>Licq - Account Manager</source>
         <translation>Licq - Наладкі ўладароў</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="87"/>
+        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="86"/>
         <source>&amp;Add...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="96"/>
+        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="95"/>
         <source>R&amp;emove...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="152"/>
+        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="124"/>
+        <source>From the Account Manager dialog you can add your accounts or register a new account.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="151"/>
         <source>%1 (Version: %2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="185"/>
+        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="183"/>
         <source>%1 (Not loaded)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="299"/>
-        <source>You are currently registered as
-UIN (User ID): %1
-Base Directory: %2
-Rerun licq with the -b option to select a new
-base directory and then register a new user.</source>
-        <translation>Вы зараз ужо зарэгістраваны з
-UIN (ідэнтыфікатарам карыстальніка): %1
-і працоўным каталёгам  %2
-Перазапусціце licq з опцыяй -b каб абраць новы (альбо іншы)
- каталёг і паспрабуйце зноў.</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="373"/>
+        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="356"/>
         <source>Do you really want to remove account %1?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="90"/>
+        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="89"/>
         <source>&amp;Register...</source>
         <translation type="unfinished">&amp;Зарэгістраваць...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="93"/>
+        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="92"/>
         <source>&amp;Modify...</source>
         <translation type="unfinished">Зь&amp;мяніць...</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="125"/>
-        <source>From the Account Manager dialog you can add your accounts or register a new account.
-Note that only one account per protocol is supported in Licq.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>LicqQtGui::RandomChatDlg</name>
     <message>
-        <location filename="../src/dialogs/randomchatdlg.cpp" line="89"/>
+        <location filename="../src/dialogs/randomchatdlg.cpp" line="91"/>
         <source>&amp;Search</source>
         <translation>&amp;Пошук</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/randomchatdlg.cpp" line="60"/>
+        <location filename="../src/dialogs/randomchatdlg.cpp" line="61"/>
         <source>General</source>
         <translation>Асноўныя</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/randomchatdlg.cpp" line="58"/>
+        <location filename="../src/dialogs/randomchatdlg.cpp" line="59"/>
         <source>(none)</source>
         <translation type="unfinished">(адсутнічае)</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/randomchatdlg.cpp" line="61"/>
+        <location filename="../src/dialogs/randomchatdlg.cpp" line="62"/>
         <source>Romance</source>
         <translation>Рамантычныя</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/randomchatdlg.cpp" line="62"/>
+        <location filename="../src/dialogs/randomchatdlg.cpp" line="63"/>
         <source>Games</source>
         <translation>Гульні</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/randomchatdlg.cpp" line="63"/>
+        <location filename="../src/dialogs/randomchatdlg.cpp" line="64"/>
         <source>Students</source>
         <translation>Студэнты</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/randomchatdlg.cpp" line="64"/>
+        <location filename="../src/dialogs/randomchatdlg.cpp" line="65"/>
         <source>20 Something</source>
         <translation>Каля 20</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/randomchatdlg.cpp" line="65"/>
+        <location filename="../src/dialogs/randomchatdlg.cpp" line="66"/>
         <source>30 Something</source>
         <translation>Каля 30</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/randomchatdlg.cpp" line="66"/>
+        <location filename="../src/dialogs/randomchatdlg.cpp" line="67"/>
         <source>40 Something</source>
         <translation>Каля 40</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/randomchatdlg.cpp" line="67"/>
+        <location filename="../src/dialogs/randomchatdlg.cpp" line="68"/>
         <source>50 Plus</source>
         <translation>Больш за 50</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/randomchatdlg.cpp" line="68"/>
+        <location filename="../src/dialogs/randomchatdlg.cpp" line="69"/>
         <source>Seeking Women</source>
         <translation>Шукаюць жанчыну</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/randomchatdlg.cpp" line="69"/>
+        <location filename="../src/dialogs/randomchatdlg.cpp" line="70"/>
         <source>Seeking Men</source>
         <translation>Шукаюць мужчыну</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/randomchatdlg.cpp" line="114"/>
+        <location filename="../src/dialogs/randomchatdlg.cpp" line="121"/>
         <source>Searching for Random Chat Partner...</source>
         <translation>Пошук выпадковага суразмоўцы...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/randomchatdlg.cpp" line="128"/>
+        <location filename="../src/dialogs/randomchatdlg.cpp" line="135"/>
         <source>No random chat user found in that group.</source>
         <translation>У гэтым гурце карыстальнікі не знойдзены.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/randomchatdlg.cpp" line="131"/>
+        <location filename="../src/dialogs/randomchatdlg.cpp" line="138"/>
         <source>Random chat search timed out.</source>
         <translation>Час на пошук скончыўся.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/randomchatdlg.cpp" line="135"/>
+        <location filename="../src/dialogs/randomchatdlg.cpp" line="142"/>
         <source>Random chat search had an error.</source>
         <translation>Памылка пры пошуке суразмоўцы.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/randomchatdlg.cpp" line="80"/>
+        <location filename="../src/dialogs/randomchatdlg.cpp" line="82"/>
         <source>Licq - Random Chat Search</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2676,367 +2645,270 @@ Note that only one account per protocol is supported in Licq.</source>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::RegisterUserDlg</name>
-    <message>
-        <location filename="../src/dialogs/registeruser.cpp" line="119"/>
-        <source>&amp;Remember Password</source>
-        <translation>За&amp;хаваць пароль</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/registeruser.cpp" line="54"/>
-        <source>Register Account</source>
-        <translation>Зарэгістраваць акаунт</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/registeruser.cpp" line="79"/>
-        <source>Introduction</source>
-        <translation>Прадмова</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/registeruser.cpp" line="83"/>
-        <source>Welcome to the Registration Wizard.
-
-You can register a new ICQ account here.
-
-Press &quot;Next&quot; to proceed.</source>
-        <translation>Вітаем у майстры ўліковых запісаў.
-
-Тут Вы маеце магчымасьць стварыць новы ўліковы запіс ICQ.
-
-Націсьніце &quot;Далей&quot; каб працягнуць.</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/registeruser.cpp" line="98"/>
-        <source>Select password</source>
-        <translation>Вызначце пароль</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/registeruser.cpp" line="99"/>
-        <source>Specify a password for your account.
-Length must be 1 to 8 characters.</source>
-        <translation>Вызначце пароль дзеля Вашага ўліковага запісу
-Яго даўжыня павінна быць ад 1 да 8 сымбаляў.</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/registeruser.cpp" line="103"/>
-        <source>&amp;Password:</source>
-        <translation>&amp;Пароль:</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/registeruser.cpp" line="111"/>
-        <source>&amp;Verify:</source>
-        <translation>П&amp;адцьверджаньне:</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/registeruser.cpp" line="131"/>
-        <source>Account Verification</source>
-        <translation>Праверка ўліковага запісу</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/registeruser.cpp" line="132"/>
-        <source>Retype the letters shown in the image.</source>
-        <translation>Увядзіце літары, якія Вы бачыце на малюнке.</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/registeruser.cpp" line="139"/>
-        <source>&amp;Verification:</source>
-        <translation>Пра&amp;верка: </translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/registeruser.cpp" line="153"/>
-        <source>Registration Completed</source>
-        <translation>Рэгістрацыя завершана</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/registeruser.cpp" line="157"/>
-        <source>Account registration has been successfuly completed.</source>
-        <translation>Рэгістрацыя ўліковага запісу пасьпяхова завершана.</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/registeruser.cpp" line="161"/>
-        <source>Your new user Id:</source>
-        <translation>Ваш новы ўліковы запіс:</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/registeruser.cpp" line="167"/>
-        <source>You are now being automatically logged on.
-Click Finish to edit your personal details.
-After you are online, you can send your personal details to the server.</source>
-        <translation>Зараз Вы будзіце аўтаматычна падключаны да паслужніка.
-Нпцісьніце &quot;Скончыць&quot; каб зьмяніць Вашыя дэталі.
-Пасьля таго, як Вы будзіце злучаны з сеткай, Вы зможаце захаваць Вашыя дадзеныя на паслужніку.</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/registeruser.cpp" line="184"/>
-        <source>Passwords don&apos;t match.</source>
-        <translation>Паролі не супадаюць.</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::SearchUserDlg</name>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="63"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="64"/>
         <source>Licq - User Search</source>
         <translation>Licq -Пошук карыстальніка</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="135"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="144"/>
         <source>Alias:</source>
         <translation>Мянушка:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="80"/>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="89"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="98"/>
         <source>Unspecified</source>
         <translation>Не вызначаны</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="139"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="148"/>
         <source>Gender:</source>
         <translation>Род:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="90"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="99"/>
         <source>Female</source>
         <translation>Жаночы</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="91"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="100"/>
         <source>Male</source>
         <translation>Мужчынскі</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="140"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="149"/>
         <source>Language:</source>
         <translation>Мова:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="145"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="154"/>
         <source>City:</source>
         <translation>Горад:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="146"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="155"/>
         <source>State:</source>
         <translation>Вобласць/Штат:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="147"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="156"/>
         <source>Country:</source>
         <translation>Краіна:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="153"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="162"/>
         <source>Keyword:</source>
         <translation>Ключавое слова:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="202"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="211"/>
         <source>&amp;Search</source>
         <translation>&amp;Пошук</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="207"/>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="310"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="216"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="329"/>
         <source>Reset Search</source>
         <translation>Выдаліць усё</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="220"/>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="311"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="229"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="330"/>
         <source>Enter search parameters and select &apos;Search&apos;</source>
         <translation>Увядзіце дадзеныя дзеля пошуку і націсьніце &quot;Пошук&quot;</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="185"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="194"/>
         <source>View &amp;Info</source>
         <translation>П&amp;раглядзець дадзеныя</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="190"/>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="418"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="199"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="437"/>
         <source>&amp;Add User</source>
         <translation>&amp;Дадаць карыстальніка</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="242"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="258"/>
         <source>Cancel</source>
         <translation>Скасаваць</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="268"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="287"/>
         <source>Searching (this can take awhile)...</source>
         <translation>Пошук (на гэта, магчыма, патрабуецца некалькі хвілін)...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="385"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="404"/>
         <source>Search complete.</source>
         <translation>Пошук завершаны.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="387"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="406"/>
         <source>More users found. Narrow search.</source>
         <translation>Знойдзена зашмат карыстальнікаў. Удакладніце крытэрыі пошуку.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="389"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="408"/>
         <source>%1 more users found. Narrow search.</source>
         <translation>Знойдзена %1 карыстальнікаў. Удакладніце крытэрыі пошуку.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="401"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="420"/>
         <source>Search failed.</source>
         <translation>Пошук няўдалы.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="421"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="440"/>
         <source>&amp;Add %1 Users</source>
         <translation>&amp;Дадаць %1 карыстальнікаў</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="172"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="181"/>
         <source>Alias</source>
         <translation>Мянушка</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="136"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="145"/>
         <source>First name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="137"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="146"/>
         <source>Last name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="138"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="147"/>
         <source>Age range:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="148"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="157"/>
         <source>Company name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="149"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="158"/>
         <source>Company department:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="150"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="159"/>
         <source>Company position:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="152"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="161"/>
         <source>Email address:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="159"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="168"/>
         <source>Return online users only</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="172"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="181"/>
         <source>UIN</source>
         <translation>Нумар</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="172"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="181"/>
         <source>Name</source>
         <translation>Імя</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="172"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="181"/>
         <source>Email</source>
         <translation>Эл. пошта</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="173"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="182"/>
         <source>Status</source>
         <translation>Стан</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="354"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="373"/>
         <source>Offline</source>
         <translation>Адключаны</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="357"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="376"/>
         <source>Online</source>
         <translation>У сетцы</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="361"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="380"/>
         <source>Unknown</source>
         <translation>Не вядома</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="369"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="388"/>
         <source>F</source>
         <translation>Ж</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="372"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="391"/>
         <source>M</source>
         <translation>М</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="365"/>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="375"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="384"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="394"/>
         <source>?</source>
         <translation>?</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="379"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="398"/>
         <source>No</source>
         <translation>Не</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="379"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="398"/>
         <source>Yes</source>
         <translation>Так</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="71"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="80"/>
         <source>Search Criteria</source>
         <translation>Крытэрыі пошуку</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="128"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="137"/>
         <source>UIN:</source>
         <translation>Нумар:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="167"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="176"/>
         <source>Result</source>
         <translation>Вынік</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="173"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="182"/>
         <source>A/G</source>
         <translation>Род/узрост</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="173"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="182"/>
         <source>Auth</source>
         <translation>Аўтарызацыя</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="213"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="222"/>
         <source>Close</source>
         <translation>Зачыніць</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="276"/>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="394"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="295"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="413"/>
         <source>New Search</source>
         <translation>Новы пошук</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="277"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="296"/>
         <source>Search interrupted</source>
         <translation>Пошук адменены</translation>
     </message>
@@ -4397,73 +4269,73 @@ Works with many different window managers.</source>
 <context>
     <name>LicqQtGui::Settings::Plugins</name>
     <message>
-        <location filename="../src/settings/plugins.cpp" line="60"/>
-        <location filename="../src/settings/plugins.cpp" line="67"/>
+        <location filename="../src/settings/plugins.cpp" line="61"/>
+        <location filename="../src/settings/plugins.cpp" line="68"/>
         <source>Plugins</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/plugins.cpp" line="73"/>
+        <location filename="../src/settings/plugins.cpp" line="74"/>
         <source>Name</source>
         <translation type="unfinished">Імя</translation>
     </message>
     <message>
-        <location filename="../src/settings/plugins.cpp" line="73"/>
+        <location filename="../src/settings/plugins.cpp" line="74"/>
         <source>Version</source>
         <translation type="unfinished">Версія</translation>
     </message>
     <message>
-        <location filename="../src/settings/plugins.cpp" line="73"/>
+        <location filename="../src/settings/plugins.cpp" line="74"/>
         <source>Enabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/plugins.cpp" line="73"/>
+        <location filename="../src/settings/plugins.cpp" line="74"/>
         <source>Description</source>
         <translation type="unfinished">Апісаньне</translation>
     </message>
     <message>
-        <location filename="../src/settings/plugins.cpp" line="81"/>
+        <location filename="../src/settings/plugins.cpp" line="82"/>
         <source>Load</source>
         <translation type="unfinished">Загрузіць</translation>
     </message>
     <message>
-        <location filename="../src/settings/plugins.cpp" line="84"/>
+        <location filename="../src/settings/plugins.cpp" line="85"/>
         <source>Unload</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/plugins.cpp" line="87"/>
+        <location filename="../src/settings/plugins.cpp" line="88"/>
         <source>Enable</source>
         <translation type="unfinished">Уключыць</translation>
     </message>
     <message>
-        <location filename="../src/settings/plugins.cpp" line="90"/>
+        <location filename="../src/settings/plugins.cpp" line="91"/>
         <source>Disable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/plugins.cpp" line="93"/>
+        <location filename="../src/settings/plugins.cpp" line="94"/>
         <source>Refresh</source>
         <translation type="unfinished">Абнавіць</translation>
     </message>
     <message>
-        <location filename="../src/settings/plugins.cpp" line="122"/>
+        <location filename="../src/settings/plugins.cpp" line="127"/>
         <source>Yes</source>
         <translation type="unfinished">Так</translation>
     </message>
     <message>
-        <location filename="../src/settings/plugins.cpp" line="122"/>
+        <location filename="../src/settings/plugins.cpp" line="127"/>
         <source>No</source>
         <translation type="unfinished">Не</translation>
     </message>
     <message>
-        <location filename="../src/settings/plugins.cpp" line="136"/>
+        <location filename="../src/settings/plugins.cpp" line="141"/>
         <source>(Not loaded)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/plugins.cpp" line="231"/>
+        <location filename="../src/settings/plugins.cpp" line="245"/>
         <source>Plugin %1 has no configuration file</source>
         <translation type="unfinished">Пашырэньне %1 не мае наладкавых файлаў</translation>
     </message>
@@ -4995,32 +4867,32 @@ Iconset &apos;%2&apos; has been disabled.</source>
 <context>
     <name>LicqQtGui::ShowAwayMsgDlg</name>
     <message>
-        <location filename="../src/dialogs/showawaymsgdlg.cpp" line="68"/>
+        <location filename="../src/dialogs/showawaymsgdlg.cpp" line="69"/>
         <source>&amp;Show Again</source>
         <translation>&amp;Паказваць зноўку</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/showawaymsgdlg.cpp" line="82"/>
+        <location filename="../src/dialogs/showawaymsgdlg.cpp" line="83"/>
         <source>%1 Response for %2</source>
         <translation>%1 адказ ад %2</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/showawaymsgdlg.cpp" line="123"/>
+        <location filename="../src/dialogs/showawaymsgdlg.cpp" line="131"/>
         <source>refused</source>
         <translation>адмоўлена</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/showawaymsgdlg.cpp" line="130"/>
+        <location filename="../src/dialogs/showawaymsgdlg.cpp" line="138"/>
         <source>failed</source>
         <translation>няўдала</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/showawaymsgdlg.cpp" line="133"/>
+        <location filename="../src/dialogs/showawaymsgdlg.cpp" line="141"/>
         <source>timed out</source>
         <translation>скончыўся час</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/showawaymsgdlg.cpp" line="136"/>
+        <location filename="../src/dialogs/showawaymsgdlg.cpp" line="144"/>
         <source>error</source>
         <translation>памылка</translation>
     </message>
@@ -5078,19 +4950,14 @@ reset your statistics?</source>
 <context>
     <name>LicqQtGui::SystemMenu</name>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="75"/>
+        <location filename="../src/core/systemmenu.cpp" line="76"/>
         <source>&amp;View System Messages...</source>
         <translation>Пр&amp;агляд сістэмных маведамленьняў...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="80"/>
+        <location filename="../src/core/systemmenu.cpp" line="81"/>
         <source>&amp;Add User...</source>
         <translation>&amp;дадаць карыстальніка...</translation>
-    </message>
-    <message>
-        <location filename="../src/core/systemmenu.cpp" line="82"/>
-        <source>S&amp;earch for User...</source>
-        <translation>&amp;Пошук карыстальніка...</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="83"/>
@@ -5103,152 +4970,127 @@ reset your statistics?</source>
         <translation>&amp;Запытаць аўтарызацыю...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="87"/>
+        <location filename="../src/core/systemmenu.cpp" line="86"/>
         <source>&amp;Popup All Messages...</source>
         <translation>Паказаць &amp;усе паведамленьні...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="88"/>
+        <location filename="../src/core/systemmenu.cpp" line="87"/>
         <source>Edit &amp;Groups...</source>
         <translation>Рэдагаваць &amp;гурты...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="90"/>
+        <location filename="../src/core/systemmenu.cpp" line="89"/>
         <source>Update All Users</source>
         <translation>Абнавіць усіх карыстальнікаў</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="91"/>
+        <location filename="../src/core/systemmenu.cpp" line="90"/>
         <source>Update Current Group</source>
         <translation>Аднавіць цякучы гурт</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="92"/>
+        <location filename="../src/core/systemmenu.cpp" line="91"/>
         <source>&amp;Redraw User Window</source>
         <translation>П&amp;ерамаляваць акенца карыстальніка</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="93"/>
+        <location filename="../src/core/systemmenu.cpp" line="92"/>
         <source>&amp;Save All Users</source>
         <translation>&amp;Захаваць усіх карыстальнікаў</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="104"/>
-        <source>Don&apos;t Show</source>
-        <translation>Не паказваць</translation>
-    </message>
-    <message>
-        <location filename="../src/core/systemmenu.cpp" line="105"/>
-        <source>Available</source>
-        <translation>Даступны</translation>
-    </message>
-    <message>
-        <location filename="../src/core/systemmenu.cpp" line="106"/>
-        <source>Busy</source>
-        <translation>Заняты</translation>
-    </message>
-    <message>
-        <location filename="../src/core/systemmenu.cpp" line="110"/>
+        <location filename="../src/core/systemmenu.cpp" line="95"/>
         <source>&amp;Status</source>
         <translation>С&amp;тан</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="135"/>
+        <location filename="../src/core/systemmenu.cpp" line="119"/>
         <source>&amp;Group</source>
         <translation>&amp;Гурты</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="155"/>
+        <location filename="../src/core/systemmenu.cpp" line="139"/>
         <source>&amp;Help</source>
         <translation>Дапа&amp;мога</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="156"/>
+        <location filename="../src/core/systemmenu.cpp" line="140"/>
         <source>&amp;Hints...</source>
         <translation>Пара&amp;ды...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="157"/>
+        <location filename="../src/core/systemmenu.cpp" line="141"/>
         <source>&amp;About...</source>
         <translation>Зьв&amp;есткі...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="158"/>
+        <location filename="../src/core/systemmenu.cpp" line="142"/>
         <source>&amp;Statistics...</source>
         <translation>Стат&amp;ыстыка...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="165"/>
+        <location filename="../src/core/systemmenu.cpp" line="149"/>
         <source>Set &amp;Auto Response...</source>
         <translation>Усталяваць &amp;аўта-адказ...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="167"/>
+        <location filename="../src/core/systemmenu.cpp" line="151"/>
         <source>&amp;Network Window...</source>
         <translation>Акенца сетк&amp;і...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="168"/>
+        <location filename="../src/core/systemmenu.cpp" line="152"/>
         <source>&amp;Mini Mode</source>
         <translation>Р&amp;эжым &quot;Міні&quot;</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="170"/>
+        <location filename="../src/core/systemmenu.cpp" line="154"/>
         <source>Show Offline &amp;Users</source>
         <translation>Паказваць &amp;усіх карыстальнікаў</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="180"/>
+        <location filename="../src/core/systemmenu.cpp" line="164"/>
         <source>Sa&amp;ve Settings</source>
         <translation>За&amp;хаваць наладкі</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="182"/>
+        <location filename="../src/core/systemmenu.cpp" line="166"/>
         <source>E&amp;xit</source>
         <translation>В&amp;ыйсьце</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="74"/>
+        <location filename="../src/core/systemmenu.cpp" line="75"/>
         <source>S&amp;ystem Functions</source>
         <translation>Сыст&amp;эмныя прылады</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="79"/>
+        <location filename="../src/core/systemmenu.cpp" line="80"/>
         <source>User &amp;Functions</source>
         <translation>Карыс&amp;тальніцкія прылады</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="81"/>
+        <location filename="../src/core/systemmenu.cpp" line="82"/>
         <source>A&amp;dd Group...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="85"/>
-        <source>ICQ Ra&amp;ndom Chat...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/systemmenu.cpp" line="96"/>
-        <source>ICQ Phone &quot;Follow Me&quot;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/systemmenu.cpp" line="172"/>
+        <location filename="../src/core/systemmenu.cpp" line="156"/>
         <source>Sh&amp;ow Empty Groups</source>
         <translation>Паказва&amp;ць пустыя гурты</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="174"/>
+        <location filename="../src/core/systemmenu.cpp" line="158"/>
         <source>S&amp;ettings...</source>
         <translation>&amp;Наладкі...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="175"/>
+        <location filename="../src/core/systemmenu.cpp" line="159"/>
         <source>&amp;Accounts...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="176"/>
+        <location filename="../src/core/systemmenu.cpp" line="160"/>
         <source>GPG &amp;Key Manager...</source>
         <translation>На&amp;ладкі GPG...</translation>
     </message>
@@ -5256,18 +5098,48 @@ reset your statistics?</source>
 <context>
     <name>LicqQtGui::SystemMenuPrivate::OwnerData</name>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="537"/>
+        <location filename="../src/core/systemmenu.cpp" line="516"/>
         <source>&amp;Info...</source>
         <translation>&amp;дадзеныя...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="538"/>
+        <location filename="../src/core/systemmenu.cpp" line="517"/>
         <source>View &amp;History...</source>
         <translation>Прагл&amp;яд гісторыі...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="539"/>
+        <location filename="../src/core/systemmenu.cpp" line="518"/>
         <source>&amp;Settings...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/systemmenu.cpp" line="560"/>
+        <source>ICQ Phone &quot;Follow Me&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/systemmenu.cpp" line="569"/>
+        <source>Don&apos;t Show</source>
+        <translation type="unfinished">Не паказваць</translation>
+    </message>
+    <message>
+        <location filename="../src/core/systemmenu.cpp" line="570"/>
+        <source>Available</source>
+        <translation type="unfinished">Даступны</translation>
+    </message>
+    <message>
+        <location filename="../src/core/systemmenu.cpp" line="571"/>
+        <source>Busy</source>
+        <translation type="unfinished">Заняты</translation>
+    </message>
+    <message>
+        <location filename="../src/core/systemmenu.cpp" line="576"/>
+        <source>ICQ User S&amp;earch...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/systemmenu.cpp" line="579"/>
+        <source>ICQ Ra&amp;ndom Chat...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5481,7 +5353,7 @@ reset your statistics?</source>
     <name>LicqQtGui::UserEventCommon</name>
     <message>
         <location filename="../src/userevents/usereventcommon.cpp" line="103"/>
-        <location filename="../src/userevents/usereventcommon.cpp" line="287"/>
+        <location filename="../src/userevents/usereventcommon.cpp" line="281"/>
         <source>Unknown</source>
         <translation>Не вядома</translation>
     </message>
@@ -5496,12 +5368,12 @@ reset your statistics?</source>
         <translation>Мяню</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usereventcommon.cpp" line="246"/>
+        <location filename="../src/userevents/usereventcommon.cpp" line="245"/>
         <source>Open user menu</source>
         <translation>Адчыніць мяню карыстальніка</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usereventcommon.cpp" line="250"/>
+        <location filename="../src/userevents/usereventcommon.cpp" line="249"/>
         <source>Open / close secure channel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5511,7 +5383,7 @@ reset your statistics?</source>
         <translation>Гісторыя...</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usereventcommon.cpp" line="247"/>
+        <location filename="../src/userevents/usereventcommon.cpp" line="246"/>
         <source>Show user history</source>
         <translation>Паказаць гісторыю карыстальніка</translation>
     </message>
@@ -5521,7 +5393,7 @@ reset your statistics?</source>
         <translation>Дадзеныя карыстальніка...</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usereventcommon.cpp" line="248"/>
+        <location filename="../src/userevents/usereventcommon.cpp" line="247"/>
         <source>Show user information</source>
         <translation>Паказваць дадзеныя карыстальніка</translation>
     </message>
@@ -5531,7 +5403,7 @@ reset your statistics?</source>
         <translation>Кадоўка</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usereventcommon.cpp" line="249"/>
+        <location filename="../src/userevents/usereventcommon.cpp" line="248"/>
         <source>Select the text encoding used for outgoing messages.</source>
         <translation>Вызначце кадоўку дзеля дасылаемых паведамленьняў.</translation>
     </message>
@@ -5717,62 +5589,62 @@ reset your statistics?</source>
         <translation type="unfinished">Пра&amp;глядзець здарэньне...</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="180"/>
+        <location filename="../src/core/usermenu.cpp" line="179"/>
         <source>View &amp;History...</source>
         <translation type="unfinished">Прагл&amp;яд гісторыі...</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="181"/>
+        <location filename="../src/core/usermenu.cpp" line="180"/>
         <source>&amp;Info...</source>
         <translation type="unfinished">&amp;дадзеныя...</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="258"/>
+        <location filename="../src/core/usermenu.cpp" line="257"/>
         <source>Check %1 Response...</source>
         <translation type="unfinished">Праверыць %1-адказ...</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="261"/>
+        <location filename="../src/core/usermenu.cpp" line="260"/>
         <source>Check Auto Response...</source>
         <translation type="unfinished">Праверыць аўта-адказ...</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="289"/>
+        <location filename="../src/core/usermenu.cpp" line="288"/>
         <source>Close &amp;Secure Channel...</source>
         <translation type="unfinished">За&amp;чыніць бясьпечны канал...</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="294"/>
+        <location filename="../src/core/usermenu.cpp" line="293"/>
         <source>Request &amp;Secure Channel...</source>
         <translation type="unfinished">Запытаць &amp;бясьпечны канал...</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="168"/>
+        <location filename="../src/core/usermenu.cpp" line="167"/>
         <source>Custom Auto Response...</source>
         <translation>Асабісты аўта-адказ...</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="171"/>
+        <location filename="../src/core/usermenu.cpp" line="170"/>
         <source>Add to List</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="172"/>
+        <location filename="../src/core/usermenu.cpp" line="171"/>
         <source>Toggle &amp;Floaty</source>
         <translation>&amp;Уключыць плаваючае акенца</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="174"/>
+        <location filename="../src/core/usermenu.cpp" line="173"/>
         <source>Remove From List</source>
         <translation>Выдаліць з сьпісу</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="176"/>
+        <location filename="../src/core/usermenu.cpp" line="175"/>
         <source>Set GPG Key...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="620"/>
+        <location filename="../src/core/usermenu.cpp" line="617"/>
         <source>Do you really want to add
 %1 (%2)
 to your ignore list?</source>
@@ -5781,7 +5653,7 @@ to your ignore list?</source>
 да ліста ігнараваных карыстальнікаў?</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="179"/>
+        <location filename="../src/core/usermenu.cpp" line="178"/>
         <source>&amp;Copy User ID</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5789,454 +5661,442 @@ to your ignore list?</source>
 <context>
     <name>LicqQtGui::UserPages::Info</name>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="91"/>
+        <location filename="../src/userdlg/info.cpp" line="81"/>
         <source>Info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="95"/>
-        <location filename="../src/userdlg/info.cpp" line="371"/>
+        <location filename="../src/userdlg/info.cpp" line="85"/>
+        <location filename="../src/userdlg/info.cpp" line="384"/>
         <source>More</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="97"/>
-        <location filename="../src/userdlg/info.cpp" line="640"/>
+        <location filename="../src/userdlg/info.cpp" line="87"/>
+        <location filename="../src/userdlg/info.cpp" line="669"/>
         <source>More II</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="99"/>
-        <location filename="../src/userdlg/info.cpp" line="812"/>
+        <location filename="../src/userdlg/info.cpp" line="89"/>
+        <location filename="../src/userdlg/info.cpp" line="849"/>
         <source>Work</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="101"/>
-        <location filename="../src/userdlg/info.cpp" line="964"/>
+        <location filename="../src/userdlg/info.cpp" line="91"/>
+        <location filename="../src/userdlg/info.cpp" line="1009"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="103"/>
-        <location filename="../src/userdlg/info.cpp" line="1000"/>
+        <location filename="../src/userdlg/info.cpp" line="93"/>
+        <location filename="../src/userdlg/info.cpp" line="1045"/>
         <source>Phone Book</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="106"/>
-        <location filename="../src/userdlg/info.cpp" line="1211"/>
+        <location filename="../src/userdlg/info.cpp" line="96"/>
+        <location filename="../src/userdlg/info.cpp" line="1256"/>
         <source>Picture</source>
         <translation type="unfinished">Малюнак</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="108"/>
-        <location filename="../src/userdlg/info.cpp" line="1300"/>
+        <location filename="../src/userdlg/info.cpp" line="98"/>
+        <location filename="../src/userdlg/info.cpp" line="1345"/>
         <source>Last</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="111"/>
-        <source>KDE Adressbook</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/userdlg/info.cpp" line="171"/>
+        <location filename="../src/userdlg/info.cpp" line="150"/>
         <source>General Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="175"/>
+        <location filename="../src/userdlg/info.cpp" line="156"/>
+        <source>Account:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/userdlg/info.cpp" line="163"/>
         <source>Alias:</source>
         <translation type="unfinished">Мянушка:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="182"/>
+        <location filename="../src/userdlg/info.cpp" line="170"/>
         <source>Normally Licq overwrites the Alias when updating user details.
 Check this if you want to keep your changes to the Alias.</source>
         <translation type="unfinished">Звычайна Licq перазапісвае мянушку пры абнаўленьні дадзеных.
 Усталюйце гэтую наладку каб захаваць мянушку.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="189"/>
+        <location filename="../src/userdlg/info.cpp" line="177"/>
         <source>ID:</source>
         <translation type="unfinished">Нумар:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="192"/>
+        <location filename="../src/userdlg/info.cpp" line="180"/>
         <source>IP:</source>
         <translation type="unfinished">IP-адрас:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="196"/>
+        <location filename="../src/userdlg/info.cpp" line="184"/>
         <source>Status:</source>
         <translation type="unfinished">Стан:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="199"/>
+        <location filename="../src/userdlg/info.cpp" line="187"/>
         <source>Timezone:</source>
         <translation type="unfinished">Часавая зона: </translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="203"/>
-        <location filename="../src/userdlg/info.cpp" line="817"/>
-        <location filename="../src/userdlg/info.cpp" line="1363"/>
+        <location filename="../src/userdlg/info.cpp" line="191"/>
+        <location filename="../src/userdlg/info.cpp" line="854"/>
         <source>Name:</source>
         <translation type="unfinished">Імя:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="223"/>
-        <location filename="../src/userdlg/info.cpp" line="853"/>
+        <location filename="../src/userdlg/info.cpp" line="214"/>
+        <location filename="../src/userdlg/info.cpp" line="890"/>
         <source>Address:</source>
         <translation type="unfinished">Адрас:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="226"/>
-        <location filename="../src/userdlg/info.cpp" line="875"/>
+        <location filename="../src/userdlg/info.cpp" line="217"/>
+        <location filename="../src/userdlg/info.cpp" line="912"/>
         <source>Phone:</source>
         <translation type="unfinished">Тэлефон:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="230"/>
-        <location filename="../src/userdlg/info.cpp" line="848"/>
+        <location filename="../src/userdlg/info.cpp" line="221"/>
+        <location filename="../src/userdlg/info.cpp" line="885"/>
         <source>State:</source>
         <translation type="unfinished">Вобласць/Штат:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="235"/>
-        <location filename="../src/userdlg/info.cpp" line="878"/>
+        <location filename="../src/userdlg/info.cpp" line="226"/>
+        <location filename="../src/userdlg/info.cpp" line="915"/>
         <source>Fax:</source>
         <translation type="unfinished">Факс:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="240"/>
-        <location filename="../src/userdlg/info.cpp" line="845"/>
+        <location filename="../src/userdlg/info.cpp" line="231"/>
+        <location filename="../src/userdlg/info.cpp" line="882"/>
         <source>City:</source>
         <translation type="unfinished">Горад:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="244"/>
+        <location filename="../src/userdlg/info.cpp" line="235"/>
         <source>Cellular:</source>
         <translation type="unfinished">Мабільны
 тэлефон:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="249"/>
-        <location filename="../src/userdlg/info.cpp" line="857"/>
+        <location filename="../src/userdlg/info.cpp" line="240"/>
+        <location filename="../src/userdlg/info.cpp" line="894"/>
         <source>Zip:</source>
         <translation type="unfinished">Індэкс:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="253"/>
-        <location filename="../src/userdlg/info.cpp" line="860"/>
+        <location filename="../src/userdlg/info.cpp" line="244"/>
+        <location filename="../src/userdlg/info.cpp" line="897"/>
         <source>Country:</source>
         <translation type="unfinished">Краіна:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="321"/>
-        <location filename="../src/userdlg/info.cpp" line="596"/>
-        <location filename="../src/userdlg/info.cpp" line="921"/>
-        <location filename="../src/userdlg/info.cpp" line="927"/>
+        <location filename="../src/userdlg/info.cpp" line="329"/>
+        <location filename="../src/userdlg/info.cpp" line="620"/>
+        <location filename="../src/userdlg/info.cpp" line="962"/>
+        <location filename="../src/userdlg/info.cpp" line="967"/>
         <source>Unknown (%1)</source>
         <translation type="unfinished">Невядомая (%1)</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="375"/>
+        <location filename="../src/userdlg/info.cpp" line="388"/>
         <source>Age:</source>
         <translation type="unfinished">Узрост:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="378"/>
+        <location filename="../src/userdlg/info.cpp" line="391"/>
         <source>Gender:</source>
         <translation type="unfinished">Род:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="382"/>
-        <location filename="../src/userdlg/info.cpp" line="501"/>
-        <location filename="../src/userdlg/info.cpp" line="507"/>
+        <location filename="../src/userdlg/info.cpp" line="395"/>
         <location filename="../src/userdlg/info.cpp" line="525"/>
+        <location filename="../src/userdlg/info.cpp" line="531"/>
+        <location filename="../src/userdlg/info.cpp" line="549"/>
         <source>Unspecified</source>
         <translation type="unfinished">Не вызначаны</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="383"/>
-        <location filename="../src/userdlg/info.cpp" line="497"/>
+        <location filename="../src/userdlg/info.cpp" line="396"/>
+        <location filename="../src/userdlg/info.cpp" line="521"/>
         <source>Female</source>
         <translation type="unfinished">Жаночы</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="384"/>
-        <location filename="../src/userdlg/info.cpp" line="499"/>
+        <location filename="../src/userdlg/info.cpp" line="397"/>
+        <location filename="../src/userdlg/info.cpp" line="523"/>
         <source>Male</source>
         <translation type="unfinished">Мужчынскі</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="393"/>
-        <location filename="../src/userdlg/info.cpp" line="882"/>
+        <location filename="../src/userdlg/info.cpp" line="406"/>
+        <location filename="../src/userdlg/info.cpp" line="919"/>
         <source>Homepage:</source>
         <translation type="unfinished">Хатняя старонка:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="397"/>
+        <location filename="../src/userdlg/info.cpp" line="410"/>
         <source>Category:</source>
         <translation type="unfinished">Катэгорыя:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="405"/>
+        <location filename="../src/userdlg/info.cpp" line="418"/>
         <source>Description:</source>
         <translation type="unfinished">Апісаньне:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="410"/>
+        <location filename="../src/userdlg/info.cpp" line="423"/>
         <source>Birthday:</source>
         <translation type="unfinished">Дзень народзінаў:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="425"/>
+        <location filename="../src/userdlg/info.cpp" line="438"/>
         <source>Day:</source>
         <translation type="unfinished">Дзень:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1303"/>
+        <location filename="../src/userdlg/info.cpp" line="1348"/>
         <source>Last online:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1307"/>
+        <location filename="../src/userdlg/info.cpp" line="1352"/>
         <source>Last sent event:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1311"/>
+        <location filename="../src/userdlg/info.cpp" line="1356"/>
         <source>Last received event:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1315"/>
+        <location filename="../src/userdlg/info.cpp" line="1360"/>
         <source>Last checked auto response:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1319"/>
+        <location filename="../src/userdlg/info.cpp" line="1364"/>
         <source>Online since:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1323"/>
+        <location filename="../src/userdlg/info.cpp" line="1368"/>
         <source>Registration date:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="420"/>
+        <location filename="../src/userdlg/info.cpp" line="433"/>
         <source>Month:</source>
         <translation type="unfinished">Месяц:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="181"/>
+        <location filename="../src/userdlg/info.cpp" line="169"/>
         <source>Keep alias on update</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="209"/>
+        <location filename="../src/userdlg/info.cpp" line="197"/>
         <source>Email 1:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="215"/>
+        <location filename="../src/userdlg/info.cpp" line="206"/>
         <source>Email 2:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="219"/>
+        <location filename="../src/userdlg/info.cpp" line="210"/>
         <source>Old email:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="415"/>
+        <location filename="../src/userdlg/info.cpp" line="428"/>
         <source>Year:</source>
         <translation type="unfinished">Год:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="418"/>
-        <location filename="../src/userdlg/info.cpp" line="423"/>
-        <location filename="../src/userdlg/info.cpp" line="428"/>
+        <location filename="../src/userdlg/info.cpp" line="431"/>
+        <location filename="../src/userdlg/info.cpp" line="436"/>
+        <location filename="../src/userdlg/info.cpp" line="441"/>
         <source>Not set</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="440"/>
-        <location filename="../src/userdlg/info.cpp" line="460"/>
+        <location filename="../src/userdlg/info.cpp" line="453"/>
+        <location filename="../src/userdlg/info.cpp" line="479"/>
         <source>Language 1:</source>
         <translation type="unfinished">Асноўная мова :</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="443"/>
-        <location filename="../src/userdlg/info.cpp" line="463"/>
+        <location filename="../src/userdlg/info.cpp" line="456"/>
+        <location filename="../src/userdlg/info.cpp" line="482"/>
         <source>Language 2:</source>
         <translation type="unfinished">Другая мова:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="447"/>
-        <location filename="../src/userdlg/info.cpp" line="467"/>
+        <location filename="../src/userdlg/info.cpp" line="460"/>
+        <location filename="../src/userdlg/info.cpp" line="486"/>
         <source>Language 3:</source>
         <translation type="unfinished">Трэцяя мова:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="603"/>
+        <location filename="../src/userdlg/info.cpp" line="627"/>
         <source>Authorization Required</source>
         <translation type="unfinished">Неабходна аўтарызацыя</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="605"/>
+        <location filename="../src/userdlg/info.cpp" line="629"/>
         <source>Authorization Not Required</source>
         <translation type="unfinished">Аўтарызацыя не патрэбна</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="611"/>
+        <location filename="../src/userdlg/info.cpp" line="635"/>
         <source>User has an ICQ Homepage </source>
         <translation type="unfinished">Карыстальнік мае старонку на паслужніку ICQ</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="614"/>
+        <location filename="../src/userdlg/info.cpp" line="638"/>
         <source>User has no ICQ Homepage</source>
         <translation type="unfinished">Карыстальнік не мае старонцы на паслужніку ICQ</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="773"/>
-        <location filename="../src/userdlg/info.cpp" line="1107"/>
-        <location filename="../src/userdlg/info.cpp" line="1111"/>
+        <location filename="../src/userdlg/info.cpp" line="807"/>
+        <location filename="../src/userdlg/info.cpp" line="1150"/>
+        <location filename="../src/userdlg/info.cpp" line="1154"/>
         <source>Unknown</source>
         <translation type="unfinished">Не вядома</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="793"/>
+        <location filename="../src/userdlg/info.cpp" line="827"/>
         <source>(none)</source>
         <translation type="unfinished">(адсутнічае)</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="821"/>
+        <location filename="../src/userdlg/info.cpp" line="858"/>
         <source>Department:</source>
         <translation type="unfinished">Аддзел:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="825"/>
+        <location filename="../src/userdlg/info.cpp" line="862"/>
         <source>Position:</source>
         <translation type="unfinished">Пасада:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="829"/>
+        <location filename="../src/userdlg/info.cpp" line="866"/>
         <source>Occupation:</source>
         <translation type="unfinished">Напрамак
 дзейнасьці:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1006"/>
+        <location filename="../src/userdlg/info.cpp" line="1051"/>
         <source>Type</source>
         <translation type="unfinished">Тып</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1007"/>
+        <location filename="../src/userdlg/info.cpp" line="1052"/>
         <source>Number/Gateway</source>
         <translation type="unfinished">Нумар/Шлюз</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1008"/>
+        <location filename="../src/userdlg/info.cpp" line="1053"/>
         <source>Country/Provider</source>
         <translation type="unfinished">Краіна/Аператар</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1017"/>
+        <location filename="../src/userdlg/info.cpp" line="1062"/>
         <source>Currently at:</source>
         <translation type="unfinished">Зараз:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1041"/>
+        <location filename="../src/userdlg/info.cpp" line="1086"/>
         <source>Add...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1045"/>
-        <location filename="../src/userdlg/info.cpp" line="1226"/>
+        <location filename="../src/userdlg/info.cpp" line="1090"/>
+        <location filename="../src/userdlg/info.cpp" line="1271"/>
         <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1126"/>
-        <location filename="../src/userdlg/info.cpp" line="1128"/>
+        <location filename="../src/userdlg/info.cpp" line="1169"/>
+        <location filename="../src/userdlg/info.cpp" line="1171"/>
         <source>(</source>
         <translation type="unfinished">(</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1126"/>
-        <location filename="../src/userdlg/info.cpp" line="1128"/>
+        <location filename="../src/userdlg/info.cpp" line="1169"/>
+        <location filename="../src/userdlg/info.cpp" line="1171"/>
         <source>) </source>
         <translation type="unfinished">) </translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1131"/>
+        <location filename="../src/userdlg/info.cpp" line="1174"/>
         <source>-</source>
         <translation type="unfinished">-</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1222"/>
-        <location filename="../src/userdlg/info.cpp" line="1371"/>
+        <location filename="../src/userdlg/info.cpp" line="1267"/>
         <source>Browse...</source>
         <translation type="unfinished">Прагляд...</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1248"/>
-        <location filename="../src/userdlg/info.cpp" line="1704"/>
+        <location filename="../src/userdlg/info.cpp" line="1293"/>
+        <location filename="../src/userdlg/info.cpp" line="1705"/>
         <source>Not Available</source>
         <translation type="unfinished">Нядасягальны</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1256"/>
-        <location filename="../src/userdlg/info.cpp" line="1709"/>
+        <location filename="../src/userdlg/info.cpp" line="1301"/>
+        <location filename="../src/userdlg/info.cpp" line="1710"/>
         <source>Failed to Load</source>
         <translation type="unfinished">Немагчыма загрузіць</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1338"/>
+        <location filename="../src/userdlg/info.cpp" line="1383"/>
         <source>Now</source>
         <translation type="unfinished">Зараз</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1350"/>
+        <location filename="../src/userdlg/info.cpp" line="1395"/>
         <source>Offline</source>
         <translation type="unfinished">Адключаны</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1360"/>
-        <source>KDE Adress Book</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/userdlg/info.cpp" line="1367"/>
-        <source>Email:</source>
-        <translation type="unfinished">Скрынка:</translation>
-    </message>
-    <message>
-        <location filename="../src/userdlg/info.cpp" line="1513"/>
+        <location filename="../src/userdlg/info.cpp" line="1491"/>
         <source>You need to be connected to the
 ICQ Network to retrieve your settings.</source>
         <translation type="unfinished">Неабходна быць злучаным з паслужнікам
 каб атрымаць гэтыя звесткі.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1569"/>
+        <location filename="../src/userdlg/info.cpp" line="1552"/>
         <source>You need to be connected to the
 ICQ Network to change your settings.</source>
         <translation type="unfinished">Неабходна быць злучаным з паслужнікам
 каб зьмяніць гэтыя звесткі.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1674"/>
-        <location filename="../src/userdlg/info.cpp" line="1678"/>
+        <location filename="../src/userdlg/info.cpp" line="1675"/>
+        <location filename="../src/userdlg/info.cpp" line="1679"/>
         <source>Select your picture</source>
         <translation type="unfinished">Вызначце Ваш малюнак</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1689"/>
+        <location filename="../src/userdlg/info.cpp" line="1690"/>
         <source> is over %1 bytes.
 Select another picture?</source>
         <translation type="unfinished"> больш за %1 байт.
@@ -6652,320 +6512,287 @@ Select another picture?</source>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::UserSelectDlg</name>
-    <message>
-        <location filename="../src/dialogs/userselectdlg.cpp" line="53"/>
-        <source>&amp;User:</source>
-        <translation>&amp;Карыстальнік:</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/userselectdlg.cpp" line="62"/>
-        <source>&amp;Password:</source>
-        <translation>&amp;Пароль:</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/userselectdlg.cpp" line="70"/>
-        <source>&amp;Save Password</source>
-        <translation>&amp;Захаваць пароль</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/userselectdlg.cpp" line="78"/>
-        <source>&amp;Ok</source>
-        <translation>&amp;Добра</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/userselectdlg.cpp" line="82"/>
-        <source>&amp;Cancel</source>
-        <translation>&amp;Выкасаваць</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/userselectdlg.cpp" line="44"/>
-        <source>Licq User Select</source>
-        <translation>Licq Вызначэньне карыстальніка</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::UserSendEvent</name>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="154"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="159"/>
         <source>Message</source>
         <translation type="unfinished">Паведамленьне</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="155"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="160"/>
         <source>URL</source>
         <translation type="unfinished">Спасылка</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="156"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="161"/>
         <source>Chat Request</source>
         <translation type="unfinished">Запрашэньне да размовы</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="157"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="162"/>
         <source>File Transfer</source>
         <translation type="unfinished">Перадача файла</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="158"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="163"/>
         <source>Contact List</source>
         <translation type="unfinished">Сьпіс кантактаў</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="159"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="164"/>
         <source>SMS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="696"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="701"/>
         <source>Send through server</source>
         <translation type="unfinished">Даслаць праз паслужнік</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="190"/>
-        <location filename="../src/userevents/usersendevent.cpp" line="697"/>
-        <location filename="../src/userevents/usersendevent.cpp" line="1538"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="195"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="702"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1546"/>
         <source>Urgent</source>
         <translation type="unfinished">Хутка</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="166"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="171"/>
         <source>Message Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="171"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="176"/>
         <source>Send Through Server</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="193"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="198"/>
         <source>Multiple Recipients</source>
         <translation type="unfinished">Некалькім карыстальнікам</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="199"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="204"/>
         <source>Smileys</source>
         <translation type="unfinished">Выявы эмоцыяў</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="200"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="205"/>
         <source>Text Color...</source>
         <translation type="unfinished">Колер тэкста...</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="201"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="206"/>
         <source>Background Color...</source>
         <translation type="unfinished">Колер  рляну...</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="206"/>
-        <location filename="../src/userevents/usersendevent.cpp" line="1482"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="211"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1490"/>
         <source>&amp;Send</source>
         <translation type="unfinished">Дас&amp;лаць</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="267"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="272"/>
         <source>Error! no owner set</source>
         <translation type="unfinished">Памылка! Уладальнік не вызначаны</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="414"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="419"/>
         <source>URL:</source>
         <translation type="unfinished">Спасылка:</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="426"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="431"/>
         <source>Multiparty:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="430"/>
-        <location filename="../src/userevents/usersendevent.cpp" line="1952"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="435"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1957"/>
         <source>Invite</source>
         <translation type="unfinished">Запрасіць</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="439"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="444"/>
         <source>File(s):</source>
         <translation type="unfinished">Файл(ы): </translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="443"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="448"/>
         <source>Browse</source>
         <translation type="unfinished">Праглядзець</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="445"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="450"/>
         <source>Edit</source>
         <translation type="unfinished">Рэдагаваць</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="455"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="460"/>
         <source>Drag Users Here - Right Click for Options</source>
         <translation type="unfinished">Перацягніце карыстальнікаў сюды - правы клік дзеля варыянтаў</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="465"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="470"/>
         <source>Phone:</source>
         <translation type="unfinished">Тэлефон:</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="473"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="478"/>
         <source>Chars left:</source>
         <translation type="unfinished">Засталося: </translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="615"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="620"/>
         <source> - URL</source>
         <translation type="unfinished"> - Спасылка</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="618"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="623"/>
         <source> - Chat Request</source>
         <translation type="unfinished"> - Запыт размовы</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="622"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="627"/>
         <source> - File Transfer</source>
         <translation type="unfinished"> - Перадача файла</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="626"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="631"/>
         <source> - Contact List</source>
         <translation type="unfinished"> - Сьпіс кантактаў</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="630"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="635"/>
         <source> - SMS</source>
         <translation type="unfinished"> - СМС</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="637"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="642"/>
         <source> - Message</source>
         <translation type="unfinished"> - Паведамленьне</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="695"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="700"/>
         <source>Select type of message to send</source>
         <translation type="unfinished">Вызначце тып паведамленьня</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="698"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="703"/>
         <source>Multiple recipients</source>
         <translation type="unfinished">Некалькім карыстальнікам</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="699"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="704"/>
         <source>Insert smileys</source>
         <translation type="unfinished">Уставіць выяву эмоцыяў (смайлік) </translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="700"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="705"/>
         <source>Change text color</source>
         <translation type="unfinished">Зьмяніць колер тэксту</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="701"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="706"/>
         <source>Change background color</source>
         <translation type="unfinished">Зьмяніць колер задняга пляну</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="821"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="826"/>
         <source>%1 has joined the conversation.</source>
         <translation type="unfinished">%1 далучыўся да размовы.</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="848"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="853"/>
         <source>%1 has left the conversation.</source>
         <translation type="unfinished">%1 пакінуў размову.</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1166"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1176"/>
         <source>You didn&apos;t edit the SMS.
 Do you really want to send it?</source>
         <translation type="unfinished">Вы не рэдагавалі СМС.
 Вы сапраўды жадаеце адаслаць яго?</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1167"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1177"/>
         <source>You didn&apos;t edit the message.
 Do you really want to send it?</source>
         <translation type="unfinished">Вы не рэдагавалі паведамленьне.
 Даслаць усёроўна?</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1173"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1183"/>
         <source>No URL specified</source>
         <translation type="unfinished">Спасылка не вызначана</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1178"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1188"/>
         <source>You must specify a file to transfer!</source>
         <translation type="unfinished">Вы павінны вызначыць файлы дзеля адсылкі!</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1198"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1208"/>
         <source>Message can&apos;t be sent securely through the server!
 Send anyway?</source>
         <translation type="unfinished">Не магчыма даслаць паведамленьне бясьпечна праз паслужнік!
 Паспрабаваць усёроўна?</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1395"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1403"/>
         <source>Sending </source>
         <translation type="unfinished">Адпраўленьне </translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1396"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1404"/>
         <source>via server</source>
         <translation type="unfinished">праз паслужнік</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1396"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1404"/>
         <source>direct</source>
         <translation type="unfinished">на прамую</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1406"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1414"/>
         <source>&amp;Cancel</source>
         <translation type="unfinished">&amp;Скасаваць</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1422"/>
-        <location filename="../src/userevents/usersendevent.cpp" line="1468"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1430"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1476"/>
         <source>error</source>
         <translation type="unfinished">памылка</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1454"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1462"/>
         <source>done</source>
         <translation type="unfinished">завершана</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1458"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1466"/>
         <source>cancelled</source>
         <translation type="unfinished">спынена</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1462"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1470"/>
         <source>failed</source>
         <translation type="unfinished">няўдала</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1465"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1473"/>
         <source>timed out</source>
         <translation type="unfinished">скончыўся час</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1508"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1516"/>
         <source>Direct send failed,
 send through server?</source>
         <translation type="unfinished">Прамое злучэньне не атрымалася,
 адаслаць праз паслужнік?</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1525"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1533"/>
         <source>%1 is in %2 mode:
 %3
 Send...</source>
@@ -6974,55 +6801,55 @@ Send...</source>
 Адсылаем...</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1538"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1546"/>
         <source> to Contact List</source>
         <translation type="unfinished"> ў сьпіс кантактаў</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1538"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1546"/>
         <source>Cancel</source>
         <translation type="unfinished">Скасаваць</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1586"/>
-        <location filename="../src/userevents/usersendevent.cpp" line="1607"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1594"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1615"/>
         <source>No reason provided</source>
         <translation type="unfinished">Прычына не вызначана</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1588"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1596"/>
         <source>File transfer with %1 refused:
 %2</source>
         <translation type="unfinished">Абмен файлам з %1 не атрымаўся:
 %2</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1609"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1617"/>
         <source>Chat with %1 refused:
 %2</source>
         <translation type="unfinished">Не атрымалася ўсталяваць размову з %1:
 %2</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1775"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1783"/>
         <source>Drag Users Here
 Right Click for Options</source>
         <translation type="unfinished">Перацягніце карыстальнікаў сюды
 Правы клік дзеля варыянтаў</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1944"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1949"/>
         <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1959"/>
-        <location filename="../src/userevents/usersendevent.cpp" line="1961"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1964"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1966"/>
         <source>Select files to send</source>
         <translation type="unfinished">Абярыце файлы дзеля адсылкі</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1998"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="2003"/>
         <source>%1 Files</source>
         <translation type="unfinished">%1 файлаў</translation>
     </message>
@@ -7030,42 +6857,42 @@ Right Click for Options</source>
 <context>
     <name>LicqQtGui::UserViewEvent</name>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="120"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="121"/>
         <source>Aut&amp;o Close</source>
         <translation>А&amp;ўтаматычна зачыняць</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="127"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="257"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="128"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="258"/>
         <source>Nex&amp;t</source>
         <translation>&amp;Наступнае</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="132"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="133"/>
         <source>&amp;Close</source>
         <translation>З&amp;ачыніць</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="133"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="134"/>
         <source>Normal Click - Close Window
 &lt;CTRL&gt;+Click - also delete User</source>
         <translation>Звычайны клік - зачыняе акенца
 клік пры націснутым &lt;CTRL&gt; - выдаляе карыстальніка</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="255"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="256"/>
         <source>Nex&amp;t (%1)</source>
         <translation>&amp;Наступнае (%1)</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="676"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="696"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="687"/>
         <location filename="../src/userevents/userviewevent.cpp" line="707"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="718"/>
         <source>&amp;Reply</source>
         <translation>Ад&amp;казаць</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="678"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="689"/>
         <source>
 --------------------
 Request was cancelled.</source>
@@ -7074,80 +6901,80 @@ Request was cancelled.</source>
 Запыт быў спынены.</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="683"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="694"/>
         <source>A&amp;ccept</source>
         <translation>П&amp;рыняць</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="684"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="716"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="695"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="727"/>
         <source>&amp;Refuse</source>
         <translation>Адк&amp;ланіць</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="691"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="702"/>
         <source>&amp;Join</source>
         <translation>&amp;Далучыцца</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="697"/>
         <location filename="../src/userevents/userviewevent.cpp" line="708"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="719"/>
         <source>&amp;Quote</source>
         <translation>&amp;Цытаваць</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="698"/>
         <location filename="../src/userevents/userviewevent.cpp" line="709"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="720"/>
         <source>&amp;Forward</source>
         <translation>&amp;Перанакіраваць</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="699"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="710"/>
         <source>Start Chat</source>
         <translation>Пачаць размову</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="710"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="721"/>
         <source>&amp;View</source>
         <translation>Пра&amp;гляд</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="715"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="726"/>
         <source>A&amp;uthorize</source>
         <translation>Аў&amp;тарызаваць</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="719"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="728"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="737"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="749"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="730"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="739"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="748"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="760"/>
         <source>A&amp;dd User</source>
         <translation>Дадаць кар&amp;ыстальніка</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="746"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="757"/>
         <source>A&amp;dd %1 Users</source>
         <translation>Дадаць %1 кар&amp;ыстальніка(ў)</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="754"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="765"/>
         <source>&amp;View Email</source>
         <translation>Праглядзець по&amp;шту</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="494"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="497"/>
         <source>Chat</source>
         <translation>Размова</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="514"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="522"/>
         <source>File Transfer</source>
         <translation>Перадача файла</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="720"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="729"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="738"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="731"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="740"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="749"/>
         <source>&amp;View Info</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7248,26 +7075,26 @@ Request was cancelled.</source>
 <context>
     <name>QMessageBox</name>
     <message>
-        <location filename="../src/core/messagebox.cpp" line="62"/>
-        <location filename="../src/core/messagebox.cpp" line="67"/>
-        <location filename="../src/core/messagebox.cpp" line="70"/>
-        <location filename="../src/core/messagebox.cpp" line="72"/>
-        <location filename="../src/core/messagebox.cpp" line="76"/>
-        <location filename="../src/core/messagebox.cpp" line="79"/>
-        <location filename="../src/core/messagebox.cpp" line="89"/>
-        <location filename="../src/core/messagebox.cpp" line="94"/>
+        <location filename="../src/core/messagebox.cpp" line="61"/>
+        <location filename="../src/core/messagebox.cpp" line="66"/>
+        <location filename="../src/core/messagebox.cpp" line="69"/>
+        <location filename="../src/core/messagebox.cpp" line="71"/>
+        <location filename="../src/core/messagebox.cpp" line="75"/>
+        <location filename="../src/core/messagebox.cpp" line="78"/>
+        <location filename="../src/core/messagebox.cpp" line="88"/>
+        <location filename="../src/core/messagebox.cpp" line="93"/>
         <source>Licq Question</source>
         <translation>Licq Пытаньне</translation>
     </message>
     <message>
-        <location filename="../src/core/messagebox.cpp" line="77"/>
-        <location filename="../src/core/messagebox.cpp" line="80"/>
+        <location filename="../src/core/messagebox.cpp" line="76"/>
+        <location filename="../src/core/messagebox.cpp" line="79"/>
         <source>Yes</source>
         <translation>Так</translation>
     </message>
     <message>
-        <location filename="../src/core/messagebox.cpp" line="77"/>
-        <location filename="../src/core/messagebox.cpp" line="80"/>
+        <location filename="../src/core/messagebox.cpp" line="76"/>
+        <location filename="../src/core/messagebox.cpp" line="79"/>
         <source>No</source>
         <translation>Не</translation>
     </message>
