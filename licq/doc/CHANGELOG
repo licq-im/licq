@@ -1,6 +1,7 @@
 Change log for Licq.
 
 New in 1.8.0
+o Fixed some memory leaks
 o Removed console plugin (no longer maintained)
 o Support for multiple owners for MSN and Jabber
 o Change config file structure to support multiple owners
@@ -10,16 +11,12 @@ o Plugin API: Separated plugin helper function from interface
 o Auto-Reply: Apply startup status to all owners
 o Fifo: Don't hang if data doesn't end with a line break
 o Forwarder: Apply startup status to all owners
+o ICQ: Some non-UTF8 messages were converted from UTF8 instead of to
 o ICQ: Moved from daemon and built as separate protocol plugin
 o MSN: Moved MSN specfic typing notification logic from Qt4-Gui
+o Qt4-Gui: Contact list only showed typing icon for ICQ contacts
 o Qt4-Gui: Ask for missing password before trying to log on
 o RMS: Apply auto response changes to all owners
-
-
-New in 1.7.2
-o Fixed some memory leaks
-o ICQ: Some non-UTF8 messages were converted from UTF8 instead of to
-o Qt4-Gui: Contact list only showed typing icon for ICQ contacts
 
 
 New in 1.7.1
