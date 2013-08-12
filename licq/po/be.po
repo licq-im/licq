@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Licq\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-01-17 21:28+0100\n"
+"POT-Creation-Date: 2013-08-12 17:23+0200\n"
 "PO-Revision-Date: 2008-02-25 20:37+0300\n"
 "Last-Translator: Alexey Ivaniuk aka Varjat <varjat@gmail.com>\n"
 "Language-Team: Belarussian language team <team@mova.org>\n"
@@ -2518,7 +2518,7 @@ msgstr "Зьмена гурта дзеля %s на паслужніку..."
 msgid "Changing status to %s (#%hu)..."
 msgstr "Зьмена стана на %s (#%hu)..."
 
-#: src/icq/packet-tcp.cpp:431
+#: src/icq/packet-tcp.cpp:442
 #, c-format
 msgid "Channel %u is not implemented"
 msgstr ""
@@ -2857,101 +2857,101 @@ msgid ""
 "Singles Chat 2"
 msgstr ""
 
-#: src/icq/chat.cpp:936
+#: src/icq/chat.cpp:947
 #, fuzzy
 msgid "Chat: Bad handshake."
 msgstr "Дрэнны адказ пры ўсталяваньні сувязі: %ld."
 
-#: src/icq/chat.cpp:795
+#: src/icq/chat.cpp:806
 #, fuzzy
 msgid "Chat: Connecting to server."
 msgstr "Злучаемся з паслужнікам аўтарызацыі."
 
-#: src/icq/chat.cpp:1095
+#: src/icq/chat.cpp:1106
 #, fuzzy, c-format
 msgid "Chat: Joined multiparty (%d people)."
 msgstr "Размова: далучаны да шмат-асабовай размовы (%d чалавек)."
 
-#: src/icq/chat.cpp:922 src/icq/chat.cpp:1180
+#: src/icq/chat.cpp:933 src/icq/chat.cpp:1191
 #, fuzzy, c-format
 msgid "Chat: Lost remote end: %s"
 msgstr "%sРазмова: Згублены адлеглы бок: %s"
 
-#: src/icq/chat.cpp:2403
+#: src/icq/chat.cpp:2414
 #, fuzzy, c-format
 msgid "Chat: No user owns socket %d."
 msgstr "Размова: адсутнічаюць сокеты дзеля гэтага карыстальніка %d."
 
-#: src/icq/chat.cpp:1004
+#: src/icq/chat.cpp:1015
 #, fuzzy
 msgid "Chat: Received color packet."
 msgstr "Размова: Атрыманы пакет наладак колеру."
 
-#: src/icq/chat.cpp:1067
+#: src/icq/chat.cpp:1078
 #, fuzzy
 msgid "Chat: Received color/font packet."
 msgstr "Размова: Атрыманы пакет наладак колеру/друкаваньня."
 
-#: src/icq/chat.cpp:2387
+#: src/icq/chat.cpp:2398
 #, fuzzy
 msgid "Chat: Received connection."
 msgstr "Размова: Атрымана злучэньне."
 
-#: src/icq/chat.cpp:1049
+#: src/icq/chat.cpp:1060
 #, fuzzy
 msgid "Chat: Received font packet."
 msgstr "Размова: Атрыманы пакет наладак друкаваньня."
 
-#: src/icq/chat.cpp:958
+#: src/icq/chat.cpp:969
 #, fuzzy, c-format
 msgid "Chat: Received handshake from %s [v%ld]."
 msgstr "Размова: Атрыман запыт на ўсталяваньне сувязі ад %s [вэр.%ld]."
 
-#: src/icq/chat.cpp:895
+#: src/icq/chat.cpp:906
 #, fuzzy
 msgid "Chat: Received reverse connection."
 msgstr "Размова: Атрымана адваротнае злучэньне."
 
-#: src/icq/chat.cpp:920 src/icq/chat.cpp:1178
+#: src/icq/chat.cpp:931 src/icq/chat.cpp:1189
 #, fuzzy
 msgid "Chat: Remote end disconnected."
 msgstr "Размова: Адлеглы бок зачыніў злучэньне."
 
-#: src/icq/chat.cpp:2504
+#: src/icq/chat.cpp:2515
 msgid "Chat: Reverse connection failed, trying direct."
 msgstr ""
 
-#: src/icq/chat.cpp:1040
+#: src/icq/chat.cpp:1051
 #, fuzzy, c-format
 msgid "Chat: Send error (color/font packet): %s"
 msgstr "Размова: Атрыманы пакет наладак колеру/друкаваньня."
 
-#: src/icq/chat.cpp:1120
+#: src/icq/chat.cpp:1131
 #, fuzzy, c-format
 msgid "Chat: Send error (font packet): %s"
 msgstr "sРазмова: памылка пры перадачы: %s"
 
-#: src/icq/chat.cpp:1913 src/icq/chat.cpp:1942
+#: src/icq/chat.cpp:1924 src/icq/chat.cpp:1953
 #, fuzzy, c-format
 msgid "Chat: Send error: %s"
 msgstr "sРазмова: памылка пры перадачы: %s"
 
-#: src/icq/chat.cpp:844
+#: src/icq/chat.cpp:855
 #, fuzzy, c-format
 msgid "Chat: Shaking hands [v%d]."
 msgstr "Размова:  Рукапаціскваньне [вэр.%d]."
 
-#: src/icq/chat.cpp:2392
+#: src/icq/chat.cpp:2403
 #, fuzzy
 msgid "Chat: Unable to receive new connection."
 msgstr "Размова: Атрымана злучэньне."
 
-#: src/icq/chat.cpp:857 src/icq/chat.cpp:991
+#: src/icq/chat.cpp:868 src/icq/chat.cpp:1002
 #, fuzzy
 msgid "Chat: Waiting for color/font response."
 msgstr "Размова: Чаканьне адказу аб колеры/друкаваньні."
 
-#: src/icq/chat.cpp:2449
+#: src/icq/chat.cpp:2460
 #, fuzzy
 msgid "Chat: Waiting for reverse connection."
 msgstr "Размова: Атрымана адваротнае злучэньне."
@@ -4272,7 +4272,7 @@ msgstr ""
 msgid "Failed to load plugin (%s): %s"
 msgstr "Немагчыма адчыніць файл (%s): %s"
 
-#: src/icq/packet-srv.cpp:1708 src/icq/packet-tcp.cpp:1485
+#: src/icq/packet-srv.cpp:1708 src/icq/packet-tcp.cpp:1496
 #, fuzzy, c-format
 msgid "Failed to read file (%s): %s."
 msgstr "Памылка перайменаваньня файла гісторыі (%s): %s"
@@ -4704,67 +4704,67 @@ msgstr ""
 msgid "File Transfer"
 msgstr "Перадача файла"
 
-#: src/icq/filetransfer.cpp:700
+#: src/icq/filetransfer.cpp:701
 #, fuzzy, c-format
 msgid "File Transfer: %s received %d too many bytes."
 msgstr "Перадача файла: %s атрымана %d, занадта шмат байтаў."
 
-#: src/icq/filetransfer.cpp:695
+#: src/icq/filetransfer.cpp:696
 #, fuzzy, c-format
 msgid "File Transfer: %s received."
 msgstr "Перадача файла: %s атрымана."
 
-#: src/icq/filetransfer.cpp:1312
+#: src/icq/filetransfer.cpp:1313
 #, fuzzy
 msgid "File Transfer: Attempted connection when already connected."
 msgstr "Перадача файла: Спроба адваротнага злучэньня пры ўсталяванай сувязі."
 
-#: src/icq/filetransfer.cpp:431
+#: src/icq/filetransfer.cpp:432
 #, fuzzy
 msgid "File Transfer: Attempted reverse connection when already connected."
 msgstr "Перадача файла: Спроба адваротнага злучэньня пры ўсталяванай сувязі."
 
-#: src/icq/filetransfer.cpp:359
+#: src/icq/filetransfer.cpp:360
 #, fuzzy
 msgid "File Transfer: Connecting to server."
 msgstr "Запыт перадачы файла праз паслужнік"
 
-#: src/icq/filetransfer.cpp:912
+#: src/icq/filetransfer.cpp:913
 #, fuzzy, c-format
 msgid "File Transfer: Error reading from %s: %s."
 msgstr "Перадача файла: Памылка чытаньня дзеля %s: %s"
 
-#: src/icq/filetransfer.cpp:310
+#: src/icq/filetransfer.cpp:311
 #, fuzzy, c-format
 msgid "File Transfer: File access error %s: %s."
 msgstr "Перадача файла: Памылка зьвяртаньня да файла %s: %s"
 
-#: src/icq/filetransfer.cpp:589
+#: src/icq/filetransfer.cpp:590
 #, fuzzy
 msgid "File Transfer: Ignoring a possible erroneous packet."
 msgstr "Перадача файла: Ігнараваньне магчыма няспраўнага пакета."
 
-#: src/icq/filetransfer.cpp:655
+#: src/icq/filetransfer.cpp:656
 #, fuzzy, c-format
 msgid "File Transfer: Invalid data (%c) ignoring packet"
 msgstr "Перадача файла: Няспраўныя дадзеныя (%c), ігнараваньне пакета."
 
-#: src/icq/filetransfer.cpp:458
+#: src/icq/filetransfer.cpp:459
 #, fuzzy, c-format
 msgid "File Transfer: Lost remote end: %s"
 msgstr "Перадача файла: Згублен адлеглы бок: %s"
 
-#: src/icq/filetransfer.cpp:1230
+#: src/icq/filetransfer.cpp:1231
 #, fuzzy
 msgid "File Transfer: No such socket."
 msgstr "Перадача файла: Сокет ня йснуе."
 
-#: src/icq/filetransfer.cpp:786
+#: src/icq/filetransfer.cpp:787
 #, fuzzy, c-format
 msgid "File Transfer: Read error '%s': %s."
 msgstr "Перадача файла: Памылка чытаньня дзеля %s: %s"
 
-#: src/icq/filetransfer.cpp:737
+#: src/icq/filetransfer.cpp:738
 #, fuzzy, c-format
 msgid ""
 "File Transfer: Read error for %s:\n"
@@ -4773,143 +4773,143 @@ msgstr ""
 "Перадача файла: Памылка чытаньня дзеля %s:\n"
 "%s"
 
-#: src/icq/filetransfer.cpp:979
+#: src/icq/filetransfer.cpp:980
 #, fuzzy, c-format
 msgid "File Transfer: Read error for %s: %s"
 msgstr "Перадача файла: Памылка чытаньня дзеля %s: %s"
 
-#: src/icq/filetransfer.cpp:1206
+#: src/icq/filetransfer.cpp:1207
 #, fuzzy
 msgid "File Transfer: Received connection."
 msgstr "Перадача файла: Атрыманы запыт злучэньня."
 
-#: src/icq/filetransfer.cpp:480
+#: src/icq/filetransfer.cpp:481
 #, fuzzy
 msgid "File Transfer: Received handshake."
 msgstr "Перадача файла: Атрыман запыт на усталяваньне сувязі."
 
-#: src/icq/filetransfer.cpp:837
+#: src/icq/filetransfer.cpp:838
 #, fuzzy
 msgid "File Transfer: Received plugin confirmation."
 msgstr "Перадача файла: Атрымана пацьверджаньне ад пашырэньня."
 
-#: src/icq/filetransfer.cpp:444
+#: src/icq/filetransfer.cpp:445
 #, fuzzy
 msgid "File Transfer: Received reverse connection."
 msgstr "Перадача файла: Атрымана адваротнае злучэньне."
 
-#: src/icq/filetransfer.cpp:637
+#: src/icq/filetransfer.cpp:638
 #, fuzzy, c-format
 msgid "File Transfer: Receiving %s (%ld bytes)."
 msgstr "Перадача файла: Атрыманьне %s (%ld байтаў)."
 
-#: src/icq/filetransfer.cpp:1191
+#: src/icq/filetransfer.cpp:1192
 #, fuzzy
 msgid "File Transfer: Receiving repeat incoming connection."
 msgstr "Перадача файла: Атрыманьне запыту на паўтор злучэньня."
 
-#: src/icq/filetransfer.cpp:456
+#: src/icq/filetransfer.cpp:457
 #, fuzzy
 msgid "File Transfer: Remote end disconnected."
 msgstr "Перадача файла: Адлеглы бок зачыніў злучэньне."
 
-#: src/icq/filetransfer.cpp:1298
+#: src/icq/filetransfer.cpp:1299
 #, fuzzy
 msgid "File Transfer: Reverse connection failed, trying direct."
 msgstr "Перадача файла: Спроба адваротнага злучэньня пры ўсталяванай сувязі."
 
-#: src/icq/filetransfer.cpp:794
+#: src/icq/filetransfer.cpp:795
 #, fuzzy, c-format
 msgid "File Transfer: Seek error '%s': %s."
 msgstr "Перадача файла: Памылка адсылкі: %s"
 
-#: src/icq/filetransfer.cpp:1041
+#: src/icq/filetransfer.cpp:1042
 #, fuzzy, c-format
 msgid "File Transfer: Send error: %s"
 msgstr "Перадача файла: Памылка адсылкі: %s"
 
-#: src/icq/filetransfer.cpp:902
+#: src/icq/filetransfer.cpp:903
 #, fuzzy, c-format
 msgid "File Transfer: Sending %s (%ld bytes)."
 msgstr "Перадача файла: Адсылка %s (%ld байтаў)."
 
-#: src/icq/filetransfer.cpp:961
+#: src/icq/filetransfer.cpp:962
 #, fuzzy, c-format
 msgid "File Transfer: Sent %s, %d too many bytes."
 msgstr "Перадача файла: Адаслана %s, %d занадта шмат байтаў."
 
-#: src/icq/filetransfer.cpp:957
+#: src/icq/filetransfer.cpp:958
 #, fuzzy, c-format
 msgid "File Transfer: Sent %s."
 msgstr "Перадача файла: Адаслана %s."
 
-#: src/icq/filetransfer.cpp:398
+#: src/icq/filetransfer.cpp:399
 #, fuzzy
 msgid "File Transfer: Shaking hands."
 msgstr "Перадача файла: усталяваньне сувязі."
 
-#: src/icq/filetransfer.cpp:536 src/icq/filetransfer.cpp:584
-#: src/icq/filetransfer.cpp:649 src/icq/filetransfer.cpp:721
-#: src/icq/filetransfer.cpp:768 src/icq/filetransfer.cpp:811
+#: src/icq/filetransfer.cpp:537 src/icq/filetransfer.cpp:585
+#: src/icq/filetransfer.cpp:650 src/icq/filetransfer.cpp:722
+#: src/icq/filetransfer.cpp:769 src/icq/filetransfer.cpp:812
 #, fuzzy, c-format
 msgid "File Transfer: Speed set to %ld%%."
 msgstr "Перадача файла: Хуткасць усталявана ў %ld%%."
 
-#: src/icq/filetransfer.cpp:841
+#: src/icq/filetransfer.cpp:842
 #, fuzzy
 msgid ""
 "File Transfer: StartReceivingFile called without a pending confirmation."
 msgstr "Перадача файла: Атрымана пацьверджаньне ад пашырэньня."
 
-#: src/icq/filetransfer.cpp:626
+#: src/icq/filetransfer.cpp:627
 msgid "File Transfer: Still waiting for the plugin to confirm file receive..."
 msgstr "Перадача файла: Чаканьне пацьверджаньня аб перадачы файла..."
 
-#: src/icq/filetransfer.cpp:873
+#: src/icq/filetransfer.cpp:874
 #, fuzzy, c-format
 msgid "File Transfer: Unable to open %s for writing: %s."
 msgstr "Нямагчыма адчыніць \"%s\" дзеля запісу."
 
-#: src/icq/filetransfer.cpp:1210
+#: src/icq/filetransfer.cpp:1211
 #, fuzzy
 msgid "File Transfer: Unable to receive new connection."
 msgstr "Перадача файла: Атрыманы запыт злучэньня."
 
-#: src/icq/filetransfer.cpp:884
+#: src/icq/filetransfer.cpp:885
 #, fuzzy
 msgid "File Transfer: Unable to send file receive start packet."
 msgstr "Перадача файла: Атрыманы запыт злучэньня."
 
-#: src/icq/filetransfer.cpp:814
+#: src/icq/filetransfer.cpp:815
 msgid "File Transfer: Unknown packet received during file send"
 msgstr ""
 
-#: src/icq/filetransfer.cpp:572
+#: src/icq/filetransfer.cpp:573
 #, fuzzy
 msgid "File Transfer: Waiting for file info."
 msgstr "Перадача файла: Чаканьне дадзеных аб файле."
 
-#: src/icq/filetransfer.cpp:616
+#: src/icq/filetransfer.cpp:617
 msgid "File Transfer: Waiting for plugin to confirm file receive.\n"
 msgstr ""
 "Перадача файла: Чаканьне пацьверджаньня ад пашырэньня аб перадачы файла .\n"
 
-#: src/icq/filetransfer.cpp:1274
+#: src/icq/filetransfer.cpp:1275
 #, fuzzy
 msgid "File Transfer: Waiting for reverse connection.\n"
 msgstr "Перадача файла: Чаканьне адказу паслужніка.\n"
 
-#: src/icq/filetransfer.cpp:413 src/icq/filetransfer.cpp:518
+#: src/icq/filetransfer.cpp:414 src/icq/filetransfer.cpp:519
 #, fuzzy
 msgid "File Transfer: Waiting for server to respond."
 msgstr "Перадача файла: Чаканьне адказу паслужніка."
 
-#: src/icq/filetransfer.cpp:664
+#: src/icq/filetransfer.cpp:665
 #, fuzzy, c-format
 msgid "File Transfer: Write error: %s."
 msgstr "Перадача файла: Памылка адсылкі: %s"
 
-#: src/icq/filetransfer.cpp:1155
+#: src/icq/filetransfer.cpp:1156
 #, fuzzy, c-format
 msgid "File Transfer: select failed, aborting thread: %s"
 msgstr "Перадача файла: Згублен адлеглы бок: %s"
@@ -10995,12 +10995,12 @@ msgstr ""
 msgid "Internal error"
 msgstr "Унутраная памылка"
 
-#: src/icq/chat.cpp:1132
+#: src/icq/chat.cpp:1143
 #, c-format
 msgid "Internal error: ChatManager::ProcessPacket(), invalid state (%d)."
 msgstr ""
 
-#: src/icq/filetransfer.cpp:821
+#: src/icq/filetransfer.cpp:822
 #, c-format
 msgid ""
 "Internal error: FileTransferManager::ProcessPacket(), invalid state (%d)."
@@ -11493,7 +11493,7 @@ msgstr "Няспраўнае паведамленьне праз паштовы 
 msgid "Invalid entry in plugin \"%s\": Window = %s"
 msgstr "Увага: Няспраўнае ўваходжаньне ў пашырэньні \"%s\": Акенца = %s"
 
-#: src/icq/filetransfer.cpp:1052
+#: src/icq/filetransfer.cpp:1053
 #, fuzzy, c-format
 msgid "Invalid file transfer speed: %d%%."
 msgstr "Няспраўная хуткасьць перадачы файла: %d%%."
@@ -15074,7 +15074,7 @@ msgstr ""
 msgid "No error detected"
 msgstr "Памылкі ня знойдзены"
 
-#: src/icq/chat.cpp:715 src/icq/filetransfer.cpp:236
+#: src/icq/chat.cpp:726 src/icq/filetransfer.cpp:237
 #, fuzzy
 msgid "No more ports available, add more or close open chat/file sessions."
 msgstr ""
@@ -15641,7 +15641,7 @@ msgstr "Pack(): Спроба зьмясьціць дадзеных больш ч
 msgid "Packet from unhandled channel %02x for service 0x%02X."
 msgstr "Атрыман пакет у неапрацоўваемым канале!"
 
-#: src/icq/packet-tcp.cpp:645
+#: src/icq/packet-tcp.cpp:656
 #, c-format
 msgid "Packet length (%lu) different than expected (%i)"
 msgstr ""
@@ -15709,7 +15709,7 @@ msgstr ""
 msgid "Past Work Place"
 msgstr ""
 
-#: src/icq/filetransfer.cpp:272
+#: src/icq/filetransfer.cpp:273
 #, fuzzy, c-format
 msgid "Path %s is not a directory."
 msgstr "Шлях %s не з'яўляецца каталёгам."
@@ -15805,7 +15805,7 @@ msgstr "Партугалія"
 msgid "Portuguese"
 msgstr "Партугальская"
 
-#: src/icq/packet-srv.cpp:1714 src/icq/packet-tcp.cpp:1491
+#: src/icq/packet-srv.cpp:1714 src/icq/packet-tcp.cpp:1502
 #, c-format
 msgid "Premature end of file (%s): %s."
 msgstr ""
@@ -18599,7 +18599,7 @@ msgstr "Такелау"
 msgid "Tonga"
 msgstr "Тонга"
 
-#: src/icq/chat.cpp:2373
+#: src/icq/chat.cpp:2384
 msgid "Too many connected clients, rejecting new connection."
 msgstr ""
 
@@ -19398,7 +19398,7 @@ msgstr "Украінская"
 msgid "Unable to allocate TCP port for local server (No ports available)!"
 msgstr "Немагчыма вылучыць TCP-порт дзеля лякальнага паслужніка!"
 
-#: src/icq/filetransfer.cpp:259
+#: src/icq/filetransfer.cpp:260
 #, fuzzy, c-format
 msgid "Unable to create directory %s for file transfer."
 msgstr "Нямагчыма стварыць каталёг %s дзеля перадачы файла."
@@ -19439,7 +19439,7 @@ msgid "Unable to open history file (%s): %s."
 msgstr "Немагчыма адчыніць файл гісторыі (%s): %s."
 
 #: src/icq/packet-srv.cpp:1659 src/icq/icq-tcp.cpp:2977
-#: src/icq/oscarservice.cpp:383 src/icq/packet-tcp.cpp:1435
+#: src/icq/oscarservice.cpp:383 src/icq/packet-tcp.cpp:1446
 #, fuzzy, c-format
 msgid "Unable to open picture file (%s): %s."
 msgstr "Немагчыма адчыніць файл гісторыі (%s): %s."
@@ -19500,7 +19500,7 @@ msgstr "Нямагчыма стартаваць лякальны TCP-паслу�
 msgid "Unable to stat picture file (%s): %s."
 msgstr "Немагчыма адчыніць файл гісторыі (%s): %s."
 
-#: src/icq/packet-tcp.cpp:1443
+#: src/icq/packet-tcp.cpp:1454
 #, fuzzy, c-format
 msgid "Unable to stat picture file (%s):%s."
 msgstr "Немагчыма адчыніць файл гісторыі (%s): %s."
@@ -19656,7 +19656,7 @@ msgstr "Невядомы стан TCP: %04X"
 msgid "Unknown channel %u from %s"
 msgstr "Невядомы зьмест %d ад %s."
 
-#: src/icq/packet-tcp.cpp:470
+#: src/icq/packet-tcp.cpp:481
 msgid "Unknown channel GUID."
 msgstr ""
 

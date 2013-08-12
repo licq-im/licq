@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-01-17 21:28+0100\n"
+"POT-Creation-Date: 2013-08-12 17:23+0200\n"
 "PO-Revision-Date: 2007-08-17 20:05-0300\n"
 "Last-Translator: Sebastian Renzi <srenzi@gmail.com>\n"
 "Language-Team: \n"
@@ -2521,7 +2521,7 @@ msgstr "Modificando grupo en la lista del servidor para %s (%s)..."
 msgid "Changing status to %s (#%hu)..."
 msgstr "Cambiando estado a %s (#%hu)..."
 
-#: src/icq/packet-tcp.cpp:431
+#: src/icq/packet-tcp.cpp:442
 #, c-format
 msgid "Channel %u is not implemented"
 msgstr ""
@@ -2860,101 +2860,101 @@ msgid ""
 "Singles Chat 2"
 msgstr ""
 
-#: src/icq/chat.cpp:936
+#: src/icq/chat.cpp:947
 #, fuzzy
 msgid "Chat: Bad handshake."
 msgstr "Reconocimiento de negociación incorrecto."
 
-#: src/icq/chat.cpp:795
+#: src/icq/chat.cpp:806
 #, fuzzy
 msgid "Chat: Connecting to server."
 msgstr "Conectando al servidor."
 
-#: src/icq/chat.cpp:1095
+#: src/icq/chat.cpp:1106
 #, fuzzy, c-format
 msgid "Chat: Joined multiparty (%d people)."
 msgstr "Conversación: Nos unimos a conversación mutiple (%d personas)."
 
-#: src/icq/chat.cpp:922 src/icq/chat.cpp:1180
+#: src/icq/chat.cpp:933 src/icq/chat.cpp:1191
 #, fuzzy, c-format
 msgid "Chat: Lost remote end: %s"
 msgstr "Conversación: Se perdió el lado remoto: %s"
 
-#: src/icq/chat.cpp:2403
+#: src/icq/chat.cpp:2414
 #, fuzzy, c-format
 msgid "Chat: No user owns socket %d."
 msgstr "Conversación: El socket %d.no pertenece a ningún usuario."
 
-#: src/icq/chat.cpp:1004
+#: src/icq/chat.cpp:1015
 #, fuzzy
 msgid "Chat: Received color packet."
 msgstr "Conversación: Se recibe paquete de colores."
 
-#: src/icq/chat.cpp:1067
+#: src/icq/chat.cpp:1078
 #, fuzzy
 msgid "Chat: Received color/font packet."
 msgstr "Conversación: Se recibe paquete de colores/fuentes."
 
-#: src/icq/chat.cpp:2387
+#: src/icq/chat.cpp:2398
 #, fuzzy
 msgid "Chat: Received connection."
 msgstr "Conversación: Se recibe conexión."
 
-#: src/icq/chat.cpp:1049
+#: src/icq/chat.cpp:1060
 #, fuzzy
 msgid "Chat: Received font packet."
 msgstr "Conversación: Se recibe paquete de fuentes."
 
-#: src/icq/chat.cpp:958
+#: src/icq/chat.cpp:969
 #, fuzzy, c-format
 msgid "Chat: Received handshake from %s [v%ld]."
 msgstr "Conversación: Se recibe negociación de %s [v%ld]."
 
-#: src/icq/chat.cpp:895
+#: src/icq/chat.cpp:906
 #, fuzzy
 msgid "Chat: Received reverse connection."
 msgstr "Conversación: Se recibe conexión inversa."
 
-#: src/icq/chat.cpp:920 src/icq/chat.cpp:1178
+#: src/icq/chat.cpp:931 src/icq/chat.cpp:1189
 #, fuzzy
 msgid "Chat: Remote end disconnected."
 msgstr "Conversación: El lado remoto se desconectó."
 
-#: src/icq/chat.cpp:2504
+#: src/icq/chat.cpp:2515
 msgid "Chat: Reverse connection failed, trying direct."
 msgstr ""
 
-#: src/icq/chat.cpp:1040
+#: src/icq/chat.cpp:1051
 #, fuzzy, c-format
 msgid "Chat: Send error (color/font packet): %s"
 msgstr "Conversación: Se recibe paquete de colores/fuentes: %s"
 
-#: src/icq/chat.cpp:1120
+#: src/icq/chat.cpp:1131
 #, fuzzy, c-format
 msgid "Chat: Send error (font packet): %s"
 msgstr "Conversación: Error al enviar: %s"
 
-#: src/icq/chat.cpp:1913 src/icq/chat.cpp:1942
+#: src/icq/chat.cpp:1924 src/icq/chat.cpp:1953
 #, fuzzy, c-format
 msgid "Chat: Send error: %s"
 msgstr "Conversación: Error al enviar: %s"
 
-#: src/icq/chat.cpp:844
+#: src/icq/chat.cpp:855
 #, fuzzy, c-format
 msgid "Chat: Shaking hands [v%d]."
 msgstr "Conversación: Negociando conexión [v%d]."
 
-#: src/icq/chat.cpp:2392
+#: src/icq/chat.cpp:2403
 #, fuzzy
 msgid "Chat: Unable to receive new connection."
 msgstr "Conversación: Se recibe conexión"
 
-#: src/icq/chat.cpp:857 src/icq/chat.cpp:991
+#: src/icq/chat.cpp:868 src/icq/chat.cpp:1002
 #, fuzzy
 msgid "Chat: Waiting for color/font response."
 msgstr "Conversación: Esperando respuesta de color/fuente."
 
-#: src/icq/chat.cpp:2449
+#: src/icq/chat.cpp:2460
 #, fuzzy
 msgid "Chat: Waiting for reverse connection."
 msgstr "Conversación: Se recibe conexión inversa."
@@ -4266,7 +4266,7 @@ msgstr ""
 msgid "Failed to load plugin (%s): %s"
 msgstr "No se puede abrir fichero (%s): %s"
 
-#: src/icq/packet-srv.cpp:1708 src/icq/packet-tcp.cpp:1485
+#: src/icq/packet-srv.cpp:1708 src/icq/packet-tcp.cpp:1496
 #, fuzzy, c-format
 msgid "Failed to read file (%s): %s."
 msgstr "Error al renomobrar el fichero de historial (%s): %s"
@@ -4696,71 +4696,71 @@ msgstr ""
 msgid "File Transfer"
 msgstr "Transferencia de fichero"
 
-#: src/icq/filetransfer.cpp:700
+#: src/icq/filetransfer.cpp:701
 #, fuzzy, c-format
 msgid "File Transfer: %s received %d too many bytes."
 msgstr "Transferencia de Ficheros: %s recibieron demasiados bytes %d."
 
-#: src/icq/filetransfer.cpp:695
+#: src/icq/filetransfer.cpp:696
 #, fuzzy, c-format
 msgid "File Transfer: %s received."
 msgstr "Transferencia de Ficheros: Se recibió %s."
 
-#: src/icq/filetransfer.cpp:1312
+#: src/icq/filetransfer.cpp:1313
 #, fuzzy
 msgid "File Transfer: Attempted connection when already connected."
 msgstr ""
 "Transferencia de Ficheros: Se intentó una conexión inversa cuando ya se "
 "estaba conectado."
 
-#: src/icq/filetransfer.cpp:431
+#: src/icq/filetransfer.cpp:432
 #, fuzzy
 msgid "File Transfer: Attempted reverse connection when already connected."
 msgstr ""
 "Transferencia de Ficheros: Se intentó una conexión inversa cuando ya se "
 "estaba conectado."
 
-#: src/icq/filetransfer.cpp:359
+#: src/icq/filetransfer.cpp:360
 #, fuzzy
 msgid "File Transfer: Connecting to server."
 msgstr "Pedido de transferencia de fichero a través del servidor"
 
-#: src/icq/filetransfer.cpp:912
+#: src/icq/filetransfer.cpp:913
 #, fuzzy, c-format
 msgid "File Transfer: Error reading from %s: %s."
 msgstr "Transferencia de Ficheros: Error de lectura de %s: %s"
 
-#: src/icq/filetransfer.cpp:310
+#: src/icq/filetransfer.cpp:311
 #, fuzzy, c-format
 msgid "File Transfer: File access error %s: %s."
 msgstr "Transferencia de Ficheros: error de acceso al fichero %s: %s"
 
-#: src/icq/filetransfer.cpp:589
+#: src/icq/filetransfer.cpp:590
 #, fuzzy
 msgid "File Transfer: Ignoring a possible erroneous packet."
 msgstr "Transferencia de Ficheros: Ignorando posible paquete erróneo."
 
-#: src/icq/filetransfer.cpp:655
+#: src/icq/filetransfer.cpp:656
 #, fuzzy, c-format
 msgid "File Transfer: Invalid data (%c) ignoring packet"
 msgstr "Transferencia de Ficheros: datos inválidos (%c) ignorando paquete."
 
-#: src/icq/filetransfer.cpp:458
+#: src/icq/filetransfer.cpp:459
 #, fuzzy, c-format
 msgid "File Transfer: Lost remote end: %s"
 msgstr "Transferencia de Ficheros: Se perdió el lado remoto: %s"
 
-#: src/icq/filetransfer.cpp:1230
+#: src/icq/filetransfer.cpp:1231
 #, fuzzy
 msgid "File Transfer: No such socket."
 msgstr "Transferencia de Ficehros: No existe el socket."
 
-#: src/icq/filetransfer.cpp:786
+#: src/icq/filetransfer.cpp:787
 #, fuzzy, c-format
 msgid "File Transfer: Read error '%s': %s."
 msgstr "Transferencia de Ficheros: Error de lectura de %s: %s"
 
-#: src/icq/filetransfer.cpp:737
+#: src/icq/filetransfer.cpp:738
 #, fuzzy, c-format
 msgid ""
 "File Transfer: Read error for %s:\n"
@@ -4769,148 +4769,148 @@ msgstr ""
 "Transferencia de Ficheros: Error de lectura de %s:\n"
 "%s"
 
-#: src/icq/filetransfer.cpp:979
+#: src/icq/filetransfer.cpp:980
 #, fuzzy, c-format
 msgid "File Transfer: Read error for %s: %s"
 msgstr "Transferencia de Ficheros: Error de lectura de %s: %s"
 
-#: src/icq/filetransfer.cpp:1206
+#: src/icq/filetransfer.cpp:1207
 #, fuzzy
 msgid "File Transfer: Received connection."
 msgstr "Transferencia de Ficheros: Se recibe conexión."
 
-#: src/icq/filetransfer.cpp:480
+#: src/icq/filetransfer.cpp:481
 #, fuzzy
 msgid "File Transfer: Received handshake."
 msgstr "Transferencia de Ficheros: Se recibió negociación."
 
-#: src/icq/filetransfer.cpp:837
+#: src/icq/filetransfer.cpp:838
 #, fuzzy
 msgid "File Transfer: Received plugin confirmation."
 msgstr "Transferencia de Ficheros: Se recibió confirmación de añadido."
 
-#: src/icq/filetransfer.cpp:444
+#: src/icq/filetransfer.cpp:445
 #, fuzzy
 msgid "File Transfer: Received reverse connection."
 msgstr "Transferencia de Ficheros: Se recibió una conexión inversa ."
 
-#: src/icq/filetransfer.cpp:637
+#: src/icq/filetransfer.cpp:638
 #, fuzzy, c-format
 msgid "File Transfer: Receiving %s (%ld bytes)."
 msgstr "Transferencia de Ficheros: Recibiendo %s (%ld bytes)."
 
-#: src/icq/filetransfer.cpp:1191
+#: src/icq/filetransfer.cpp:1192
 #, fuzzy
 msgid "File Transfer: Receiving repeat incoming connection."
 msgstr "Transferencia de Ficheros: Se recibe conexión entrante duplicada."
 
-#: src/icq/filetransfer.cpp:456
+#: src/icq/filetransfer.cpp:457
 #, fuzzy
 msgid "File Transfer: Remote end disconnected."
 msgstr "Transferencia de Ficheros: Se desconectó el lado remoto."
 
-#: src/icq/filetransfer.cpp:1298
+#: src/icq/filetransfer.cpp:1299
 #, fuzzy
 msgid "File Transfer: Reverse connection failed, trying direct."
 msgstr ""
 "Transferencia de Ficheros: Se intentó una conexión inversa cuando ya se "
 "estaba conectado."
 
-#: src/icq/filetransfer.cpp:794
+#: src/icq/filetransfer.cpp:795
 #, c-format
 msgid "File Transfer: Seek error '%s': %s."
 msgstr ""
 
-#: src/icq/filetransfer.cpp:1041
+#: src/icq/filetransfer.cpp:1042
 #, fuzzy, c-format
 msgid "File Transfer: Send error: %s"
 msgstr "Transferencia de Ficheros: Error al enviar: %s"
 
-#: src/icq/filetransfer.cpp:902
+#: src/icq/filetransfer.cpp:903
 #, fuzzy, c-format
 msgid "File Transfer: Sending %s (%ld bytes)."
 msgstr "Transferencia de Ficheros: Enviando %s (%ld bytes)."
 
-#: src/icq/filetransfer.cpp:961
+#: src/icq/filetransfer.cpp:962
 #, fuzzy, c-format
 msgid "File Transfer: Sent %s, %d too many bytes."
 msgstr "Transferencia de Ficheros: Se enviaron %s, %d demasiados bytes."
 
-#: src/icq/filetransfer.cpp:957
+#: src/icq/filetransfer.cpp:958
 #, fuzzy, c-format
 msgid "File Transfer: Sent %s."
 msgstr "Transferencia de Ficheros: Se envió %s."
 
-#: src/icq/filetransfer.cpp:398
+#: src/icq/filetransfer.cpp:399
 #, fuzzy
 msgid "File Transfer: Shaking hands."
 msgstr "Transferencia de ficheros: Negociando conexión."
 
-#: src/icq/filetransfer.cpp:536 src/icq/filetransfer.cpp:584
-#: src/icq/filetransfer.cpp:649 src/icq/filetransfer.cpp:721
-#: src/icq/filetransfer.cpp:768 src/icq/filetransfer.cpp:811
+#: src/icq/filetransfer.cpp:537 src/icq/filetransfer.cpp:585
+#: src/icq/filetransfer.cpp:650 src/icq/filetransfer.cpp:722
+#: src/icq/filetransfer.cpp:769 src/icq/filetransfer.cpp:812
 #, fuzzy, c-format
 msgid "File Transfer: Speed set to %ld%%."
 msgstr "Transferencia de Ficheros: Velocidad puesta a %ld%%."
 
-#: src/icq/filetransfer.cpp:841
+#: src/icq/filetransfer.cpp:842
 #, fuzzy
 msgid ""
 "File Transfer: StartReceivingFile called without a pending confirmation."
 msgstr "Transferencia de Ficheros: Se recibió confirmación de añadido."
 
-#: src/icq/filetransfer.cpp:626
+#: src/icq/filetransfer.cpp:627
 msgid "File Transfer: Still waiting for the plugin to confirm file receive..."
 msgstr ""
 "Transferencia de Ficheros: Todavía esperando que el añadido confirme "
 "recepción de fichero..."
 
-#: src/icq/filetransfer.cpp:873
+#: src/icq/filetransfer.cpp:874
 #, c-format
 msgid "File Transfer: Unable to open %s for writing: %s."
 msgstr ""
 
-#: src/icq/filetransfer.cpp:1210
+#: src/icq/filetransfer.cpp:1211
 #, fuzzy
 msgid "File Transfer: Unable to receive new connection."
 msgstr "Transferencia de Ficheros: Se recibe conexión."
 
-#: src/icq/filetransfer.cpp:884
+#: src/icq/filetransfer.cpp:885
 #, fuzzy
 msgid "File Transfer: Unable to send file receive start packet."
 msgstr "Transferencia de Ficheros: Se recibe conexión."
 
-#: src/icq/filetransfer.cpp:814
+#: src/icq/filetransfer.cpp:815
 msgid "File Transfer: Unknown packet received during file send"
 msgstr ""
 
-#: src/icq/filetransfer.cpp:572
+#: src/icq/filetransfer.cpp:573
 #, fuzzy
 msgid "File Transfer: Waiting for file info."
 msgstr "Transferencia de Ficheros: Esperando información del fichero."
 
-#: src/icq/filetransfer.cpp:616
+#: src/icq/filetransfer.cpp:617
 msgid "File Transfer: Waiting for plugin to confirm file receive.\n"
 msgstr ""
 "Transferencia de Ficheros: Esperando que el añadido confirme recepción de "
 "fichero.\n"
 
-#: src/icq/filetransfer.cpp:1274
+#: src/icq/filetransfer.cpp:1275
 #, fuzzy
 msgid "File Transfer: Waiting for reverse connection.\n"
 msgstr "Transferencia de Ficheros: Esperando respuesta del servidor.\n"
 
-#: src/icq/filetransfer.cpp:413 src/icq/filetransfer.cpp:518
+#: src/icq/filetransfer.cpp:414 src/icq/filetransfer.cpp:519
 #, fuzzy
 msgid "File Transfer: Waiting for server to respond."
 msgstr "Transferencia de Ficheros: Esperando respuesta del servidor."
 
-#: src/icq/filetransfer.cpp:664
+#: src/icq/filetransfer.cpp:665
 #, fuzzy, c-format
 msgid "File Transfer: Write error: %s."
 msgstr "Transferencia de Ficheros: Error al enviar: %s"
 
-#: src/icq/filetransfer.cpp:1155
+#: src/icq/filetransfer.cpp:1156
 #, fuzzy, c-format
 msgid "File Transfer: select failed, aborting thread: %s"
 msgstr "Transferencia de Ficheros: Se perdió el lado remoto: %s"
@@ -10994,12 +10994,12 @@ msgstr ""
 msgid "Internal error"
 msgstr "Error interno"
 
-#: src/icq/chat.cpp:1132
+#: src/icq/chat.cpp:1143
 #, c-format
 msgid "Internal error: ChatManager::ProcessPacket(), invalid state (%d)."
 msgstr ""
 
-#: src/icq/filetransfer.cpp:821
+#: src/icq/filetransfer.cpp:822
 #, c-format
 msgid ""
 "Internal error: FileTransferManager::ProcessPacket(), invalid state (%d)."
@@ -11491,7 +11491,7 @@ msgstr "Mensaje del sistema de localizador de Email inválido:"
 msgid "Invalid entry in plugin \"%s\": Window = %s"
 msgstr "Advertencia: entrada inválida en el añadido \"%s\": Ventana = %s"
 
-#: src/icq/filetransfer.cpp:1052
+#: src/icq/filetransfer.cpp:1053
 #, fuzzy, c-format
 msgid "Invalid file transfer speed: %d%%."
 msgstr "Velocidad de transferencia de fichero inválida: %d%%."
@@ -15073,7 +15073,7 @@ msgstr ""
 msgid "No error detected"
 msgstr "No se detectaron errores"
 
-#: src/icq/chat.cpp:715 src/icq/filetransfer.cpp:236
+#: src/icq/chat.cpp:726 src/icq/filetransfer.cpp:237
 #, fuzzy
 msgid "No more ports available, add more or close open chat/file sessions."
 msgstr ""
@@ -15642,7 +15642,7 @@ msgstr ""
 msgid "Packet from unhandled channel %02x for service 0x%02X."
 msgstr ""
 
-#: src/icq/packet-tcp.cpp:645
+#: src/icq/packet-tcp.cpp:656
 #, c-format
 msgid "Packet length (%lu) different than expected (%i)"
 msgstr ""
@@ -15710,7 +15710,7 @@ msgstr ""
 msgid "Past Work Place"
 msgstr ""
 
-#: src/icq/filetransfer.cpp:272
+#: src/icq/filetransfer.cpp:273
 #, fuzzy, c-format
 msgid "Path %s is not a directory."
 msgstr "El camino %s no es un directorio."
@@ -15806,7 +15806,7 @@ msgstr "Portugal"
 msgid "Portuguese"
 msgstr "Portugués"
 
-#: src/icq/packet-srv.cpp:1714 src/icq/packet-tcp.cpp:1491
+#: src/icq/packet-srv.cpp:1714 src/icq/packet-tcp.cpp:1502
 #, c-format
 msgid "Premature end of file (%s): %s."
 msgstr ""
@@ -18598,7 +18598,7 @@ msgstr "Tokelau"
 msgid "Tonga"
 msgstr "Tonga"
 
-#: src/icq/chat.cpp:2373
+#: src/icq/chat.cpp:2384
 msgid "Too many connected clients, rejecting new connection."
 msgstr ""
 
@@ -19399,7 +19399,7 @@ msgstr "Ucraniano"
 msgid "Unable to allocate TCP port for local server (No ports available)!"
 msgstr "No se puede asignar un puerto TCP para el servidor local!"
 
-#: src/icq/filetransfer.cpp:259
+#: src/icq/filetransfer.cpp:260
 #, fuzzy, c-format
 msgid "Unable to create directory %s for file transfer."
 msgstr "No se puede crear el directorio %s para transferencia de ficheros."
@@ -19440,7 +19440,7 @@ msgid "Unable to open history file (%s): %s."
 msgstr "No se puede abrir el fichero de historial (%s): %s."
 
 #: src/icq/packet-srv.cpp:1659 src/icq/icq-tcp.cpp:2977
-#: src/icq/oscarservice.cpp:383 src/icq/packet-tcp.cpp:1435
+#: src/icq/oscarservice.cpp:383 src/icq/packet-tcp.cpp:1446
 #, fuzzy, c-format
 msgid "Unable to open picture file (%s): %s."
 msgstr "No se puede abrir el fichero de historial (%s): %s."
@@ -19501,7 +19501,7 @@ msgstr ""
 msgid "Unable to stat picture file (%s): %s."
 msgstr "No se puede abrir el fichero de historial (%s): %s."
 
-#: src/icq/packet-tcp.cpp:1443
+#: src/icq/packet-tcp.cpp:1454
 #, fuzzy, c-format
 msgid "Unable to stat picture file (%s):%s."
 msgstr "No se puede abrir el fichero de historial (%s): %s."
@@ -19657,7 +19657,7 @@ msgstr ""
 msgid "Unknown channel %u from %s"
 msgstr "Índice desconocido %u de %s."
 
-#: src/icq/packet-tcp.cpp:470
+#: src/icq/packet-tcp.cpp:481
 msgid "Unknown channel GUID."
 msgstr ""
 
