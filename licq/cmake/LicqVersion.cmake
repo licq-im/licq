@@ -4,7 +4,7 @@
 
 # Licq version
 set(LICQ_VERSION_MAJOR 1)          # 0 <= major   <= 64
-set(LICQ_VERSION_MINOR 8)          # 0 <= minor   <= 99
+set(LICQ_VERSION_MINOR 9)          # 0 <= minor   <= 99
 set(LICQ_VERSION_RELEASE 0)        # 0 <= release <=  9
 set(LICQ_VERSION_EXTRA "-dev")     # Any string
 
