@@ -1,0 +1,29 @@
+      LICQ v1.8.0 README
+      http://www.licq.org/
+      #Licq on irc.freenode.net
+
+With version 1.8.0, Licq gets support for multiple accounts per protocol
+(currently only for MSN and Jabber). The other big change is the separation of
+the ICQ protocol into an optional protocol plugin instead of being built into
+Licq. Bugfixes include some stability fixes as well as several minor tweaks in
+the plugins to better handle multiple accounts.
+
+Notes for upgrading:
+- The first time Licq 1.8.0 is run, The user configuration directory will be
+  migrated to a new structure. This is needed to support multiple accounts of
+  the same protocol, however it will make the configuration unusable by older
+  Licq versions. IT IS RECOMMENDED TO BACKUP YOUR BASE DIRECTORY BEFORE
+  UPGRADING TO LICQ 1.8.0 in case you ever want to be able to downgrade.
+- Because ICQ is now a separate protocol plugin, it must be built and installed
+  separately if ICQ or AIM accounts are used. However, no manual configuration
+  changes are needed. During the configuration migration above, Licq will try
+  to load the ICQ protocol plugin if it is needed.
+- The console plugin has been removed and is no longer supported.
+
+For more information on what has changed since Licq 1.7.1, see doc/CHANGELOG.
+
+For general information on how to build and run Licq, see doc/README.
+For information about building and using the different plugins, see README or
+doc/README for the respective plugins.
+
+The Licq Team
