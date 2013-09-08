@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2012-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ OwnerComboBox::OwnerComboBox(const QString& extra, QWidget* parent)
   {
     Licq::OwnerReadGuard o(owner);
     addItem(IconManager::instance()->iconForStatus(Licq::User::OnlineStatus, o->id()),
-        o->getAlias().c_str(), QVariant::fromValue(o->id()));
+        o->accountId().c_str(), QVariant::fromValue(o->id()));
   }
 }
 
