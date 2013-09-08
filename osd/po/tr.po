@@ -1,7 +1,7 @@
 # Turkish translation for Licq OSD plugin package.
 # Copyright (C) 2013 Licq Developers
 # This file is distributed under the same license as the Licq OSD package.
-# Erdinç Gültekin, 2013.
+# ErdinÃ§ GÃ¼ltekin, 2013.
 #
 msgid ""
 msgstr ""
