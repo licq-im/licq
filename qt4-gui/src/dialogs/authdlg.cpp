@@ -71,13 +71,18 @@ AuthDlg::AuthDlg(enum AuthDlgType type, const Licq::UserId& userId, QWidget* par
   QVBoxLayout* dialogLayout = new QVBoxLayout(this);
   QHBoxLayout* userIdLayout = new QHBoxLayout();
 
-  QLabel* ownerLabel = new QLabel(this);
-  ownerLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-  ownerLabel->setText(tr("&Account:"));
-  myOwnerCombo = new OwnerComboBox();
-  ownerLabel->setBuddy(myOwnerCombo);
-  userIdLayout->addWidget(ownerLabel);
-  userIdLayout->addWidget(myOwnerCombo);
+  myOwnerCombo = new OwnerComboBox(QString(), this);
+  int numOwners = myOwnerCombo->count();
+
+  if (numOwners > 1)
+  {
+    QLabel* ownerLabel = new QLabel(this);
+    ownerLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    ownerLabel->setText(tr("&Account:"));
+    ownerLabel->setBuddy(myOwnerCombo);
+    userIdLayout->addWidget(ownerLabel);
+    userIdLayout->addWidget(myOwnerCombo);
+  }
 
   QLabel* accountIdLabel = new QLabel(this);
   accountIdLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
@@ -121,7 +126,10 @@ AuthDlg::AuthDlg(enum AuthDlgType type, const Licq::UserId& userId, QWidget* par
   }
   else
   {
-    myOwnerCombo->setFocus();
+    if (numOwners > 1)
+      myOwnerCombo->setFocus();
+    else
+      myAccountIdEdit->setFocus();
   }
 
   show();

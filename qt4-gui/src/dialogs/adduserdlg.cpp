@@ -51,16 +51,20 @@ AddUserDlg::AddUserDlg(const Licq::UserId& userId, QWidget* parent)
 
   QGridLayout* layDialog = new QGridLayout(this);
 
-  QLabel* ownerLabel = new QLabel(tr("&Account:"));
-  myOwnerCombo = new OwnerComboBox();
-  if (userId.isValid())
-    myOwnerCombo->setCurrentOwnerId(userId.ownerId());
-  ownerLabel->setBuddy(myOwnerCombo);
-
   unsigned line = 0;
 
-  layDialog->addWidget(ownerLabel, line, 0);
-  layDialog->addWidget(myOwnerCombo, line++, 1);
+  myOwnerCombo = new OwnerComboBox(QString(), this);
+  if (userId.isValid())
+    myOwnerCombo->setCurrentOwnerId(userId.ownerId());
+
+  /* Only show owner selection if there is more than one owner */
+  if (myOwnerCombo->count() > 1)
+  {
+    QLabel* ownerLabel = new QLabel(tr("&Account:"));
+    ownerLabel->setBuddy(myOwnerCombo);
+    layDialog->addWidget(ownerLabel, line, 0);
+    layDialog->addWidget(myOwnerCombo, line++, 1);
+  }
 
   QLabel* lblGroup = new QLabel(tr("&Group:"));
   myGroup = new GroupComboBox();
