@@ -10,6 +10,7 @@ set(po_FILES
   ru
   sk
   sv
+  tr
 )
 
 find_package(Gettext REQUIRED)
