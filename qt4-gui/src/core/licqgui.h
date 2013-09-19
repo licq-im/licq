@@ -235,9 +235,7 @@ signals:
   void eventSent(const Licq::Event* event);
 
 private slots:
-#ifdef Q_WS_X11
   void updateGlobalShortcuts();
-#endif
 
   void userEventTabDlgDone();
 
