@@ -159,9 +159,11 @@ LicqGui::LicqGui(int& argc, char** argv) :
 #endif
   myStartHidden(false),
   myDisableDockIcon(false),
-  myUserEventTabDlg(NULL),
+#ifdef Q_WS_X11
   myPopupMessageKey(0),
-  myShowMainwinKey(0)
+  myShowMainwinKey(0),
+#endif
+  myUserEventTabDlg(NULL)
 {
   assert(gLicqGui == NULL);
   gLicqGui = this;
