@@ -159,9 +159,11 @@ LicqGui::LicqGui(int& argc, char** argv) :
 #endif
   myStartHidden(false),
   myDisableDockIcon(false),
-  myUserEventTabDlg(NULL),
+#ifdef Q_WS_X11
   myPopupMessageKey(0),
-  myShowMainwinKey(0)
+  myShowMainwinKey(0),
+#endif
+  myUserEventTabDlg(NULL)
 {
   assert(gLicqGui == NULL);
   gLicqGui = this;
@@ -530,9 +532,11 @@ bool LicqGui::x11EventFilter(XEvent* event)
   return QApplication::x11EventFilter(event);
 #endif
 }
+#endif /* defined(Q_WS_X11) */
 
 void LicqGui::updateGlobalShortcuts()
 {
+#ifdef Q_WS_X11
   Config::Shortcuts* shortcuts = Config::Shortcuts::instance();
   int newPopup = shortcuts->getShortcut(Config::Shortcuts::GlobalPopupMessage);
   int newMainwin = shortcuts->getShortcut(Config::Shortcuts::GlobalShowMainwin);
@@ -556,8 +560,8 @@ void LicqGui::updateGlobalShortcuts()
 
   myPopupMessageKey = newPopup;
   myShowMainwinKey = newMainwin;
-}
 #endif /* defined(Q_WS_X11) */
+}
 
 void LicqGui::changeStatus(unsigned status, bool invisible, const QString& autoMessage)
 {

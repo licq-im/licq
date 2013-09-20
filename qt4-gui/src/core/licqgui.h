@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1999-2013 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -235,9 +235,7 @@ signals:
   void eventSent(const Licq::Event* event);
 
 private slots:
-#ifdef Q_WS_X11
   void updateGlobalShortcuts();
-#endif
 
   void userEventTabDlgDone();
 
@@ -322,6 +320,11 @@ private:
   bool myStartHidden;
   bool myDisableDockIcon;
 
+#ifdef Q_WS_X11
+  int myPopupMessageKey;
+  int myShowMainwinKey;
+#endif
+
   // principal GUI objects
   MainWindow* myMainWindow;
   SignalManager* mySignalManager;
@@ -335,11 +338,6 @@ private:
   UserEventTabDlg* myUserEventTabDlg;
   UserViewEventList myUserViewList;
   UserSendEventList myUserSendList;
-
-#ifdef Q_WS_X11
-  int myPopupMessageKey;
-  int myShowMainwinKey;
-#endif
 
   QStringList myCmdLineParams;
   QTimer myAutoAwayTimer;

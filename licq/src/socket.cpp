@@ -49,6 +49,10 @@ SSL_CTX *gSSL_CTX_NONICQ;
 extern "C" {
 #include <socks.h>
 }
+#define socket_send Rsend
+#undef send
+#else
+#define socket_send send
 #endif // SOCKS5
 
 #ifdef SOCKS5_OPTLEN
@@ -477,7 +481,7 @@ bool INetSocket::send(Buffer& buf)
   char* dataPos = buf.getDataStart();
   while (bytesLeft > 0)
   {
-    ssize_t bytesSent = ::send(myDescriptor, dataPos, bytesLeft, 0);
+    ssize_t bytesSent = ::socket_send(myDescriptor, dataPos, bytesLeft, 0);
     if (bytesSent < 0)
     {
       if (errno == EINTR)
