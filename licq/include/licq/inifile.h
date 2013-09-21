@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2013 Licq Developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,14 @@ namespace Licq
 class IniFile
 {
 public:
+  /**
+   * Modify a string to make it useable in a filename
+   *
+   * @param s String that may contain illegal characters
+   * @return s with any unusuable characters replaced
+   */
+  static std::string sanitizeName(const std::string& s);
+
   /**
    * Constructor
    *

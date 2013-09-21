@@ -90,7 +90,7 @@ User::User(const UserId& id, bool temporary)
   d->Init();
 
   // Start building filename for user files
-  string filename = "users/" + myId.ownerId().accountId()
+  string filename = "users/" + IniFile::sanitizeName(myId.ownerId().accountId())
       + "." + Licq::protocolId_toString(myId.protocolId());
 
   // Create owner specific dir if needed
@@ -99,7 +99,7 @@ User::User(const UserId& id, bool temporary)
     gLog.error(tr("Failed to create directory %s: %s"), dirname.c_str(), strerror(errno));
 
   // Add final parts to get filenames
-  filename += "/" + myId.accountId();
+  filename += "/" + IniFile::sanitizeName(myId.accountId());
   d->myConf.setFilename(filename + ".conf");
   d->myHistory.setFile(gDaemon.baseDir() + filename + ".history");
   myPictureFileName = gDaemon.baseDir() + filename + ".picture";
