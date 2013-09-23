@@ -139,7 +139,7 @@ private:
   static Licq::Mutex myGlooxMutex;
 
   // Licq::MainLoopCallback
-  void rawFileEvent(int fd, int revents);
+  void rawFileEvent(int id, int fd, int revents);
   void timeoutEvent(int id);
 
   Licq::MainLoop& myMainLoop;

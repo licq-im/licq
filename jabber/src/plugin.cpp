@@ -63,7 +63,7 @@ int Plugin::run()
   return 0;
 }
 
-void Plugin::rawFileEvent(int fd, int /*revents*/)
+void Plugin::rawFileEvent(int /*id*/, int fd, int /*revents*/)
 {
   char ch;
   ::read(fd, &ch, sizeof(ch));

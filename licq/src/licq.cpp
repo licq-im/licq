@@ -689,7 +689,7 @@ ProtocolPlugin::Ptr CLicq::LoadProtoPlugin(const string& name, bool keep)
   return gPluginManager.loadProtocolPlugin(name, keep);
 }
 
-void CLicq::rawFileEvent(int /*fd*/, int /*revents*/)
+void CLicq::rawFileEvent(int /*id*/, int /*fd*/, int /*revents*/)
 {
   switch (myPipe.getChar())
   {

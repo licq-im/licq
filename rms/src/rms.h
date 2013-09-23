@@ -56,8 +56,8 @@ public:
 
 protected:
   // From Licq::MainLoopCallback
-  void rawFileEvent(int fd, int revents);
-  void socketEvent(Licq::INetSocket* inetSocket, int revents);
+  void rawFileEvent(int id, int fd, int revents);
+  void socketEvent(int id, Licq::INetSocket* inetSocket, int revents);
 
   void deleteClient(CRMSClient* client);
   void setupLogSink();
@@ -118,7 +118,7 @@ public:
 
 protected:
   // From Licq::MainLoopCallback
-  void socketEvent(Licq::INetSocket* inetSocket, int revents);
+  void socketEvent(int id, Licq::INetSocket* inetSocket, int revents);
 
   Licq::TCPSocket sock;
   FILE *fs;

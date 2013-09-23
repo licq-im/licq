@@ -64,7 +64,7 @@ public:
   int run();
   
   // From Licq::MainLoopCallback
-  void rawFileEvent(int fd, int revents);
+  void rawFileEvent(int id, int fd, int revents);
 
 private:
   void processSignal(const Licq::ProtocolSignal* signal);

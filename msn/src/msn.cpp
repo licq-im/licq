@@ -358,7 +358,7 @@ int CMSN::run()
   return 0;
 }
 
-void CMSN::rawFileEvent(int fd, int /*revents*/)
+void CMSN::rawFileEvent(int /*id*/, int fd, int /*revents*/)
 {
   char c;
   read(fd, &c, 1);
@@ -487,7 +487,7 @@ void CMSN::ProcessSignal(const Licq::ProtocolSignal* s)
   }
 }
 
-void CMSN::socketEvent(Licq::INetSocket* inetSocket, int /*revents*/)
+void CMSN::socketEvent(int /*id*/, Licq::INetSocket* inetSocket, int /*revents*/)
 {
   Licq::TCPSocket* sock = dynamic_cast<Licq::TCPSocket*>(inetSocket);
   assert(sock != NULL);

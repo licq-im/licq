@@ -315,7 +315,7 @@ bool CLicqRMS::isEnabled() const
   return m_bEnabled;
 }
 
-void CLicqRMS::rawFileEvent(int fd, int /* revents */)
+void CLicqRMS::rawFileEvent(int /*id*/, int fd, int /* revents */)
 {
   if (fd == getReadPipe())
     ProcessPipe();
@@ -493,7 +493,7 @@ void CLicqRMS::ProcessEvent(const Licq::Event* e)
   }
 }
 
-void CLicqRMS::socketEvent(Licq::INetSocket* inetSocket, int /* revents */)
+void CLicqRMS::socketEvent(int /*id*/, Licq::INetSocket* inetSocket, int /* revents */)
 {
   if (inetSocket == server)
   {
@@ -537,7 +537,7 @@ CRMSClient::~CRMSClient()
     free(m_szCheckId);
 }
 
-void CRMSClient::socketEvent(Licq::INetSocket* /*inetSocket*/, int /*revents*/)
+void CRMSClient::socketEvent(int /*id*/, Licq::INetSocket* /*inetSocket*/, int /*revents*/)
 {
   if (Activity() == -1)
   {

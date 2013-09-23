@@ -49,7 +49,7 @@ public:
 
 private:
   // From Licq::MainLoopCallback
-  void rawFileEvent(int fd, int revents);
+  void rawFileEvent(int id, int fd, int revents);
 
   int fifo_fd;
   std::string myInputBuffer;

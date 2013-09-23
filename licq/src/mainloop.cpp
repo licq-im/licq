@@ -24,6 +24,7 @@
 #include <ctime>
 #include <map>
 #include <unistd.h>
+#include <vector>
 
 #include <licq/socket.h>
 
@@ -33,12 +34,12 @@ using namespace Licq;
 // Base class dummy functions
 // These should always be overloaded if used so anything ending up here is a bug
 
-void MainLoopCallback::rawFileEvent(int /* fd */, int /* revents */)
+void MainLoopCallback::rawFileEvent(int /* id */, int /* fd */, int /* revents */)
 {
   assert(0);
 }
 
-void MainLoopCallback::socketEvent(INetSocket* /* inetSocket */, int /* revents */)
+void MainLoopCallback::socketEvent(int /* id */, INetSocket* /* inetSocket */, int /* revents */)
 {
   assert(0);
 }
@@ -60,9 +61,12 @@ public:
   // Data for each monitored file
   struct File
   {
+    int fd;
     int events;
+    struct pollfd *pfd;
     MainLoopCallback* callback;
     INetSocket* inetSocket;
+    bool removed;
   };
   typedef std::map<int, File> FileMap;
 
@@ -76,6 +80,9 @@ public:
     bool removed;
   };
   typedef std::map<int, Timeout> TimeoutMap;
+
+  void addFile(int fd, MainLoopCallback* callback,
+      INetSocket* inetSocket, int events, int id);
 
   static long long getMonotonicClock();
 
@@ -111,34 +118,27 @@ void MainLoop::run()
   d->myIsRunning = true;
   d->myFilesHasChanged = true;
   d->myTimeoutsHasChanged = true;
-  struct pollfd* pfds = NULL;
+  std::vector<struct pollfd> pfds;
   Private::FileMap::size_type fdcount = 0;
   long long earliest;
   while (d->myIsRunning)
   {
     if (d->myFilesHasChanged)
     {
-      // Reallocate pfd size if needed
-      Private::FileMap::size_type c = d->myFiles.size();
-      if (c != fdcount)
+      pfds.resize(d->myFiles.size());
+      fdcount = 0;
+      for (Private::FileMap::iterator i = d->myFiles.begin(); i != d->myFiles.end(); )
       {
-        // Reallocate pfd
-        delete[] pfds;
-        if (c > 0)
-          pfds = new struct pollfd[c];
-        else
-          pfds = NULL;
-        fdcount = c;
-      }
-
-      if (fdcount > 0)
-      {
-        struct pollfd* p = pfds;
-        for (Private::FileMap::const_iterator i = d->myFiles.begin(); i != d->myFiles.end(); ++i, ++p)
-        {
-          p->fd = i->first;
-          p->events = i->second.events;
+        if (i->second.removed) {
+          // Actually erase files marked for removal
+          d->myFiles.erase(i++);
+          continue;
         }
+        struct pollfd* p = &pfds[fdcount++];
+        p->fd = i->second.fd;
+        p->events = i->second.events;
+        i->second.pfd = p;
+        ++i;
       }
 
       d->myFilesHasChanged = false;
@@ -179,7 +179,7 @@ void MainLoop::run()
         timeout = 0;
     }
 
-    int pollret = poll(pfds, fdcount, timeout);
+    int pollret = poll(&pfds.front(), fdcount, timeout);
 
     if (pollret < 0)
     {
@@ -190,23 +190,22 @@ void MainLoop::run()
     if (pollret > 0)
     {
       // Check for file events to handle
-      for (Private::FileMap::size_type i = 0; i < fdcount; ++i)
+      for (Private::FileMap::iterator i = d->myFiles.begin(); i != d->myFiles.end(); ++i)
       {
-        int revents = pfds[i].revents;
+        Private::File& f(i->second);
+
+        if (f.pfd == NULL)
+          /* File has been added after poll was called, just ignore it */
+          continue;
+
+        int revents = f.pfd->revents;
         if (revents == 0)
           continue;
 
-        int fd = pfds[i].fd;
-        Private::FileMap::iterator iter(d->myFiles.find(fd));
-        if (iter == d->myFiles.end())
-          // Could happen if one callback removes other files
-          continue;
-
-        Private::File& f(iter->second);
         if (f.inetSocket != NULL)
-          f.callback->socketEvent(f.inetSocket, revents);
+          f.callback->socketEvent(i->first, f.inetSocket, revents);
         else
-          f.callback->rawFileEvent(fd, revents);
+          f.callback->rawFileEvent(i->first, f.fd, revents);
       }
     }
 
@@ -240,8 +239,6 @@ void MainLoop::run()
       }
     }
   }
-
-  delete[] pfds;
 }
 
 void MainLoop::quit()
@@ -251,19 +248,38 @@ void MainLoop::quit()
   d->myIsRunning = false;
 }
 
-void MainLoop::addRawFile(int fd, MainLoopCallback* callback, int events)
+void MainLoop::Private::addFile(int fd, MainLoopCallback* callback,
+    INetSocket* inetSocket, int events, int id)
+{
+  assert(callback != NULL);
+  assert(fd > -1);
+  if (id == -1)
+    id = fd;
+  assert(myFiles.count(id) == 0 || myFiles[id].removed);
+
+  Private::File& f = myFiles[id];
+  f.fd = fd;
+  f.events = events;
+  f.callback = callback;
+  f.inetSocket = inetSocket;
+  f.pfd = NULL;
+  f.removed = false;
+
+  myFilesHasChanged = true;
+}
+
+void MainLoop::addRawFile(int fd, MainLoopCallback* callback, int events, int id)
 {
   LICQ_D();
 
-  assert(callback != NULL);
-  assert(fd > -1);
-  assert(d->myFiles.count(fd) == 0);
+  d->addFile(fd, callback, NULL, events, id);
+}
 
-  Private::File& f = d->myFiles[fd];
-  f.events = events;
-  f.callback = callback;
-  f.inetSocket = NULL;
+void MainLoop::removeFile(int id)
+{
+  LICQ_D();
 
+  d->myFiles[id].removed = true;
   d->myFilesHasChanged = true;
 }
 
@@ -271,26 +287,20 @@ void MainLoop::removeRawFile(int fd)
 {
   LICQ_D();
 
-  d->myFiles.erase(fd);
+  for (Private::FileMap::iterator i = d->myFiles.begin(); i != d->myFiles.end(); ++i)
+    if (i->second.fd == fd)
+      i->second.removed = true;
+
   d->myFilesHasChanged = true;
 }
 
-void MainLoop::addSocket(INetSocket* inetSocket, MainLoopCallback* callback, int events)
+void MainLoop::addSocket(INetSocket* inetSocket, MainLoopCallback* callback, int events, int id)
 {
   LICQ_D();
 
-  assert(callback != NULL);
   assert(inetSocket != NULL);
-
   int fd = inetSocket->Descriptor();
-  assert(fd > -1);
-  assert(d->myFiles.count(fd) == 0);
-
-  Private::File& f(d->myFiles[fd]);
-  f.events = events;
-  f.callback = callback;
-  f.inetSocket = inetSocket;;
-  d->myFilesHasChanged = true;
+  d->addFile(fd, callback, inetSocket, events, id);
 }
 
 void MainLoop::removeSocket(INetSocket* inetSocket)
@@ -349,7 +359,7 @@ void MainLoop::removeCallback(const MainLoopCallback* callback, bool closeDelete
         if (i->second.inetSocket != NULL)
           delete i->second.inetSocket;
         else
-          close(i->first);
+          close(i->second.fd);
       }
       d->myFiles.erase(i++);
       d->myFilesHasChanged = true;
@@ -373,8 +383,9 @@ INetSocket* MainLoop::getSocketFromFd(int fd)
 {
   LICQ_D();
 
-  if (d->myFiles.count(fd) == 0)
-    return NULL;
+  for (Private::FileMap::iterator i = d->myFiles.begin(); i != d->myFiles.end(); ++i)
+    if (i->second.fd == fd)
+      return i->second.inetSocket;
 
-  return d->myFiles[fd].inetSocket;
+  return NULL;
 }

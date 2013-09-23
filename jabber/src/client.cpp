@@ -146,7 +146,7 @@ int Client::getSocket()
       myClient.connectionImpl())->socket();
 }
 
-void Client::rawFileEvent(int /*fd*/, int /*revents*/)
+void Client::rawFileEvent(int /*id*/, int /*fd*/, int /*revents*/)
 {
   myClient.recv();
 }

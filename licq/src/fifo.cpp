@@ -928,7 +928,7 @@ void Fifo::shutdown()
     close(fifo_fd);
 }
 
-void Fifo::rawFileEvent(int /*fd*/, int /*revents*/)
+void Fifo::rawFileEvent(int /*id*/, int /*fd*/, int /*revents*/)
 {
   char szBuf[1024];
   ssize_t readret = read(fifo_fd, szBuf, sizeof(szBuf));

@@ -80,7 +80,7 @@ protected:
 
 private:
   // From Licq::MainLoopCallback
-  void rawFileEvent(int fd, int revents);
+  void rawFileEvent(int id, int fd, int revents);
   void timeoutEvent(int id);
 
   boost::shared_ptr<LicqDaemon::StreamLogSink> myConsoleLog;

@@ -41,18 +41,20 @@ protected:
   /**
    * Callback for raw files
    *
+   * @param id Monitor id
    * @param fd File descriptor
    * @param revents Returned events (POLLIN, POLLOUT, etc.)
    */
-  virtual void rawFileEvent(int fd, int revents);
+  virtual void rawFileEvent(int id, int fd, int revents);
 
   /**
    * Callback for sockets
    *
+   * @param id Monitor id
    * @param inetSocket Socket object
    * @param revents Returned events (POLLIN, POLLOUT, etc.)
    */
-  virtual void socketEvent(INetSocket* inetSocket, int revents);
+  virtual void socketEvent(int id, INetSocket* inetSocket, int revents);
 
   /**
    * Callback for timeouts
@@ -106,8 +108,9 @@ public:
    * @param fd File descriptor to monitor
    * @param events Events to monitor for (POLLIN and/or POLLOUT)
    * @param callback Object to call rawFileEvent on when events occour
+   * @param id Id for this monitor or -1 to use fd
    */
-  void addRawFile(int fd, MainLoopCallback* callback, int events = POLLIN);
+  void addRawFile(int fd, MainLoopCallback* callback, int events = POLLIN, int id = -1);
 
   /**
    * Stop monitoring a raw file descriptor
@@ -122,8 +125,9 @@ public:
    * @param inetSocket Socket to monitor
    * @param callback Object to call socketEvent on when events occour
    * @param events Events to monitor for (POLLIN and/or POLLOUT)
+   * @param id Id for this monitor or -1 to use file descriptor number
    */
-  void addSocket(INetSocket* inetSocket, MainLoopCallback* callback, int events = POLLIN);
+  void addSocket(INetSocket* inetSocket, MainLoopCallback* callback, int events = POLLIN, int id = -1);
 
   /**
    * Stop monitoring a socket
@@ -131,6 +135,13 @@ public:
    * @param inetSocket Socket to stop monitoring
    */
   void removeSocket(INetSocket* inetSocket);
+
+  /**
+   * Stop monitoring a file descriptor
+   *
+   * @param id Monitor id
+   */
+  void removeFile(int id);
 
   /**
    * Add a timeout
