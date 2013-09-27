@@ -35,6 +35,16 @@ using Licq::IniFile;
 using std::list;
 using std::string;
 
+string IniFile::sanitizeName(const string &s)
+{
+  string r(s);
+  size_t p;
+  while ((p = r.find('/')) != string::npos)
+    r[p] = '-';
+
+  return r;
+}
+
 IniFile::IniFile(const string& filename)
   : myConfigData("\n"),
     mySectionStart(string::npos),

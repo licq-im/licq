@@ -12,6 +12,7 @@ include(CheckFileOffsetBits)
 
 # Options
 option(ENABLE_NLS "Enable translation of program messages" ON)
+option(USE_DOXYGEN "Build docs via doxygen" OFF)
 option(USE_FIFO "Use Licq FIFO" ON)
 option(USE_HEBREW "Include support for hebrew reverse string" OFF)
 option(USE_OPENSSL "Enable secure communication channels" ON)
@@ -142,7 +143,7 @@ include(cmake/LicqVersion.cmake)
 # Doxygen is option
 find_package(Doxygen)
 
-if (DOXYGEN_FOUND)
+if (USE_DOXYGEN)
   if (NOT DOXYGEN_DOT_FOUND)
     message(SEND_ERROR "Need the dot program to build documentation")
   endif (NOT DOXYGEN_DOT_FOUND)
@@ -158,7 +159,7 @@ if (DOXYGEN_FOUND)
     DEPENDS ${DOXY_CONFIG}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMENT "Generating doxygen documentation" VERBATIM)
-endif (DOXYGEN_FOUND)
+endif (USE_DOXYGEN)
 
 # make uninstall (file added to top binary dir to work with build_all)
 configure_file(
