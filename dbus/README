@@ -1,0 +1,95 @@
+Licq D-Bus Interface plugin
+===========================
+
+DESCRIPTION
+
+This plugin adds support for remote monitoring and control of Licq via D-Bus.
+Signals are sent for incoming messages, contact list and basic user information
+can be queried and status can be changed.
+
+The name org.licq is registered on the session bus.
+
+
+QUICK INSTALLATION
+
+Dependencies for D-Bus plugin:
+- Licq, including dependencies needed to build Licq
+- libdbus 1.0.0 or later
+
+Build and install:
+# mkdir build && cd build
+# cmake ..
+# make
+# make install
+
+The plugin will be called "dbus" and has no parameters or configuration file.
+
+
+METHOD CALLS
+
+Get Licq version:
+# dbus-send --type=method_call --dest=org.licq /org/licq/Core org.licq.Core.GetVersion
+
+Terminate Licq:
+# dbus-send --type=method_call --dest=org.licq /org/licq/Core org.licq.Core.Shutdown
+
+Get list of accounts:
+Returns an array of strings where each string is the protocol name followed by
+a slash and the user id of an account.
+# dbus-send --print-reply --type=method_call --dest=org.licq /org/licq/ContactList org.licq.ContactList.GetAccounts
+
+Get list of contacts for an account:
+Returns an array of string where each string is the user id of a contact.
+# dbus-send --print-reply --type=method_call --dest=org.licq /org/licq/ContactList/ICQ/12345678 org.licq.Account.GetContacts
+
+Get current status for an account or contact:
+Returns bitmask of status flags and a user readable string. Note that the
+string may be translated and should not be relied on in code logic.
+For bitmask values, see StatusFlags in include/licq/contactlist/user.h.
+# dbus-send --print-reply --type=method_call --dest=org.licq /org/licq/ContactList/ICQ/12345678 org.licq.Account.GetStatus
+# dbus-send --print-reply --type=method_call --dest=org.licq /org/licq/ContactList/ICQ/12345678/87654321 org.licq.Contact.GetStatus
+
+Get basic information for an account or contact:
+Returns four strings: Alias, first name, last name, and email.
+# dbus-send --print-reply --type=method_call --dest=org.licq /org/licq/ContactList/ICQ/12345678 org.licq.Account.GetName
+# dbus-send --print-reply --type=method_call --dest=org.licq /org/licq/ContactList/ICQ/12345678/87654321 org.licq.Contact.GetName
+
+Set current status for an account:
+# dbus-send --type=method_call --dest=org.licq /org/licq/ContactList/ICQ/12345678 org.licq.Account.SetStatus string:away
+# dbus-send --type=method_call --dest=org.licq /org/licq/ContactList/ICQ/12345678 org.licq.Account.SetStatus uint32:1024
+
+
+SIGNALS
+
+Receiving signals:
+# dbus-monitor "type='signal',sender='org.licq'"
+
+Signals are emitted for status changes, received messages, and the number of
+unread messages.
+Object paths and interfaces are the same as for the method calls above.
+
+The following methods are used in signals:
+Status          - Emitted for accounts and contacts when status changes.
+                  Parameters are bitmask status and string as for GetStatus
+                  above
+NumUnread       - Emitted for ContactList with a single unsigned parameter
+                  telling the current number of unread events.
+NumUnread       - Emitted for accounts and contacts. One unsigned parameter
+                  tells the current number of unread events for the contact.
+                  A second string parameter with the contact's display name is
+                  also included for convenience.
+ReceivedEvent   - Emitted for accounts and contacts when an event is received
+                  Two string parameters contains the event message and the
+                  contact's display name.
+Started         - Emitted for Core when Licq has registered with D-Bus.
+Shutdown        - Emitted for Core when Licq is about to terminate.
+
+
+ENCODING
+
+All strings are encoded as UTF-8.
+However, user ids of accounts and contacts that contains characters other than
+[0-9A-Za-z] must be converted when used in object paths by replacing each byte
+with an underscore followed by two hex digits. (This is similair to how % is
+used in URIs.) For example, the MSN account test@example.com can be accessed
+using the following object path: /org/licq/ContactList/MSN/test_40example_2Ecom
