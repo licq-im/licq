@@ -228,7 +228,7 @@ fi
 # List of plugins that should be exported. Plugins that no longer are on trunk
 # should be listed in OLD_PLUGINS so that this script can continue to work with
 # older releases (e.g. the stable branches).
-PLUGINS="aosd auto-reply forwarder icq jabber licqweb msn osd qt4-gui rms"
+PLUGINS="aosd auto-reply dbus forwarder icq jabber licqweb msn osd qt4-gui rms"
 OLD_PLUGINS="console email qt-gui"
 
 for plugin in ${PLUGINS} ${OLD_PLUGINS}; do
