@@ -562,9 +562,12 @@ bool DbusInterface::Private::addMsgArgs(DBusMessageIter* args, const char* fmt, 
         switch (*(++fmt))
         {
           case 's':
+          case 'o':
           {
             DBusMessageIter subargs;
-            if (!dbus_message_iter_open_container(args, DBUS_TYPE_ARRAY, DBUS_TYPE_STRING_AS_STRING, &subargs))
+            if (!dbus_message_iter_open_container(args, DBUS_TYPE_ARRAY,
+                (*fmt == 'o' ? DBUS_TYPE_OBJECT_PATH_AS_STRING : DBUS_TYPE_STRING_AS_STRING),
+                &subargs))
               return false;
 
             const std::list<std::string>* vals = va_arg(ap, const std::list<std::string>*);
@@ -572,7 +575,8 @@ bool DbusInterface::Private::addMsgArgs(DBusMessageIter* args, const char* fmt, 
             for (i = vals->begin(); i != vals->end(); ++i)
             {
               const char* val = (*i).c_str();
-              if (!dbus_message_iter_append_basic(&subargs, DBUS_TYPE_STRING, &val))
+              if (!dbus_message_iter_append_basic(&subargs,
+                  (*fmt == 'o' ? DBUS_TYPE_OBJECT_PATH : DBUS_TYPE_STRING), &val))
                 return false;
             }
 

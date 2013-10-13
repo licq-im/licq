@@ -292,9 +292,9 @@ int Plugin::dbusMethod(const char* path, const char* iface, const char* member,
       {
         Licq::OwnerListGuard ownerList;
         BOOST_FOREACH(const Licq::Owner* o, **ownerList)
-          owners.push_back(protocolIdToString(o->protocolId()) + '/' + o->accountId());
+          owners.push_back(userIdToObjectPath(o->id()));
       }
-      myConn->sendReply(msgref, "as", &owners);
+      myConn->sendReply(msgref, "ao", &owners);
       return DbusInterface::MethodReplied;
     }
 
@@ -317,9 +317,9 @@ int Plugin::dbusMethod(const char* path, const char* iface, const char* member,
       {
         Licq::UserListGuard userList(userId);
         BOOST_FOREACH(const Licq::User* u, **userList)
-          contacts.push_back(u->accountId());
+          contacts.push_back(userIdToObjectPath(u->id()));
       }
-      myConn->sendReply(msgref, "as", &contacts);
+      myConn->sendReply(msgref, "ao", &contacts);
       return DbusInterface::MethodReplied;
     }
 
@@ -404,7 +404,7 @@ std::string Plugin::dbusIntrospect(const char* path)
   {
     std::string s("<interface name=\"org.licq.ContactList\">"
           "<method name=\"GetAccounts\">"
-            "<arg type=\"as\" direction=\"out\"/>"
+            "<arg type=\"ao\" direction=\"out\"/>"
           "</method>"
         "</interface>");
     Licq::OwnerListGuard ownerList;
@@ -437,7 +437,7 @@ std::string Plugin::dbusIntrospect(const char* path)
             "<arg name=\"StatusBits\" type=\"u\" direction=\"in\"/>"
           "</method>"
           "<method name=\"GetContacts\">"
-            "<arg name=\"Contacts\" type=\"as\" direction=\"out\"/>"
+            "<arg name=\"Contacts\" type=\"ao\" direction=\"out\"/>"
           "</method>";
   else
     s = "<interface name=\"org.licq.Contact\">";

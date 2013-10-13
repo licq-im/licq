@@ -34,12 +34,11 @@ Terminate Licq:
 # dbus-send --type=method_call --dest=org.licq /org/licq/Core org.licq.Core.Shutdown
 
 Get list of accounts:
-Returns an array of strings where each string is the protocol name followed by
-a slash and the user id of an account.
+Returns an array of object paths for each account.
 # dbus-send --print-reply --type=method_call --dest=org.licq /org/licq/ContactList org.licq.ContactList.GetAccounts
 
 Get list of contacts for an account:
-Returns an array of string where each string is the user id of a contact.
+Returns an array of objects paths for each contact.
 # dbus-send --print-reply --type=method_call --dest=org.licq /org/licq/ContactList/ICQ/12345678 org.licq.Account.GetContacts
 
 Get current status for an account or contact:
