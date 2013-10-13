@@ -60,6 +60,7 @@ public:
   void dbusConnected();
   int dbusMethod(const char* path, const char* iface, const char* member,
       DBusMessage* msgref, DBusMessageIter* argref, const char* fmt);
+  std::string dbusIntrospect(const char* path);
 
 private:
   void processSignal(const Licq::PluginSignal* sig);

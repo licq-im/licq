@@ -371,3 +371,108 @@ int Plugin::dbusMethod(const char* path, const char* iface, const char* member,
 
   return DbusInterface::ErrorUnknownInterface;
 }
+
+std::string Plugin::dbusIntrospect(const char* path)
+{
+  const char* p = path;
+
+  if (strcmp(path, "/") == 0)
+    return "<node name=\"org\">";
+  if (strcmp(path, "/org") == 0)
+    return "<node name=\"licq\">";
+
+  if (strncmp(path, "/org/licq", 9) != 0)
+    return "";
+  p = path + 9;
+  if (p[0] == '\0')
+    return "<node name=\"Core\"/><node name=\"ContactList\"/>";
+
+  if (strcmp(p, "/Core") == 0)
+    return "<interface name=\"org.licq.Core\">"
+        "<method name=\"GetVersion\"><arg type=\"s\" direction=\"out\"/></method>"
+        "<method name=\"Shutdown\"/>"
+        "<signal name=\"Started\"/>"
+        "<signal name=\"Shutdown\"/>"
+        "</interface>";
+
+  // Everything below is for ContactList tree
+  if (strncmp(p, "/ContactList", 12) != 0)
+    return "";
+  p += 12;
+
+  if (p[0] == '\0')
+  {
+    std::string s("<interface name=\"org.licq.ContactList\">"
+          "<method name=\"GetAccounts\">"
+            "<arg type=\"as\" direction=\"out\"/>"
+          "</method>"
+        "</interface>");
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(const Licq::Owner* o, **ownerList)
+      s += "<node name=\"" + protocolIdToString(o->protocolId()) + "\"/>";
+    return s;
+  }
+
+  if (*(p++) != '/')
+    return "";
+Licq::gLog.info("PROTOCOL: '%s'\n", p);
+  unsigned long protocolId = Licq::protocolId_fromString(p);
+  if (protocolId != 0)
+  {
+    std::string s;
+    Licq::OwnerListGuard ownerList(protocolId);
+    BOOST_FOREACH(const Licq::Owner* o, **ownerList)
+      s += "<node name=\"" + DbusInterface::encodeObjectPathPart(o->accountId()) + "\"/>";
+    return s;
+  }
+
+  Licq::UserId userId(objectPathToUserId(path));
+  if (!userId.isValid())
+    return "";
+
+  std::string s;
+
+  if (userId.isOwner())
+    s = "<interface name=\"org.licq.Account\">"
+          "<method name=\"SetStatus\">"
+            "<arg name=\"StatusBits\" type=\"u\" direction=\"in\"/>"
+          "</method>"
+          "<method name=\"GetContacts\">"
+            "<arg name=\"Contacts\" type=\"as\" direction=\"out\"/>"
+          "</method>";
+  else
+    s = "<interface name=\"org.licq.Contact\">";
+
+  s.append("<method name=\"GetName\">"
+          "<arg name=\"Alias\" type=\"s\" direction=\"out\"/>"
+          "<arg name=\"FirstName\" type=\"s\" direction=\"out\"/>"
+          "<arg name=\"LastName\" type=\"s\" direction=\"out\"/>"
+          "<arg name=\"Email\" type=\"s\" direction=\"out\"/>"
+        "</method>"
+        "<method name=\"GetStatus\">"
+          "<arg name=\"StatusBits\" type=\"u\" direction=\"out\"/>"
+          "<arg name=\"StatusText\" type=\"s\" direction=\"out\"/>"
+        "</method>"
+        "<signal name=\"Status\">"
+          "<arg name=\"StatusBits\" type=\"u\"/>"
+          "<arg name=\"StatusText\" type=\"s\"/>"
+        "</signal>"
+        "<signal name=\"NumUnread\">"
+          "<arg name=\"NumUnread\" type=\"u\"/>"
+          "<arg name=\"DisplayName\" type=\"s\"/>"
+        "</signal>"
+        "<signal name=\"ReceivedEvent\">"
+          "<arg name=\"MessageText\" type=\"s\"/>"
+          "<arg name=\"DisplayName\" type=\"s\"/>"
+        "</signal>"
+      "</interface>");
+
+  if (userId.isOwner())
+  {
+    Licq::UserListGuard userList(userId);
+    BOOST_FOREACH(const Licq::User* u, **userList)
+      s += "<node name=\"" + DbusInterface::encodeObjectPathPart(u->accountId()) + "\"/>";
+  }
+
+  return s;
+}

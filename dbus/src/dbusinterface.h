@@ -77,6 +77,14 @@ public:
    */
   virtual void dbusSignal(const char* path, const char* iface, const char* member,
       DBusMessage* msgref, DBusMessageIter* argref, const char* fmt);
+
+  /**
+   * Callback to return introspect data
+   *
+   * @param path Object path to return data for
+   * @return Introspect data excluding outer layer and standard parts
+   */
+  virtual std::string dbusIntrospect(const char* path) = 0;
 };
 
 

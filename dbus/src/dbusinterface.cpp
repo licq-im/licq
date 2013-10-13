@@ -22,6 +22,7 @@
 #include <boost/shared_ptr.hpp>
 #include <cassert>
 #include <cstdarg>
+#include <cstring>
 #include <dbus/dbus.h>
 #include <list>
 #include <map>
@@ -319,10 +320,37 @@ DBusHandlerResult DbusInterface::Private::handleMessage(DBusConnection* /*connec
     case DBUS_MESSAGE_TYPE_METHOD_CALL:
       if (iface == NULL)
         error = DbusInterface::ErrorUnknownInterface;
-      if (member == NULL)
+      else if (member == NULL)
         error = DbusInterface::ErrorUnknownMethod;
-      if (path == NULL)
+      else if (path == NULL)
         error = DbusInterface::ErrorUnknownObject;
+      else if (strcmp(iface, "org.freedesktop.DBus.Introspectable") == 0 && strcmp(member, "Introspect") == 0)
+      {
+        std::string data(d->myCallback->dbusIntrospect(path));
+        if (data.empty())
+          error = DbusInterface::ErrorUnknownObject;
+        else
+        {
+          data.insert(0,
+              "<!DOCTYPE node PUBLIC \"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN\" "
+                  "\"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd\">"
+              "<node>"
+                "<interface name=\"org.freedesktop.DBus.Introspectable\">"
+                  "<method name=\"Introspect\">"
+                    "<arg name=\"xml_data\" type=\"s\" direction=\"out\"/>"
+                  "</method>"
+                "</interface>"
+                "<interface name=\"org.freedesktop.DBus.Peer\">"
+                  "<method name=\"Ping\"/>"
+                  "<method name=\"GetMachineId\">"
+                    "<arg name=\"machine_uuid\" type=\"s\" direction=\"out\"/>"
+                  "</method>"
+                "</interface>" );
+          data.append("</node>");
+          d->myInterface->sendReply(message, "s", data.c_str());
+          error = DbusInterface::MethodReplied;
+        }
+      }
       else
         error = d->myCallback->dbusMethod(path, iface, member, message, signature == NULL ? NULL : &args, signature);
       break;
