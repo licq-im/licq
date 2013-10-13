@@ -141,7 +141,7 @@ std::string Plugin::userIdToObjectPath(const Licq::UserId& userId)
 {
   std::string s("/org/licq/ContactList/");
   s += protocolIdToString(userId.protocolId());
-  if (userId.isOwner())
+  if (!userId.isOwner())
   {
     s += '/';
     s += DbusInterface::encodeObjectPathPart(userId.ownerId().accountId());
@@ -415,7 +415,6 @@ std::string Plugin::dbusIntrospect(const char* path)
 
   if (*(p++) != '/')
     return "";
-Licq::gLog.info("PROTOCOL: '%s'\n", p);
   unsigned long protocolId = Licq::protocolId_fromString(p);
   if (protocolId != 0)
   {
