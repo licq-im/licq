@@ -70,6 +70,8 @@ private:
 
   DbusInterface* myConn;
   Licq::MainLoop myMainLoop;
+  std::string myDbusName;
+  bool myReadOnly;
 };
 
 

@@ -31,6 +31,7 @@
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
+#include <licq/inifile.h>
 #include <licq/logging/log.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
@@ -42,7 +43,9 @@
 using namespace LicqDbus;
 
 Plugin::Plugin()
-  : myConn(NULL)
+  : myConn(NULL),
+    myDbusName("org.licq"),
+    myReadOnly(false)
 {
   // Empty
 }
@@ -56,9 +59,23 @@ int Plugin::run()
 {
   setSignalMask(Licq::PluginSignal::SignalUser);
 
+  bool useSystemBus = false;
+  Licq::IniFile conf("dbus.conf");
+  if (conf.loadFile())
+  {
+    conf.setSection("DBus");
+    conf.get("BusName", myDbusName, myDbusName);
+    conf.get("ReadOnly", myReadOnly, myReadOnly);
+
+    std::string bus;
+    conf.get("Bus", bus);
+    if (bus == "system")
+      useSystemBus = true;
+  }
+
   myMainLoop.addRawFile(getReadPipe(), this);
 
-  myConn = new DbusInterface(myMainLoop, this);
+  myConn = new DbusInterface(myMainLoop, this, useSystemBus);
   myConn->connect();
 
   // Timer to try reconnecting if connection is lost
@@ -249,7 +266,7 @@ void Plugin::processSignal(const Licq::PluginSignal* sig)
 
 void Plugin::dbusConnected()
 {
-  if (!myConn->requestName("org.licq"))
+  if (!myConn->requestName(myDbusName))
     Licq::gLog.warning("Failed to claim name on message bus");
 
   // Signal clients that we are up and running
@@ -270,7 +287,7 @@ int Plugin::dbusMethod(const char* path, const char* iface, const char* member,
       return DbusInterface::MethodReplied;
     }
 
-    if (strcmp(member, "Shutdown") == 0)
+    if (!myReadOnly && strcmp(member, "Shutdown") == 0)
     {
       myConn->sendReply(msgref, NULL);
       myConn->flush();
@@ -323,7 +340,7 @@ int Plugin::dbusMethod(const char* path, const char* iface, const char* member,
       return DbusInterface::MethodReplied;
     }
 
-    if (strcmp(member, "SetStatus") == 0 && userId.isOwner())
+    if (!myReadOnly && strcmp(member, "SetStatus") == 0 && userId.isOwner())
     {
       // Make sure owner exists
       if (!Licq::gUserManager.userExists(userId))
@@ -388,12 +405,16 @@ std::string Plugin::dbusIntrospect(const char* path)
     return "<node name=\"Core\"/><node name=\"ContactList\"/>";
 
   if (strcmp(p, "/Core") == 0)
-    return "<interface name=\"org.licq.Core\">"
-        "<method name=\"GetVersion\"><arg type=\"s\" direction=\"out\"/></method>"
-        "<method name=\"Shutdown\"/>"
+  {
+    std::string s = "<interface name=\"org.licq.Core\">";
+    if (!myReadOnly)
+      s += "<method name=\"Shutdown\"/>";
+    s += "<method name=\"GetVersion\"><arg type=\"s\" direction=\"out\"/></method>"
         "<signal name=\"Started\"/>"
         "<signal name=\"Shutdown\"/>"
         "</interface>";
+    return s;
+  }
 
   // Everything below is for ContactList tree
   if (strncmp(p, "/ContactList", 12) != 0)
@@ -432,13 +453,16 @@ std::string Plugin::dbusIntrospect(const char* path)
   std::string s;
 
   if (userId.isOwner())
+  {
     s = "<interface name=\"org.licq.Account\">"
-          "<method name=\"SetStatus\">"
-            "<arg name=\"StatusBits\" type=\"u\" direction=\"in\"/>"
-          "</method>"
           "<method name=\"GetContacts\">"
             "<arg name=\"Contacts\" type=\"ao\" direction=\"out\"/>"
           "</method>";
+    if (!myReadOnly)
+      s += "<method name=\"SetStatus\">"
+            "<arg name=\"StatusBits\" type=\"u\" direction=\"in\"/>"
+          "</method>";
+  }
   else
     s = "<interface name=\"org.licq.Contact\">";
 

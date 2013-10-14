@@ -90,8 +90,8 @@ typedef std::map<DBusTimeout*,TimeoutHandler::Ptr> TimeoutMap;
 class DbusInterface::Private
 {
 public:
-  Private(DbusInterface* interface, Licq::MainLoop& mainLoop, DbusCallback* callback)
-    : myInterface(interface), myMainLoop(mainLoop), myCallback(callback)
+  Private(DbusInterface* interface, Licq::MainLoop& mainLoop, DbusCallback* callback, bool systemBus)
+    : myInterface(interface), myMainLoop(mainLoop), myCallback(callback), mySystemBus(systemBus)
   { /* Empty */ }
 
   // Callbacks from libdbus
@@ -113,6 +113,7 @@ public:
   TimeoutMap myTimeouts;
   int myNextWatchId;
   int myNextTimeoutId;
+  bool mySystemBus;
 };
 
 } // namespace LicqDbus
@@ -435,8 +436,8 @@ std::string DbusInterface::decodeObjectPathPart(const std::string& s)
   return ret;
 }
 
-DbusInterface::DbusInterface(Licq::MainLoop& mainLoop, DbusCallback* callback)
-  : myPrivate(new Private(this, mainLoop, callback))
+DbusInterface::DbusInterface(Licq::MainLoop& mainLoop, DbusCallback* callback, bool systemBus)
+  : myPrivate(new Private(this, mainLoop, callback, systemBus))
 {
   LICQ_D();
   d->myConn = NULL;
@@ -463,7 +464,7 @@ bool DbusInterface::connect()
   // Connect to DBus
   DBusError e;
   dbus_error_init(&e);
-  d->myConn = dbus_bus_get_private(DBUS_BUS_SESSION, &e);
+  d->myConn = dbus_bus_get_private(d->mySystemBus ? DBUS_BUS_SYSTEM : DBUS_BUS_SESSION, &e);
 
   if (dbus_error_is_set(&e))
   {

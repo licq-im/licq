@@ -115,7 +115,7 @@ public:
    *
    * @param mainLoop Mainloop to service D-Bus
    */
-  DbusInterface(Licq::MainLoop& mainLoop, DbusCallback* callback);
+  DbusInterface(Licq::MainLoop& mainLoop, DbusCallback* callback, bool systemBus = false);
 
   /**
    * Destructor
