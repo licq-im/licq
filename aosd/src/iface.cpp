@@ -35,7 +35,9 @@ using std::string;
 
 Iface::Iface()
 {
+#if !GLIB_CHECK_VERSION(2, 35, 0)
   g_type_init();
+#endif
 
   aosd = aosd_new();
   aosd_set_transparency(aosd, TRANSPARENCY_COMPOSITE);
