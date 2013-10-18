@@ -97,7 +97,12 @@ long long MainLoop::Private::getMonotonicClock()
 {
   // Get monotonic time and convert to milliseconds
   struct timespec ts;
+#ifdef CLOCK_MONOTONIC_RAW
+  // CLOCK_MONOTONIC_RAW is Linux specific but isn't affected by NTP adjustments
+  clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
+#else
   clock_gettime(CLOCK_MONOTONIC, &ts);
+#endif
   return static_cast<long long>(ts.tv_sec) * 1000 + ts.tv_nsec / 1000000;
 }
 
