@@ -1,5 +1,16 @@
 Change log for Licq.
 
+New in 1.8.1
+o Fixed crash when shutting down plugins
+o Handle slashes in account/contact ids
+o Fixed timestamp overflow problem causing CPU spin
+o Build: Made Doxygen support optional
+o Build: Fixed build problem with socks support
+o Aosd: Update to build with GLib 2.36
+o Qt4-Gui: Brought Turkish translation up to date
+o Qt4-Gui: Fixed build problems with OS X
+
+
 New in 1.8.0
 o Fixed some memory leaks
 o Removed console plugin (no longer maintained)
