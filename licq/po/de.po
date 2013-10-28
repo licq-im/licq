@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-08-12 17:26+0200\n"
+"POT-Creation-Date: 2013-10-28 13:20+0100\n"
 "PO-Revision-Date: 2010-09-20 22:18+0200\n"
 "Last-Translator: Arne Schmitz <arne.schmitz@gmx.net>\n"
 "Language-Team: Deutsch <de@li.org>\n"
@@ -441,12 +441,12 @@ msgstr "Abwesend"
 msgid "Backtrace (saved in %s):\n"
 msgstr "Rückverfolgung (gespeichert in %s):\n"
 
-#: src/socket.cpp:582
+#: src/socket.cpp:586
 msgid "Cannot accept new connection, too many descriptors in use."
 msgstr ""
 "Kann neue Verbindung nicht annehmen, zu viele Deskriptoren in Benutzung."
 
-#: src/socket.cpp:571
+#: src/socket.cpp:575
 #, c-format
 msgid ""
 "Cannot accept new connection:\n"
@@ -466,7 +466,7 @@ msgstr ""
 msgid "Chat Request"
 msgstr "Chatanfrage"
 
-#: src/socket.cpp:320
+#: src/socket.cpp:324
 #, c-format
 msgid "Connecting to %s:%i..."
 msgstr "Verbindungsaufbau zu %s:%i..."
@@ -604,7 +604,7 @@ msgid ""
 "%s"
 msgstr ""
 
-#: src/socket.cpp:299
+#: src/socket.cpp:303
 #, c-format
 msgid "Error when trying to resolve %s. getaddrinfo() returned %d."
 msgstr ""
@@ -674,7 +674,7 @@ msgstr "Konnte Datei nicht lesen (%s): %s."
 msgid "Failed to retrive backtrace symbols"
 msgstr "Konnte Backtrace-Symbole nicht laden"
 
-#: src/socket.cpp:334
+#: src/socket.cpp:338
 msgid "Failed to set port range for socket."
 msgstr "Konnte Port für Socket nicht festlegen."
 
@@ -683,7 +683,7 @@ msgstr "Konnte Port für Socket nicht festlegen."
 msgid "Failed to start local TCP server: %s"
 msgstr "Lokaler TCP-Server lies sich nicht starten: %s"
 
-#: src/socket.cpp:406
+#: src/socket.cpp:410
 #, c-format
 msgid ""
 "Failed to start local server using IPv6 socket (falling back to IPv4):\n"
@@ -738,7 +738,7 @@ msgstr "HTTPS-Proxy gab einen Fehlercode zurück: %d, Fehlerzeichenkette: %s"
 msgid "Idle"
 msgstr "Untätig"
 
-#: src/inifile.cpp:229
+#: src/inifile.cpp:239
 #, c-format
 msgid ""
 "IniFile: I/O error, failed to create file.\n"
@@ -749,7 +749,7 @@ msgstr ""
 "Datei: %s\n"
 "Fehler: %i"
 
-#: src/inifile.cpp:91 src/inifile.cpp:211
+#: src/inifile.cpp:101 src/inifile.cpp:221
 #, c-format
 msgid ""
 "IniFile: I/O error, failed to get file size.\n"
@@ -760,7 +760,7 @@ msgstr ""
 "Datei: %s\n"
 "Fehlercode: %i"
 
-#: src/inifile.cpp:81
+#: src/inifile.cpp:91
 #, c-format
 msgid ""
 "IniFile: I/O error, failed to open file.\n"
@@ -771,7 +771,7 @@ msgstr ""
 "Datei: %s\n"
 "Fehler: %i"
 
-#: src/inifile.cpp:112
+#: src/inifile.cpp:122
 #, c-format
 msgid ""
 "IniFile: I/O error, failed to read file.\n"
@@ -782,7 +782,7 @@ msgstr ""
 "Datei: %s\n"
 "Fehler: %i"
 
-#: src/inifile.cpp:251
+#: src/inifile.cpp:261
 #, c-format
 msgid ""
 "IniFile: I/O error, failed to replace file.\n"
@@ -793,7 +793,7 @@ msgstr ""
 "Datei: %s\n"
 "Fehler: %i"
 
-#: src/inifile.cpp:240
+#: src/inifile.cpp:250
 #, c-format
 msgid ""
 "IniFile: I/O error, failed to write file.\n"
@@ -804,17 +804,17 @@ msgstr ""
 "Datei: %s\n"
 "Fehler: %i"
 
-#: src/inifile.cpp:532
+#: src/inifile.cpp:542
 #, c-format
 msgid "Internal Error: IniFile::get, key=%s, data.type=%s"
 msgstr "Interner Fehler: IniFile::get, key=%s, data.type=%s"
 
-#: src/inifile.cpp:669
+#: src/inifile.cpp:679
 #, c-format
 msgid "Internal Error: IniFile::set, key=%s, data.type=%s"
 msgstr "Interner Fehler: IniFile::set, key=%s, data.type=%s"
 
-#: src/socket.cpp:171
+#: src/socket.cpp:175
 msgid "Internal error"
 msgstr "Interner Fehler"
 
@@ -947,7 +947,7 @@ msgstr "Nie"
 msgid "New Email from"
 msgstr "Neue Email von"
 
-#: src/socket.cpp:163
+#: src/socket.cpp:167
 msgid "No error detected"
 msgstr "Kein Fehler entdeckt"
 
@@ -1080,12 +1080,12 @@ msgstr ""
 msgid "SMS"
 msgstr "SMS"
 
-#: src/socket.cpp:765
+#: src/socket.cpp:769
 #, c-format
 msgid "SSL_connect error %d, SSL_%d"
 msgstr "SSL_connct Fehler %d, SSL_%d"
 
-#: src/socket.cpp:761
+#: src/socket.cpp:765
 #, c-format
 msgid "SSL_connect error = %lx, %s:%i"
 msgstr "SSL_connet Fehler = %lx, %s:%i"
