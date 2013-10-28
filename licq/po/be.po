@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Licq\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-08-12 17:26+0200\n"
+"POT-Creation-Date: 2013-10-28 13:20+0100\n"
 "PO-Revision-Date: 2008-02-25 20:37+0300\n"
 "Last-Translator: Alexey Ivaniuk aka Varjat <varjat@gmail.com>\n"
 "Language-Team: Belarussian language team <team@mova.org>\n"
@@ -440,12 +440,12 @@ msgstr "Адсутнічаю"
 msgid "Backtrace (saved in %s):\n"
 msgstr "Адладачная пасьлядоўнасьць (захавана ў %s):\n"
 
-#: src/socket.cpp:582
+#: src/socket.cpp:586
 #, fuzzy
 msgid "Cannot accept new connection, too many descriptors in use."
 msgstr "Размова: Атрымана злучэньне."
 
-#: src/socket.cpp:571
+#: src/socket.cpp:575
 #, c-format
 msgid ""
 "Cannot accept new connection:\n"
@@ -463,7 +463,7 @@ msgstr ""
 msgid "Chat Request"
 msgstr "Запрашэньне да размовы"
 
-#: src/socket.cpp:320
+#: src/socket.cpp:324
 #, fuzzy, c-format
 msgid "Connecting to %s:%i..."
 msgstr "Злучэньне з %s а %s:%d."
@@ -603,7 +603,7 @@ msgid ""
 "%s"
 msgstr ""
 
-#: src/socket.cpp:299
+#: src/socket.cpp:303
 #, c-format
 msgid "Error when trying to resolve %s. getaddrinfo() returned %d."
 msgstr ""
@@ -674,7 +674,7 @@ msgstr "Памылка перайменаваньня файла гісторы�
 msgid "Failed to retrive backtrace symbols"
 msgstr ""
 
-#: src/socket.cpp:334
+#: src/socket.cpp:338
 #, fuzzy
 msgid "Failed to set port range for socket."
 msgstr "Перадача файла: Сокет ня йснуе."
@@ -684,7 +684,7 @@ msgstr "Перадача файла: Сокет ня йснуе."
 msgid "Failed to start local TCP server: %s"
 msgstr "Нямагчыма стартаваць лякальны TCP-паслужнік: %s"
 
-#: src/socket.cpp:406
+#: src/socket.cpp:410
 #, fuzzy, c-format
 msgid ""
 "Failed to start local server using IPv6 socket (falling back to IPv4):\n"
@@ -740,7 +740,7 @@ msgstr "HTTPS проксі вярнуў памылку з кодам: %d, тэк
 msgid "Idle"
 msgstr ""
 
-#: src/inifile.cpp:229
+#: src/inifile.cpp:239
 #, fuzzy, c-format
 msgid ""
 "IniFile: I/O error, failed to create file.\n"
@@ -751,7 +751,7 @@ msgstr ""
 "Файл: %s\n"
 "Памылка: %i"
 
-#: src/inifile.cpp:91 src/inifile.cpp:211
+#: src/inifile.cpp:101 src/inifile.cpp:221
 #, fuzzy, c-format
 msgid ""
 "IniFile: I/O error, failed to get file size.\n"
@@ -762,7 +762,7 @@ msgstr ""
 "Файл: %s\n"
 "Памылка: %i"
 
-#: src/inifile.cpp:81
+#: src/inifile.cpp:91
 #, fuzzy, c-format
 msgid ""
 "IniFile: I/O error, failed to open file.\n"
@@ -773,7 +773,7 @@ msgstr ""
 "Файл: %s\n"
 "Памылка: %i"
 
-#: src/inifile.cpp:112
+#: src/inifile.cpp:122
 #, fuzzy, c-format
 msgid ""
 "IniFile: I/O error, failed to read file.\n"
@@ -784,7 +784,7 @@ msgstr ""
 "Файл: %s\n"
 "Памылка: %i"
 
-#: src/inifile.cpp:251
+#: src/inifile.cpp:261
 #, fuzzy, c-format
 msgid ""
 "IniFile: I/O error, failed to replace file.\n"
@@ -795,7 +795,7 @@ msgstr ""
 "Файл: %s\n"
 "Памылка: %i"
 
-#: src/inifile.cpp:240
+#: src/inifile.cpp:250
 #, fuzzy, c-format
 msgid ""
 "IniFile: I/O error, failed to write file.\n"
@@ -806,17 +806,17 @@ msgstr ""
 "Файл: %s\n"
 "Памылка: %i"
 
-#: src/inifile.cpp:532
+#: src/inifile.cpp:542
 #, c-format
 msgid "Internal Error: IniFile::get, key=%s, data.type=%s"
 msgstr ""
 
-#: src/inifile.cpp:669
+#: src/inifile.cpp:679
 #, c-format
 msgid "Internal Error: IniFile::set, key=%s, data.type=%s"
 msgstr ""
 
-#: src/socket.cpp:171
+#: src/socket.cpp:175
 msgid "Internal error"
 msgstr "Унутраная памылка"
 
@@ -955,7 +955,7 @@ msgstr "Ніколі"
 msgid "New Email from"
 msgstr "Зьвесткі аб пошце"
 
-#: src/socket.cpp:163
+#: src/socket.cpp:167
 msgid "No error detected"
 msgstr "Памылкі ня знойдзены"
 
@@ -1086,12 +1086,12 @@ msgstr ""
 msgid "SMS"
 msgstr "СМС"
 
-#: src/socket.cpp:765
+#: src/socket.cpp:769
 #, c-format
 msgid "SSL_connect error %d, SSL_%d"
 msgstr ""
 
-#: src/socket.cpp:761
+#: src/socket.cpp:765
 #, c-format
 msgid "SSL_connect error = %lx, %s:%i"
 msgstr ""

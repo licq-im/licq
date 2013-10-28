@@ -394,21 +394,21 @@ You can leave me a message.
         <source>Unable to bind to a port.
 See Network Window for details.</source>
         <translation>Herhangi bir porta bağlanılamadı.
-Ayrıntılar için ağ arayüzüne ayrıntılar için bakın.></translation>
+Ayrıntılar için ağ arayüzüne ayrıntılar için bakın.&gt;</translation>
     </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="704"/>
         <source>Unable to connect to the remote chat.
 See Network Window for details.</source>
         <translation>Uzak sohbet bağlantısı kurulamıyor.
-Ayrıntılar için ağ arayüzüne ayrıntılar için bakın.></translation>
+Ayrıntılar için ağ arayüzüne ayrıntılar için bakın.&gt;</translation>
     </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="712"/>
         <source>Unable to create new thread.
 See Network Window for details.</source>
         <translation>Yeni etkinlik oluşturulamıyor.
-Ayrıntılar için ağ arayüzüne ayrıntılar için bakın.></translation>
+Ayrıntılar için ağ arayüzüne ayrıntılar için bakın.&gt;</translation>
     </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="1050"/>
@@ -1076,12 +1076,12 @@ istiyor musun?</translation>
     <message>
         <location filename="../src/dialogs/filedlg.cpp" line="336"/>
         <source>Received %1 from %2 successfully.</source>
-        <translation>%1 alımı %2 'den başarılı.</translation>
+        <translation>%1 alımı %2 &apos;den başarılı.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/filedlg.cpp" line="340"/>
         <source>Sent %1 to %2 successfully.</source>
-        <translation>%1 iletimi %2 'den başarılı.</translation>
+        <translation>%1 iletimi %2 &apos;den başarılı.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/filedlg.cpp" line="348"/>
@@ -1763,8 +1763,8 @@ Bu anahtar anahtarlığından silin&apos;medi</translation>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="113"/>
         <source>Client does not support OpenSSL.
 Rebuild Licq with OpenSSL support.</source>
-        <translation>İstemci OpenSSL'i desteklemiyor.
-Licq'yu OpenSSL desteği ile yeniden derleyin.</translation>
+        <translation>İstemci OpenSSL&apos;i desteklemiyor.
+Licq&apos;yu OpenSSL desteği ile yeniden derleyin.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="54"/>
@@ -1879,7 +1879,7 @@ Bu çalıştırılamayabilinir.</translation>
 <context>
     <name>LicqQtGui::LicqGui</name>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="643"/>
+        <location filename="../src/core/licqgui.cpp" line="647"/>
         <source>Are you sure you want to remove
 %1 (%2)
 from your contact list?</source>
@@ -1888,7 +1888,7 @@ from your contact list?</source>
 silmek istediğinizden emin misiniz?</translation>
     </message>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="267"/>
+        <location filename="../src/core/licqgui.cpp" line="269"/>
         <source>There was an error loading the default configuration file.
 Would you like to try loading the old one?</source>
         <translation>Öntanımlı yapılandırma dosyası yüklenirken bir hata oluştu.
@@ -2002,7 +2002,7 @@ Eski bir tanesini yükleme denemek ister misiniz?</translation>
     <message>
         <location filename="../src/dialogs/mmsenddlg.cpp" line="107"/>
         <source>Multiple Recipient URL</source>
-        <translation> URL'yi Çoklu Alıcılara gönder.</translation>
+        <translation> URL&apos;yi Çoklu Alıcılara gönder.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/mmsenddlg.cpp" line="119"/>
@@ -2298,7 +2298,7 @@ Double click - Set auto response</source>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="54"/>
         <source>Always except DND</source>
-        <translation>Her zaman, "Rahatsız etme" modu dışında</translation>
+        <translation>Her zaman, &quot;Rahatsız etme&quot; modu dışında</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="55"/>
@@ -2333,7 +2333,7 @@ Double click - Set auto response</source>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="79"/>
         <source>Parameter for received URLs</source>
-        <translation>Alınan URL 'ler için parametre</translation>
+        <translation>Alınan URL &apos;ler için parametre</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="80"/>
@@ -2363,7 +2363,7 @@ Double click - Set auto response</source>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="85"/>
         <source>Parameter for received SMSs</source>
-        <translation>Alınan SMS'ler için parametre</translation>
+        <translation>Alınan SMS&apos;ler için parametre</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="86"/>
@@ -3266,7 +3266,7 @@ Normalde, bu menü sadece yaygın olarak kullanılan kodlamaları gösterir.</tr
     <message>
         <location filename="../src/settings/chat.cpp" line="482"/>
         <source>#Licq on irc.freenode.net</source>
-        <translation>irc.freenode.net 'de #Licq kanalı</translation>
+        <translation>irc.freenode.net &apos;de #Licq kanalı</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="483"/>
@@ -3852,7 +3852,7 @@ Kısayolu harfi harfine gir, örneğin &quot;shift+f10&quot;, ya da devredışı
     <message>
         <location filename="../src/settings/events.cpp" line="151"/>
         <source>Determines if mass messages are ignored or not.</source>
-        <translation>>Toplu iletileri engellimi değilmi belirle</translation>
+        <translation>&gt;Toplu iletileri engellimi değilmi belirle</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="154"/>
@@ -4027,7 +4027,7 @@ Kısayolu harfi harfine gir, örneğin &quot;shift+f10&quot;, ya da devredışı
     <message>
         <location filename="../src/settings/events.cpp" line="101"/>
         <source>Always except DND</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Her zaman, &quot;Rahatsız etme&quot; modu dışında</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="102"/>
@@ -4107,7 +4107,7 @@ ve daha ufağı, 64x48 simgesi Gnome/KDE paneli için seçili.</translation>
         <location filename="../src/settings/general.cpp" line="84"/>
         <source>Uses the freedesktop.org standard to dock a small icon into the system tray.
 Works with many different window managers.</source>
-        <translation>Sistem tepsisine, freedesktop.org standardında, dock'a uygulanmak için ufak bir simge kullanır.
+        <translation>Sistem tepsisine, freedesktop.org standardında, dock&apos;a uygulanmak için ufak bir simge kullanır.
 Birçok faklı pencere yöneticisinde çalışır.</translation>
     </message>
     <message>
@@ -4138,7 +4138,7 @@ Birçok faklı pencere yöneticisinde çalışır.</translation>
     <message>
         <location filename="../src/settings/general.cpp" line="138"/>
         <source>Used in message editor etc.</source>
-        <translation>İleti düzenleyicisi vs.'de kullanıldı</translation>
+        <translation>İleti düzenleyicisi vs.&apos;de kullanıldı</translation>
     </message>
     <message>
         <location filename="../src/settings/general.cpp" line="93"/>
@@ -4186,7 +4186,7 @@ Birçok faklı pencere yöneticisinde çalışır.</translation>
     <message>
         <location filename="../src/settings/network.cpp" line="59"/>
         <source>I am behind a firewall</source>
-        <translation>Bir Güvenlik Duvarı'nın arkasındayım</translation>
+        <translation>Bir Güvenlik Duvarı&apos;nın arkasındayım</translation>
     </message>
     <message>
         <location filename="../src/settings/network.cpp" line="63"/>
@@ -4242,7 +4242,7 @@ Birçok faklı pencere yöneticisinde çalışır.</translation>
     <message>
         <location filename="../src/settings/network.cpp" line="108"/>
         <source>Proxy server port:</source>
-        <translation>Proxy sunucusu port'u:</translation>
+        <translation>Proxy sunucusu port&apos;u:</translation>
     </message>
     <message>
         <location filename="../src/settings/network.cpp" line="117"/>
@@ -4423,12 +4423,12 @@ Birçok faklı pencere yöneticisinde çalışır.</translation>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="90"/>
         <source>Toggle mini mode</source>
-        <translation>Mini moda Toggle'la</translation>
+        <translation>Mini moda Toggle&apos;la</translation>
     </message>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="91"/>
         <source>Toggle show offline users</source>
-        <translation>Çevrimdılı kullanıcıları Toggle'la</translation>
+        <translation>Çevrimdılı kullanıcıları Toggle&apos;la</translation>
     </message>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="83"/>
@@ -4449,12 +4449,12 @@ Birçok faklı pencere yöneticisinde çalışır.</translation>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="92"/>
         <source>Toggle empty groups</source>
-        <translation>Boş grupları Toggle'la</translation>
+        <translation>Boş grupları Toggle&apos;la</translation>
     </message>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="93"/>
         <source>Toggle column headers visible</source>
-        <translation>Sütün başlıklarını görünür Toggle'la</translation>
+        <translation>Sütün başlıklarını görünür Toggle&apos;la</translation>
     </message>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="94"/>
@@ -4469,7 +4469,7 @@ Birçok faklı pencere yöneticisinde çalışır.</translation>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="96"/>
         <source>Exit Licq</source>
-        <translation>Licq 'dan çık</translation>
+        <translation>Licq &apos;dan çık</translation>
     </message>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="100"/>
@@ -4509,7 +4509,7 @@ Birçok faklı pencere yöneticisinde çalışır.</translation>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="105"/>
         <source>Toggle status Invisible</source>
-        <translation>Görünmez duruma Toogle'la</translation>
+        <translation>Görünmez duruma Toogle&apos;la</translation>
     </message>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="144"/>
@@ -4554,7 +4554,7 @@ Birçok faklı pencere yöneticisinde çalışır.</translation>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="152"/>
         <source>Toggle multiple recipients</source>
-        <translation>Çoklu kullancıları Toggle'la</translation>
+        <translation>Çoklu kullancıları Toggle&apos;la</translation>
     </message>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="153"/>
@@ -5649,7 +5649,7 @@ engellenenler listesine almak istediğinize emin misiniz?</translation>
     <message>
         <location filename="../src/core/usermenu.cpp" line="178"/>
         <source>&amp;Copy User ID</source>
-        <translation>Kullanıcı ID 'sini &amp;kopyala</translation>
+        <translation>Kullanıcı ID &apos;sini &amp;kopyala</translation>
     </message>
 </context>
 <context>
@@ -6091,7 +6091,7 @@ ICQ ağına bağlanmalısın</translation>
         <location filename="../src/userdlg/info.cpp" line="1690"/>
         <source> is over %1 bytes.
 Select another picture?</source>
-        <translation>%1 byte'dan büyük.
+        <translation>%1 byte&apos;dan büyük.
 Başka bir resim seçsene</translation>
     </message>
 </context>
@@ -6196,7 +6196,7 @@ Başka bir resim seçsene</translation>
     <message>
         <location filename="../src/userdlg/owner.cpp" line="135"/>
         <source>Licq can reconnect you when you got disconnected because your Uin was used from another location. Check this if you want Licq to reconnect automatically.</source>
-        <translation>Uin başka bir yerden kullanıldığında bağlantın kopar, o zaman Licq yeniden bağlantını sağlar. Licq'nun seni yeniden bağlamasını istiyorsan bunu kontrol et.</translation>
+        <translation>Uin başka bir yerden kullanıldığında bağlantın kopar, o zaman Licq yeniden bağlantını sağlar. Licq&apos;nun seni yeniden bağlamasını istiyorsan bunu kontrol et.</translation>
     </message>
     <message>
         <location filename="../src/userdlg/owner.cpp" line="141"/>
@@ -6360,7 +6360,7 @@ Başka bir resim seçsene</translation>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="91"/>
         <source>Accept in Do not Disturb</source>
-        <translation>"Rahatsız Etme" modunda onayla</translation>
+        <translation>&quot;Rahatsız Etme&quot; modunda onayla</translation>
     </message>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="113"/>
@@ -6370,7 +6370,7 @@ Başka bir resim seçsene</translation>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="114"/>
         <source>Use real IP for when sending to this contact.</source>
-        <translation>Bu kullanıcıya iletim gönderiminde gerçek İP'ni kullan</translation>
+        <translation>Bu kullanıcıya iletim gönderiminde gerçek İP&apos;ni kullan</translation>
     </message>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="129"/>
@@ -6395,7 +6395,7 @@ Başka bir resim seçsene</translation>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="137"/>
         <source>Contact will always see you as online.</source>
-        <translation>Kişiler seni herzaman "Çevrimiçi durumunda görecek</translation>
+        <translation>Kişiler seni herzaman &quot;Çevrimiçi durumunda görecek</translation>
     </message>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="140"/>
@@ -6405,7 +6405,7 @@ Başka bir resim seçsene</translation>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="141"/>
         <source>Contact will always see your status as away.</source>
-        <translation>Kişiler seni herzaman "Yok" durumunda görecek</translation>
+        <translation>Kişiler seni herzaman &quot;Yok&quot; durumunda görecek</translation>
     </message>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="144"/>
@@ -6415,7 +6415,7 @@ Başka bir resim seçsene</translation>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="145"/>
         <source>Contact will always see your status as not available.</source>
-        <translation>Kişiler seni herzaman "Uygun değil" durumunda görecek</translation>
+        <translation>Kişiler seni herzaman &quot;Uygun değil&quot; durumunda görecek</translation>
     </message>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="148"/>
@@ -6425,7 +6425,7 @@ Başka bir resim seçsene</translation>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="149"/>
         <source>Contact will always see your status as occupied.</source>
-        <translation>Kişiler seni herzaman "Meşgul" durumunda görecek</translation>
+        <translation>Kişiler seni herzaman &quot;Meşgul&quot; durumunda görecek</translation>
     </message>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="152"/>
@@ -6435,7 +6435,7 @@ Başka bir resim seçsene</translation>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="153"/>
         <source>Contact will always see your status as do not disturb.</source>
-        <translation>Kişiler seni her zaman "rahatsız etmeyin" durumunda görecek</translation>
+        <translation>Kişiler seni her zaman &quot;rahatsız etmeyin&quot; durumunda görecek</translation>
     </message>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="159"/>
@@ -6703,7 +6703,7 @@ Başka bir resim seçsene</translation>
         <location filename="../src/userevents/usersendevent.cpp" line="1176"/>
         <source>You didn&apos;t edit the SMS.
 Do you really want to send it?</source>
-        <translation>SMS'i değiştirmedini&apos;z.
+        <translation>SMS&apos;i değiştirmedini&apos;z.
 Göndermek istediğinizden emin misiniz?</translation>
     </message>
     <message>

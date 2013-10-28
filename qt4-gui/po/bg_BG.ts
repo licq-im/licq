@@ -1372,7 +1372,7 @@ Note: Multibyte characters are not handled so UTF8 characters will be handled as
     <message>
         <location filename="../src/dialogs/forwarddlg.cpp" line="92"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Отказ</translation>
     </message>
     <message>
         <location filename="../src/dialogs/forwarddlg.cpp" line="115"/>
@@ -1698,7 +1698,7 @@ The key isn&apos;t deleted from your keyring.</source>
         <location filename="../src/dialogs/joinchatdlg.cpp" line="62"/>
         <location filename="../src/dialogs/joinchatdlg.cpp" line="69"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Отказ</translation>
     </message>
     <message>
         <location filename="../src/dialogs/joinchatdlg.cpp" line="66"/>
@@ -1852,7 +1852,7 @@ Rebuild Licq with OpenSSL support.</source>
 <context>
     <name>LicqQtGui::LicqGui</name>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="643"/>
+        <location filename="../src/core/licqgui.cpp" line="647"/>
         <source>Are you sure you want to remove
 %1 (%2)
 from your contact list?</source>
@@ -1861,7 +1861,7 @@ from your contact list?</source>
 от списъка с контактите Ви?</translation>
     </message>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="267"/>
+        <location filename="../src/core/licqgui.cpp" line="269"/>
         <source>There was an error loading the default configuration file.
 Would you like to try loading the old one?</source>
         <translation type="unfinished"></translation>
@@ -6964,7 +6964,7 @@ Request was cancelled.</source>
     <message>
         <location filename="../src/dialogs/utilitydlg.cpp" line="128"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Отказ</translation>
     </message>
     <message>
         <location filename="../src/dialogs/utilitydlg.cpp" line="187"/>

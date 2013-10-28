@@ -1872,7 +1872,7 @@ Potrebbe non funzionare.</translation>
 <context>
     <name>LicqQtGui::LicqGui</name>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="643"/>
+        <location filename="../src/core/licqgui.cpp" line="647"/>
         <source>Are you sure you want to remove
 %1 (%2)
 from your contact list?</source>
@@ -1881,7 +1881,7 @@ from your contact list?</source>
 dalla lista contatti?</translation>
     </message>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="267"/>
+        <location filename="../src/core/licqgui.cpp" line="269"/>
         <source>There was an error loading the default configuration file.
 Would you like to try loading the old one?</source>
         <translation type="unfinished"></translation>
