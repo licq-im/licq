@@ -20,13 +20,14 @@
 #ifndef USERCODEC_H
 #define USERCODEC_H
 
+#include <QObject>
 #include <QString>
 
 namespace LicqQtGui
 {
 class UserCodec
 {
-  Q_OBJECT
+  Q_GADGET
 
 public:
   struct encoding_t
