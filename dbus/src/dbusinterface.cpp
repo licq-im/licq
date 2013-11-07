@@ -309,10 +309,10 @@ DBusHandlerResult DbusInterface::Private::handleMessage(DBusConnection* /*connec
   const char* iface = dbus_message_get_interface(message);
   const char* member = dbus_message_get_member(message);
 
-  char* signature = NULL;
+  const char* signature = NULL;
   DBusMessageIter args;
   if (dbus_message_iter_init(message, &args))
-    signature = dbus_message_iter_get_signature(&args);
+    signature = dbus_message_get_signature(message);
 
   int type = dbus_message_get_type(message);
   int error;
@@ -364,9 +364,6 @@ DBusHandlerResult DbusInterface::Private::handleMessage(DBusConnection* /*connec
       // Only method calls should be replied to
       error = DbusInterface::MethodReplied;
   }
-  if (signature != NULL)
-    dbus_free(signature);
-
   if (error != DbusInterface::MethodReplied)
     d->myInterface->sendError(message, error, NULL);
 
