@@ -199,6 +199,9 @@ void MainLoop::run()
       {
         Private::File& f(i->second);
 
+        if (f.removed)
+          continue;
+
         if (f.pfd == NULL)
           /* File has been added after poll was called, just ignore it */
           continue;
@@ -355,9 +358,9 @@ void MainLoop::removeCallback(const MainLoopCallback* callback, bool closeDelete
   LICQ_D();
 
   // Find and remove all files with this callback object
-  for (Private::FileMap::iterator i = d->myFiles.begin(); i != d->myFiles.end(); )
+  for (Private::FileMap::iterator i = d->myFiles.begin(); i != d->myFiles.end(); ++i)
   {
-    if (i->second.callback == callback)
+    if (i->second.callback == callback && !i->second.removed)
     {
       if (closeDelete)
       {
@@ -366,11 +369,9 @@ void MainLoop::removeCallback(const MainLoopCallback* callback, bool closeDelete
         else
           close(i->second.fd);
       }
-      d->myFiles.erase(i++);
+      i->second.removed = true;
       d->myFilesHasChanged = true;
     }
-    else
-      ++i;
   }
 
   // Find and remove all timeouts with this callback object
