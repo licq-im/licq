@@ -72,7 +72,8 @@ char *strndup(const char *s, size_t n)
 CMSN::CMSN()
   : myServerSocket(NULL),
     mySslSocket(NULL),
-    m_vlPacketBucket(211)
+    m_vlPacketBucket(211),
+    myNextTimeoutId(1)
 {
   m_bWaitingPingReply = m_bCanPing = false;
   m_pPacketBuf = 0;

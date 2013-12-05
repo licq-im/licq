@@ -158,17 +158,17 @@ void CMSNPacket::InitBuffer()
   m_pBuffer->packRaw(buf, strlen(buf));
 }
 
-char* CMSNPacket::CreateGUID()
+std::string CMSNPacket::CreateGUID()
 {
-  char *szGUID = new char[37];
+  char guid[37];
   static int x = 1;
   x++;
   // Create a random UID
   srand(time(0)+x);
-  sprintf(szGUID, "%4X%4X-%4X-%4X-%4X-%4X%4X%4X",
+  sprintf(guid, "%4X%4X-%4X-%4X-%4X-%4X%4X%4X",
 	 rand() % 0xFFFF, rand() % 0xFFFF, rand() % 0xFFFF, rand() % 0xFFFF,
 	 rand() % 0xFFFF, rand() % 0xFFFF, rand() % 0xFFFF, rand() % 0xFFFF);
-  return szGUID;
+  return guid;
 }
 
 CMSNPayloadPacket::CMSNPayloadPacket(char msgType)
@@ -202,7 +202,6 @@ CMSNP2PPacket::CMSNP2PPacket(const string& toEmail, unsigned long nSessionId,
   : CMSNPayloadPacket('A'),
     myToEmail(toEmail)
 {
-  m_szCallGUID = 0;
   m_nSessionId = nSessionId;
   m_nBaseId = nBaseId;
   m_nDataOffsetLO = nDataOffsetLO;
@@ -219,7 +218,7 @@ CMSNP2PPacket::CMSNP2PPacket(const string& toEmail, unsigned long nSessionId,
 
 CMSNP2PPacket::~CMSNP2PPacket()
 {
-  /* Empty */
+  // Empty
 }
 
 void CMSNP2PPacket::InitBuffer()
@@ -536,8 +535,8 @@ CPS_MSNCancelInvite::CPS_MSNCancelInvite(const string& cookie, const string& cod
 CPS_MSNInvitation::CPS_MSNInvitation(const string& toEmail, const string& fromEmail, const string& msnObject)
   : CMSNP2PPacket(toEmail)
 {
-  char *szBranchGUID = CreateGUID();
-  m_szCallGUID = CreateGUID();
+  std::string branchGUID = CreateGUID();
+  myCallGUID = CreateGUID();
   string strMSNObject64 = MSN_Base64Encode(msnObject);
 
   char szBodyBuf[512];
@@ -564,8 +563,8 @@ CPS_MSNInvitation::CPS_MSNInvitation(const string& toEmail, const string& fromEm
 	   "Max-Forwards: 0\r\n"
 	   "Content-Type: application/x-msnmsgr-sessionreqbody\r\n"
 	   "Content-Length: %lu\r\n"
-	   "\r\n", toEmail.c_str(), toEmail.c_str(), fromEmail.c_str(), szBranchGUID,
-	   m_szCallGUID, static_cast<unsigned long>(strlen(szBodyBuf)+1));
+	   "\r\n", toEmail.c_str(), toEmail.c_str(), fromEmail.c_str(), branchGUID.c_str(),
+	   myCallGUID.c_str(), static_cast<unsigned long>(strlen(szBodyBuf)+1));
 
   string strMsg = szHeaderBuf;
   strMsg += szBodyBuf;
@@ -592,7 +591,7 @@ CPS_MSNP2PBye::CPS_MSNP2PBye(const string& toEmail, const string& fromEmail,
   : CMSNP2PPacket(toEmail, 0, _nBaseId, 0, 0, 0, 4, 0, 0, _nAckId, 0, 0, 0)
 		     //SizeHI, _nDataSizeLO)
 {
-  char *szBranchGUID = CreateGUID();
+  std::string branchGUID = CreateGUID();
 
   char szMsgBuf[768];
 
@@ -608,7 +607,8 @@ CPS_MSNP2PBye::CPS_MSNP2PBye(const string& toEmail, const string& fromEmail,
 	   "Content-Length: 3\r\n"
 	   "\r\n"
 	   "\r\n",
-      toEmail.c_str(), toEmail.c_str(), fromEmail.c_str(), szBranchGUID, callId.c_str());
+      toEmail.c_str(), toEmail.c_str(), fromEmail.c_str(),
+      branchGUID.c_str(), callId.c_str());
 
   string strMsg = szMsgBuf;
   strMsg += '\0';

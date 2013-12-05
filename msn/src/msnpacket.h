@@ -50,7 +50,7 @@ public:
   
   virtual void InitBuffer();
 
-  char *CreateGUID();
+  std::string CreateGUID();
 
 protected:
   
@@ -90,13 +90,13 @@ public:
 
   unsigned long SessionId() { return m_nSessionId; }
   unsigned long BaseId() { return m_nBaseId; }
-  char *CallGUID() { return m_szCallGUID; }
+  const std::string& CallGUID() { return myCallGUID; }
   // unsigned long DataSize() {}
   //unsigned long Offset() {}
 
 protected:
   std::string myToEmail;
-  char *m_szCallGUID;
+  std::string myCallGUID;
   unsigned long m_nSessionId,
     m_nBaseId,
     m_nDataSizeLO,
