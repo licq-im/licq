@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2007-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/icq/icq.h>
 #include <licq/daemon.h>
+#include <licq/gpghelper.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/utility.h>
@@ -109,7 +110,7 @@ UserMenu::UserMenu(QWidget* parent)
   ADD_MISCMODE(tr("Auto Accept Chats"), ModeAutoChatAccept)
   ADD_MISCMODE(tr("Auto Request Secure"), ModeAutoSecure)
   ADD_MISCMODE(tr("Use GPG Encryption"), ModeUseGpg)
-  if (!Licq::gDaemon.haveGpgSupport())
+  if (!Licq::gGpgHelper.haveGpgSupport())
     a->setVisible(false);
   ADD_MISCMODE(tr("Use Real Ip (LAN)"), ModeUseRealIp)
   myMiscModesMenu->addSeparator();
@@ -173,7 +174,7 @@ UserMenu::UserMenu(QWidget* parent)
   myRemoveUserAction = addAction(tr("Remove From List"), this, SLOT(removeContact()));
   addSeparator();
   mySetKeyAction = addAction(tr("Set GPG Key..."), this, SLOT(selectKey()));
-  if (!Licq::gDaemon.haveGpgSupport())
+  if (!Licq::gGpgHelper.haveGpgSupport())
     mySetKeyAction->setVisible(false);
   myCopyIdAction = addAction(tr("&Copy User ID"), this, SLOT(copyIdToClipboard()));
   myViewHistoryAction = addAction(tr("View &History..."), this, SLOT(viewHistory()));

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2011-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2011-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,6 @@
 
 #include "contactlist/usermanager.h"
 #include "gettext.h"
-#include "gpghelper.h"
 #include "filter.h"
 #include "licq.h"
 #include "logging/filelogsink.h"
@@ -160,9 +159,6 @@ void Daemon::initialize()
 
   // Initialize the random number generator
   srand(time(NULL));
-
-  // start GPG helper
-  LicqDaemon::gGpgHelper.Start();
 }
 
 const char* Daemon::Version() const
@@ -222,15 +218,6 @@ void Daemon::SaveConf()
 
   licqConf.writeFile();
   releaseLicqConf();
-}
-
-bool Licq::Daemon::haveGpgSupport() const
-{
-#ifdef HAVE_LIBGPGME
-  return true;
-#else
-  return false;
-#endif
 }
 
 bool Licq::Daemon::haveCryptoSupport() const

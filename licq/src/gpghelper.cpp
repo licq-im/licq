@@ -48,6 +48,16 @@ Licq::GpgHelper& Licq::gGpgHelper(LicqDaemon::gGpgHelper);
 const char Licq::GpgHelper::pgpSig[] = "-----BEGIN PGP MESSAGE-----";
 
 
+bool Licq::GpgHelper::haveGpgSupport() const
+{
+#ifdef HAVE_LIBGPGME
+  return true;
+#else
+  return false;
+#endif
+}
+
+
 GpgHelper::GpgHelper()
   : myKeysIni("licq_gpg.conf")
 {
@@ -209,7 +219,7 @@ list<GpgKey>* GpgHelper::getKeyList() const
   return keyList;
 }
 
-void GpgHelper::Start()
+void GpgHelper::initialize()
 {
 #ifdef HAVE_LIBGPGME
   myKeysIni.loadFile();

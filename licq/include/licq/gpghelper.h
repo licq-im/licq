@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2010 Licq developers
+ * Copyright (C) 2004-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,14 @@ struct GpgKey
 class GpgHelper : private boost::noncopyable
 {
 public:
+  /**
+   * Check if GPG support is enabled
+   * This function allows plugins to check at runtime if GPG options are available
+   *
+   * @return True if GPG support is available in daemon
+   */
+  bool haveGpgSupport() const;
+
   static const char pgpSig[];
   virtual char* Decrypt(const char* cipher) = 0;
   virtual char* Encrypt(const char* plain, const UserId& userId) = 0;

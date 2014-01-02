@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,7 @@
 #include "daemon.h"
 #include "filter.h"
 #include "gettext.h"
+#include "gpghelper.h"
 #include "logging/logservice.h"
 #include "logging/streamlogsink.h"
 #include "oneventmanager.h"
@@ -70,6 +71,7 @@ using LicqDaemon::gDaemon;
 using LicqDaemon::gFifo;
 #endif
 using LicqDaemon::gFilterManager;
+using LicqDaemon::gGpgHelper;
 using LicqDaemon::gLogService;
 using LicqDaemon::gOnEventManager;
 using LicqDaemon::gSarManager;
@@ -632,6 +634,7 @@ bool CLicq::Init(int argc, char **argv)
   if (!LicqDaemon::gUserManager.Load())
     return false;
   gDaemon.initialize();
+  gGpgHelper.initialize();
   gOnEventManager.initialize();
   gSarManager.initialize();
   gStatistics.initialize();

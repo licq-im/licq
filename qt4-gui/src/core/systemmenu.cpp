@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2007-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <licq/contactlist/group.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/usermanager.h>
-#include <licq/daemon.h>
+#include <licq/gpghelper.h>
 #include <licq/icq/icq.h>
 #include <licq/icq/owner.h>
 #include <licq/plugin/pluginmanager.h>
@@ -158,7 +158,7 @@ SystemMenu::SystemMenu(QWidget* parent)
   myOptionsAction = addAction(tr("S&ettings..."), this, SLOT(showSettingsDlg()));
   myAccountManagerAction = addAction(tr("&Accounts..."), this, SLOT(showOwnerManagerDlg()));
   myKeyManagerAction = addAction(tr("GPG &Key Manager..."), this, SLOT(showGPGKeyManager()));
-  if (!Licq::gDaemon.haveGpgSupport())
+  if (!Licq::gGpgHelper.haveGpgSupport())
     myKeyManagerAction->setVisible(false);
   addSeparator();
   mySaveOptionsAction = addAction(tr("Sa&ve Settings"), gLicqGui, SLOT(saveConfig()));

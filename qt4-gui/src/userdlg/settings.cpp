@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2008-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2008-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
+#include <licq/gpghelper.h>
 #include <licq/oneventmanager.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
@@ -107,7 +108,7 @@ QWidget* UserPages::Settings::createPageSettings(QWidget* parent)
   myUseGpgCheck = new QCheckBox(tr("Use GPG encryption"));
   myUseGpgCheck->setToolTip(tr("Use GPG encryption for messages with this contact."));
   mySettingsLayout->addWidget(myUseGpgCheck, 3, 1);
-  if (!Licq::gDaemon.haveGpgSupport())
+  if (!Licq::gGpgHelper.haveGpgSupport())
     myUseGpgCheck->setVisible(false);
 
   myUseRealIpCheck = new QCheckBox(tr("Use real IP (LAN)"));
