@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2012 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -207,10 +207,10 @@ void licq_handle_sigabrt(int s)
   char error[1024];
   snprintf(error, 1024,
            "Licq has encountered a fatal error.\n"
-           "Please report this error either by creating a new ticket "
-           "at http://trac.licq.org/ or by sending an e-mail to the mailing list "
-           "licq-dev@googlegroups.com (you must be registered to be able to post, "
-           "see http://trac.licq.org/wiki/MailingList).\n"
+           "Please report this error either by creating a new ticket at"
+           "https://github.com/licq-im/licq/issues or by sending an e-mail to the"
+           "mailing list licq-dev@googlegroups.com (you must be registered to be"
+           "able to post, see http://groups.google.com/group/licq-dev).\n"
            "\n"
            "To help us debug the error, please include a full description of "
            "what you did when the error occurred. Additionally, please include "
