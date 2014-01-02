@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -171,6 +171,7 @@ bool Client::connect(unsigned status)
   Licq::MutexLocker locker(myGlooxMutex);
 
   changeStatus(status, false);
+  myMainLoop.removeCallback(this);
   if (!myClient.connect(false))
     return false;
 
