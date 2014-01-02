@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2004-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -231,12 +231,13 @@ void GpgHelper::Start()
 }
 
 #ifdef HAVE_LIBGPGME
-gpgme_error_t GpgHelper::PassphraseCallback(void* helperPtr, const char *, const char *, int, int fd)
+gpgme_error_t GpgHelper::PassphraseCallback(void* helperPtr, const char *,
+    const char *, int prev_was_bad, int fd)
 {
   GpgHelper* helper = static_cast<GpgHelper*>(helperPtr);
   const char nl = '\n';
   const string& pf = helper->myGpgPassphrase;
-  if (pf.empty())
+  if (prev_was_bad || pf.empty())
   {
     write(fd, &nl, 1);
     return GPG_ERR_CANCELED;
