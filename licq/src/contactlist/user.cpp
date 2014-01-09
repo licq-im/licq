@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2000-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1585,7 +1585,8 @@ unsigned long Licq::protocolId_fromString(const std::string& s)
   gPluginManager.getProtocolPluginsList(plugins);
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
   {
-    if (boost::iequals(s, plugin->name()))
+    if (boost::iequals(s, plugin->name()) ||
+        s == Licq::protocolId_toString(plugin->protocolId()))
       return plugin->protocolId();
   }
 
