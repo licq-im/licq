@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010,2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #define LICQ_BUFFER_H
 
 #include "logging/log.h"
+#include "macro.h"
 
 #include <string>
 
@@ -94,11 +95,7 @@ public:
    /**
     * Log the packet with the given message.
     */
-  void log(Log::Level level, const char* format, ...)
-#ifdef __GNUC__
-      __attribute__((format (printf, 3, 4)))
-#endif
-   ;
+  void log(Log::Level level, const char* format, ...) const LICQ_FORMAT(3, 4);
 
   virtual void Clear();
    void Reset();

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -431,7 +431,7 @@ void Buffer::Pack(Buffer* buf)
   incDataPosWrite(buf->getDataSize());
 }
 
-void Buffer::log(Log::Level level, const char* format, ...)
+void Buffer::log(Log::Level level, const char* format, ...) const
 {
   va_list args;
   va_start(args, format);

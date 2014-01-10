@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -142,21 +142,48 @@ public:
    * Send one "packet"
    * Writes the contents of a buffer to the socket
    *
+   * @param buf Buffer with data to send
+   * @param length Number of bytes to send
+   * @return False on any failure
+   */
+  virtual bool send(const void* buf, size_t length);
+
+  /**
+   * Convenience function to send data from an std::string
+   *
+   * @param b String with data to send
+   * @return False on any failure
+   */
+  bool send(const std::string& buf)
+  { return send(buf.c_str(), buf.size()); }
+
+  /**
+   * Convenience function to send data from an Licq::Buffer
+   *
    * @param b Buffer with packet to send
    * @return False on any failure
    */
-  virtual bool send(Buffer& b);
+  bool send(const Buffer& b);
 
   /**
    * Receive one "packet"
-   * Makes a single read from the socket
+   * Makes a single (non blocking) read from the socket
+   *
+   * @param buf Buffer to store data in
+   * @param maxlength Maximum packet length to read
+   * @return Number of bytes read, zero if non available or negative for error
+   */
+  virtual ssize_t receive(void* buf, size_t maxlength);
+
+  /**
+   * Convenience function to read data into an Licq::Buffer
    *
    * @param b Buffer to store data in (will be created if empty)
    * @param maxlength Maximum packet length to read
    * @param dump True to dump packet for debugging if buffer was filled
    * @return False on any failure otherwise true regardless of data length
    */
-  virtual bool receive(Buffer& b, size_t maxlength = MAX_RECV_SIZE, bool dump = true);
+  bool receive(Buffer& b, size_t maxlength = MAX_RECV_SIZE, bool dump = true);
 
   void Lock();
   void Unlock();
@@ -216,7 +243,7 @@ protected:
   };
 
   bool SetLocalAddress(bool bIp = true);
-  void DumpPacket(Buffer* b, bool isReceiver);
+  void DumpPacket(const Buffer* b, bool isReceiver);
 
   // sockaddr is too small to hold a sockaddr_in6 so use union to allocate the extra space
   union
@@ -252,10 +279,12 @@ public:
   virtual void TransferConnectionFrom(TCPSocket &from);
 
   /// Overloaded to add SSL support
-  bool send(Buffer& b);
+  bool send(const void* buf, size_t length);
+  using INetSocket::send;
 
   /// Overloaded to add SSL support
-  bool receive(Buffer& b, size_t maxlength = MAX_RECV_SIZE, bool dump = true);
+  ssize_t receive(void* buf, size_t maxlength);
+  using INetSocket::receive;
 
   bool Secure() { return m_p_SSL != NULL; }
   bool SSL_Pending();
