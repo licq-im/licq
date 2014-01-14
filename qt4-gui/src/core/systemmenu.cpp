@@ -109,7 +109,7 @@ SystemMenu::SystemMenu(QWidget* parent)
   ADD_MAINSTATUS(myStatusFreeForChatAction, User::FreeForChatStatus);
   ADD_MAINSTATUS(myStatusOfflineAction, User::OfflineStatus);
 #undef ADD_MAINSTATUS
-  myStatusMenu->addSeparator();
+  myStatusInvisibleSeparator = myStatusMenu->addSeparator();
   myStatusInvisibleAction = myStatusMenu->addAction(
       User::statusToString(User::InvisibleStatus, true, false).c_str(),
       this, SLOT(toggleMainInvisibleStatus()));
@@ -331,6 +331,8 @@ void SystemMenu::addOwner(const Licq::UserId& userId)
   }
 
   myOwnerData.insert(userId, newOwner);
+
+  updateMainStatuses();
 }
 
 void SystemMenu::removeOwner(const Licq::UserId& userId)
@@ -353,6 +355,8 @@ void SystemMenu::removeOwner(const Licq::UserId& userId)
     foreach (QAction* a, lastOwnerAdm->actions())
       myOwnerAdmMenu->addAction(a);
   }
+
+  updateMainStatuses();
 }
 
 bool SystemMenu::getInvisibleStatus(const Licq::UserId& userId) const
@@ -362,6 +366,21 @@ bool SystemMenu::getInvisibleStatus(const Licq::UserId& userId) const
     return getInvisibleStatus();
 
   return data->getInvisibleStatus();
+}
+
+void SystemMenu::updateMainStatuses()
+{
+  unsigned long supportedStatuses = 0;
+  foreach (OwnerData* data, myOwnerData.values())
+    supportedStatuses |= data->protocolStatuses();
+
+  myStatusAwayAction->setVisible((supportedStatuses & User::AwayStatus) != 0);
+  myStatusNotAvailableAction->setVisible((supportedStatuses & User::NotAvailableStatus) != 0);
+  myStatusOccupiedAction->setVisible((supportedStatuses & User::OccupiedStatus) != 0);
+  myStatusDoNotDisturbAction->setVisible((supportedStatuses & User::DoNotDisturbStatus) != 0);
+  myStatusFreeForChatAction->setVisible((supportedStatuses & User::FreeForChatStatus) != 0);
+  myStatusInvisibleSeparator->setVisible((supportedStatuses & User::InvisibleStatus) != 0);
+  myStatusInvisibleAction->setVisible((supportedStatuses & User::InvisibleStatus) != 0);
 }
 
 void SystemMenu::aboutToShowMenu()
@@ -505,6 +524,7 @@ OwnerData::OwnerData(const Licq::UserId& userId, const Licq::ProtocolPlugin::Ptr
     myUserId(userId)
 {
   myUseAwayMessage = ((protocol->capabilities() & Licq::ProtocolPlugin::CanHoldStatusMsg) != 0);
+  myProtocolStatuses = protocol->statuses();
 
   QString ownerCaption = QString("%1 (%2)").arg(protocol->name().c_str()).arg(userId.accountId().c_str());
 
@@ -518,9 +538,8 @@ OwnerData::OwnerData(const Licq::UserId& userId, const Licq::ProtocolPlugin::Ptr
   myStatusMenu = new QMenu(ownerCaption);
   myStatusActions = new QActionGroup(this);
   connect(myStatusActions, SIGNAL(triggered(QAction*)), SLOT(setStatus(QAction*)));
-  unsigned long protocolStatuses = protocol->statuses();
 #define ADD_STATUS(var, status) \
-    if (status == User::OfflineStatus || (protocolStatuses & status) != 0) \
+    if (status == User::OfflineStatus || (myProtocolStatuses & status) != 0) \
     { \
       var = myStatusActions->addAction(User::statusToString(status).c_str()); \
       var->setData(status); \
@@ -538,7 +557,7 @@ OwnerData::OwnerData(const Licq::UserId& userId, const Licq::ProtocolPlugin::Ptr
   ADD_STATUS(myStatusDoNotDisturbAction, User::DoNotDisturbStatus);
   ADD_STATUS(myStatusFreeForChatAction, User::FreeForChatStatus);
   ADD_STATUS(myStatusOfflineAction, User::OfflineStatus);
-  if ((protocolStatuses & User::InvisibleStatus) != 0)
+  if ((myProtocolStatuses & User::InvisibleStatus) != 0)
   {
     myStatusMenu->addSeparator();
     myStatusInvisibleAction = myStatusMenu->addAction(

@@ -138,6 +138,8 @@ private slots:
   void showGPGKeyManager();
 
 private:
+  void updateMainStatuses();
+
   // Actions on top menu
   QAction* mySetArAction;
   QAction* myLogWinAction;
@@ -186,6 +188,7 @@ private:
   QAction* myUserAdmActionSeparator;
   QAction* myGroupSeparator;
   QAction* myStatusSeparator;
+  QAction* myStatusInvisibleSeparator;
   QAction* myIcqFollowMeSeparator;
 
   QMap<Licq::UserId, SystemMenuPrivate::OwnerData*> myOwnerData;
@@ -266,6 +269,10 @@ public:
   bool useAwayMessage() const
   { return myUseAwayMessage; }
 
+  /// Get supported statuses for protocol
+  unsigned long protocolStatuses() const
+  { return myProtocolStatuses; }
+
 private slots:
   void aboutToShowStatusMenu();
   void viewInfo();
@@ -281,6 +288,7 @@ private slots:
 private:
   Licq::UserId myUserId;
   bool myUseAwayMessage;
+  unsigned long myProtocolStatuses;
 
   QMenu* myStatusMenu;
   QMenu* myOwnerAdmMenu;
