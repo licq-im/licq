@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1999-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -742,7 +742,7 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const Licq::UserId& userId, i
       // Protocols (MSN only atm) that support convo ids are differentiated from
       // the icq protocol because the convo id will be the server socket.. which does
       // not meet the requirement that convo ids must be unique for each conversation.
-      if ( (ppid == MSN_PPID && (e->isUserInConvo(userId) ||
+      if ( ((sendFuncs & Licq::ProtocolPlugin::CanConversationId) != 0 && (e->isUserInConvo(userId) ||
               (e->convoId() == (unsigned long)(convoId) && e->convoId() != (unsigned long)(-1)))) ||
           e->isUserInConvo(userId))
       {
@@ -1386,7 +1386,7 @@ void LicqGui::userUpdated(const Licq::UserId& userId, unsigned long subSignal, i
         {
           UserSendEvent* item = myUserSendList.at(i);
 
-          if (item->ppid() == MSN_PPID)
+          if ((u->protocolCapabilities() & Licq::ProtocolPlugin::CanConversationId) != 0)
           {
             // For protocols that use the convo id
             if (item->convoId() == (unsigned long)(argument) && item->ppid() == ppid)
