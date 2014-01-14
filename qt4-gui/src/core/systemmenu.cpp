@@ -295,8 +295,7 @@ void SystemMenu::addOwner(const Licq::UserId& userId)
   if (protocol.get() == NULL)
     return;
 
-  OwnerData* newOwner = new OwnerData(userId, protocol->name().c_str(),
-      protocol->capabilities(), this);
+  OwnerData* newOwner = new OwnerData(userId, protocol, this);
   QMenu* ownerAdmin = newOwner->getOwnerAdmMenu();
   QMenu* ownerStatus = newOwner->getStatusMenu();
   myOwnerAdmMenu->addMenu(ownerAdmin);
@@ -501,15 +500,13 @@ void SystemMenu::showGPGKeyManager()
 }
 
 
-OwnerData::OwnerData(const Licq::UserId& userId, const QString& protoName,
-    unsigned long sendFunctions, SystemMenu* parent)
+OwnerData::OwnerData(const Licq::UserId& userId, const Licq::ProtocolPlugin::Ptr protocol, SystemMenu* parent)
   : QObject(parent),
     myUserId(userId)
 {
-  unsigned long myPpid = userId.protocolId();
-  myUseAwayMessage = ((sendFunctions & Licq::ProtocolPlugin::CanHoldStatusMsg) != 0);
+  myUseAwayMessage = ((protocol->capabilities() & Licq::ProtocolPlugin::CanHoldStatusMsg) != 0);
 
-  QString ownerCaption = QString("%1 (%2)").arg(protoName).arg(userId.accountId().c_str());
+  QString ownerCaption = QString("%1 (%2)").arg(protocol->name().c_str()).arg(userId.accountId().c_str());
 
   // System sub menu
   myOwnerAdmMenu = new QMenu(ownerCaption);
@@ -521,8 +518,9 @@ OwnerData::OwnerData(const Licq::UserId& userId, const QString& protoName,
   myStatusMenu = new QMenu(ownerCaption);
   myStatusActions = new QActionGroup(this);
   connect(myStatusActions, SIGNAL(triggered(QAction*)), SLOT(setStatus(QAction*)));
- #define ADD_STATUS(var, status, cond) \
-    if (cond) \
+  unsigned long protocolStatuses = protocol->statuses();
+#define ADD_STATUS(var, status) \
+    if (status == User::OfflineStatus || (protocolStatuses & status) != 0) \
     { \
       var = myStatusActions->addAction(User::statusToString(status).c_str()); \
       var->setData(status); \
@@ -533,14 +531,14 @@ OwnerData::OwnerData(const Licq::UserId& userId, const QString& protoName,
     { \
       var = NULL; \
     }
-  ADD_STATUS(myStatusOnlineAction, User::OnlineStatus, true);
-  ADD_STATUS(myStatusAwayAction, User::AwayStatus, true);
-  ADD_STATUS(myStatusNotAvailableAction, User::NotAvailableStatus, myPpid != MSN_PPID);
-  ADD_STATUS(myStatusOccupiedAction, User::OccupiedStatus, myPpid != JABBER_PPID);
-  ADD_STATUS(myStatusDoNotDisturbAction, User::DoNotDisturbStatus, myPpid != MSN_PPID);
-  ADD_STATUS(myStatusFreeForChatAction, User::FreeForChatStatus, myPpid != MSN_PPID);
-  ADD_STATUS(myStatusOfflineAction, User::OfflineStatus, true);
-  if (myPpid != JABBER_PPID)
+  ADD_STATUS(myStatusOnlineAction, User::OnlineStatus);
+  ADD_STATUS(myStatusAwayAction, User::AwayStatus);
+  ADD_STATUS(myStatusNotAvailableAction, User::NotAvailableStatus);
+  ADD_STATUS(myStatusOccupiedAction, User::OccupiedStatus);
+  ADD_STATUS(myStatusDoNotDisturbAction, User::DoNotDisturbStatus);
+  ADD_STATUS(myStatusFreeForChatAction, User::FreeForChatStatus);
+  ADD_STATUS(myStatusOfflineAction, User::OfflineStatus);
+  if ((protocolStatuses & User::InvisibleStatus) != 0)
   {
     myStatusMenu->addSeparator();
     myStatusInvisibleAction = myStatusMenu->addAction(

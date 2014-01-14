@@ -81,6 +81,7 @@ User::User(const UserId& id, bool temporary)
   // Cache protocol capabilities as a convenience
   Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(myId.protocolId());
   myProtocolCapabilities = (protocol.get() != NULL ? protocol->capabilities() : 0);
+  myProtocolStatuses = (protocol.get() != NULL ? protocol->statuses() : 0);
 
   myServerGroup = 0;
   if ((myProtocolCapabilities & ProtocolPlugin::CanSingleGroup) == 0)

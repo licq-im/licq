@@ -136,6 +136,7 @@ public:
 
   /// Capabilities for protocol (cached here for convenience)
   unsigned long protocolCapabilities() const { return myProtocolCapabilities; }
+  unsigned long protocolStatuses() const { return myProtocolStatuses; }
 
   // General Info
   //!Retrieves the user's alias.
@@ -670,6 +671,7 @@ protected:
 
   const UserId myId;
   unsigned long myProtocolCapabilities;
+  unsigned long myProtocolStatuses;
 
   time_t m_nTouched;
   time_t m_nLastCounters[4];

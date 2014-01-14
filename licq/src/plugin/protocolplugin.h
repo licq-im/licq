@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011, 2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,6 +58,8 @@ public:
   // From Licq::ProtocolPlugin
   unsigned long protocolId() const;
   unsigned long capabilities() const;
+  unsigned long statuses() const;
+
   Instances instances() const;
 
   Licq::User* createUser(const Licq::UserId& id, bool temporary);

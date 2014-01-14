@@ -1497,10 +1497,12 @@ void LicqGui::autoAway()
       // Fetch current status
       Licq::UserId userId;
       unsigned status;
+      unsigned long protocolStatuses;
       {
         Licq::OwnerReadGuard o(owner);
         userId = o->id();
         status = o->status();
+        protocolStatuses = o->protocolStatuses();
       }
 
       SAutoAwayInfo& info = autoAwayInfo[userId];
@@ -1539,8 +1541,9 @@ void LicqGui::autoAway()
         wantedStatus = info.preAutoAwayStatus;
       }
 
-      // MSN does not support NA
-      if (userId.protocolId() == MSN_PPID && wantedStatus & User::NotAvailableStatus)
+      // Protocols that doesn't support NA
+      if ((protocolStatuses & User::NotAvailableStatus) == 0
+          && wantedStatus & User::NotAvailableStatus)
         wantedStatus = User::OnlineStatus | User::AwayStatus;
 
       // Never change from NA to away unless we are returning from auto away

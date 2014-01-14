@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -43,6 +43,7 @@ public:
   // From Licq::ProtocolPluginFactory
   unsigned long protocolId() const { return JABBER_PPID; }
   unsigned long capabilities() const;
+  unsigned long statuses() const;
   Licq::ProtocolPluginInterface* createPlugin();
   Licq::User* createUser(const Licq::UserId& id, bool temporary);
   Licq::Owner* createOwner(const Licq::UserId& id);
@@ -57,6 +58,19 @@ unsigned long Factory::capabilities() const
       | ProtocolPlugin::CanSendAuth
       | ProtocolPlugin::CanSendAuthReq
       | ProtocolPlugin::CanMultipleOwners;
+}
+
+unsigned long Factory::statuses() const
+{
+  using Licq::User;
+
+  return User::OnlineStatus
+      | User::IdleStatus
+      | User::InvisibleStatus
+      | User::AwayStatus
+      | User::NotAvailableStatus
+      | User::DoNotDisturbStatus
+      | User::FreeForChatStatus;
 }
 
 Licq::ProtocolPluginInterface* Factory::createPlugin()

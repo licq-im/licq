@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2013 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2013-2014 Licq Developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -70,6 +70,19 @@ unsigned long Factory::capabilities() const
       | ProtocolPlugin::CanHoldStatusMsg
       | ProtocolPlugin::CanVaryEncoding
       | ProtocolPlugin::CanSingleGroup;
+}
+
+unsigned long Factory::statuses() const
+{
+  using Licq::User;
+
+  return User::OnlineStatus
+      | User::InvisibleStatus
+      | User::AwayStatus
+      | User::NotAvailableStatus
+      | User::OccupiedStatus
+      | User::DoNotDisturbStatus
+      | User::FreeForChatStatus;
 }
 
 Licq::ProtocolPluginInterface* Factory::createPlugin()

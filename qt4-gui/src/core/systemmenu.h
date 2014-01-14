@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2007-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
 #include <QMap>
 #include <QMenu>
 
+#include <licq/plugin/protocolplugin.h>
 #include <licq/userid.h>
 
 class QActionGroup;
@@ -208,8 +209,8 @@ public:
    * @param sendFunctions Send function capabilities for protocol
    * @param parent Parent widget
    */
-  OwnerData(const Licq::UserId& userId, const QString& protoName,
-      unsigned long sendFunctions, SystemMenu* parent);
+  OwnerData(const Licq::UserId& userId, const Licq::ProtocolPlugin::Ptr protocol,
+      SystemMenu* parent);
 
   /**
    * Destructor

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2013 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2013-2014 Licq Developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -50,6 +50,13 @@ public:
    * @return A mask of bits from Capabilities enum
    */
   virtual unsigned long capabilities() const = 0;
+
+  /**
+   * Get protocol supported status
+   *
+   * @return A mask of bits from Licq::User::StatusFlags
+   */
+  virtual unsigned long statuses() const = 0;
 
   /// Create a new plugin instance
   virtual ProtocolPluginInterface* createPlugin() = 0;

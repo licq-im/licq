@@ -68,6 +68,13 @@ public:
    */
   virtual unsigned long capabilities() const = 0;
 
+  /**
+   * Get protocol supported status
+   *
+   * @return A mask of bits from Licq::User::StatusFlags
+   */
+  virtual unsigned long statuses() const = 0;
+
   /// Get all instances that are active for this protocol
   virtual Instances instances() const = 0;
 

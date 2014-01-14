@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2013 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2014 Licq Developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,7 @@ public:
 
   MOCK_CONST_METHOD0(protocolId, unsigned long());
   MOCK_CONST_METHOD0(capabilities, unsigned long());
+  MOCK_CONST_METHOD0(statuses, unsigned long());
   MOCK_METHOD0(createPlugin, Licq::ProtocolPluginInterface*());
   MOCK_METHOD2(createUser, Licq::User*(const Licq::UserId& id, bool temporary));
   MOCK_METHOD1(createOwner, Licq::Owner*(const Licq::UserId& id));
@@ -116,6 +117,7 @@ TEST_P(RunnableProtocolPluginFixture, callApiFunctions)
   InSequence dummy;
   EXPECT_CALL(myMockFactory, protocolId());
   EXPECT_CALL(myMockFactory, capabilities());
+  EXPECT_CALL(myMockFactory, statuses());
   if (GetParam())
     EXPECT_CALL(myMockInterface, pushSignal(signal));
   EXPECT_CALL(myMockFactory, createUser(user, false));
@@ -124,6 +126,7 @@ TEST_P(RunnableProtocolPluginFixture, callApiFunctions)
   // Verify that the calls are forwarded to the interface
   plugin.protocolId();
   plugin.capabilities();
+  plugin.statuses();
   instance.pushSignal(signal);
   plugin.createUser(user, false);
   plugin.createOwner(owner);

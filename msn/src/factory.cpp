@@ -40,6 +40,7 @@ public:
   // From Licq::ProtocolPluginFactory
   unsigned long protocolId() const { return MSN_PPID; }
   unsigned long capabilities() const;
+  unsigned long statuses() const;
   Licq::ProtocolPluginInterface* createPlugin();
   Licq::User* createUser(const Licq::UserId& id, bool temporary);
   Licq::Owner* createOwner(const Licq::UserId& id);
@@ -54,6 +55,17 @@ unsigned long Factory::capabilities() const
       | ProtocolPlugin::CanSendAuthReq
       | ProtocolPlugin::CanMultipleOwners
       | ProtocolPlugin::CanConversationId;
+}
+
+unsigned long Factory::statuses() const
+{
+  using Licq::User;
+
+  return User::OnlineStatus
+      | User::IdleStatus
+      | User::InvisibleStatus
+      | User::AwayStatus
+      | User::OccupiedStatus;
 }
 
 Licq::ProtocolPluginInterface* Factory::createPlugin()

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2012-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2012-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,6 +74,15 @@ QWidget* UserPages::Owner::createPageSettings(QWidget* parent)
   SkinnableLabel* protocolLabel = new SkinnableLabel();
   accountLayout->addWidget(protocolLabel, 0, 2);
 
+  Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(myProtocolId);
+  unsigned long protocolStatuses = User::OnlineStatus;
+  if (protocol.get() != NULL)
+  {
+    protocolStatuses = protocol->statuses();
+    protocolLabel->setText(QString::fromLocal8Bit(protocol->name().c_str()));
+    protocolLabel->setPrependPixmap(IconManager::instance()->iconForProtocol(myProtocolId));
+  }
+
   QLabel* passwordLabel = new QLabel(tr("Password:"));
   accountLayout->addWidget(passwordLabel, 1, 0);
   myPasswordEdit = new QLineEdit();
@@ -102,21 +111,21 @@ QWidget* UserPages::Owner::createPageSettings(QWidget* parent)
   myAutoLogonCombo->setToolTip(tr("Automatically log on when first starting up."));
   accountLayout->addWidget(myAutoLogonCombo, 3, 1);
 
-#define ADD_STATUS(status, cond) \
-  if (cond) \
-    myAutoLogonCombo->addItem(User::statusToString(status).c_str(), status);
+  myAutoLogonCombo->addItem(User::statusToString(User::OfflineStatus).c_str(), User::OfflineStatus);
+  myAutoLogonCombo->addItem(User::statusToString(User::OnlineStatus).c_str(), User::OnlineStatus);
+#define ADD_STATUS(status) \
+  if ((protocolStatuses & status) != 0) \
+    myAutoLogonCombo->addItem(User::statusToString(User::OnlineStatus | status).c_str(), User::OnlineStatus | status);
 
-  ADD_STATUS(User::OfflineStatus, true);
-  ADD_STATUS(User::OnlineStatus, true);
-  ADD_STATUS(User::OnlineStatus | User::AwayStatus, true);
-  ADD_STATUS(User::OnlineStatus | User::NotAvailableStatus, myProtocolId != MSN_PPID);
-  ADD_STATUS(User::OnlineStatus | User::OccupiedStatus, myProtocolId != JABBER_PPID);
-  ADD_STATUS(User::OnlineStatus | User::DoNotDisturbStatus, myProtocolId != MSN_PPID);
-  ADD_STATUS(User::OnlineStatus | User::FreeForChatStatus, myProtocolId != MSN_PPID);
+  ADD_STATUS(User::AwayStatus);
+  ADD_STATUS(User::NotAvailableStatus);
+  ADD_STATUS(User::OccupiedStatus);
+  ADD_STATUS(User::DoNotDisturbStatus);
+  ADD_STATUS(User::FreeForChatStatus);
 #undef ADD_STATUS
 
   myAutoLogonInvisibleCheck = new QCheckBox(tr("Invisible"));
-  if (myProtocolId == JABBER_PPID)
+  if ((protocolStatuses & User::InvisibleStatus) == 0)
     myAutoLogonInvisibleCheck->setEnabled(false);
   accountLayout->addWidget(myAutoLogonInvisibleCheck, 3, 2);
 
@@ -149,14 +158,6 @@ QWidget* UserPages::Owner::createPageSettings(QWidget* parent)
     myAutoUpdateStatusPluginsCheck = new QCheckBox(tr("Auto update status plugins"));
     myAutoUpdateStatusPluginsCheck->setToolTip(tr("Automatically update users' Phone \"Follow Me\", File Server and ICQphone status."));
     icqLayout->addWidget(myAutoUpdateStatusPluginsCheck, 2, 1);
-  }
-
-
-  Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(myProtocolId);
-  if (protocol.get() != NULL)
-  {
-    protocolLabel->setText(QString::fromLocal8Bit(protocol->name().c_str()));
-    protocolLabel->setPrependPixmap(IconManager::instance()->iconForProtocol(myProtocolId));
   }
 
 
