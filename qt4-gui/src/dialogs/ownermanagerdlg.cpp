@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2004-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -171,12 +171,8 @@ void OwnerManagerDlg::updateList()
   Licq::gPluginManager.getAvailableProtocolPlugins(unloadedProtocols, false);
   BOOST_FOREACH(std::string protocol, unloadedProtocols)
   {
-    // Guess protocol id based on name (default is same as ICQ)
-    unsigned long ppid = ICQ_PPID;
-    if (protocol == "msn")
-      ppid = MSN_PPID;
-    else if (protocol == "jabber")
-      ppid = JABBER_PPID;
+    // Guess protocol id based on name
+    unsigned long ppid = Licq::protocolId_fromString(protocol);
 
     QTreeWidgetItem* protoItem = new QTreeWidgetItem(myOwnerView);
     protoItem->setIcon(0, iconman->iconForProtocol(ppid, Licq::User::OfflineStatus));
