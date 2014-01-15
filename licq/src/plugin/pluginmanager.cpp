@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -586,12 +586,9 @@ bool PluginManager::startProtocolPlugin(const std::string& name)
   // Load contacts and owners for the new protocol
   gUserManager.loadProtocol(plugin->protocolId());
 
-  ProtocolPlugin::Instances instances = plugin->instances();
-  BOOST_FOREACH(Licq::ProtocolPluginInstance::Ptr instance, instances)
-  {
-    startInstance(
-        boost::dynamic_pointer_cast<ProtocolPluginInstance>(instance));
-  }
+  // Don't start any protocol instance here, as it has already been started in
+  // createProtocolOwner() (called by gUserManager.loadProtocol()).
+
   return true;
 }
 
