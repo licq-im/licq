@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2009-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2009-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,7 +84,6 @@ QWidget* Settings::Shortcuts::createPageMainwinShortcuts(QWidget* parent)
   ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinPopupMessage, tr("Open next unread message"))
   ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinAddGroup, tr("Add group"))
   ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinEditGroups, tr("Edit groups"))
-  ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinRedrawContactList, tr("Redraw user window"))
   ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinSetAutoResponse, tr("Set auto response"))
   ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinNetworkLog, tr("Show network log"))
   ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinToggleMiniMode, tr("Toggle mini mode"))

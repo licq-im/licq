@@ -158,7 +158,6 @@ private:
   QAction* myUserReqAutorizeAction;
   QAction* myUserPopupAllAction;
   QAction* myEditGroupsAction;
-  QAction* myRedrawContactListAction;
 
   // Actions not on menu
   QAction* myPopupMessageAction;

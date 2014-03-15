@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2009-2011 Licq developers
+ * Copyright (C) 2009-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,7 +88,6 @@ Config::Shortcuts::Shortcuts(QObject* parent)
   ADD_SHORTCUT(MainwinNetworkLog, "Mainwin.NetworkLog", 0)
   ADD_SHORTCUT(MainwinPopupAllMessages, "Mainwin.PopupAllMessages", Qt::CTRL + Qt::Key_P)
   ADD_SHORTCUT(MainwinPopupMessage, "Mainwin.PopupMessage", Qt::CTRL + Qt::Key_I)
-  ADD_SHORTCUT(MainwinRedrawContactList, "Mainwin.RedrawContactList", Qt::CTRL + Qt::Key_L)
   ADD_SHORTCUT(MainwinSetAutoResponse, "Mainwin.SetAutoResponse", 0)
   ADD_SHORTCUT(MainwinSettings, "Mainwin.Settings", 0)
   ADD_SHORTCUT(MainwinStatusAway, "Mainwin.StatusAway", Qt::ALT + Qt::Key_A)

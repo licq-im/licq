@@ -88,7 +88,6 @@ SystemMenu::SystemMenu(QWidget* parent)
   myUserAdmMenu->addSeparator();
   myUserAdmMenu->addAction(tr("Update All Users"), this, SLOT(updateAllUsers()));
   myUserAdmMenu->addAction(tr("Update Current Group"), this, SLOT(updateAllUsersInGroup()));
-  myRedrawContactListAction = myUserAdmMenu->addAction(tr("&Redraw User Window"), gGuiContactList, SLOT(reloadAll()));
   myUserAdmMenu->addAction(tr("&Save All Users"), this, SLOT(saveAllUsers()));
 
   // Sub menu Status
@@ -279,7 +278,6 @@ void SystemMenu::updateShortcuts()
   myPopupMessageAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinPopupMessage));
   myUserPopupAllAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinPopupAllMessages));
   myEditGroupsAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinEditGroups));
-  myRedrawContactListAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinRedrawContactList));
   myShowHeaderAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinToggleShowHeader));
 }
 
