@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1999-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,6 +64,10 @@ AddUserDlg::AddUserDlg(const Licq::UserId& userId, QWidget* parent)
     ownerLabel->setBuddy(myOwnerCombo);
     layDialog->addWidget(ownerLabel, line, 0);
     layDialog->addWidget(myOwnerCombo, line++, 1);
+  }
+  else
+  {
+    myOwnerCombo->setVisible(false);
   }
 
   QLabel* lblGroup = new QLabel(tr("&Group:"));

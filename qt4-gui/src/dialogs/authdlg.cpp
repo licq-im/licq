@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1999-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,6 +82,10 @@ AuthDlg::AuthDlg(enum AuthDlgType type, const Licq::UserId& userId, QWidget* par
     ownerLabel->setBuddy(myOwnerCombo);
     userIdLayout->addWidget(ownerLabel);
     userIdLayout->addWidget(myOwnerCombo);
+  }
+  else
+  {
+    myOwnerCombo->setVisible(false);
   }
 
   QLabel* accountIdLabel = new QLabel(this);
