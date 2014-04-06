@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2013-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -443,6 +443,7 @@ DbusInterface::DbusInterface(Licq::MainLoop& mainLoop, DbusCallback* callback, b
 DbusInterface::~DbusInterface()
 {
   disconnect();
+  delete myPrivate;
 }
 
 bool DbusInterface::connect()
