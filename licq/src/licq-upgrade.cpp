@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2004-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ static void file_rename(const string& from, const string& to, bool missingok = f
 
 // Helper function to copy a file
 // Currently hardcoded for how Picture files are copied, extend only if needed
-static void file_copy(const string& from, const string& to) throw()
+static void file_copy(const string& from, const string& to)
 {
   int fromFd = open(from.c_str(), O_RDONLY);
   if (fromFd < 0)
