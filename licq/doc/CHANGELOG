@@ -1,5 +1,12 @@
 Change log for Licq.
 
+New in 1.8.2
+o Fixed crash when loading protocol plugins
+o GPG: Don't retry decrypting if password is invalid
+o ICQ: Fixed crash when receiving status updates
+o Jabber: Fixed crash when disconnecting multiple accounts
+
+
 New in 1.8.1
 o Fixed crash when shutting down plugins
 o Handle slashes in account/contact ids
