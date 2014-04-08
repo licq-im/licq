@@ -4,8 +4,16 @@ compiler:
   - clang
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -qq libboost-dev libboost-regex-dev libdbus-1-dev
-      libgloox-dev libgpgme11-dev libhunspell-dev libqt4-dev qt4-dev-tools
-      libssl-dev libxosd-dev libxss-dev
+  - sudo apt-get install -qq
+      libaosd-dev
+      libboost-dev libboost-regex-dev
+      libdbus-1-dev
+      libgloox-dev
+      libgpgme11-dev
+      libhunspell-dev
+      libqt4-dev qt4-dev-tools
+      libssl-dev
+      libxosd-dev
+      libxss-dev
 before_script: mkdir build-all/build
 script: cd build-all/build && cmake .. && make
