@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3252,21 +3252,24 @@ However it seems to always think contact is online instead of away/occupied/etc.
       }
         u.unlock();
 
-      Licq::Event* e = DoneServerEvent(nMsgID, Licq::Event::ResultAcked);
-    if (e)
-    {
-      e->m_pExtendedAck = pExtendedAck;
-      e->mySubResult = subResult;
-      ProcessDoneEvent(e);
-      return;
-    }
-      else
+      if (nMsgID != 0)
       {
-        gLog.warning(tr("Ack for unknown event."));
-        break;
+        Licq::Event* e = DoneServerEvent(nMsgID, Licq::Event::ResultAcked);
+        if (e != NULL)
+        {
+          e->m_pExtendedAck = pExtendedAck;
+          e->mySubResult = subResult;
+          ProcessDoneEvent(e);
+          return;
+        }
+        else
+        {
+          gLog.warning(tr("Ack for unknown event."));
+          break;
+        }
       }
 
-    break;
+      break;
     }
     case ICQ_SNACxMSG_RIGHTSxGRANTED:
     {
