@@ -146,24 +146,6 @@ void ssl_info_callback(SSL *s, int where, int ret)
                 str,SSL_state_string_long(s));
         else if (ret < 0)
         {
-        gLog.info("%s%s:%s\n",L_SSLxSTR,str,SSL_state_string_long(s));
-        }
-    }
-    else if (where & SSL_CB_ALERT)
-    {
-        str=(where & SSL_CB_READ)?"read":"write";
-        gLog.info("%sSSL3 alert %s:%s:%s\n",L_SSLxSTR,
-            str,
-            SSL_alert_type_string_long(ret),
-            SSL_alert_desc_string_long(ret));
-    }
-    else if (where & SSL_CB_EXIT)
-    {
-        if (ret == 0)
-            gLog.info("%s%s:failed in %s\n",L_SSLxSTR,
-                str,SSL_state_string_long(s));
-        else if (ret < 0)
-        {
             gLog.info("%s%s:error in %s\n",L_SSLxSTR,
                 str,SSL_state_string_long(s));
         }
