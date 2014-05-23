@@ -404,7 +404,7 @@ void Client::handleRosterPresence(const gloox::RosterItem& item,
 {
   using namespace gloox;
 
-  TRACE("%s %d", item.jid().c_str(), presence);
+  TRACE("%s %d", item.jidJID().full().c_str(), presence);
 
   std::string photoHash;
 
@@ -426,7 +426,7 @@ void Client::handleRosterPresence(const gloox::RosterItem& item,
   }
 
   myHandler.onUserStatusChange(
-      JID(item.jid()).bare(), presenceToStatus(presence), msg, photoHash);
+      item.jidJID().bare(), presenceToStatus(presence), msg, photoHash);
 }
 
 void Client::handleSelfPresence(const gloox::RosterItem& /*item*/,
@@ -511,6 +511,9 @@ void Client::handleLog(gloox::LogLevel level, gloox::LogArea area,
       break;
     case gloox::LogAreaClassConnectionTLS:
       areaStr = "TLS";
+      break;
+    case gloox::LogAreaLinkLocalManager:
+      areaStr = "LinkLocalManager";
       break;
     case gloox::LogAreaXmlIncoming:
       areaStr = "XML in";
@@ -621,7 +624,7 @@ bool Client::addRosterItem(const gloox::RosterItem& item)
       || item.subscription() == gloox::S10nNoneOutIn
       || item.subscription() == gloox::S10nFromOut;
 
-  myHandler.onUserAdded(item.jid(), item.name(), item.groups(), awaitAuth);
+  myHandler.onUserAdded(item.jidJID().bare(), item.name(), item.groups(), awaitAuth);
   return true;
 }
 
