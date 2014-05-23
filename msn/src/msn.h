@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2004-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -128,7 +128,7 @@ private:
   void SendPacket(CMSNPacket *);
   void Send_SB_Packet(const Licq::UserId& userId, CMSNPacket* p, Licq::TCPSocket* sock,
       bool bDelete = true);
-  void MSNAuthenticate(const std::string& host = "loginnet.passport.com",
+  void MSNAuthenticate(const std::string& host = "login.passport.com",
       const std::string& path = "/login2.srf");
   bool MSNSBConnectStart(const std::string& server, const std::string& cookie);
   bool MSNSBConnectAnswer(const std::string& server, const std::string& sessionId,
