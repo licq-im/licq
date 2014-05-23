@@ -129,6 +129,9 @@ QWidget* UserPages::Owner::createPageSettings(QWidget* parent)
     myAutoLogonInvisibleCheck->setEnabled(false);
   accountLayout->addWidget(myAutoLogonInvisibleCheck, 3, 2);
 
+  myUseGlobalStatusCheck = new QCheckBox(tr("Include in main status"));
+  myUseGlobalStatusCheck->setToolTip(tr("Check to include this account when changing Licq main status"));
+  accountLayout->addWidget(myUseGlobalStatusCheck, 4, 1);
 
   QGroupBox* icqBox = NULL;
   if (myProtocolId == ICQ_PPID)
@@ -222,6 +225,7 @@ void UserPages::Owner::load(const Licq::User* user)
   mySavePwdCheck->setChecked(owner->SavePassword());
   myServerHostEdit->setText(QString::fromLocal8Bit(owner->serverHost().c_str()));
   myServerPortSpin->setValue(owner->serverPort());
+  myUseGlobalStatusCheck->setChecked(owner->useGlobalStatus());
 
 
   int item = myAutoLogonCombo->findData(owner->startupStatus() & ~User::InvisibleStatus);
@@ -257,6 +261,7 @@ void UserPages::Owner::apply(Licq::User* user)
   owner->setPassword(myPasswordEdit->text().toLocal8Bit().constData());
   owner->SetSavePassword(mySavePwdCheck->isChecked());
   owner->setServer(myServerHostEdit->text().toLocal8Bit().constData(), myServerPortSpin->value());
+  owner->setUseGlobalStatus(myUseGlobalStatusCheck->isChecked());
 
   int index = myAutoLogonCombo->currentIndex();
   unsigned long status = myAutoLogonCombo->itemData(index).toUInt();

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,6 +51,12 @@ public:
   void setStartupStatus(unsigned status)
   { myStartupStatus = status; }
 
+  /// Get if global status will be applied to this user
+  bool useGlobalStatus() const                  { return myUseGlobalStatus; }
+
+  /// Set if global status will be applied to this user
+  void setUseGlobalStatus(bool b)               { myUseGlobalStatus = b; }
+
   /// Get server to connect to
   const std::string& serverHost() const         { return myServerHost; }
 
@@ -82,6 +88,7 @@ protected:
   std::string myServerHost;
   int myServerPort;
   bool m_bSavePassword;
+  bool myUseGlobalStatus;
 
 private:
 

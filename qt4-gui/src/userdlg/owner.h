@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2012-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,6 +95,7 @@ private:
   QSpinBox* myServerPortSpin;
   QComboBox* myAutoLogonCombo;
   QCheckBox* myAutoLogonInvisibleCheck;
+  QCheckBox* myUseGlobalStatusCheck;
 
   // ICQ Settings
   QCheckBox* myReconnectAfterUinClashCheck;

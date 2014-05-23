@@ -570,7 +570,8 @@ void LicqGui::changeStatus(unsigned status, bool invisible, const QString& autoM
   {
     Licq::OwnerListGuard ownerList;
     BOOST_FOREACH(const Licq::Owner* o, **ownerList)
-      owners.push_back(o->id());
+      if (o->useGlobalStatus())
+        owners.push_back(o->id());
   }
 
   BOOST_FOREACH(const Licq::UserId& userId, owners)
