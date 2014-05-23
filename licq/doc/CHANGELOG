@@ -4,6 +4,7 @@ New in 1.8.2
 o Fixed crash when loading protocol plugins
 o GPG: Don't retry decrypting if password is invalid
 o ICQ: Fixed crash when receiving status updates
+o MSN: Change default authentication host to login.passport.com
 o Jabber: Fixed crash when disconnecting multiple accounts
 
 
