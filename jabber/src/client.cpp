@@ -29,6 +29,7 @@
 #include <gloox/connectionhttpproxy.h>
 #include <gloox/connectiontcpclient.h>
 #include <gloox/disco.h>
+#include <gloox/glooxversion.h>
 #include <gloox/message.h>
 #include <gloox/rostermanager.h>
 #include <gloox/vcardupdate.h>
@@ -404,7 +405,13 @@ void Client::handleRosterPresence(const gloox::RosterItem& item,
 {
   using namespace gloox;
 
-  TRACE("%s %d", item.jidJID().full().c_str(), presence);
+  TRACE("%s %d",
+#if GLOOXVERSION < 0x010001
+      item.jid().c_str(),
+#else
+      item.jidJID().full().c_str(),
+#endif
+      presence);
 
   std::string photoHash;
 
@@ -426,7 +433,12 @@ void Client::handleRosterPresence(const gloox::RosterItem& item,
   }
 
   myHandler.onUserStatusChange(
-      item.jidJID().bare(), presenceToStatus(presence), msg, photoHash);
+#if GLOOXVERSION < 0x010001
+      JID(item.jid()).bare(),
+#else
+      item.jidJID().bare(),
+#endif
+      presenceToStatus(presence), msg, photoHash);
 }
 
 void Client::handleSelfPresence(const gloox::RosterItem& /*item*/,
@@ -512,9 +524,11 @@ void Client::handleLog(gloox::LogLevel level, gloox::LogArea area,
     case gloox::LogAreaClassConnectionTLS:
       areaStr = "TLS";
       break;
+#if GLOOXVERSION >= 0x010001
     case gloox::LogAreaLinkLocalManager:
       areaStr = "LinkLocalManager";
       break;
+#endif
     case gloox::LogAreaXmlIncoming:
       areaStr = "XML in";
       break;
@@ -624,7 +638,13 @@ bool Client::addRosterItem(const gloox::RosterItem& item)
       || item.subscription() == gloox::S10nNoneOutIn
       || item.subscription() == gloox::S10nFromOut;
 
-  myHandler.onUserAdded(item.jidJID().bare(), item.name(), item.groups(), awaitAuth);
+  myHandler.onUserAdded(
+#if GLOOXVERSION < 0x010001
+      item.jid(),
+#else
+      item.jidJID().bare(),
+#endif
+      item.name(), item.groups(), awaitAuth);
   return true;
 }
 
