@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2007-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,14 +55,14 @@ void SingleContactProxy::slot_dataChanged(const QModelIndex& topLeft, const QMod
   int groupId = topLeft.data(ContactListModel::GroupIdRole).toInt();
   if (groupId == ContactListModel::AllUsersGroupId)
     if (topLeft.row() <= mySourceIndex[0].row() && bottomRight.row() >= mySourceIndex[0].row())
-      emit dataChanged(createIndex(0, 0, 0), createIndex(0, myContactList->columnCount() - 1, 0));
+      emit dataChanged(createIndex(0, 0), createIndex(0, myContactList->columnCount() - 1));
 }
 
 QModelIndex SingleContactProxy::index(int row, int column, const QModelIndex& parent) const
 {
   // Only one top level item so return invalid for anything else
   if (!parent.isValid() && row == 0 && column >= 0 && column < MAX_COLUMNCOUNT)
-    return createIndex(0, column, 0);
+    return createIndex(0, column);
 
   return QModelIndex();
 }
@@ -114,7 +114,7 @@ QVariant SingleContactProxy::headerData(int section, Qt::Orientation orientation
 QModelIndex SingleContactProxy::mapFromSource(const QModelIndex& sourceIndex) const
 {
   if (sourceIndex.column() < MAX_COLUMNCOUNT && sourceIndex == mySourceIndex[sourceIndex.column()])
-    return createIndex(0, sourceIndex.column(), 0);
+    return createIndex(0, sourceIndex.column());
 
   return QModelIndex();
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2003-2011 Licq developers
+ * Copyright (C) 2003-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -281,7 +281,11 @@ static bool parseXml(const QString& dir, QMap<QChar, QLinkedList<Emoticon> >* em
         {
           Emoticon emo;
           emo.smiley = string.text();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+          emo.escapedSmiley = emo.smiley.toHtmlEscaped();
+#else
           emo.escapedSmiley = Qt::escape(emo.smiley);
+#endif
           emo.file = file;
 
           if (first)

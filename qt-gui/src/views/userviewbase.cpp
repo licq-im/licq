@@ -25,6 +25,8 @@
 
 #include <licq/contactlist/usermanager.h>
 
+#include <QMimeData>
+
 #include "contactlist/contactlist.h"
 
 #include "config/contactlist.h"

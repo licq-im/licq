@@ -1,13 +1,17 @@
 project(Qt-GUI)
-cmake_minimum_required(VERSION 2.4.2)
+cmake_minimum_required(VERSION 2.8.11)
 include(CheckIncludeFile)
 include(TestCXXAcceptsFlag)
 include(CheckLibraryExists)
+include(CMakeDependentOption)
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
 # Use KDE support
 option(WITH_KDE "Compile with KDE support" OFF)
+
+cmake_dependent_option(WITH_QT5 "Compile with Qt5 support" OFF
+  "NOT WITH_KDE" OFF)
 
 # Licq
 find_package(Licq REQUIRED)
@@ -29,6 +33,10 @@ set(LIBRARIES)
 if (NOT APPLE)
   find_package(X11 REQUIRED)
 
+  if (WITH_QT5)
+    set(X11_Xscreensaver_FOUND false)
+  endif (WITH_QT5)
+
   if (X11_Xscreensaver_FOUND)
     set(X11_LIBRARIES ${X11_LIBRARIES} ${X11_Xscreensaver_LIB})
     set(USE_SCRNSAVER 1)
@@ -38,13 +46,19 @@ if (NOT APPLE)
   set(LIBRARIES ${LIBRARIES} ${X11_LIBRARIES})
 endif (NOT APPLE)
 
-
-# Check for Qt4
-set(QT_MIN_VERSION "4.3.0")
+# Check for Qt
+if (NOT WITH_QT5)
+  set(QT_MIN_VERSION "4.3.0")
+endif (NOT WITH_QT5)
 
 # Check for Qt unless WITH_KDE is requested
 if (NOT WITH_KDE)
-  find_package(Qt4 REQUIRED)
+  if (WITH_QT5)
+    find_package(Qt5Widgets REQUIRED)
+    find_package(Qt5Xml REQUIRED)
+  else (WITH_QT5)
+    find_package(Qt4 REQUIRED)
+  endif (WITH_QT5)
 
   # Check for HunSpell
   find_package(Hunspell)
@@ -94,9 +108,11 @@ else (NOT WITH_KDE)
     ${KDE4_KIO_LIBS})
 endif (NOT WITH_KDE)
 
-set(QT_USE_QTXML 1)
-include(${QT_USE_FILE})
-set(LIBRARIES ${LIBRARIES} ${QT_LIBRARIES})
+if (NOT WITH_QT5)
+  set(QT_USE_QTXML 1)
+  include(${QT_USE_FILE})
+  set(LIBRARIES ${LIBRARIES} ${QT_LIBRARIES})
+endif (NOT WITH_QT5)
 
 # Local includes
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)

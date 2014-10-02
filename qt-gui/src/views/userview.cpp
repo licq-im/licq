@@ -53,8 +53,13 @@ UserView::UserView(ContactListModel* contactList, QWidget* parent)
   myIsMainView = true;
 
   // Sorting
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+  header()->setSectionsClickable(true);
+  header()->setSectionsMovable(false);
+#else
   header()->setClickable(true);
   header()->setMovable(false);
+#endif
   resort();
   connect(header(), SIGNAL(sectionClicked(int)), SLOT(slotHeaderClicked(int)));
 

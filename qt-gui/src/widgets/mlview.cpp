@@ -250,7 +250,11 @@ QString MLView::toRichText(const QString& s, bool highlightURLs, bool useHTML, Q
 
     // Get next block of text that can be copied from input
     QString rawtext = s.mid(lastpos, newpos - lastpos);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    text.append(useHTML ? rawtext : rawtext.toHtmlEscaped());
+#else
     text.append(useHTML ? rawtext : Qt::escape(rawtext));
+#endif
 
     // Add tags applicable for this position in the string
     if (breakhl && hlEnd > 0)

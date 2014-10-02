@@ -892,11 +892,11 @@ void UserSendEvent::convoLeave(const Licq::UserId& userId)
   }
 }
 
-void UserSendEvent::windowActivationChange(bool oldActive)
+void UserSendEvent::changeEvent(QEvent* event)
 {
   if (isActiveWindow())
     QTimer::singleShot(clearDelay, this, SLOT(clearNewEvents()));
-  QWidget::windowActivationChange(oldActive);
+  QWidget::changeEvent(event);
 }
 
 void UserSendEvent::changeEventType(int type)

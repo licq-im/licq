@@ -183,7 +183,11 @@ KeyView::KeyView(const Licq::UserId& userId, QWidget* parent)
   : QTreeWidget(parent),
     myUserId(userId)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+  header()->setSectionsClickable(false);
+#else
   header()->setClickable(false);
+#endif
   QStringList headers;
   headers << tr("Name") << tr("EMail") << tr("ID");
   setHeaderLabels(headers);

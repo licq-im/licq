@@ -36,21 +36,29 @@ find_program(QT_LRELEASE
   DOC "Path to the lrelease program"
 )
 
+if (WITH_QT5)
+  set(qt_version "-qt=5")
+else (WITH_QT5)
+  set(qt_version "-qt=4")
+endif (WITH_QT5)
+
+
 # Update translations (note that [clean-]merge targets write to source directory)
 if (QT_LUPDATE)
   # merge: update all translations
   add_custom_target(${licq_target_prefix}merge
-    ${QT_LUPDATE} ${translate_files} -ts ${po_SRCS}
+    ${QT_LUPDATE} ${qt_version} ${translate_files} -ts ${po_SRCS}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
   # clean-merge: update all translations and remove obsolete strings
   add_custom_target(${licq_target_prefix}clean-merge
-    ${QT_LUPDATE} -noobsolete ${translate_files} -ts ${po_SRCS}
+    ${QT_LUPDATE} ${qt_version} -noobsolete ${translate_files} -ts ${po_SRCS}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
   # Create template.ts to be used for new translations
   add_custom_command(OUTPUT template.ts
-    COMMAND ${QT_LUPDATE} -noobsolete ${translate_files} -ts template.ts
+    COMMAND ${QT_LUPDATE} ${qt_version} -noobsolete ${translate_files}
+      -ts template.ts
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     DEPENDS ${translate_files})
 
@@ -72,7 +80,7 @@ if (QT_LRELEASE)
     set(qm "${CMAKE_CURRENT_BINARY_DIR}/${qm}.qm")
     set(po "${CMAKE_CURRENT_SOURCE_DIR}/${po}")
     add_custom_command(OUTPUT ${qm}
-      COMMAND ${QT_LRELEASE} -silent ${po} -qm ${qm}
+      COMMAND ${QT_LRELEASE} ${qt_version} -silent ${po} -qm ${qm}
       DEPENDS ${po})
     set(qms ${qms} ${qm})
   endforeach(po)
