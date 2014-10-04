@@ -1,4 +1,4 @@
-project(Qt4-GUI)
+project(Qt-GUI)
 cmake_minimum_required(VERSION 2.4.2)
 include(CheckIncludeFile)
 include(TestCXXAcceptsFlag)
@@ -18,7 +18,7 @@ include(version.cmake)
 licq_create_plugin_version_file(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-set(INSTALL_QTGUI_DIR qt4-gui CACHE STRING
+set(INSTALL_QTGUI_DIR qt-gui CACHE STRING
   "Icons etc. will be installed to ${Licq_SHARE_DIR}/INSTALL_QTGUI_DIR.")
 mark_as_advanced(INSTALL_QTGUI_DIR)
 

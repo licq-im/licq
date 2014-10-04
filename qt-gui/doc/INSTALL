@@ -1,7 +1,7 @@
-Basic Installation of Qt4-GUI Plugin for Licq
+Basic Installation of Qt-GUI Plugin for Licq
 =============================================
 
-Requirements for Qt4-GUI:
+Requirements for Qt-GUI:
   - X11 header files (xfree-devel or xorg-devel)
   - Qt 4.3.2 or greater. Most distributions come with packages like Qt and
     Qt-devel, you need both, please install the missing ones!
@@ -13,7 +13,7 @@ Requirements for Qt4-GUI:
 
 
 Optional:
-  - Hunspell including header files. Provides spell checking in Qt4-Gui.
+  - Hunspell including header files. Provides spell checking in Qt-Gui.
           Note: If KDE 4 support is enabled, the built in spell checking in
           KDE is used instead.
 
@@ -21,24 +21,24 @@ Optional:
 Building instructions:
   1. Unpack, build and install Licq and any other plugins you need.
 
-  2. Go to the Qt4-Gui directory and make a build directory.
-     > cd plugins/qt4-gui
+  2. Go to the Qt-Gui directory and make a build directory.
+     > cd plugins/qt-gui
      > mkdir build
      > cd build
 
   3. Run cmake to generate build files.
      > cmake ..
-     By default Qt4-Gui is set to be installed in /usr/local. To specify a
+     By default Qt-Gui is set to be installed in /usr/local. To specify a
      different base directory specify an install prefix to cmake.
      > cmake -DCMAKE_INSTALL_PREFIX=/opt/licq ..
      To build with KDE 4 support, add -DWITH_KDE=ON to the command line as
      well.
 
-  4. Build Qt4-Gui.
+  4. Build Qt-Gui.
      > make
      Depending on your system, you may have to use gmake instead of make.
 
-  5. Install Qt4-Gui. Unless you specified a base directory where you have
+  5. Install Qt-Gui. Unless you specified a base directory where you have
      write privileges you must run this command as root.
      > make install
 

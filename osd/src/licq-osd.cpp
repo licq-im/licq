@@ -1,7 +1,7 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
  * Copyright (C) 2003-2005 Martin Maurer (martinmaurer@gmx.at)
- * Copyright (C) 2007-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2007-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -684,7 +684,7 @@ const char *get_iconv_encoding_name(const char *licq_encoding_name)
 //translates incoming messages or user names to our codepage.
 // this works only if it is convertable by iconv
 // the codepage of the other user is determined by the UserEncoding property of
-// the other user. (change it for example via the qt4-gui message window)
+// the other user. (change it for example via the qt-gui message window)
 // Licq:PluginSignal is needed to get the User for this message -
 // some day i will do this more elegant
 string my_translate(const UserId& /* userId */, const string& msg, const char* userenc)

@@ -232,7 +232,7 @@ LicqGui::LicqGui(int& argc, char** argv) :
   QString locale = QLocale::system().name();
 #endif
   // Try to load a translation
-  gLog.info("Attempting to load Qt4 and Licq " DISPLAY_PLUGIN_NAME " translations for %s locale",
+  gLog.info("Attempting to load Qt and Licq " DISPLAY_PLUGIN_NAME " translations for %s locale",
       qPrintable(locale));
 
   QTranslator* qtTranslator = new QTranslator(this);
@@ -263,15 +263,17 @@ void LicqGui::loadGuiConfig()
   if (!guiConf.loadFile())
   {
     // No config file, try to load the old config file
+    bool migratingFile = true;
     guiConf.setFilename("licq_qt-gui.conf");
-    if (!guiConf.loadFile() ||
-        !QueryYesNo(NULL,
-          tr("There was an error loading the default configuration file.\n"
-            "Would you like to try loading the old one?")))
-    {
-      // No old file either, or user didn't want to load it, revert to newer file
-      guiConf.setFilename(QTGUI_CONFIGFILE);
-    }
+    if (!guiConf.loadFile())
+      migratingFile = false;
+
+    // Regardless if old config was found, revert to using the new name
+    guiConf.setFilename(QTGUI_CONFIGFILE);
+
+    // If old config was found, migrate it to new file name
+    if (migratingFile)
+      guiConf.writeFile();
   }
 
   // Let configuration classes load their settings
@@ -424,10 +426,16 @@ int LicqGui::Run()
   myLogWindow = new LogWindow;
 
   // Check for qt-gui directory in current base dir
-  if (!QDir(QString("%1%2").arg(Licq::gDaemon.baseDir().c_str()).arg(QTGUI_DIR)).exists())
+  QString guiDir = QString("%1%2").arg(Licq::gDaemon.baseDir().c_str()).arg(QTGUI_DIR);
+  if (!QDir(guiDir).exists())
   {
     QDir d;
-    d.mkdir(QString("%1%2").arg(Licq::gDaemon.baseDir().c_str()).arg(QTGUI_DIR));
+
+    // Check for old qt4-gui directory and rename if existing
+    QString oldDir = QString("%1%2").arg(Licq::gDaemon.baseDir().c_str()).arg("qt4-gui");
+    if (!QDir(oldDir).exists() || !d.rename(oldDir, guiDir))
+      // Create new dir
+      d.mkdir(guiDir);
   }
 
   loadGuiConfig();

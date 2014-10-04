@@ -1,4 +1,4 @@
-Licq Qt4-GUI Translation Support
+Licq Qt-GUI Translation Support
 
 Creating a New Translation File
 ===============================
@@ -7,7 +7,7 @@ If there is no .ts file for your language, you will need to create
 a template first. It could be done by running "make template" in the build
 directory. Which creates template.ts file in the po directory.
 Then rename it in accordance to the language you are going to translate into
-(e.g. ru.ts for Russian) and open it with Qt4 Linguist to start translating.
+(e.g. ru.ts for Russian) and open it with Qt Linguist to start translating.
 
 Edit po/CMakeLists.txt and add ru.ts to the po_SRCS list.
 
@@ -44,7 +44,7 @@ is started.
 Notes
 =====
 
-Help on using Qt4 Linguist can be found on Trolltech documentation homepage:
+Help on using Qt Linguist can be found on Trolltech documentation homepage:
 http://doc.trolltech.com/4.3/linguist-manual.html
 
 

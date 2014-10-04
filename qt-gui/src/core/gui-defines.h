@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1999-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 
 #include "config.h"
 
-#define QTGUI_DIR "qt4-gui/"
+#define QTGUI_DIR "qt-gui/"
 #define DOCK_DIR "dock/"
 #define EMOTICONS_DIR "emoticons/"
 #define EXTICONS_DIR "exticons/"
@@ -33,11 +33,11 @@
 #define MAX_COLUMNCOUNT 4
 
 #ifdef USE_KDE
-# define PLUGIN_NAME "kde4-gui"
-# define DISPLAY_PLUGIN_NAME "KDE4 GUI"
+# define PLUGIN_NAME "kde-gui"
+# define DISPLAY_PLUGIN_NAME "KDE GUI"
 #else
-# define PLUGIN_NAME "qt4-gui"
-# define DISPLAY_PLUGIN_NAME "Qt4 GUI"
+# define PLUGIN_NAME "qt-gui"
+# define DISPLAY_PLUGIN_NAME "Qt GUI"
 #endif
 
 #ifdef HAVE_HUNSPELL

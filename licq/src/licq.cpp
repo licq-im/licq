@@ -554,16 +554,20 @@ bool CLicq::Init(int argc, char **argv)
 
         bool loaded = LoadPlugin(pluginName, argc, argv);
 
-        // Make upgrade from 1.3.x and older easier by automatically switching from kde/qt-gui to kde4/qt4-gui
-        if (!loaded && pluginName == "kde-gui")
+        // Make upgrade from 1.4.x-1.8.x and older easier by automatically switching
+        //   from kde4/qt4-gui to kde/qt-gui
+        if (!loaded && (pluginName == "qt4-gui" || pluginName == "kde4-gui"))
         {
-          gLog.warning(tr("Plugin kde-gui is no longer available, trying to load kde4-gui instead."));
-          loaded = LoadPlugin("kde4-gui", argc, argv);
-        }
-        if (!loaded && (pluginName == "qt-gui" || pluginName == "kde-gui"))
-        {
-          gLog.warning(tr("Plugin %s is no longer available, trying to load qt4-gui instead."), pluginName.c_str());
-          loaded = LoadPlugin("qt4-gui", argc, argv);
+          if (pluginName == "kde4-gui")
+          {
+            gLog.warning(tr("Plugin kde4-gui is no longer available, trying to load kde-gui instead."));
+            loaded = LoadPlugin("kde-gui", argc, argv);
+          }
+          if (!loaded)
+          {
+            gLog.warning(tr("Plugin %s is no longer available, trying to load qt-gui instead."), pluginName.c_str());
+            loaded = LoadPlugin("qt-gui", argc, argv);
+          }
         }
 
         if (!loaded)
@@ -575,7 +579,7 @@ bool CLicq::Init(int argc, char **argv)
     }
     else  // If no plugins, try some defaults one by one
     {
-      const char* plugins[] = {"qt4-gui", "kde4-gui"};
+      const char* plugins[] = {"qt-gui", "kde-gui"};
       unsigned short i = 0, size = sizeof(plugins) / sizeof(char*);
 
       GeneralPlugin::Ptr plugin;

@@ -36,9 +36,9 @@ foreach (dir ${SOURCE_DIRS})
 endforeach (dir)
 
 if (WITH_KDE)
-  set(target licq_kde4-gui)
+  set(target licq_kde-gui)
 else (WITH_KDE)
-  set(target licq_qt4-gui)
+  set(target licq_qt-gui)
 endif (WITH_KDE)
 
 licq_add_plugin(${target} ${sources} ${mocs})

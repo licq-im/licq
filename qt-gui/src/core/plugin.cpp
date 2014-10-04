@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2011, 2013 Licq developers
+ * Copyright (C) 2007-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,7 +84,7 @@ int QtGuiPlugin::run()
   setenv("KDE_DEBUG", "true", 0);
 
   KCmdLineArgs::init(myArgc, myArgv,
-                     "licq", "qt4-gui",
+                     "licq", "qt-gui",
       ki18n(DISPLAY_PLUGIN_NAME), PLUGIN_VERSION_STRING);
 #endif
 
@@ -103,7 +103,7 @@ int QtGuiPlugin::run()
   // setMessageHandler() triggers KMessage to create a static object that will
   // delete the handler when libkdecore is unloaded.
   //
-  // The problem is that when kde4-gui is unloaded (which happens before Licq
+  // The problem is that when kde-gui is unloaded (which happens before Licq
   // exits) only libkdeui is unloaded; something makes libkdecore stay
   // loaded. When Licq exits, all libs are unloaded. Before libkdecore is
   // unloaded, the static objects are deleted. In the destructor of the static

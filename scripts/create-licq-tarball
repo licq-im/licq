@@ -3,7 +3,7 @@
 # Script to create a source tarball from Licq's git repository.
 # Latest version: https://github.com/licq-im/licq/blob/master/scripts/
 #
-# Copyright (c) 2007-2013 Erik Johansson <erijo@licq.org>
+# Copyright (c) 2007-2014 Erik Johansson <erijo@licq.org>
 # Distributed under the terms of the GNU GPL version 2.
 #
 
@@ -228,8 +228,8 @@ fi
 # List of plugins that should be exported. Plugins that no longer are on trunk
 # should be listed in OLD_PLUGINS so that this script can continue to work with
 # older releases (e.g. the stable branches).
-PLUGINS="aosd auto-reply dbus forwarder icq jabber licqweb msn osd qt4-gui rms"
-OLD_PLUGINS="console email qt-gui"
+PLUGINS="aosd auto-reply dbus forwarder icq jabber licqweb msn osd qt-gui rms"
+OLD_PLUGINS="console email qt4-gui"
 
 for plugin in ${PLUGINS} ${OLD_PLUGINS}; do
    gitexport "${plugin}" "plugins/${plugin}" true

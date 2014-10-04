@@ -25,13 +25,13 @@ file(GLOB_RECURSE translate_files
   ${CMAKE_CURRENT_SOURCE_DIR}/../src/*.h)
 
 find_program(QT_LUPDATE
-  NAMES lupdate-qt4 lupdate
+  NAMES lupdate
   PATHS $ENV{QTDIR}/bin
   DOC "Path to the lupdate program"
 )
 
 find_program(QT_LRELEASE
-  NAMES lrelease-qt4 lrelease
+  NAMES lrelease
   PATHS $ENV{QTDIR}/bin
   DOC "Path to the lrelease program"
 )
@@ -80,7 +80,7 @@ if (QT_LRELEASE)
   # translations: build all *.qm files
   add_custom_target(${licq_target_prefix}translations ALL DEPENDS ${qms})
 
-  # Install *.qm to <prefix>/share/licq/qt4-gui/locale
+  # Install *.qm to <prefix>/share/licq/qt-gui/locale
   install(FILES ${qms}
     DESTINATION ${Licq_SHARE_DIR}/${INSTALL_QTGUI_DIR}/locale)
 else (QT_LRELEASE)

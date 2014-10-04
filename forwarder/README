@@ -53,9 +53,9 @@ RUNNING
 Loading and running the plugin is simply a matter of adding a "-p forwarder"
 to your Licq command line arguments.  Remember that if any plugins are
 loaded from the command line then all plugins must be specified.  In other
-words if you are using the qt4-gui plugin and also wish to start the forwarder 
+words if you are using the qt-gui plugin and also wish to start the forwarder
 plugin, run:
-licq [options] -p qt4-gui -p forwarder -- [ qt4-gui options ] -- [ forwarder options ]
+licq [options] -p qt-gui -p forwarder -- [ qt-gui options ] -- [ forwarder options ]
 
 The forwarder plugin starts in an inactive state, and must be turned on from
 the plugin interface to start forwarding messages.  In this manner it can be

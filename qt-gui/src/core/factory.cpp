@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2013 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2013-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -51,9 +51,9 @@ public:
 std::string Factory::description() const
 {
 #ifdef USE_KDE
-  return "KDE4 based GUI";
+  return "KDE based GUI";
 #else
-  return "Qt4 based GUI";
+  return "Qt based GUI";
 #endif
 }
 
