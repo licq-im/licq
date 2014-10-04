@@ -67,7 +67,6 @@ LicqDaemon::Daemon LicqDaemon::gDaemon;
 Licq::Daemon& Licq::gDaemon(LicqDaemon::gDaemon);
 
 const char* const Daemon::TranslationDir = "translations";
-const char* const Daemon::UtilityDir = "utilities";
 
 Daemon::Daemon() :
     myLicqConf("licq.conf"),

@@ -31,7 +31,6 @@ set(dialogs_SRCS
   searchuserdlg.cpp
   showawaymsgdlg.cpp
   statsdlg.cpp
-  utilitydlg.cpp
 )
 
 string(REGEX REPLACE ".cpp" ".h" dialogs_MOC_HDRS "${dialogs_SRCS}")

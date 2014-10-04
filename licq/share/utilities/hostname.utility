@@ -1,5 +1,0 @@
-[utility]
-Window = LICQ
-Command = host %i
-Description = Perform a hostname lookup on the user's ip.
-

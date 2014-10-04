@@ -1,5 +1,0 @@
-[utility]
-Window = TERM
-Command = mutt %e
-Description = Email the user using mutt.
-

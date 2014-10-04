@@ -28,7 +28,6 @@ set(licq_HEADERS
   translator.h
   userevents.h
   userid.h
-  utility.h
   version.h
 )
 

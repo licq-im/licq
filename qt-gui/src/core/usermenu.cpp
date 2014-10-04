@@ -33,7 +33,6 @@
 #include <licq/gpghelper.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
-#include <licq/utility.h>
 
 #include "config/iconmanager.h"
 #include "config/shortcuts.h"
@@ -47,7 +46,6 @@
 #include "dialogs/historydlg.h"
 #include "dialogs/keyrequestdlg.h"
 #include "dialogs/showawaymsgdlg.h"
-#include "dialogs/utilitydlg.h"
 #include "userdlg/userdlg.h"
 
 #include "gui-defines.h"
@@ -121,14 +119,6 @@ UserMenu::UserMenu(QWidget* parent)
   ADD_MISCMODE(tr("Do Not Disturb to User"), ModeStatusDnd)
 #undef ADD_MISCMODE
 
-  // Sub menu Utilities
-  myUtilitiesMenu = new QMenu(tr("U&tilities"), this);
-  connect(myUtilitiesMenu, SIGNAL(triggered(QAction*)), SLOT(utility(QAction*)));
-  for (int i = 0; i < Licq::gUtilityManager.numUtilities(); ++i)
-  {
-    myUtilitiesMenu->addAction(Licq::gUtilityManager.utility(i)->name().c_str())->setData(i);
-  }
-
   // Sub menu User Group
   myGroupsMenu = new QMenu(tr("Edit User Group"), this);
   myUserGroupActions = new QActionGroup(this);
@@ -163,7 +153,6 @@ UserMenu::UserMenu(QWidget* parent)
   myViewEventAction = addAction(tr("&View Event..."), this, SLOT(viewEvent()));
   addMenu(mySendMenu);
   addMenu(myMiscModesMenu);
-  addMenu(myUtilitiesMenu);
   myCheckArAction = addAction(QString::null, this, SLOT(checkAutoResponse()));
   myCustomArAction = addAction(tr("Custom Auto Response..."), this, SLOT(customAutoResponse()));
   myCustomArAction->setCheckable(true);
@@ -583,16 +572,6 @@ void UserMenu::toggleMiscMode(QAction* action)
 
   // Notify all plugins (including ourselves)
   Licq::gUserManager.notifyUserUpdated(myUserId, Licq::PluginSignal::UserSettings);
-}
-
-void UserMenu::utility(QAction* action)
-{
-  int index = action->data().toUInt();
-
-  Licq::Utility* u = Licq::gUtilityManager.utility(index);
-
-  if (u != NULL)
-    new UtilityDlg(u, myUserId);
 }
 
 void UserMenu::toggleUserGroup(QAction* action)

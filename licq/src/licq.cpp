@@ -41,7 +41,6 @@
 #include <licq/logging/logutils.h>
 #include <licq/exceptions/exception.h>
 #include <licq/inifile.h>
-#include <licq/utility.h>
 #include <licq/version.h>
 
 #include "contactlist/usermanager.h"
@@ -63,7 +62,6 @@
 using Licq::GeneralPlugin;
 using Licq::ProtocolPlugin;
 using Licq::gLog;
-using Licq::gUtilityManager;
 using LicqDaemon::Daemon;
 using LicqDaemon::PluginManager;
 using LicqDaemon::gDaemon;
@@ -625,7 +623,6 @@ bool CLicq::Init(int argc, char **argv)
   gSarManager.initialize();
   gStatistics.initialize();
   gFilterManager.initialize();
-  gUtilityManager.loadUtilities(gDaemon.shareDir() + Daemon::UtilityDir);
 
   return true;
 }

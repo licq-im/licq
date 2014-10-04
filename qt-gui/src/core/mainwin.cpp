@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1999-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1005,7 +1005,7 @@ void MainWindow::showHints()
     "<li>Hit Ctrl-Enter from most text entry fields to select \"Ok\" or \"Accept\"."
     "   For example in the send tab of the user function window.</li>"
     "<li>Here is the complete list of user % options, which can be used in <b>OnEvent</b>"
-    "   parameters, <b>auto responses</b>, and <b>utilities</b>:")
+    "   parameters and <b>auto responses</b>:")
     .arg(DISPLAY_PLUGIN_NAME) +
     gMainWindow->usprintfHelp +
     "</li></ul><hr>" +

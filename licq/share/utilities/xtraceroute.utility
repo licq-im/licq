@@ -1,4 +1,0 @@
-[utility]
-Window = GUI
-Command = xtraceroute %i
-Description = Trace the route to the user in a 3D map.

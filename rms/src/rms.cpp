@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2000-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1085,7 +1085,7 @@ int CRMSClient::Process_HISTORY()
  *     All options are optional and can be left out arbitrarily, ie
  *     "LIST all" is a valid call and will print all online and offline users.
  *     <format> is a printf style string using the user % symbols as
- *     documented in UTILITIES.HOWTO.  The default is "%u %P %-20a %3m %s"
+ *     documented in HINTS.  The default is "%u %P %-20a %3m %s"
  *     and prints out users as follows.
  *
  * Response:

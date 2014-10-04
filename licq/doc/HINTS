@@ -8,9 +8,7 @@ o  You can pass plugins command line arguments simply by
 o  Use the licq_fifo file in your base directory (~/.licq) to change your
    status, your auto response, or exit licq remotely or from a script.  See
    The FAQ for details.
-o  Create new utilities to perform virtually any operation on a selected user.
-   See UTILITIES.HOWTO for more information.
-o  OnEvent parameters accept all the % options from the UTILITIES.HOWTO file.
+o  OnEvent parameters can take various % expressions. See below for list.
    Use this to for example have licq announce who a message is from using the
    "say" program:
    Command: say
@@ -19,4 +17,29 @@ o  OnEvent parameters accept all the % options from the UTILITIES.HOWTO file.
    ...
    You can find "say" in the rsynth package at:
    ftp://sunsite.unc.edu/pub/Linux/apps/sound/speech/rsynth-2.0.tgz
+
+
+Here is the complete list of user % options, which can be used in OnEvent
+parameters and auto responses:
+   %e email
+   %i ip
+   %p port
+   %n full name
+   %f first name
+   %l last name
+   %n full name
+   %a alias
+   %u uin
+   %w webpage
+   %h phone number
+   %c cellular phone
+   %s full status string
+   %S short status string with no spaces
+   %o last seen online
+   %O online since
+   %L local time
+   %m number of pending messages ("0" if none)
+   %M number of pending messages (empty if none)
+   %P Protocol
+   %% a percent symbol
 

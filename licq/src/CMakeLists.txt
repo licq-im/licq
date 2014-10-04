@@ -53,7 +53,6 @@ set(licq_SRCS
   statistics.cpp
   translator.cpp
   userevents.cpp
-  utility.cpp
 
   contactlist/group.cpp
   contactlist/owner.cpp
