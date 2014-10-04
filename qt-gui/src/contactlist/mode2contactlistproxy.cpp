@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,6 +60,8 @@ Mode2ContactListProxy::~Mode2ContactListProxy()
 
 void Mode2ContactListProxy::reset()
 {
+  beginResetModel();
+
   // Delete our local groups
   while (!myGroups.isEmpty())
     delete myGroups.takeFirst();
@@ -82,7 +84,8 @@ void Mode2ContactListProxy::reset()
 
     addGroup(groupIndex);
   }
-  QAbstractProxyModel::reset();
+
+  endResetModel();
 }
 
 void Mode2ContactListProxy::sourceDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight)

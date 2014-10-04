@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2007-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -139,7 +139,7 @@ bool IconManager::loadIcons(const QString& iconSet)
       p = QPixmap(); \
     } \
     else \
-      myIconMap.insert(icon, deficon);
+      myIconMap.insert(icon, QPixmap(deficon));
 
 #define LOAD_STATUSICON(name, protocol, icon) \
     if (iconsConf.get(name, filename) && p.load(iconPath + QString::fromLocal8Bit(filename.c_str()))) \
@@ -266,7 +266,7 @@ bool IconManager::loadExtendedIcons(const QString& iconSet)
       p = QPixmap(); \
     } \
     else \
-      myIconMap.insert(icon, deficon);
+      myIconMap.insert(icon, QPixmap(deficon));
 
   LOAD_ICON("Birthday",             BirthdayIcon, birthday_xpm);
   LOAD_ICON("Cellular",             CellularIcon, cellular_xpm);

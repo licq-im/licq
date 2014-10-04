@@ -129,7 +129,7 @@ void Config::Shortcuts::loadConfiguration(Licq::IniFile& iniFile)
   QMap<ShortcutType, QString>::iterator i;
   for (i = myConfigKeysMap.begin(); i != myConfigKeysMap.end(); ++i)
   {
-    iniFile.get(i.value().toAscii().data(), s);
+    iniFile.get(i.value().toLatin1().data(), s);
     if (s.empty())
     {
 #ifdef Q_WS_X11
@@ -154,7 +154,7 @@ void Config::Shortcuts::saveConfiguration(Licq::IniFile& iniFile) const
 
   QMap<ShortcutType, QString>::const_iterator i;
   for (i = myConfigKeysMap.begin(); i != myConfigKeysMap.end(); ++i)
-    iniFile.set(i.value().toAscii().data(),
+    iniFile.set(i.value().toLatin1().data(),
         myShortcutsMap[i.key()].isEmpty() ? "None" :
         myShortcutsMap[i.key()].toString(QKeySequence::PortableText).toLatin1().constData());
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2005-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2005-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -147,7 +147,7 @@ void GPGKeySelect::slot_ok()
       Licq::UserWriteGuard u(myUserId);
       if (u.isLocked())
       {
-        u->setGpgKey(curItem->text(2).toAscii().data());
+        u->setGpgKey(curItem->text(2).toLocal8Bit().data());
         u->SetUseGPG(useGPG->isChecked());
       }
     }

@@ -39,6 +39,7 @@
 #include <QKeyEvent>
 #include <QLabel>
 #include <QMenu>
+#include <QMimeData>
 #include <QMovie>
 #include <QPushButton>
 #include <QShortcut>

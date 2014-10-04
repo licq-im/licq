@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2006-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2006-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -247,7 +247,7 @@ unsigned Support::keyToXSym(int keyCode)
   if (s.isEmpty())
     return keysym;
 
-  qstrncpy(sKey, s.toAscii(), sizeof(sKey));
+  qstrncpy(sKey, s.toLatin1(), sizeof(sKey));
   next_tok = strtok(sKey, "+");
 
   if (next_tok == 0L)
@@ -278,7 +278,7 @@ unsigned Support::keyToXSym(int keyCode)
       keyFound = true;
       QString l = toks[i];
       l = l.toLower();
-      keysym = XStringToKeysym(l.toAscii());
+      keysym = XStringToKeysym(l.toLatin1());
       if (keysym == NoSymbol)
         keysym = XStringToKeysym(toks[i]);
       if (keysym == NoSymbol)

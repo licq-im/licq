@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2007-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -326,6 +326,8 @@ void ContactListModel::groupEndRemove()
 
 void ContactListModel::reloadAll()
 {
+  beginResetModel();
+
   // Don't send out signals while reloading, the reset at the end will be enough
   myBlockUpdates = true;
 
@@ -375,7 +377,7 @@ void ContactListModel::reloadAll()
   // Tell views that we have done major changes
   myBlockUpdates = false;
 
-  reset();
+  endResetModel();
 }
 
 ContactUserData* ContactListModel::findUser(const Licq::UserId& userId) const

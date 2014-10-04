@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2000-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -391,7 +391,7 @@ void UserViewEvent::read1()
 
       QFile fileHTML(url);
       fileHTML.open(QIODevice::WriteOnly);
-      fileHTML.write(strHTML.toAscii(), strHTML.length());
+      fileHTML.write(strHTML.toLatin1(), strHTML.length());
       fileHTML.close();
 
       // Now we have to add the file:// after it was created,

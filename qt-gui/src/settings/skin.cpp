@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1999-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -298,7 +298,7 @@ void Settings::Skin::loadIconsetList(const QString& subdir, QComboBox* iconCombo
       }
       iconsConf.setSection("icons", false);
       std::string filename;
-      iconsConf.get(exampleIcon.toAscii().data(), filename, "");
+      iconsConf.get(exampleIcon.toLatin1().data(), filename, "");
       QString pmFile = QString("%1/%2").arg(iconsPath.path()).arg(filename.c_str());
       iconCombo->addItem(QPixmap(pmFile), iconset);
       if (iconset == current)
@@ -321,7 +321,7 @@ void Settings::Skin::loadIconsetList(const QString& subdir, QComboBox* iconCombo
       }
       iconsConf.setSection("icons", false);
       std::string filename;
-      iconsConf.get(exampleIcon.toAscii().data(), filename, "");
+      iconsConf.get(exampleIcon.toLatin1().data(), filename, "");
       QString pmFile = QString("%1/%2").arg(iconsUserPath.path()).arg(filename.c_str());
       // Check for duplicates
       int num = iconCombo->count();
@@ -420,8 +420,8 @@ IconList Settings::Skin::loadIcons(const QString& iconSet, const QString& subdir
   foreach (const QString& iconName, iconNames)
   {
     std::string filename;
-    iconsFile.get(iconName.toAscii().data(), filename, "");
-    QString pmFile = iconsPath + QString::fromAscii(filename.c_str());
+    iconsFile.get(iconName.toLatin1().data(), filename, "");
+    QString pmFile = iconsPath + QString::fromLatin1(filename.c_str());
     QPixmap pm(pmFile);
     if (! pm.isNull())
       icons.append(pm);

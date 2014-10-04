@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ void DefaultDockIcon::updateConfig()
   myFortyEight = Config::General::instance()->defaultIconFortyEight();
 
   QPixmap* pic = new QPixmap(myFortyEight ? back48_xpm : back64_xpm);
-  QBitmap bmp = QBitmap(myFortyEight ? mask48_xpm : mask64_xpm);
+  QBitmap bmp = QBitmap(QPixmap(myFortyEight ? mask48_xpm : mask64_xpm));
   pic->setMask(bmp);
   myIcon->setFace(pic);
   delete pic;
@@ -129,12 +129,12 @@ void DefaultDockIcon::updateIconMessages(int newMsg, int sysMsg)
   QPainter p(face);
 
   SPLIT(newMsg);
-  p.drawPixmap(44, myFortyEight ? 8 : 26, digits[high]);
-  p.drawPixmap(50, myFortyEight ? 8 : 26, digits[low]);
+  p.drawPixmap(44, myFortyEight ? 8 : 26, QPixmap(digits[high]));
+  p.drawPixmap(50, myFortyEight ? 8 : 26, QPixmap(digits[low]));
 
   SPLIT(sysMsg);
-  p.drawPixmap(44, myFortyEight ? 20 : 38, digits[high]);
-  p.drawPixmap(50, myFortyEight ? 20 : 38, digits[low]);
+  p.drawPixmap(44, myFortyEight ? 20 : 38, QPixmap(digits[high]));
+  p.drawPixmap(50, myFortyEight ? 20 : 38, QPixmap(digits[low]));
 
   p.end();
 
