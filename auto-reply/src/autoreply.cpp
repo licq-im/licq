@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2000-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,14 +28,7 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <sys/wait.h>
-#include <signal.h>
 #include <cerrno>
-#ifdef __sun
-# define _PATH_BSHELL "/bin/sh"
-#else
-# include <paths.h>
-#endif
 
 #include "autoreply.h"
 
@@ -44,6 +37,7 @@
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
+#include <licq/exec.h>
 #include <licq/inifile.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
@@ -305,32 +299,25 @@ bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const Licq::UserEvent*
     command += u->usprintf(myArguments);
   }
 
-  if (!POpen(command.c_str()))
+  std::string message;
+  try
+  {
+    Licq::Exec cmd(command.c_str());
+    message = cmd.process(event->textLoc() + "\n", true);
+    if (m_bFailOnExitCode)
+    {
+      int r = cmd.kill(200*1000);
+      if (r != 0)
+      {
+        gLog.warning("%s returned abnormally: exit code %d", command.c_str(), r);
+        return !m_bAbortDeleteOnExitCode;
+      }
+    }
+  }
+  catch (...)
   {
     gLog.warning("Could not execute %s", command.c_str());
     return false;
-  }
-  if (m_bPassMessage)
-  {
-    fprintf(fStdIn, "%s\n", event->textLoc().c_str());
-    fclose(fStdIn);
-    fStdIn = NULL;
-  }
-
-  int pos = 0;
-  int c;
-  char m_szMessage[4097];
-  while (((c = fgetc(fStdOut)) != EOF) && (pos < 4096))
-  {
-    m_szMessage[pos++] = c;
-  }
-  m_szMessage[pos] = '\0';
-
-  int r = 0;
-  if ((r = PClose()) != 0 && m_bFailOnExitCode)
-  {
-    gLog.warning("%s returned abnormally: exit code %d", command.c_str(), r);
-    return !m_bAbortDeleteOnExitCode;
   }
 
   unsigned flags = Licq::ProtocolSignal::SendUrgent;
@@ -338,7 +325,7 @@ bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const Licq::UserEvent*
     flags |= Licq::ProtocolSignal::SendDirect;
 
   unsigned long tag = gProtocolManager.sendMessage(userId,
-      Licq::gTranslator.toUtf8(m_szMessage), flags);
+      Licq::gTranslator.toUtf8(message), flags);
 
   Licq::UserReadGuard u(userId);
   if (!u.isLocked())
@@ -357,105 +344,3 @@ bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const Licq::UserEvent*
 
   return tag != 0;
 }
-
-
-
-bool CLicqAutoReply::POpen(const char *cmd)
-{
-  int pdes_out[2], pdes_in[2];
-
-  if (pipe(pdes_out) < 0) return false;
-  if (pipe(pdes_in) < 0) return false;
-
-  switch (pid = fork())
-  {
-    case -1:                        /* Error. */
-    {
-      close(pdes_out[0]);
-      close(pdes_out[1]);
-      close(pdes_in[0]);
-      close(pdes_in[1]);
-      return false;
-      /* NOTREACHED */
-    }
-    case 0:                         /* Child. */
-    {
-      if (pdes_out[1] != STDOUT_FILENO)
-      {
-        dup2(pdes_out[1], STDOUT_FILENO);
-        close(pdes_out[1]);
-      }
-      close(pdes_out[0]);
-      if (pdes_in[0] != STDIN_FILENO)
-      {
-        dup2(pdes_in[0], STDIN_FILENO);
-        close(pdes_in[0]);
-      }
-      close(pdes_in[1]);
-      execl(_PATH_BSHELL, "sh", "-c", cmd, NULL);
-      _exit(127);
-      /* NOTREACHED */
-    }
-  }
-
-  /* Parent; assume fdopen can't fail. */
-  fStdOut = fdopen(pdes_out[0], "r");
-  close(pdes_out[1]);
-  fStdIn = fdopen(pdes_in[1], "w");
-  close(pdes_in[0]);
-
-  // Set both streams to line buffered
-  setvbuf(fStdOut, (char*)NULL, _IOLBF, 0);
-  setvbuf(fStdIn, (char*)NULL, _IOLBF, 0);
-
-  return true;
-}
-
-
-int CLicqAutoReply::PClose()
-{
-   int r, pstat;
-   struct timeval tv = { 0, 200000 };
-
-   // Close the file descriptors
-   if (fStdOut != NULL) fclose(fStdOut);
-   if (fStdIn != NULL) fclose(fStdIn);
-   fStdOut = fStdIn = NULL;
-
-   // See if the child is still there
-   r = waitpid(pid, &pstat, WNOHANG);
-   // Return if child has exited or there was an inor
-   if (r == pid || r == -1) goto pclose_done;
-
-   // Give the process another .2 seconds to die
-   select(0, NULL, NULL, NULL, &tv);
-
-   // Still there?
-   r = waitpid(pid, &pstat, WNOHANG);
-   if (r == pid || r == -1) goto pclose_done;
-
-   // Try and kill the process
-   if (kill(pid, SIGTERM) == -1) return -1;
-
-   // Give it 1 more second to die
-   tv.tv_sec = 1;
-   tv.tv_usec = 0;
-   select(0, NULL, NULL, NULL, &tv);
-
-   // See if the child is still there
-   r = waitpid(pid, &pstat, WNOHANG);
-   if (r == pid || r == -1) goto pclose_done;
-
-   // Kill the bastard
-   kill(pid, SIGKILL);
-   // Now he will die for sure
-   waitpid(pid, &pstat, 0);
-
-pclose_done:
-
-   if (WIFEXITED(pstat)) return WEXITSTATUS(pstat);
-   return -1;
-
-}
-
-
