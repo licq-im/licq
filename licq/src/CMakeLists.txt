@@ -67,6 +67,8 @@ set(licq_SRCS
 
   plugin/pluginmanager.cpp
 
+  utils/exec.cpp
+
   ${tested_SRCS}
 )
 

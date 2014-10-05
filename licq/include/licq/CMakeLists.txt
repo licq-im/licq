@@ -8,6 +8,7 @@ set(licq_HEADERS
   crypto.h
   daemon.h
   event.h
+  exec.h
   filter.h
   gpghelper.h
   inifile.h
