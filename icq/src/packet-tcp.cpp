@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1047,29 +1047,7 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
       "", _bAccept, l ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL, pUser)
 {
   m_nSequence = _nSequence;
-  Licq::OwnerReadGuard o(gIcqProtocol.ownerId());
-
-  // don't sent out AutoResponse if we're online
-  // it could contain stuff the other site shouldn't be able to read
-  // also some clients always pop up the auto response
-  // window when they receive one, annoying for them..
-  if(((pUser->statusToUser() != Licq::User::OfflineStatus &&
-      pUser->statusToUser() != Licq::User::OnlineStatus)  ?
-      pUser->statusToUser() : o->status()) != Licq::User::OfflineStatus)
-  {
-    myMessage = pUser->usprintf(o->autoResponse(), Licq::User::usprintf_quotepipe, true);
-
-    if (!pUser->customAutoResponse().empty())
-    {
-      myMessage += "\r\n--------------------\r\n";
-      myMessage += pUser->usprintf(gTranslator.fromUtf8(pUser->customAutoResponse()),
-          Licq::User::usprintf_quotepipe, true);
-    }
-  }
-  else
-    myMessage.clear();
-
-  myMessage = IcqProtocol::pipeInput(myMessage);
+  myMessage = gTranslator.fromUtf8(pUser->makeAutoResponse());
 }
 
 CPT_Ack::~CPT_Ack()

@@ -36,8 +36,10 @@
 #include "gettext.h"
 #include <licq/logging/log.h>
 #include <licq/inifile.h>
+#include <licq/contactlist/owner.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
+#include <licq/exec.h>
 #include <licq/oneventmanager.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
@@ -1204,6 +1206,62 @@ string Licq::User::RelativeStrTime(time_t t)
   string ret = buf.str();
   ret.erase(ret.size() - 1);
   return ret;
+}
+
+string Licq::User::makeAutoResponse() const
+{
+  Licq::OwnerReadGuard o(myId.ownerId());
+
+  if (((myStatusToUser != Licq::User::OfflineStatus && myStatusToUser != Licq::User::OnlineStatus)
+      ? myStatusToUser : o->status()) == OfflineStatus)
+    return string();
+
+  string m = usprintf(o->autoResponse(), usprintf_quotepipe, true);
+  o.unlock();
+
+  if (!myCustomAutoResponse.empty())
+  {
+    m += "\r\n--------------------\r\n";
+    m += usprintf(myCustomAutoResponse, usprintf_quotepipe, true);
+  }
+
+  // Find external commands to run
+  size_t posPipe = 0;
+  while (true)
+  {
+    posPipe = m.find('|', posPipe);
+    if (posPipe == string::npos)
+      break;
+
+    if (posPipe != 0 && m[posPipe-1] != '\n')
+    {
+      // Pipe char isn't at beginning of a line, ignore it
+      ++posPipe;
+      continue;
+    }
+
+    // Find end of command
+    size_t posEnd = m.find('\n', posPipe+1);
+    if (posEnd == string::npos)
+      posEnd = m.size();
+    size_t cmdLen = posEnd - posPipe - 1;
+
+    string command(m, posPipe+1, cmdLen);
+    string output;
+    try
+    {
+      Licq::Exec cmd(command.c_str());
+      output = cmd.process("", true);
+    }
+    catch (...)
+    {
+      gLog.warning("Could not execute \"%s\" for auto-response", command.c_str());
+    }
+    m.replace(posPipe, cmdLen+2, output);
+    posPipe += output.size();
+  }
+
+  return m;
 }
 
 string UserId::normalizeId(const string& accountId, unsigned long ppid)

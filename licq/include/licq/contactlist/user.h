@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -238,6 +238,9 @@ public:
 
   /// Convert a unixtime to a relative string (e.g. "1 Hour 47 Minutes")
   static std::string RelativeStrTime(time_t t);
+
+  /// Generate auto response message from us to user
+  std::string makeAutoResponse() const;
 
   enum usprintf_quotes
   {

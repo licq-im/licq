@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -362,7 +362,6 @@ public:
 
   static std::string parseDigits(const std::string& number);
   static std::string parseRtf(const std::string& rtf);
-  static std::string pipeInput(const std::string& message);
 
   static std::string getXmlTag(const std::string& xmlSource, const std::string& tagName);
 

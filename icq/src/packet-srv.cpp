@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2052,12 +2052,14 @@ CPU_AckThroughServer::CPU_AckThroughServer(const ICQUser* u,
   }
   else
   {
-    Licq::OwnerReadGuard o(gIcqProtocol.ownerId());
     unsigned short s;
-    if (u->statusToUser() != Licq::User::OfflineStatus)
-      s = IcqProtocol::icqStatusFromStatus(u->statusToUser());
-    else
-      s = IcqProtocol::icqStatusFromStatus(o->status());
+    {
+      Licq::OwnerReadGuard o(gIcqProtocol.ownerId());
+      if (u->statusToUser() != Licq::User::OfflineStatus)
+        s = IcqProtocol::icqStatusFromStatus(u->statusToUser());
+      else
+        s = IcqProtocol::icqStatusFromStatus(o->status());
+    }
 
     if (!bAccept)
       m_nStatus = ICQ_TCPxACK_REFUSE;
@@ -2074,29 +2076,8 @@ CPU_AckThroughServer::CPU_AckThroughServer(const ICQUser* u,
       else
         m_nStatus = ICQ_TCPxACK_ONLINE;
     }
-  
-    // don't send out AutoResponse if we're online
-    // it could contain stuff the other site shouldn't be able to read
-    // also some clients always pop up the auto response
-    // window when they receive one, annoying for them..
-    if(((u->statusToUser() != Licq::User::OfflineStatus &&
-        u->statusToUser() != Licq::User::OnlineStatus)  ?
-        u->statusToUser() : o->status()) != Licq::User::OfflineStatus)
-    {
-      myMessage = u->usprintf(gTranslator.fromUtf8(o->autoResponse()),
-          Licq::User::usprintf_quotepipe, true);
 
-      if (!u->customAutoResponse().empty())
-      {
-        myMessage += "\r\n--------------------\r\n";
-        myMessage += u->usprintf(gTranslator.fromUtf8(u->customAutoResponse()),
-            Licq::User::usprintf_quotepipe, true);
-      }
-    }
-    else
-      myMessage.clear();
-
-    myMessage = IcqProtocol::pipeInput(myMessage);
+    myMessage = gTranslator.fromUtf8(u->makeAutoResponse());
 
     // If message is 8099 characters or longer the server will disconnect us so better to truncate
     if (myMessage.size() >= 8099)
