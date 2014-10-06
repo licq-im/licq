@@ -40,7 +40,6 @@
 #include "xpm/bar/info.xpm"
 #include "xpm/bar/italic.xpm"
 #include "xpm/bar/menu.xpm"
-#include "xpm/bar/multiplerec.xpm"
 #include "xpm/bar/secureoff.xpm"
 #include "xpm/bar/secureon.xpm"
 #include "xpm/bar/smile.xpm"
@@ -207,7 +206,6 @@ bool IconManager::loadIcons(const QString& iconSet)
   LOAD2_ICON("Info",            InfoIcon, info_xpm);
   LOAD2_ICON("Italic",          ItalicIcon, italic_xpm);
   LOAD2_ICON("Menu",            MenuIcon, menu_xpm);
-  LOAD2_ICON("MultipleRec",     MultipleRecIcon, multiplerec_xpm);
   LOAD2_ICON("SecureOff",       SecureOffIcon, secureoff_xpm);
   LOAD2_ICON("SecureOn",        SecureOnIcon, secureon_xpm);
   LOAD2_ICON("Smile",           SmileIcon, smile_xpm);

@@ -84,7 +84,6 @@
 #include "dialogs/editfilelistdlg.h"
 #include "dialogs/joinchatdlg.h"
 #include "dialogs/keyrequestdlg.h"
-#include "dialogs/mmsenddlg.h"
 #include "dialogs/showawaymsgdlg.h"
 
 #include "views/mmuserview.h"
@@ -119,7 +118,6 @@ UserSendEvent::UserSendEvent(int type, const Licq::UserId& userId, QWidget* pare
   : UserEventCommon(userId, parent, "UserSendEvent"),
     myType(type)
 {
-  myMassMessageBox = NULL;
   myPictureLabel = NULL;
   clearDelay = 250;
 
@@ -195,10 +193,6 @@ UserSendEvent::UserSendEvent(int type, const Licq::UserId& userId, QWidget* pare
 
   myUrgentCheck = myToolBar->addAction(tr("Urgent"));
   myUrgentCheck->setCheckable(true);
-
-  myMassMessageCheck = myToolBar->addAction(tr("Multiple Recipients"));
-  myMassMessageCheck->setCheckable(true);
-  connect(myMassMessageCheck, SIGNAL(toggled(bool)), SLOT(massMessageToggled(bool)));
 
   myToolBar->addSeparator();
 
@@ -605,7 +599,6 @@ bool UserSendEvent::eventFilter(QObject* watched, QEvent* e)
 
 void UserSendEvent::setEventType()
 {
-  myMassMessageCheck->setEnabled(myType == MessageEvent || myType == UrlEvent);
   myForeColor->setEnabled(myType == MessageEvent || myType == UrlEvent);
   myBackColor->setEnabled(myType == MessageEvent || myType == UrlEvent);
   myEmoticon->setEnabled(myType != ContactEvent);
@@ -622,19 +615,15 @@ void UserSendEvent::setEventType()
       break;
     case ChatEvent:
       myTitle = myBaseTitle + tr(" - Chat Request");
-      myMassMessageCheck->setChecked(false);
       break;
     case FileEvent:
       myTitle = myBaseTitle + tr(" - File Transfer");
-      myMassMessageCheck->setChecked(false);
       break;
     case ContactEvent:
       myTitle = myBaseTitle + tr(" - Contact List");
-      myMassMessageCheck->setChecked(false);
       break;
     case SmsEvent:
       myTitle = myBaseTitle + tr(" - SMS");
-      myMassMessageCheck->setChecked(false);
       mySendServerCheck->setChecked(true);
       myUrgentCheck->setChecked(false);
       break;
@@ -667,7 +656,6 @@ void UserSendEvent::updateIcons()
   myEventTypeMenu->setIcon(iconForType(myType));
   mySendServerCheck->setIcon(iconman->getIcon(IconManager::ThroughServerIcon));
   myUrgentCheck->setIcon(iconman->getIcon(IconManager::UrgentIcon));
-  myMassMessageCheck->setIcon(iconman->getIcon(IconManager::MultipleRecIcon));
   myEmoticon->setIcon(iconman->getIcon(IconManager::SmileIcon));
   myForeColor->setIcon(iconman->getIcon(IconManager::TextColorIcon));
   myBackColor->setIcon(iconman->getIcon(IconManager::BackColorIcon));
@@ -692,7 +680,6 @@ void UserSendEvent::updateShortcuts()
   myEventTypeMenu->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatEventMenu));
   mySendServerCheck->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatToggleSendServer));
   myUrgentCheck->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatToggleUrgent));
-  myMassMessageCheck->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatToggleMassMessage));
   myEmoticon->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatEmoticonMenu));
   myForeColor->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatColorFore));
   myBackColor->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatColorBack));
@@ -701,7 +688,6 @@ void UserSendEvent::updateShortcuts()
   pushToolTip(myEventTypeMenu, tr("Select type of message to send"));
   pushToolTip(mySendServerCheck, tr("Send through server"));
   pushToolTip(myUrgentCheck, tr("Urgent"));
-  pushToolTip(myMassMessageCheck, tr("Multiple recipients"));
   pushToolTip(myEmoticon, tr("Insert smileys"));
   pushToolTip(myForeColor, tr("Change text color"));
   pushToolTip(myBackColor, tr("Change background color"));
@@ -1231,28 +1217,11 @@ void UserSendEvent::send()
     contacts.push_back(userId.accountId());
   }
 
-  if (myMassMessageCheck->isChecked())
-  {
-    MMSendDlg* m = new MMSendDlg(myMassMessageList, this);
-    connect(m, SIGNAL(eventSent(const Licq::Event*)), SIGNAL(eventSent(const Licq::Event*)));
-    int r = QDialog::Accepted;
-    if (myType == UrlEvent)
-      r = m->go_url(myUrlEdit->text(), myMessageEdit->toPlainText());
-    else if (myType == ContactEvent)
-      r = m->go_contact(contacts);
-    else
-      m->go_message(myMessageEdit->toPlainText());
-    if (r != QDialog::Accepted)
-      return;
-  }
-
   unsigned flags = 0;
   if (!mySendServerCheck->isChecked())
     flags |= Licq::ProtocolSignal::SendDirect;
   if (myUrgentCheck->isChecked())
     flags |= Licq::ProtocolSignal::SendUrgent;
-  if (myMassMessageCheck->isChecked())
-    flags |= Licq::ProtocolSignal::SendToMultiple;
 
   if (myType == MessageEvent)
   {
@@ -1649,8 +1618,6 @@ void UserSendEvent::eventDoneReceived(const Licq::Event* e)
     myFileEditButton->setEnabled(false);
     myContactsList->clear();
 
-    massMessageToggled(false);
-
     // After sending URI/File/Contact/ChatRequest switch back to text message
     if (myType != MessageEvent)
       changeEventType(MessageEvent);
@@ -1764,32 +1731,6 @@ void UserSendEvent::showEmoticonsMenu()
 void UserSendEvent::insertEmoticon(const QString& value)
 {
   myMessageEdit->insertPlainText(value);
-}
-
-/*! This slot creates/removes a little widget into the usereventdlg
- *  which enables the user to collect users for mass messaging.
- */
-void UserSendEvent::massMessageToggled(bool b)
-{
-  if (myMassMessageBox == NULL)
-  {
-    // If the box doesn't exist and we're not supposed to show it, there is no point in continuing
-    if (!b)
-      return;
-
-    myMassMessageBox = new QGroupBox();
-    myTophLayout->addWidget(myMassMessageBox);
-    QVBoxLayout* layMR = new QVBoxLayout(myMassMessageBox);
-
-    layMR->addWidget(new QLabel(tr("Drag Users Here\nRight Click for Options")));
-
-    myMassMessageList = new MMUserView(myUsers.front(), gGuiContactList);
-    myMassMessageList->setFixedWidth(gMainWindow->getUserView()->width());
-    layMR->addWidget(myMassMessageList);
-  }
-
-  myMassMessageCheck->setChecked(b);
-  myMassMessageBox->setVisible(b);
 }
 
 void UserSendEvent::messageAdded()

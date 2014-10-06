@@ -22,7 +22,6 @@ set(dialogs_SRCS
   joinchatdlg.cpp
   keyrequestdlg.cpp
   logwindow.cpp
-  mmsenddlg.cpp
   ownereditdlg.cpp
   ownermanagerdlg.cpp
   phonedlg.cpp

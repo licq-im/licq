@@ -105,13 +105,10 @@ protected:
   Licq::Color myIcqColor;
   HistoryView* myHistoryView;
   MLEdit* myMessageEdit;
-  MMUserView* myMassMessageList;
-  QAction* myMassMessageCheck;
   QAction* mySendServerCheck;
   QAction* myUrgentCheck;
   QAction* myEventTypeMenu;
   QActionGroup* myEventTypeGroup;
-  QGroupBox* myMassMessageBox;
   QLabel* myPictureLabel;
   QPushButton* myCloseButton;
   QPushButton* mySendButton;
@@ -185,7 +182,6 @@ private slots:
   void closeDialog();
   void showEmoticonsMenu();
   void insertEmoticon(const QString& value);
-  void massMessageToggled(bool on);
   void messageAdded();
   void resetTitle();
   void sendServerToggled(bool on);

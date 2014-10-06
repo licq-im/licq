@@ -60,7 +60,6 @@ public:
     ChatTab08,
     ChatTab09,
     ChatTab10,
-    ChatToggleMassMessage,
     ChatToggleSecure,
     ChatToggleSendServer,
     ChatToggleUrgent,
