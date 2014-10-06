@@ -64,7 +64,6 @@ unsigned long Factory::capabilities() const
       | ProtocolPlugin::CanSendContact
       | ProtocolPlugin::CanSendAuth
       | ProtocolPlugin::CanSendAuthReq
-      | ProtocolPlugin::CanSendSms
       | ProtocolPlugin::CanSendSecure
       | ProtocolPlugin::CanSendDirect
       | ProtocolPlugin::CanHoldStatusMsg

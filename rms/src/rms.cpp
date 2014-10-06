@@ -120,8 +120,6 @@ const unsigned short STATE_ENTERxMESSAGE = 4;
 const unsigned short STATE_ENTERxURLxDESCRIPTION = 5;
 const unsigned short STATE_ENTERxURL = 6;
 const unsigned short STATE_ENTERxAUTOxRESPONSE = 7;
-const unsigned short STATE_ENTERxSMSxMESSAGE = 8;
-const unsigned short STATE_ENTERxSMSxNUMBER = 9;
 
 #define NEXT_WORD(s) while (*s != '\0' && *s == ' ') s++;
 
@@ -166,8 +164,6 @@ static struct Command commands[] =
     "View event (next or specific user) { [ <id>[.<protocol>] ] }." },
   { "URL", &CRMSClient::Process_URL,
     "Send a url { <id>[.<protocol>] }." },
-  { "SMS", &CRMSClient::Process_SMS,
-    "Send an sms { <uin> }." },
   { "NOTIFY", &CRMSClient::Process_NOTIFY,
     "Notify events" },
 };
@@ -753,16 +749,6 @@ int CRMSClient::StateMachine()
     {
       return Process_URL_url();
     }
-    case STATE_ENTERxSMSxMESSAGE:
-    {
-      if (AddLineToText())
-         return Process_SMS_message();
-      break;
-    }
-    case STATE_ENTERxSMSxNUMBER:
-    {
-      return Process_SMS_number();
-    }
     case STATE_ENTERxAUTOxRESPONSE:
     {
       if (AddLineToText())
@@ -1245,76 +1231,6 @@ int CRMSClient::Process_URL_text()
 
   fprintf(fs, "%d [%ld] Sending URL to %s.\n", CODE_COMMANDxSTART,
       tag, myUserId.toString().c_str());
-
-  tags.push_back(tag);
-  m_nState = STATE_COMMAND;
-
-  return fflush(fs);
-}
-
-
-/*---------------------------------------------------------------------------
- * CRMSClient::Process_SMS
- *
- * Command:
- *   SMS <uin>
- *
- * Response:
- *   CODE_ENTERxLINE | CODE_INVALIDxUSER
- *     At which point the phone number should be entered on a line by itself
- *     without the "+", but including country code.  Invalid user means the
- *     uin was invalid (< 10000) and the url was aborted.
- *   CODE_ENTERxTEXT
- *     Now the message should be entered and terminated by a "." on a line
- *     by itself.
- *   CODE_COMMANDxSTART
- *     < ...time... >
- *   CODE_RESULTxSUCCESS | CODE_EVENTxTIMEDOUT | CODE_EVENTxERROR
- *-------------------------------------------------------------------------*/
-int CRMSClient::Process_SMS()
-{
-  ParseUser(data_arg);
-
-  if (!myUserId.isValid())
-  {
-    fprintf(fs, "%d Invalid UIN.\n", CODE_INVALIDxUSER);
-    return fflush(fs);
-  }
-  fprintf(fs, "%d Enter NUMBER:\n", CODE_ENTERxLINE);
-
-  myText.clear();
-
-  m_nState = STATE_ENTERxSMSxNUMBER;
-  return fflush(fs);
-}
-
-
-int CRMSClient::Process_SMS_number()
-{
-  myLine = data_line;
-
-  fprintf(fs, "%d Enter message, terminate with a . on a line by itself:\n",
-     CODE_ENTERxTEXT);
-
-  myText.clear();
-
-  m_nState = STATE_ENTERxSMSxMESSAGE;
-  return fflush(fs);
-}
-
-
-int CRMSClient::Process_SMS_message()
-{
-  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolInstance(myUserId.ownerId()));
-  if (!icq)
-    return fflush(fs);
-
-  unsigned long tag = icq->icqSendSms(
-      myUserId, myLine, Licq::gTranslator.toUtf8(myText));
-
-  fprintf(fs, "%d [%lu] Sending SMS to %s (%s).\n", CODE_COMMANDxSTART,
-     tag, myUserId.accountId().c_str(), myLine.c_str());
 
   tags.push_back(tag);
   m_nState = STATE_COMMAND;

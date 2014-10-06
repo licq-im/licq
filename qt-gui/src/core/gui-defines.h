@@ -57,7 +57,6 @@ enum EventType
   ChatEvent,
   FileEvent,
   ContactEvent,
-  SmsEvent,
 };
 
 } // namespace LicqQtGui

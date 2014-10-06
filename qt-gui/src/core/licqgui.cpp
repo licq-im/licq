@@ -721,8 +721,7 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const Licq::UserId& userId, i
       (fcn == UrlEvent && !(sendFuncs & Licq::ProtocolPlugin::CanSendUrl)) ||
       (fcn == ChatEvent && !(sendFuncs & Licq::ProtocolPlugin::CanSendChat)) ||
       (fcn == FileEvent && !(sendFuncs & Licq::ProtocolPlugin::CanSendFile )) ||
-      (fcn == ContactEvent && !(sendFuncs & Licq::ProtocolPlugin::CanSendContact)) ||
-      (fcn == SmsEvent && !(sendFuncs & Licq::ProtocolPlugin::CanSendSms)))
+      (fcn == ContactEvent && !(sendFuncs & Licq::ProtocolPlugin::CanSendContact)))
     return NULL;
 
 

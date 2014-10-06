@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2000-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,7 +107,6 @@ public:
   int Process_LIST();
   int Process_MESSAGE();
   int Process_URL();
-  int Process_SMS();
   int Process_LOG();
   int Process_VIEW();
   int Process_AR();
@@ -146,8 +145,6 @@ protected:
   int Process_MESSAGE_text();
   int Process_URL_url();
   int Process_URL_text();
-  int Process_SMS_number();
-  int Process_SMS_message();
   int Process_AR_text();
 
   /**

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,12 +104,6 @@ static const char* const HELP_MSG = tr(
 static const char* const HELP_URL = tr(
         "\turl <buddy> <url> [<description>]\n"
         "\t\tSend a url to the given buddy.\n");
-static const char* const HELP_SMS = tr(
-        "\tsms <buddy> <message>\n"
-        "\tSend a SMS to the given buddy.\n");
-static const char* const HELP_SMS_NUMBER = tr(
-        "\tsms <number> <message>\n"
-        "\tSend a SMS to the given cellular number.\n");
 static const char* const HELP_REDIRECT = tr(
         "\tredirect <file>\n"
         "\t\tRedirects stderr for\n"
@@ -357,75 +351,6 @@ static int fifo_url(int argc, const char* const* argv)
   else
     ReportBadBuddy(argv[0],argv[1]);
 
-  return 0;
-}
-
-//sms <buddy> <message>
-static int fifo_sms(int argc, const char *const *argv)
-{
-  if (argc < 3)
-  {
-    ReportMissingParams(argv[0]);
-    return -1;
-  }
-
-  Licq::UserId userId(atoid(argv[1]));
-  if (!userId.isValid())
-  {
-    ReportBadBuddy(argv[0], argv[1]);
-    return 0;
-  }
-
-  if (userId.protocolId() != ICQ_PPID)
-  {
-    gLog.info(tr("%s `%s': bad protocol. ICQ only allowed"), L_FIFOxSTR, argv[0]);
-    return 0;
-  }
-
-  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolInstance(userId.ownerId()));
-  if (!icq)
-    return -1;
-
-  string number;
-  {
-    Licq::UserReadGuard u(userId);
-    {
-      if (u.isLocked())
-        number = u->getCellularNumber();
-    }
-  }
-  if (!number.empty())
-    icq->icqSendSms(userId, number, gTranslator.toUtf8(argv[2]));
-  else
-    gLog.error(tr("Unable to send SMS to %s, no SMS number found"), userId.accountId().c_str());
-
-  return 0;
-}
-
-// sms-number <number> <message>
-static int fifo_sms_number(int argc, const char *const *argv)
-{
-  if (argc < 3)
-  {
-    ReportMissingParams(argv[0]);
-    return -1;
-  }
-
-  Licq::UserId ownerId;
-  {
-    Licq::OwnerListGuard ownerList(ICQ_PPID);
-    if (ownerList->empty())
-      return -1;
-    ownerId = (*ownerList->begin())->id();
-  }
-
-  Licq::IcqProtocol::Ptr icq = plugin_internal_cast<Licq::IcqProtocol>(
-      Licq::gPluginManager.getProtocolInstance(ownerId));
-  if (!icq)
-    return -1;
-
-  icq->icqSendSms(ownerId, argv[1], gTranslator.toUtf8(argv[2]));
   return 0;
 }
 
@@ -730,8 +655,6 @@ static struct command_t fifocmd_table[]=
   {"auto_response",       fifo_auto_response,       HELP_AUTO},
   {"message",             fifo_message,             HELP_MSG},
   {"url",                 fifo_url,                 HELP_URL},
-  {"sms",                 fifo_sms,                 HELP_SMS},
-  {"sms-number",          fifo_sms_number,          HELP_SMS_NUMBER},
   {"redirect",            fifo_redirect,            HELP_REDIRECT},
   {"debuglvl",            fifo_debuglvl,            HELP_DEBUGLVL},
   {"adduser",             fifo_adduser,             HELP_ADDUSER},

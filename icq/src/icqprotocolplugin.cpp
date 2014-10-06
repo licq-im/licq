@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -320,17 +320,6 @@ void IcqProtocolPlugin::updateAllUsersInGroup(const Licq::UserId& ownerId, int g
     return;
 
   pushSignal(new ProtoUpdateUsersSignal(ownerId, groupId));
-}
-
-unsigned long IcqProtocolPlugin::icqSendSms(const Licq::UserId& userId,
-    const std::string& number, const std::string& message)
-{
-  if (!isOwnerOnline(userId))
-    return 0;
-
-  unsigned long eventId = Licq::gProtocolManager.getNextEventId();
-  pushSignal(new ProtoSendSmsSignal(eventId, userId, number, message));
-  return eventId;
 }
 
 Licq::IcqFileTransferManager* IcqProtocolPlugin::createFileTransferManager(const Licq::UserId& userId)

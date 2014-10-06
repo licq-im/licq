@@ -43,12 +43,6 @@ FIFO COMMANDS
   url <buddy> <url> [<description>]
     Send a url to the given buddy.
  
-  sms <buddy> <message>
-    Send a SMS to the given buddy.
- 
-  sms-number <number> <message>
-    Send a SMS to the given cellular number.
- 
   redirect <file>
     Redirects the stdout and stderr for licq to the given file
  

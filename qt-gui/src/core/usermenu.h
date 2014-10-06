@@ -117,7 +117,6 @@ private:
     SendChat = ChatEvent,
     SendFile = FileEvent,
     SendContact = ContactEvent,
-    SendSms = SmsEvent,
     SendAuthorize,
     SendReqAuthorize,
     RequestUpdateInfoPlugin,

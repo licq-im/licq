@@ -160,7 +160,6 @@ UserSendEvent::UserSendEvent(int type, const Licq::UserId& userId, QWidget* pare
   ADD_SENDTYPE(Licq::ProtocolPlugin::CanSendChat, ChatEvent, tr("Chat Request"));
   ADD_SENDTYPE(Licq::ProtocolPlugin::CanSendFile, FileEvent, tr("File Transfer"));
   ADD_SENDTYPE(Licq::ProtocolPlugin::CanSendContact, ContactEvent, tr("Contact List"));
-  ADD_SENDTYPE(Licq::ProtocolPlugin::CanSendSms, SmsEvent, tr("SMS"));
 
 #undef ADD_SENDTYPE
 
@@ -459,27 +458,6 @@ UserSendEvent::UserSendEvent(int type, const Licq::UserId& userId, QWidget* pare
   myContactsControls->setVisible(false);
   myMainWidget->addWidget(myContactsControls);
 
-  // Extra controls for SMS
-  mySmsControls = new QWidget();
-  QHBoxLayout* smsLayout = new QHBoxLayout(mySmsControls);
-  QLabel* smsPhoneLabel = new QLabel(tr("Phone:"));
-  smsLayout->addWidget(smsPhoneLabel);
-  mySmsPhoneEdit = new InfoField(false);
-  smsLayout->addWidget(mySmsPhoneEdit);
-  mySmsPhoneEdit->setFixedWidth(qMax(140, mySmsPhoneEdit->sizeHint().width()));
-  mySmsPhoneEdit->installEventFilter(this);
-  smsPhoneLabel->setBuddy(mySmsPhoneEdit);
-  smsLayout->addStretch(1);
-  QLabel* smsCountLabel = new QLabel(tr("Chars left:"));
-  smsLayout->addWidget(smsCountLabel);
-  mySmsCountEdit = new InfoField(true);
-  mySmsCountEdit->setFixedWidth(40);
-  mySmsCountEdit->setAlignment(Qt::AlignCenter);
-  smsLayout->addWidget(mySmsCountEdit);
-  smsCountLabel->setBuddy(mySmsCountEdit);
-  mySmsControls->setVisible(false);
-  myMainWidget->addWidget(mySmsControls);
-
 
   if (Config::Chat::instance()->msgChatView())
   {
@@ -511,7 +489,6 @@ UserSendEvent::UserSendEvent(int type, const Licq::UserId& userId, QWidget* pare
   {
     Licq::UserReadGuard u(myUsers.front());
     updatePicture(*u);
-    mySmsPhoneEdit->setText(QString::fromUtf8(u->getCellularNumber().c_str()));
   }
   updateShortcuts();
 
@@ -525,7 +502,6 @@ UserSendEvent::UserSendEvent(int type, const Licq::UserId& userId, QWidget* pare
   connect(myChatInviteButton, SIGNAL(clicked()), SLOT(chatInviteUser()));
   connect(myFileBrowseButton, SIGNAL(clicked()), SLOT(fileBrowse()));
   connect(myFileEditButton, SIGNAL(clicked()), SLOT(fileEditList()));
-  connect(myMessageEdit, SIGNAL(textChanged()), SLOT(smsCount()));
 
   QSize dialogSize = Config::Chat::instance()->sendDialogSize();
   if (dialogSize.isValid())
@@ -534,7 +510,6 @@ UserSendEvent::UserSendEvent(int type, const Licq::UserId& userId, QWidget* pare
   setAcceptDrops(true);
 
   setEventType();
-  smsCount();
 }
 
 UserSendEvent::~UserSendEvent()
@@ -579,7 +554,7 @@ bool UserSendEvent::eventFilter(QObject* watched, QEvent* e)
     }
     return false;
   }
-  else if (watched == myUrlEdit || watched == myContactsList || watched == mySmsPhoneEdit)
+  else if (watched == myUrlEdit || watched == myContactsList)
   {
     if (e->type() == QEvent::KeyPress)
     {
@@ -602,9 +577,6 @@ void UserSendEvent::setEventType()
   myForeColor->setEnabled(myType == MessageEvent || myType == UrlEvent);
   myBackColor->setEnabled(myType == MessageEvent || myType == UrlEvent);
   myEmoticon->setEnabled(myType != ContactEvent);
-  mySendServerCheck->setEnabled(myType != SmsEvent);
-  myUrgentCheck->setEnabled(myType != SmsEvent);
-  myEncoding->setEnabled(myType != SmsEvent); // SMSs are always UTF-8
 
   myMessageEdit->setVisible(myType != ContactEvent);
 
@@ -622,11 +594,6 @@ void UserSendEvent::setEventType()
     case ContactEvent:
       myTitle = myBaseTitle + tr(" - Contact List");
       break;
-    case SmsEvent:
-      myTitle = myBaseTitle + tr(" - SMS");
-      mySendServerCheck->setChecked(true);
-      myUrgentCheck->setChecked(false);
-      break;
     case MessageEvent:
     default:
       myTitle = myBaseTitle + tr(" - Message");
@@ -638,7 +605,6 @@ void UserSendEvent::setEventType()
   myChatControls->setVisible(myType == ChatEvent);
   myFileControls->setVisible(myType == FileEvent);
   myContactsControls->setVisible(myType == ContactEvent);
-  mySmsControls->setVisible(myType == SmsEvent);
 
   myEventTypeGroup->actions().at(myType)->setChecked(true);
 
@@ -742,9 +708,6 @@ const QPixmap& UserSendEvent::iconForType(int type) const
 
     case ContactEvent:
       return IconManager::instance()->getIcon(IconManager::ContactMessageIcon);
-
-    case SmsEvent:
-      return IconManager::instance()->getIcon(IconManager::SmsMessageIcon);
 
     case MessageEvent:
     default:
@@ -912,10 +875,6 @@ void UserSendEvent::changeEventType(int type)
       if ((mySendFuncs & Licq::ProtocolPlugin::CanSendContact) == 0)
         return;
       break;
-    case SmsEvent:
-      if ((mySendFuncs & Licq::ProtocolPlugin::CanSendSms) == 0)
-        return;
-      break;
     default:
       assert(false);
   }
@@ -1063,16 +1022,6 @@ void UserSendEvent::retrySend(const Licq::Event* e, unsigned flags)
       break;
     }
 
-    case Licq::UserEvent::TypeSms:
-    {
-      if (icq == NULL)
-        break;
-
-      const Licq::EventSms* ue = dynamic_cast<const Licq::EventSms*>(e->userEvent());
-      icqEventTag = icq->icqSendSms(frontUserId, ue->number(), ue->message());
-      break;
-    }
-
     default:
       break;
   }
@@ -1148,7 +1097,7 @@ void UserSendEvent::send()
 {
   const Licq::UserId& frontUserId(myUsers.front());
 
-  if (myType == MessageEvent || myType == SmsEvent)
+  if (myType == MessageEvent)
   {
     // don't let the user send empty messages
     if (myMessageEdit->toPlainText().trimmed().isEmpty())
@@ -1159,9 +1108,7 @@ void UserSendEvent::send()
       return;
 
     if (!myMessageEdit->document()->isModified() &&
-        !QueryYesNo(this, (myType == SmsEvent ?
-            tr("You didn't edit the SMS.\nDo you really want to send it?") :
-            tr("You didn't edit the message.\nDo you really want to send it?"))))
+        !QueryYesNo(this, tr("You didn't edit the message.\nDo you really want to send it?")))
       return;
   }
 
@@ -1328,14 +1275,6 @@ void UserSendEvent::send()
             myMessageEdit->toPlainText().toUtf8().data(),
             myFileList,
             flags);
-        break;
-
-      case SmsEvent:
-        if (icq == NULL)
-          return;
-        icqEventTag = icq->icqSendSms(frontUserId,
-            mySmsPhoneEdit->text().toUtf8().constData(),
-            myMessageEdit->toPlainText().toUtf8().data());
         break;
     }
 
@@ -1947,10 +1886,4 @@ void UserSendEvent::fileUpdateLabel(unsigned count)
   }
 
   myFileEdit->setText(f);
-}
-
-void UserSendEvent::smsCount()
-{
-  int len = 160 - strlen(myMessageEdit->toPlainText().toUtf8().data());
-  mySmsCountEdit->setText((len >= 0) ? len : 0);
 }

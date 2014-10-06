@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,7 +71,6 @@ void OnEventData::load(Licq::IniFile& conf)
   conf.get("Url", myParameters[OnEventUrl], myIsGlobal ? (soundDir + "URL.wav") : Default);
   conf.get("Chat", myParameters[OnEventChat], myIsGlobal ? (soundDir + "Chat.wav") : Default);
   conf.get("File", myParameters[OnEventFile], myIsGlobal ? (soundDir + "File.wav") : Default);
-  conf.get("Sms", myParameters[OnEventSms], myIsGlobal ? (soundDir + "Message.wav") : Default);
   conf.get("OnlineNotify", myParameters[OnEventOnline], myIsGlobal ? (soundDir + "Online.wav") : Default);
   conf.get("SysMsg", myParameters[OnEventSysMsg], myIsGlobal ? (soundDir + "System.wav") : Default);
   conf.get("MsgSent", myParameters[OnEventMsgSent], myIsGlobal ? (soundDir + "Message.wav") : Default);
@@ -145,7 +144,6 @@ void OnEventData::save(Licq::IniFile& conf) const
   conf.set("Url", myParameters[OnEventUrl]);
   conf.set("Chat", myParameters[OnEventChat]);
   conf.set("File", myParameters[OnEventFile]);
-  conf.set("Sms", myParameters[OnEventSms]);
   conf.set("OnlineNotify", myParameters[OnEventOnline]);
   conf.set("SysMsg", myParameters[OnEventSysMsg]);
   conf.set("MsgSent", myParameters[OnEventMsgSent]);

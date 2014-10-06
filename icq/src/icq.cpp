@@ -292,9 +292,6 @@ void IcqProtocol::processSignal(const Licq::ProtocolSignal* s)
           icqSendContactList(
               dynamic_cast<const ProtoSendContactsSignal*>(ips));
           break;
-        case ProtocolSignal::SignalIcqSendSms:
-          icqSendSms(dynamic_cast<const ProtoSendSmsSignal*>(ips));
-          break;
         case ProtocolSignal::SignalIcqFetchAutoResponse:
           icqFetchAutoResponse(s);
           break;
@@ -1756,8 +1753,7 @@ void IcqProtocol::processServerMessage(int type, Licq::Buffer &packet,
         Licq::UserWriteGuard u(Licq::UserId(myOwnerId, idSms.c_str()));
         gLog.info(tr("SMS from %s - %s (%s)"), eSms->number().c_str(),
             u->getAlias().c_str(), idSms.c_str());
-        if (gDaemon.addUserEvent(*u, ue))
-          gOnEventManager.performOnEvent(OnEventData::OnEventSms, *u);
+        gDaemon.addUserEvent(*u, ue);
       }
       else
       {
@@ -1766,7 +1762,6 @@ void IcqProtocol::processServerMessage(int type, Licq::Buffer &packet,
         if (gDaemon.addUserEvent(*o, ue))
         {
           ue->AddToHistory(*o, true);
-          gOnEventManager.performOnEvent(OnEventData::OnEventSms, *o);
         }
       }
       break;

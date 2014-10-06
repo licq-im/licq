@@ -189,7 +189,6 @@ bool IconManager::loadIcons(const QString& iconSet)
   LOAD2_ICON("Contact",         ContactMessageIcon, myIconMap.value(StandardMessageIcon));
   LOAD2_ICON("Authorize",       AuthorizeMessageIcon, myIconMap.value(StandardMessageIcon));
   LOAD2_ICON("ReqAuthorize",    ReqAuthorizeMessageIcon, myIconMap.value(AuthorizeMessageIcon));
-  LOAD2_ICON("SMS",             SmsMessageIcon, myIconMap.value(StandardMessageIcon));
 
   // Menu icons
   LOAD2_ICON("Remove",          RemoveIcon, remove_xpm);

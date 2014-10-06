@@ -220,9 +220,6 @@ private slots:
   /// Update label for file transfer
   void fileUpdateLabel(unsigned count);
 
-  /// Update counter for remaining SMS characters
-  void smsCount();
-
 private:
   /// Show/hide controls for current event type
   void setEventType();
@@ -250,10 +247,6 @@ private:
   QPushButton* myFileBrowseButton;
   QPushButton* myFileEditButton;
   std::list<std::string> myFileList;
-
-  QWidget* mySmsControls;
-  InfoField* mySmsPhoneEdit;
-  InfoField* mySmsCountEdit;
 };
 
 } // namespace LicqQtGui

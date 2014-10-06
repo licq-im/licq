@@ -81,7 +81,6 @@ UserMenu::UserMenu(QWidget* parent)
   ADD_SEND(tr("Send Contact &List..."), SendContact)
   ADD_SEND(tr("Send &Authorization..."), SendAuthorize)
   ADD_SEND(tr("Send Authorization Re&quest..."), SendReqAuthorize)
-  ADD_SEND(tr("Send &SMS..."), SendSms)
   mySendMenu->addSeparator();
   ADD_SEND(tr("Update Info Plugin List"), RequestUpdateInfoPlugin)
   ADD_SEND(tr("Update Status Plugin List"), RequestUpdateStatusPlugin)
@@ -193,7 +192,6 @@ void UserMenu::updateIcons()
   mySendActions[SendContact]->setIcon(iconman->getIcon(IconManager::ContactMessageIcon));
   mySendActions[SendAuthorize]->setIcon(iconman->getIcon(IconManager::AuthorizeMessageIcon));
   mySendActions[SendReqAuthorize]->setIcon(iconman->getIcon(IconManager::ReqAuthorizeMessageIcon));
-  mySendActions[SendSms]->setIcon(iconman->getIcon(IconManager::SmsMessageIcon));
 
   myCustomArAction->setIcon(iconman->getIcon(IconManager::CustomArIcon));
   myRemoveUserAction->setIcon(iconman->getIcon(IconManager::RemoveIcon));
@@ -272,7 +270,6 @@ void UserMenu::aboutToShowMenu()
 
   mySendActions[SendChat]->setEnabled(u->isOnline());
   mySendActions[SendFile]->setEnabled(u->isOnline());
-  mySendActions[SendSms]->setEnabled(!u->getCellularNumber().empty());
   if (u->Secure())
   {
     mySendActions[SendKey]->setText(tr("Close &Secure Channel..."));
@@ -294,7 +291,6 @@ void UserMenu::aboutToShowMenu()
   mySendActions[SendContact]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendContact);
   mySendActions[SendAuthorize]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendAuth);
   mySendActions[SendReqAuthorize]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendAuthReq);
-  mySendActions[SendSms]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendSms);
   mySendActions[SendKey]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendSecure);
   myMiscModesActions[ModeAutoFileAccept]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendFile);
   myMiscModesActions[ModeAutoChatAccept]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendChat);

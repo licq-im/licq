@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2012-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,21 +48,6 @@ ProtoSendContactsSignal::ProtoSendContactsSignal(unsigned long eventId, const Li
 ProtoSendContactsSignal::~ProtoSendContactsSignal()
 {
   delete myColor;
-}
-
-
-ProtoSendSmsSignal::ProtoSendSmsSignal(unsigned long eventId, const Licq::UserId& userId,
-    const std::string& number, const std::string& message)
-  : ProtocolSignal(SignalIcqSendSms, userId, eventId),
-    myNumber(number),
-    myMessage(message)
-{
-  // Empty
-}
-
-ProtoSendSmsSignal::~ProtoSendSmsSignal()
-{
-  // Empty
 }
 
 

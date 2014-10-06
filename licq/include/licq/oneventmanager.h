@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,12 +40,11 @@ public:
     OnEventUrl = 1,
     OnEventChat = 2,
     OnEventFile = 3,
-    OnEventSms = 4,
-    OnEventOnline = 5,
-    OnEventSysMsg = 6,
-    OnEventMsgSent = 7,
+    OnEventOnline = 4,
+    OnEventSysMsg = 5,
+    OnEventMsgSent = 6,
   };
-  static const int NumOnEventTypes = 8;
+  static const int NumOnEventTypes = 7;
 
   // Constant for string parameters to mean value hasn't been overridden
   static const char* const Default;

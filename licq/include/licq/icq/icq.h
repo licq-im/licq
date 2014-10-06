@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2013 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2000-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,10 +107,6 @@ public:
   virtual unsigned long randomChatSearch(const Licq::UserId& ownerId, unsigned chatGroup) = 0;
 
   virtual void updateAllUsersInGroup(const Licq::UserId& ownerId, int groupId = 0) = 0;
-
-  // SMS
-  virtual unsigned long icqSendSms(const Licq::UserId& userId,
-      const std::string& number, const std::string& message) = 0;
 
   virtual IcqFileTransferManager* createFileTransferManager(const UserId& userId) = 0;
   virtual IcqChatManager* createChatManager(const UserId& userId) = 0;

@@ -45,7 +45,6 @@ public:
     CanSendContact      = 1<<4,
     CanSendAuth         = 1<<5,
     CanSendAuthReq      = 1<<6,
-    CanSendSms          = 1<<7,
     CanSendSecure       = 1<<8,
     CanSendDirect       = 1<<9,
     CanHoldStatusMsg    = 1<<10,

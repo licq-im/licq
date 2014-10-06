@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2012 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2012-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@ public:
   enum IcqSignalType
   {
     SignalIcqSendContacts       = 1,    // Send contacts to user
-    SignalIcqSendSms            = 2,    // Send SMS message
     SignalIcqFetchAutoResponse  = 3,    // Fetch away message from user
     SignalIcqChatRequest        = 4,    // Send chat request ot user
     SignalIcqChatRefuse         = 5,    // Refuse a chat request
@@ -82,22 +81,6 @@ private:
   Licq::StringList myUsers;
   unsigned myFlags;
   Licq::Color* myColor;
-};
-
-
-class ProtoSendSmsSignal : public ProtocolSignal
-{
-public:
-  ProtoSendSmsSignal(unsigned long eventId, const Licq::UserId& userId,
-      const std::string& number, const std::string& message);
-  ~ProtoSendSmsSignal();
-
-  const std::string& number() const { return myNumber; }
-  const std::string& message() const { return myMessage; }
-
-private:
-  std::string myNumber;
-  std::string myMessage;
 };
 
 

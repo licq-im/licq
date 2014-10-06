@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,8 +81,6 @@ OnEventBox::OnEventBox(bool isGlobal, QWidget* parent) :
   paramLabel[OnEventData::OnEventChat]->setToolTip(tr("Parameter for received chat requests"));
   paramLabel[OnEventData::OnEventFile] = new QLabel(tr("File transfer:"));
   paramLabel[OnEventData::OnEventFile]->setToolTip(tr("Parameter for received file transfers"));
-  paramLabel[OnEventData::OnEventSms] = new QLabel(tr("SMS:"));
-  paramLabel[OnEventData::OnEventSms]->setToolTip(tr("Parameter for received SMSs"));
   paramLabel[OnEventData::OnEventOnline] = new QLabel(tr("Online notify:"));
   paramLabel[OnEventData::OnEventOnline]->setToolTip(tr("Parameter for online notification"));
   paramLabel[OnEventData::OnEventSysMsg] = new QLabel(tr("System msg:"));

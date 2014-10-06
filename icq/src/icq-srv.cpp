@@ -1310,15 +1310,6 @@ Licq::Event* IcqProtocol::icqSendThroughServer(pthread_t caller, unsigned long e
   return result;
 }
 
-void IcqProtocol::icqSendSms(const ProtoSendSmsSignal* ps)
-{
-  Licq::EventSms* ue = new Licq::EventSms(ps->number(), ps->message(),
-      Licq::EventSms::TimeNow, LICQ_VERSION | Licq::EventSms::FlagSender);
-  CPU_SendSms* p = new CPU_SendSms(ps->number(), ps->message());
-  gLog.info(tr("Sending SMS through server (#%hu/#%d)..."), p->Sequence(), p->SubSequence());
-  SendExpectEvent_Server(ps, ps->userId(), p, ue);
-}
-
 /*------------------------------------------------------------------------------
  * ProcessDoneEvent
  *

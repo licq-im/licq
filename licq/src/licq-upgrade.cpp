@@ -618,7 +618,6 @@ static void upgradeLicq18_updateOnevent(StringMap& owners, IniFile& licqConf)
     if (licqConf.get("Url", str))                onEventConf.set("Url", str);
     if (licqConf.get("Chat", str))               onEventConf.set("Chat", str);
     if (licqConf.get("File", str))               onEventConf.set("File", str);
-    if (licqConf.get("Sms", str))                onEventConf.set("Sms", str);
     if (licqConf.get("OnlineNotify", str))       onEventConf.set("OnlineNotify", str);
     if (licqConf.get("SysMsg", str))             onEventConf.set("SysMsg", str);
     if (licqConf.get("MsgSent", str))            onEventConf.set("MsgSent", str);

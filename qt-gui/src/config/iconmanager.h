@@ -50,7 +50,6 @@ public:
     ChatMessageIcon,
     FileMessageIcon,
     ContactMessageIcon,
-    SmsMessageIcon,
     AuthorizeMessageIcon,
     ReqAuthorizeMessageIcon,
 
