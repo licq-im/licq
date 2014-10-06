@@ -1,6 +1,4 @@
 set(userevents_SRCS
-  emoticonlabel.cpp
-  selectemoticon.cpp
   usereventcommon.cpp
   usereventtabdlg.cpp
   usersendevent.cpp

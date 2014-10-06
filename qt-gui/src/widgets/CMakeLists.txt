@@ -11,6 +11,7 @@ set(widgets_SRCS
   mlview.cpp
   ownercombobox.cpp
   protocombobox.cpp
+  selectemoticon.cpp
   shortcutedit.cpp
   skinnablebutton.cpp
   skinnablecombobox.cpp

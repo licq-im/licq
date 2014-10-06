@@ -92,8 +92,8 @@
 #include "widgets/historyview.h"
 #include "widgets/infofield.h"
 #include "widgets/mledit.h"
+#include "widgets/selectemoticon.h"
 
-#include "selectemoticon.h"
 #include "usereventtabdlg.h"
 
 using namespace LicqQtGui;

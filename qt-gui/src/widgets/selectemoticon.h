@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2009 Licq developers
+ * Copyright (C) 2000-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,13 +21,31 @@
 #define SELECTEMOTICON_H
 
 #include <QFrame>
+#include <QPushButton>
 
 class QGridLayout;
 
 
 namespace LicqQtGui
 {
-class EmoticonLabel;
+
+class EmoticonLabel : public QPushButton
+{
+  Q_OBJECT
+public:
+  EmoticonLabel(const QString& file, const QString& value, QWidget* parent);
+
+signals:
+  void clicked(const QString& value);
+  void move(EmoticonLabel* item, int key);
+
+private:
+  void mouseReleaseEvent(QMouseEvent* e);
+  void keyPressEvent(QKeyEvent* e);
+
+  QString myValue;
+};
+
 
 class SelectEmoticon : public QFrame
 {

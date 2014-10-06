@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2009 Licq developers
+ * Copyright (C) 2000-2014 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,15 +22,56 @@
 #include <math.h>
 
 #include <QGridLayout>
+#include <QKeyEvent>
 #include <QMap>
 
 #include "config/emoticons.h"
 
 #include "helpers/support.h"
 
-#include "emoticonlabel.h"
-
 using namespace LicqQtGui;
+
+EmoticonLabel::EmoticonLabel(const QString& file, const QString& value, QWidget* parent)
+  : QPushButton(parent),
+    myValue(value)
+{
+  QPixmap icon = QPixmap(file);
+  setIconSize(icon.size());
+  setIcon(icon);
+  setToolTip(value);
+  setFixedSize(icon.size() + QSize(10, 10));
+  setFlat(true);
+}
+
+void EmoticonLabel::mouseReleaseEvent(QMouseEvent* /* e */)
+{
+  if (underMouse())
+    emit clicked(myValue);
+}
+
+void EmoticonLabel::keyPressEvent(QKeyEvent* e)
+{
+  if (e->modifiers() != Qt::NoModifier)
+    return;
+
+  switch (e->key())
+  {
+    case Qt::Key_Return: // Fall through
+    case Qt::Key_Enter:
+    case Qt::Key_Space:
+      emit clicked(myValue);
+      break;
+
+    case Qt::Key_Up: // Fall through
+    case Qt::Key_Down:
+      emit move(this, e->key());
+      break;
+
+    default:
+      QPushButton::keyPressEvent(e);
+      break;
+  }
+}
 
 SelectEmoticon::SelectEmoticon(QWidget* parent)
   : QFrame(parent, Qt::Popup)
