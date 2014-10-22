@@ -18,7 +18,7 @@ before_install:
       libssl-dev
       libxosd-dev
       libxss-dev
-      qtbase5-dev qttools5-dev-tools
+      qtbase5-dev qttools5-dev qttools5-dev-tools
       qtchooser
 before_script: mkdir build-all/build
 script: cd build-all/build && cmake .. && make
