@@ -76,7 +76,7 @@ TEST(PluginLogSink, logMessage)
   message = NULL;
 
   LogSink::Message::Ptr first = sink.popMessage();
-  ASSERT_TRUE(first);
+  ASSERT_TRUE((bool)first);
   EXPECT_EQ("test", first->text);
 
   EXPECT_FALSE(sink.popMessage());

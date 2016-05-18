@@ -66,7 +66,7 @@ TEST_F(PluginThreadFixture, isThread)
 
 TEST_F(PluginThreadFixture, loadPlugin)
 {
-  EXPECT_TRUE(thread.loadPlugin(""));
+  EXPECT_TRUE((bool)thread.loadPlugin(""));
 }
 
 TEST_F(PluginThreadFixture, loadMissingPlugin)

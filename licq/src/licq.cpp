@@ -550,7 +550,7 @@ bool CLicq::Init(int argc, char **argv)
         if (!licqConf.get(szKey, pluginName))
           continue;
 
-        bool loaded = LoadPlugin(pluginName, argc, argv);
+        bool loaded = (bool) LoadPlugin(pluginName, argc, argv);
 
         // Make upgrade from 1.4.x-1.8.x and older easier by automatically switching
         //   from kde4/qt4-gui to kde/qt-gui
@@ -559,12 +559,12 @@ bool CLicq::Init(int argc, char **argv)
           if (pluginName == "kde4-gui")
           {
             gLog.warning(tr("Plugin kde4-gui is no longer available, trying to load kde-gui instead."));
-            loaded = LoadPlugin("kde-gui", argc, argv);
+            loaded = (bool) LoadPlugin("kde-gui", argc, argv);
           }
           if (!loaded)
           {
             gLog.warning(tr("Plugin %s is no longer available, trying to load qt-gui instead."), pluginName.c_str());
-            loaded = LoadPlugin("qt-gui", argc, argv);
+            loaded = (bool) LoadPlugin("qt-gui", argc, argv);
           }
         }
 
